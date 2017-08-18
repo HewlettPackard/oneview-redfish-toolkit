@@ -18,17 +18,18 @@ from flask import Blueprint
 from flask import jsonify
 from flask import make_response
 
-bp_hello_world_api = Blueprint("hello_world_api", __name__, url_prefix="/api")
+bp_hello_world_api = Blueprint("hello_world_api", __name__,
+                               url_prefix="/redfish")
 
 
 @bp_hello_world_api.route("/", methods=["GET"])
 def list_server_hardware():
-    """Get a Hello World message.
+    """Get JSON with Redfish version.
 
-    :return: Hello World message.
+    :return: Redfish version route.
     :rtype: JSON
     """
-    return make_response(jsonify({"message": "Hello World!"}), 200)
+    return make_response(jsonify({"v1": "/redfish/v1/"}), 200)
 
 
 @bp_hello_world_api.errorhandler(404)

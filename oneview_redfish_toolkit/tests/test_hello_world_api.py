@@ -14,20 +14,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""
-test_hello_world_api
-----------------------------------
-
-Tests for `oneview_redfish_toolkit` module.
-"""
-
 import json
 import unittest
 
 from oneview_redfish_toolkit.api.app import app
 
 
-class HelloWorldAPITest(unittest.TestCase):
+class TestHelloWorldAPI(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -49,14 +42,14 @@ class HelloWorldAPITest(unittest.TestCase):
     def test_status_hello_world(self):
         # sends HTTP GET request to the application
         # on the specified path
-        result = self.app.get("/api/")
+        result = self.app.get("/redfish/")
 
         # assert the status code of the response
         self.assertEqual(result.status_code, 200)
 
     def test_response_hello_world(self):
-        result = self.app.get("/api/")
+        result = self.app.get("/redfish/")
 
         json_result = json.loads(result.data.decode("utf-8"))
 
-        self.assertEqual(json_result["message"], "Hello World!")
+        self.assertEqual(json_result, {"v1": "/redfish/v1/"})
