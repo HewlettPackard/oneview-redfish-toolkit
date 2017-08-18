@@ -16,7 +16,7 @@
 
 from flask import Flask
 
-from oneview_redfish_toolkit.api.hello_world_api import bp_hello_world_api
+from oneview_redfish_toolkit.api.redfish_base_api import redfish_base
 
 app = Flask(__name__)
-app.register_blueprint(bp_hello_world_api)
+app.register_blueprint(redfish_base)

@@ -4,6 +4,7 @@
 
 configparser
 flask
+flask-api
 hpOneView
 pbr>=2.0 # Apache-2.0
 six

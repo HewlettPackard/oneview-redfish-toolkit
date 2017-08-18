@@ -14,13 +14,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from flask_api import status
 import json
 import unittest
 
 from oneview_redfish_toolkit.api.app import app
 
 
-class TestHelloWorldAPI(unittest.TestCase):
+class TestRedfishBaseAPI(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -45,7 +46,7 @@ class TestHelloWorldAPI(unittest.TestCase):
         result = self.app.get("/redfish/")
 
         # assert the status code of the response
-        self.assertEqual(result.status_code, 200)
+        self.assertEqual(result.status_code, status.HTTP_200_OK)
 
     def test_response_hello_world(self):
         result = self.app.get("/redfish/")
