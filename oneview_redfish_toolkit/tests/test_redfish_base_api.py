@@ -40,7 +40,7 @@ class TestRedfishBaseAPI(unittest.TestCase):
     def tearDown(self):
         pass
 
-    def test_status_hello_world(self):
+    def test_get_redfish_base_status(self):
         # sends HTTP GET request to the application
         # on the specified path
         result = self.app.get("/redfish/")
@@ -48,7 +48,7 @@ class TestRedfishBaseAPI(unittest.TestCase):
         # assert the status code of the response
         self.assertEqual(result.status_code, status.HTTP_200_OK)
 
-    def test_response_hello_world(self):
+    def test_get_redfish_base_response(self):
         result = self.app.get("/redfish/")
 
         json_result = json.loads(result.data.decode("utf-8"))

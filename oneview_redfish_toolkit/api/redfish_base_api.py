@@ -19,7 +19,7 @@ from flask import jsonify
 from flask import make_response
 from flask_api import status
 
-redfish_base = Blueprint("hello_world_api", __name__, url_prefix="/redfish")
+redfish_base = Blueprint("redfish_base", __name__, url_prefix="/redfish")
 
 
 @redfish_base.route("/", methods=["GET"])
@@ -32,7 +32,7 @@ def get_redfish_base():
     return make_response(jsonify({"v1": "/redfish/v1/"}), status.HTTP_200_OK)
 
 
-@redfish_base.errorhandler(404)
+@redfish_base.errorhandler(status.HTTP_404_NOT_FOUND)
 def not_found(error):
     """Improve not found error message.
 
@@ -40,5 +40,5 @@ def not_found(error):
     :return: Error message.
     :rtype: JSON
     """
-    return make_response(jsonify({"error": "Not Found."}),
+    return make_response(jsonify({"error": "Redfish base not found."}),
                          status.HTTP_404_NOT_FOUND)
