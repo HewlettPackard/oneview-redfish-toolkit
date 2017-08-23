@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oneview_redfish_toolkit.api.app import app
+from oneview_redfish_toolkit.app import app
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

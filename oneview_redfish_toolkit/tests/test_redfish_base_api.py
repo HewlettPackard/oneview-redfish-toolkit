@@ -18,7 +18,7 @@ from flask_api import status
 import json
 import unittest
 
-from oneview_redfish_toolkit.api.app import app
+from oneview_redfish_toolkit.app import app
 
 
 class TestRedfishBaseAPI(unittest.TestCase):
