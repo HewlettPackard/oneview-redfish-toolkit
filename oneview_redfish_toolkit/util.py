@@ -18,7 +18,6 @@ import os
 import collections
 import configparser
 import json
-import logging
 
 
 def load_config(ini_file):
@@ -37,7 +36,7 @@ def load_config(ini_file):
 
     if os.path.isfile(ini_file) is False:
         print("Ini file {} not found".format(ini_file))
-        return False
+        return None
     config = configparser.ConfigParser()
     config.optionxform = str
     try:
@@ -75,8 +74,8 @@ def load_schemas(schema_dir, schemas):
     schema_dict = collections.OrderedDict()
     for key in schemas:
         try:
-            with open(schema_dir + '/' + schemas[key]) as F:
-                schema_dict[key] = json.load(F)
+            with open(schema_dir + '/' + schemas[key]) as f:
+                schema_dict[key] = json.load(f)
         except Exception as e:
             print(e)
             return None

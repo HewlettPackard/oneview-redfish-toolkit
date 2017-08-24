@@ -28,9 +28,9 @@ class RedfishJsonValidator(object):
         serialize method.
         Creates and emmty OrderedDict called redfish which must be populated
         with the redfish data for validation.
-        The Serrialize method always validates the redfish content before
+        The Serialize method always validates the redfish content before
         generating the json string, It returns the redfish json string on
-        successful validation and raises an exception on validatrion failure
+        successful validation and raises an exception on validation failure
     '''
 
     def __init__(self, schema_obj):

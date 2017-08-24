@@ -23,7 +23,11 @@ service_root = Blueprint('service_root', __name__)
 
 
 @service_root.route('/', methods=["GET"])
-def show():
+def get_service_root():
+    '''Gets ServiceRoot
+
+    '''
+
     obj = ServiceRoot(current_app.schemas_dict["ServiceRoot"])
     json_str = obj.serialize(True)
     response = Response(

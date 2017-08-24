@@ -29,7 +29,7 @@ if cfg is None:
 schemas = dict(cfg.items('schemas'))
 schemas_dict = util.load_schemas(cfg['directories']['schema_dir'], schemas)
 
-if schemas_dict is Nome:
+if schemas_dict is None:
     print("Could not schemas. Exiting")
     exit(1)
 

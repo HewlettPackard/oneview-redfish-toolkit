@@ -42,7 +42,7 @@ class TestBlueprintServiceRoot(unittest.TestCase):
         json_str = result.data.decode("utf-8")
 
         with open(
-            'oneview_redfish_toolkit/tests/mockups/ServiceRoot.mok'
-        ) as F:
-            mok_json = F.read()
+            'oneview_redfish_toolkit/tests/mockups/ServiceRoot.json'
+        ) as f:
+            mok_json = f.read()
         self.assertEqual(json_str, mok_json)

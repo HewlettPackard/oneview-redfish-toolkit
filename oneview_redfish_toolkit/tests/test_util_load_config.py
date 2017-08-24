@@ -31,7 +31,7 @@ class TestUtilLoadConfig(unittest.TestCase):
 
     def test_invalid_config_file(self):
         # Tests if passing a file that does not exists returns false.
-        self.assertFalse(util.load_config('non-exist.ini'))
+        self.assertIsNone(util.load_config('non-exist.ini'))
 
     def test_valid_config_file(self):
         # Tests if passing a valid file returns a object
