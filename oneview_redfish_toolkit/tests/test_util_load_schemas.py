@@ -35,7 +35,7 @@ class TestUtilLoadConfig(unittest.TestCase):
         schemas = dict()
         self.assertFalse(util.load_schemas('non-exist-schema-dir', schemas))
 
-    def test_valid_schema_dir_invalide_dict(self):
+    def test_valid_schema_dir_invalid_dict(self):
         # Tests if passing a valid schemadir and an invalid schema dict
         # returns False
 
@@ -43,7 +43,7 @@ class TestUtilLoadConfig(unittest.TestCase):
         schemas['failed'] = 'fail.json'
         self.assertFalse(util.load_schemas(self.schema_dir, schemas))
 
-    def test_valid_schema_dir_valide_dict(self):
+    def test_valid_schema_dir_valid_dict(self):
         # Tests if ini file has all expected sections
 
         cfg = util.load_config(self.config_file)
@@ -53,7 +53,3 @@ class TestUtilLoadConfig(unittest.TestCase):
 
         self.assertIsInstance(schemas_dict, collections.OrderedDict,
                               msg='Loading schemas didnt return a dict')
-
-
-if __name__ == '__main__':
-    unittest.main()

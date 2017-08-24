@@ -14,7 +14,25 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oneview_redfish_toolkit.app import app
+from flask import Blueprint
+from flask import current_app
+from flask import Response
+from oneview_redfish_toolkit.api.service_root import ServiceRoot
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+service_root = Blueprint('service_root', __name__)
+
+
+@service_root.route('/', methods=["GET"])
+def get_service_root():
+    '''Gets ServiceRoot
+
+    '''
+
+    obj = ServiceRoot(current_app.schemas_dict["ServiceRoot"])
+    json_str = obj.serialize(True)
+    response = Response(
+        response=json_str,
+        status=200,
+        mimetype='application/json'
+        )
+    return response

@@ -36,14 +36,14 @@ def load_config(ini_file):
 
     if os.path.isfile(ini_file) is False:
         print("Ini file {} not found".format(ini_file))
-        return False
+        return None
     config = configparser.ConfigParser()
     config.optionxform = str
     try:
         config.read(ini_file)
     except Exception as e:
         print(e)
-        return False
+        return None
     return config
 
 
@@ -66,24 +66,17 @@ def load_schemas(schema_dir, schemas):
 
     if os.path.isdir(schema_dir) is False:
         print("Schema dir is not a valid dir: {}".format(schema_dir))
-        return False
+        return None
     if os.access(schema_dir, os.R_OK) is False:
         print("Can't access dir {}".format(schema_dir))
-        return False
+        return None
 
     schema_dict = collections.OrderedDict()
     for key in schemas:
         try:
-            with open(schema_dir + '/' + schemas[key]) as F:
-                schema_dict[key] = json.load(F)
+            with open(schema_dir + '/' + schemas[key]) as f:
+                schema_dict[key] = json.load(f)
         except Exception as e:
             print(e)
-            return False
+            return None
     return schema_dict
-
-
-if __name__ == '__main__':
-    cfg = load_config('redfish.ini')
-    schemas = dict(cfg.items('schemas'))
-    schemas_dict = load_schemas(cfg['directories']['schema_dir'], schemas)
-    print(schemas_dict)

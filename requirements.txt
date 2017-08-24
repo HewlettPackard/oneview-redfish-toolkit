@@ -5,4 +5,7 @@
 flask
 flask-api
 hpOneView
+jsonschema
+configparser
+collections
 pbr>=2.0 # Apache-2.0
