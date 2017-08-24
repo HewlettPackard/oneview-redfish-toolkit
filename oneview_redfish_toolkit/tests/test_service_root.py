@@ -49,7 +49,7 @@ class TestServiceRoot(unittest.TestCase):
         schemas_dict = util.load_schemas('oneview_redfish_toolkit/schemas',
                                          schemas)
         obj = ServiceRoot(schemas_dict['ServiceRoot'])
-        json_str = obj.Serialize()
+        json_str = obj.Serialize(True)
 
         with open(
             'oneview_redfish_toolkit/tests/mockups/ServiceRoot.mok'

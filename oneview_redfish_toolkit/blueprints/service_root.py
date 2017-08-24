@@ -1,3 +1,4 @@
+#!./redfish-venv/bin/python
 # -*- coding: utf-8 -*-
 
 # Copyright (2017) Hewlett Packard Enterprise Development LP
@@ -14,20 +15,21 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from flask import Flask
+from flask import Blueprint
+from flask import current_app
+from flask import Response
+from oneview_redfish_toolkit.api.service_root import ServiceRoot
 
-from oneview_redfish_toolkit.api.redfish_base_api import redfish_base
-from oneview_redfish_toolkit.blueprints.service_root import service_root
-from oneview_redfish_toolkit import util
+service_root = Blueprint('service_root', __name__)
 
-cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
 
-schemas = dict(cfg.items('schemas'))
-schemas_dict = util.load_schemas(cfg['directories']['schema_dir'], schemas)
-
-app = Flask(__name__)
-
-app.schemas_dict = schemas_dict
-
-app.register_blueprint(redfish_base)
-app.register_blueprint(service_root, url_prefix='/redfish/v1/')
+@service_root.route('/', methods=["GET"])
+def show():
+    obj = ServiceRoot(current_app.schemas_dict["ServiceRoot"])
+    json_str = obj.Serialize(True)
+    response = Response(
+        response=json_str,
+        status=200,
+        mimetype='application/json'
+        )
+    return response
