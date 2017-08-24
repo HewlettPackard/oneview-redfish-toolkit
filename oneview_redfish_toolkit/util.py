@@ -18,6 +18,7 @@ import os
 import collections
 import configparser
 import json
+import logging
 
 
 def load_config(ini_file):
@@ -43,7 +44,7 @@ def load_config(ini_file):
         config.read(ini_file)
     except Exception as e:
         print(e)
-        return False
+        return None
     return config
 
 
@@ -66,10 +67,10 @@ def load_schemas(schema_dir, schemas):
 
     if os.path.isdir(schema_dir) is False:
         print("Schema dir is not a valid dir: {}".format(schema_dir))
-        return False
+        return None
     if os.access(schema_dir, os.R_OK) is False:
         print("Can't access dir {}".format(schema_dir))
-        return False
+        return None
 
     schema_dict = collections.OrderedDict()
     for key in schemas:
@@ -78,5 +79,5 @@ def load_schemas(schema_dir, schemas):
                 schema_dict[key] = json.load(F)
         except Exception as e:
             print(e)
-            return False
+            return None
     return schema_dict
