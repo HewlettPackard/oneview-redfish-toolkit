@@ -81,6 +81,3 @@ class TestUtilLoadConfig(unittest.TestCase):
                         msg='Option {} not found in section {} in ini file {}'
                         .format('password', 'credentials',
                         self.config_file))
-
-if __name__ == '__main__':
-    unittest.main()

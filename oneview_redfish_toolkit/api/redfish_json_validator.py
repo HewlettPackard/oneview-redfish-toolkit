@@ -48,7 +48,7 @@ class RedfishJsonValidator(object):
         self.schema_obj = schema_obj
         self.redfish = collections.OrderedDict()
 
-    def _Validate(self):
+    def _validate(self):
         '''Validates self.redfish against self.schema_obj
 
             Validates a redfish OrderedDict agains the schema object passed
@@ -67,7 +67,7 @@ class RedfishJsonValidator(object):
         except Exception as e:
             raise(e.message)
 
-    def Serialize(self, pretty=False):
+    def serialize(self, pretty=False):
         '''Generates a json string from redfish content
 
             Validates the content of redfish and generates a json string from
@@ -81,7 +81,7 @@ class RedfishJsonValidator(object):
                 string: json string with the contents of self.redfish
         '''
 
-        self._Validate()
+        self._validate()
         if pretty:
             indent = 4
         else:

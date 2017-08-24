@@ -1,4 +1,3 @@
-#!./redfish-venv/bin/python
 # -*- coding: utf-8 -*-
 
 # Copyright (2017) Hewlett Packard Enterprise Development LP
@@ -26,7 +25,7 @@ service_root = Blueprint('service_root', __name__)
 @service_root.route('/', methods=["GET"])
 def show():
     obj = ServiceRoot(current_app.schemas_dict["ServiceRoot"])
-    json_str = obj.Serialize(True)
+    json_str = obj.serialize(True)
     response = Response(
         response=json_str,
         status=200,

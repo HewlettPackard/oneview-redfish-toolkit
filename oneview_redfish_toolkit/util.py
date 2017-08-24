@@ -80,10 +80,3 @@ def load_schemas(schema_dir, schemas):
             print(e)
             return False
     return schema_dict
-
-
-if __name__ == '__main__':
-    cfg = load_config('redfish.ini')
-    schemas = dict(cfg.items('schemas'))
-    schemas_dict = load_schemas(cfg['directories']['schema_dir'], schemas)
-    print(schemas_dict)

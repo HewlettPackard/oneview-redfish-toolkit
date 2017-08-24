@@ -39,7 +39,7 @@ class TestServiceRoot(unittest.TestCase):
         schemas_dict = util.load_schemas('oneview_redfish_toolkit/schemas',
                                          schemas)
         obj = ServiceRoot(schemas_dict['ServiceRoot'])
-        self.assertTrue(obj._Validate())
+        self.assertTrue(obj._validate())
 
     def teste_serialize(self):
         # Tests the serialize function result against known result
@@ -49,14 +49,10 @@ class TestServiceRoot(unittest.TestCase):
         schemas_dict = util.load_schemas('oneview_redfish_toolkit/schemas',
                                          schemas)
         obj = ServiceRoot(schemas_dict['ServiceRoot'])
-        json_str = obj.Serialize(True)
+        json_str = obj.serialize(True)
 
         with open(
             'oneview_redfish_toolkit/tests/mockups/ServiceRoot.mok'
         ) as F:
             mok_json = F.read()
         self.assertEqual(json_str, mok_json)
-
-
-if __name__ == '__main__':
-    unittest.main()
