@@ -27,7 +27,7 @@ import unittest
 from unittest import mock
 
 
-class TestBlueprintComputerSystemCollection(unittest.TestCase):
+class TestComputerSystemCollection(unittest.TestCase):
 
     def setUp(self):
         # creates a test client
@@ -75,7 +75,7 @@ class TestBlueprintComputerSystemCollection(unittest.TestCase):
 
         with open(
                 'oneview_redfish_toolkit/tests/mockups/'
-                'ComputerSystemCollection_ov.json'
+                'ServerHardwares.json'
         ) as f:
             fake_server_hardwares = json.loads(f.read())
             client.server_hardware.get_all.return_value = fake_server_hardwares

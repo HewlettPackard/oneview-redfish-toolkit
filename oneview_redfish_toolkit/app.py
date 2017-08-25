@@ -15,13 +15,12 @@
 # under the License.
 
 from flask import Flask
-
 from hpOneView.exceptions import HPOneViewException
 from hpOneView.oneview_client import OneViewClient
 
-from oneview_redfish_toolkit.api.redfish_base_api import redfish_base
 from oneview_redfish_toolkit.blueprints.computer_system_collection \
     import computer_system_collection
+from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 
 from oneview_redfish_toolkit import util

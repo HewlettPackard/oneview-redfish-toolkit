@@ -44,7 +44,7 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         with open(
             'oneview_redfish_toolkit/tests/mockups/'
-            'ComputerSystemCollection_ov.json'
+            'ServerHardwares.json'
         ) as f:
             mok_json = f.read()
 
@@ -61,7 +61,7 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         with open(
             'oneview_redfish_toolkit/tests/mockups/'
-            'ComputerSystemCollection_ov.json'
+            'ServerHardwares.json'
         ) as f:
             mok_json = f.read()
 
@@ -71,7 +71,7 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         with open(
             'oneview_redfish_toolkit/tests/mockups/'
-            'ComputerSystemCollection_rf.json'
+            'ComputerSystemCollection.json'
         ) as f:
             mok_json_result = f.read()
 
