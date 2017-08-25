@@ -14,35 +14,43 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oneview_redfish_toolkit.app import app
-from oneview_redfish_toolkit import util
+from flask_api import status
+import json
 import unittest
 
+from oneview_redfish_toolkit.app import app
 
-class TestBlueprintServiceRoot(unittest.TestCase):
+
+class TestRedfishBase(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        pass
+
+    @classmethod
+    def tearDownClass(cls):
+        pass
 
     def setUp(self):
-
-        cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
-
-        schemas = dict(cfg.items('schemas'))
-        schemas_dict = util.load_schemas(cfg['directories']['schema_dir'],
-                                         schemas)
-
         # creates a test client
         self.app = app.test_client()
-
-        self.app.schemas_dict = schemas_dict
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    def test_get_service_root(self):
-        result = self.app.get("/redfish/v1/")
+    def tearDown(self):
+        pass
 
-        json_str = result.data.decode("utf-8")
+    def test_get_redfish_base_status(self):
+        # sends HTTP GET request to the application
+        # on the specified path
+        result = self.app.get("/redfish/")
 
-        with open(
-            'oneview_redfish_toolkit/tests/mockups/ServiceRoot.json'
-        ) as f:
-            mok_json = f.read()
-        self.assertEqual(json_str, mok_json)
+        # assert the status code of the response
+        self.assertEqual(result.status_code, status.HTTP_200_OK)
+
+    def test_get_redfish_base_response(self):
+        result = self.app.get("/redfish/")
+
+        json_result = json.loads(result.data.decode("utf-8"))
+
+        self.assertEqual(json_result, {"v1": "/redfish/v1/"})
