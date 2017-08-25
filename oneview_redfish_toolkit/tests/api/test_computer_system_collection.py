@@ -19,9 +19,11 @@
 """
 
 import json
+
 from oneview_redfish_toolkit.api.computer_system_collection \
     import ComputerSystemCollection
 from oneview_redfish_toolkit import util
+
 import unittest
 
 

@@ -22,16 +22,17 @@ from flask import make_response
 from flask import Response
 from flask_api import status
 
-from hpOneView.exceptions import HPOneViewException
-
 from oneview_redfish_toolkit.api.computer_system_collection \
     import ComputerSystemCollection
 
-computer_system_collection_root = Blueprint(
-    "computer_system_collection_root", __name__)
+computer_system_collection = Blueprint("computer_system_collection", __name__)
 
 
-@computer_system_collection_root.route("/", methods=["GET"])
+def get_ov_client():
+    return current_app.oneview_client
+
+
+@computer_system_collection.route("/", methods=["GET"])
 def get_computer_system_collection():
     """Get the Redfish Computer System Collection.
 
@@ -42,9 +43,9 @@ def get_computer_system_collection():
                 JSON: JSON with ComputerSystemCollection.
     """
     try:
-        oneview_computer_system_collection = \
-            current_app.oneview_client.server_hardware.get_all()
-    except HPOneViewException:
+        oneview_computer_system_collection = get_ov_client()\
+            .server_hardware.get_all()
+    except OSError:
         return abort(status.HTTP_404_NOT_FOUND)
 
     obj = ComputerSystemCollection(
@@ -52,6 +53,7 @@ def get_computer_system_collection():
         oneview_computer_system_collection)
 
     json_str = obj.serialize(True)
+
     response = Response(
         response=json_str,
         status=status.HTTP_200_OK,
@@ -60,7 +62,7 @@ def get_computer_system_collection():
     return response
 
 
-@computer_system_collection_root.errorhandler(status.HTTP_404_NOT_FOUND)
+@computer_system_collection.errorhandler(status.HTTP_404_NOT_FOUND)
 def not_found_computer_system_collection(error):
     """Improve not found error message.
 

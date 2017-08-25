@@ -16,11 +16,12 @@
 
 from flask import Flask
 
+from hpOneView.exceptions import HPOneViewException
 from hpOneView.oneview_client import OneViewClient
 
 from oneview_redfish_toolkit.api.redfish_base_api import redfish_base
 from oneview_redfish_toolkit.blueprints.computer_system_collection \
-    import computer_system_collection_root
+    import computer_system_collection
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 
 from oneview_redfish_toolkit import util
@@ -48,7 +49,13 @@ oneview_config = dict(cfg.items('oneview_config'))
 credentials = dict(cfg.items('credentials'))
 oneview_config["credentials"] = credentials
 
-oneview_client = OneViewClient(oneview_config)
+oneview_client = None
+
+try:
+    oneview_client = OneViewClient(oneview_config)
+except HPOneViewException:
+    print("Could not connect on Oneview")
+    exit(1)
 
 """
 Flask
@@ -63,5 +70,5 @@ Register blueprints
 """
 app.register_blueprint(redfish_base)
 app.register_blueprint(service_root, url_prefix='/redfish/v1/')
-app.register_blueprint(computer_system_collection_root,
+app.register_blueprint(computer_system_collection,
                        url_prefix='/redfish/v1/Systems')
