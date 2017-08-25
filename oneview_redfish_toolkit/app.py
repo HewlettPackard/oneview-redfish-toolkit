@@ -16,10 +16,18 @@
 
 from flask import Flask
 
+from hpOneView.oneview_client import OneViewClient
+
 from oneview_redfish_toolkit.api.redfish_base_api import redfish_base
+from oneview_redfish_toolkit.blueprints.computer_system_collection \
+    import computer_system_collection_root
 from oneview_redfish_toolkit.blueprints.service_root import service_root
+
 from oneview_redfish_toolkit import util
 
+"""
+JSON Schemas
+"""
 cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
 
 if cfg is None:
@@ -30,12 +38,30 @@ schemas = dict(cfg.items('schemas'))
 schemas_dict = util.load_schemas(cfg['directories']['schema_dir'], schemas)
 
 if schemas_dict is None:
-    print("Could not schemas. Exiting")
+    print("Could not load schemas. Exiting")
     exit(1)
 
+"""
+OneView
+"""
+oneview_config = dict(cfg.items('oneview_config'))
+credentials = dict(cfg.items('credentials'))
+oneview_config["credentials"] = credentials
+
+oneview_client = OneViewClient(oneview_config)
+
+"""
+Flask
+"""
 app = Flask(__name__)
 
 app.schemas_dict = schemas_dict
+app.oneview_client = oneview_client
 
+"""
+Register blueprints
+"""
 app.register_blueprint(redfish_base)
 app.register_blueprint(service_root, url_prefix='/redfish/v1/')
+app.register_blueprint(computer_system_collection_root,
+                       url_prefix='/redfish/v1/Systems')
