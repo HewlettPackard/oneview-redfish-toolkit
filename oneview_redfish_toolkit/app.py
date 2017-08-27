@@ -15,8 +15,8 @@
 # under the License.
 
 from flask import Flask
-from hpOneView.exceptions import HPOneViewException
-from hpOneView.oneview_client import OneViewClient
+# from hpOneView.exceptions import HPOneViewException
+# from hpOneView.oneview_client import OneViewClient
 
 from oneview_redfish_toolkit.blueprints.computer_system_collection \
     import computer_system_collection
@@ -50,11 +50,11 @@ oneview_config["credentials"] = credentials
 
 oneview_client = None
 
-try:
-    oneview_client = OneViewClient(oneview_config)
-except HPOneViewException:
-    print("Could not connect on Oneview")
-    exit(1)
+# try:
+#     oneview_client = OneViewClient(oneview_config)
+# except HPOneViewException:
+#     print("Could not connect on Oneview")
+#     exit(1)
 
 """
 Flask

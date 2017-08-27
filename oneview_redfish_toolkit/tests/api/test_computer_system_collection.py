@@ -43,7 +43,7 @@ class TestComputerSystemCollection(unittest.TestCase):
                                          schemas)
 
         with open(
-            'oneview_redfish_toolkit/tests/mockups/'
+            'oneview_redfish_toolkit/mockups/'
             'ServerHardwares.json'
         ) as f:
             mok_json = f.read()
@@ -60,7 +60,7 @@ class TestComputerSystemCollection(unittest.TestCase):
                                          schemas)
 
         with open(
-            'oneview_redfish_toolkit/tests/mockups/'
+            'oneview_redfish_toolkit/mockups/'
             'ServerHardwares.json'
         ) as f:
             mok_json = f.read()
@@ -70,7 +70,7 @@ class TestComputerSystemCollection(unittest.TestCase):
         json_str = obj.serialize(pretty=True)
 
         with open(
-            'oneview_redfish_toolkit/tests/mockups/'
+            'oneview_redfish_toolkit/mockups/'
             'ComputerSystemCollection.json'
         ) as f:
             mok_json_result = f.read()

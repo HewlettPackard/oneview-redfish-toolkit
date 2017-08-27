@@ -29,6 +29,11 @@ computer_system_collection = Blueprint("computer_system_collection", __name__)
 
 
 def get_ov_client():
+    """Get the Oneview Client
+
+        Returns:
+            Object: OneViewClient
+    """
     return current_app.oneview_client
 
 
@@ -43,23 +48,20 @@ def get_computer_system_collection():
                 JSON: JSON with ComputerSystemCollection.
     """
     try:
-        oneview_computer_system_collection = get_ov_client()\
-            .server_hardware.get_all()
+        oneview_server_hardwares = get_ov_client().server_hardware.get_all()
     except OSError:
         return abort(status.HTTP_404_NOT_FOUND)
 
-    obj = ComputerSystemCollection(
+    computer_system_collection_obj = ComputerSystemCollection(
         current_app.schemas_dict["ComputerSystemCollection"],
-        oneview_computer_system_collection)
+        oneview_server_hardwares)
 
-    json_str = obj.serialize(True)
+    json_str = computer_system_collection_obj.serialize(True)
 
-    response = Response(
+    return Response(
         response=json_str,
         status=status.HTTP_200_OK,
         mimetype="application/json")
-
-    return response
 
 
 @computer_system_collection.errorhandler(status.HTTP_404_NOT_FOUND)
