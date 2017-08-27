@@ -74,7 +74,7 @@ class TestComputerSystemCollection(unittest.TestCase):
         client = mock_get_ov_client()
 
         with open(
-                'oneview_redfish_toolkit/tests/mockups/'
+                'oneview_redfish_toolkit/mockups/'
                 'ServerHardwares.json'
         ) as f:
             fake_server_hardwares = json.loads(f.read())
