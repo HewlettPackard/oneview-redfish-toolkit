@@ -26,7 +26,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
         values and with the response of Oneview with all server hardware.
     """
 
-    def __init__(self, schema_obj, all_server_hardware_obj):
+    def __init__(self, schema_obj, server_hardwares_obj):
         """ComputerSystemCollection constructor
 
             Populates self.redfish with a hardcoded ComputerSystemCollection
@@ -36,17 +36,17 @@ class ComputerSystemCollection(RedfishJsonValidator):
                 schema_obj: An object containing the redfish schema to be used
                             to validate the Redfish JSON created.
 
-                all_server_hardware_obj: An object containing all server
+                server_hardwares_obj: An object containing all server
                             hardware to create the Redfish JSON.
         """
         super().__init__(schema_obj)
 
-        self.all_server_hardware_obj = all_server_hardware_obj
+        self.server_hardwares_obj = server_hardwares_obj
 
         self.redfish["@odata.type"] = \
             "#ComputerSystemCollection.ComputerSystemCollection"
         self.redfish["Name"] = "Computer System Collection"
-        self.redfish["Members@odata.count"] = len(all_server_hardware_obj)
+        self.redfish["Members@odata.count"] = len(server_hardwares_obj)
         self.redfish["Members"] = list()
         self._set_redfish_members()
         self.redfish["@odata.context"] = \
@@ -61,8 +61,8 @@ class ComputerSystemCollection(RedfishJsonValidator):
             ComputerSystems.
         """
         for server_hardware, index in \
-                zip(self.all_server_hardware_obj,
-                    range(len(self.all_server_hardware_obj))):
+                zip(self.server_hardwares_obj,
+                    range(len(self.server_hardwares_obj))):
 
             self.redfish["Members"].append(collections.OrderedDict())
             self.redfish["Members"][index]["@odata.id"] = \

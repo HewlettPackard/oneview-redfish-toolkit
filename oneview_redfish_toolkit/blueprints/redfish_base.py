@@ -19,7 +19,7 @@ from flask import jsonify
 from flask import make_response
 from flask_api import status
 
-redfish_base = Blueprint("redfish_base", __name__, url_prefix="/redfish")
+redfish_base = Blueprint("redfish_base", __name__)
 
 
 @redfish_base.route("/", methods=["GET"])

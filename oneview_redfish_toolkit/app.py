@@ -15,8 +15,6 @@
 # under the License.
 
 from flask import Flask
-# from hpOneView.exceptions import HPOneViewException
-# from hpOneView.oneview_client import OneViewClient
 
 from oneview_redfish_toolkit.blueprints.computer_system_collection \
     import computer_system_collection
@@ -42,32 +40,24 @@ if schemas_dict is None:
     exit(1)
 
 """
-OneView
+OneView config
 """
 oneview_config = dict(cfg.items('oneview_config'))
 credentials = dict(cfg.items('credentials'))
 oneview_config["credentials"] = credentials
 
-oneview_client = None
-
-# try:
-#     oneview_client = OneViewClient(oneview_config)
-# except HPOneViewException:
-#     print("Could not connect on Oneview")
-#     exit(1)
-
 """
-Flask
+Flask application
 """
 app = Flask(__name__)
 
 app.schemas_dict = schemas_dict
-app.oneview_client = oneview_client
+app.oneview_config = oneview_config
 
 """
 Register blueprints
 """
-app.register_blueprint(redfish_base)
+app.register_blueprint(redfish_base, url_prefix="/redfish")
 app.register_blueprint(service_root, url_prefix='/redfish/v1/')
 app.register_blueprint(computer_system_collection,
                        url_prefix='/redfish/v1/Systems')
