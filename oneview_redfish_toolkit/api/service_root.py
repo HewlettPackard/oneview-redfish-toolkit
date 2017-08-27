@@ -21,19 +21,19 @@ from oneview_redfish_toolkit.api.redfish_json_validator import \
 
 
 class ServiceRoot(RedfishJsonValidator):
-    '''Creates a hardcoded ServiceRoot redfish dict
+    """Creates a hardcoded ServiceRoot redfish dict
 
         Populates self.redfish with a hardcoded ServiceRoot values for
         a BladeSystem
 
-    '''
+    """
 
     def __init__(self, schema_obj):
-        '''Constructor
+        """Constructor
 
             Populates self.redfish with a hardcoded ServiceRoot values for
             a BladeSystem
-        '''
+        """
         super().__init__(schema_obj)
         self.redfish["@odata.type"] = "#ServiceRoot.v1_2_0.ServiceRoot"
         self.redfish["Id"] = "RootService"

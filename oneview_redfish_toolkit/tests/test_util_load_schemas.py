@@ -36,7 +36,7 @@ class TestUtilLoadConfig(unittest.TestCase):
         self.assertFalse(util.load_schemas('non-exist-schema-dir', schemas))
 
     def test_valid_schema_dir_invalid_dict(self):
-        # Tests if passing a valid schemadir and an invalid schema dict
+        # Tests if passing a valid schema dir and an invalid schema dict
         # returns False
 
         schemas = dict()

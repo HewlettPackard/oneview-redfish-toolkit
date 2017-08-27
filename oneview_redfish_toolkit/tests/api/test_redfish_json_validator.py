@@ -27,7 +27,7 @@ import unittest
 class TestRedfishJsonValidator(unittest.TestCase):
 
     def test_class_instantiation(self):
-        # Tests if class is correctly instanciated
+        # Tests if class is correctly instantiated
         obj = RedfishJsonValidator('schema')
         self.assertIsInstance(obj, RedfishJsonValidator)
 
