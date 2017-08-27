@@ -22,6 +22,8 @@ from flask import make_response
 from flask import Response
 from flask_api import status
 
+from hpOneView.oneview_client import OneViewClient
+
 from oneview_redfish_toolkit.api.computer_system_collection \
     import ComputerSystemCollection
 
@@ -34,7 +36,7 @@ def get_ov_client():
         Returns:
             Object: OneViewClient
     """
-    return current_app.oneview_client
+    return OneViewClient(current_app.oneview_config)
 
 
 @computer_system_collection.route("/", methods=["GET"])
