@@ -14,29 +14,20 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from flask import abort
-from flask import Blueprint
-from flask import Response
-from oneview_redfish_toolkit.api.service_root import ServiceRoot
 
-service_root = Blueprint('service_root', __name__)
+class OneViewRedfishError(Exception):
+
+    def __init__(self, msg):
+        self.msg = msg
 
 
-@service_root.route('/', methods=["GET"])
-def get_service_root():
-    '''Gets ServiceRoot
+class OneViewRedfishResourceNotFoundError(OneViewRedfishError):
 
-    '''
+    def __init__(self, res_name, res_type):
+        self.msg = "{} {} not found".format(res_type, res_name)
 
-    try:
-        obj = ServiceRoot()
-        json_str = obj.serialize()
-        return Response(
-            response=json_str,
-            status=200,
-            mimetype='application/json'
-            )
-    except Exception as e:
-        # Todo: should be logging the error
-        print(e)
-        abort(500)
+
+class OneViewRedfishResourceNotAccessibleError(OneViewRedfishError):
+
+    def __init__(self, res_name, res_type):
+        self.msg = "Can't access {} {}".format(res_type, res_name)

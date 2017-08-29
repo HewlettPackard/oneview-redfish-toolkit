@@ -30,6 +30,7 @@ class ServiceRoot(RedfishJsonValidator):
     """
 
     SCHEMA_NAME = 'ServiceRoot'
+
     def __init__(self):
         """Constructor
 
@@ -37,7 +38,8 @@ class ServiceRoot(RedfishJsonValidator):
             a BladeSystem. Validates the self.redfish content against the
             ServiceRoot schema
         """
-        super().__init__(schemas_dict[SCHEMA_NAME])
+
+        super().__init__(schemas_dict[self.SCHEMA_NAME])
         self.redfish["@odata.type"] = "#ServiceRoot.v1_2_0.ServiceRoot"
         self.redfish["Id"] = "RootService"
         self.redfish["Name"] = "Root Service"
