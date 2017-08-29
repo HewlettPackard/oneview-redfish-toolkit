@@ -23,41 +23,27 @@ from oneview_redfish_toolkit.blueprints.service_root import service_root
 
 from oneview_redfish_toolkit import util
 
-"""
-JSON Schemas
-"""
-cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
-
-if cfg is None:
-    print("Could not load config file. Exiting")
+# Load confit, schemas and create a OV connection
+try:
+    util.load_config('oneview_redfish_toolkit/redfish.ini')
+except Exception as e:
+    print('Failed to load app configuration')
+    print(e)
     exit(1)
 
-schemas = dict(cfg.items('schemas'))
-schemas_dict = util.load_schemas(cfg['directories']['schema_dir'], schemas)
-
-if schemas_dict is None:
-    print("Could not load schemas. Exiting")
-    exit(1)
-
-"""
-OneView config
-"""
-oneview_config = dict(cfg.items('oneview_config'))
-credentials = dict(cfg.items('credentials'))
-oneview_config["credentials"] = credentials
-
-"""
-Flask application
-"""
+# Flask application
 app = Flask(__name__)
 
-app.schemas_dict = schemas_dict
-app.oneview_config = oneview_config
-
-"""
-Register blueprints
-"""
+# Register blueprints
 app.register_blueprint(redfish_base, url_prefix="/redfish")
 app.register_blueprint(service_root, url_prefix='/redfish/v1/')
 app.register_blueprint(computer_system_collection,
                        url_prefix='/redfish/v1/Systems')
+
+@app.errorhandler(500)
+def internal_server_error(error)
+    eturn = Response(
+            response='internal server error',
+            status=500,
+            mimetype='text/html'
+            )
