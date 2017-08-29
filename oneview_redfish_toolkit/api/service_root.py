@@ -18,6 +18,7 @@
 import collections
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
+from oneview_redfish_toolkit.util import schemas_dict
 
 
 class ServiceRoot(RedfishJsonValidator):
@@ -28,13 +29,15 @@ class ServiceRoot(RedfishJsonValidator):
 
     """
 
-    def __init__(self, schema_obj):
+    SCHEMA_NAME = 'ServiceRoot'
+    def __init__(self):
         """Constructor
 
             Populates self.redfish with a hardcoded ServiceRoot values for
-            a BladeSystem
+            a BladeSystem. Validates the self.redfish content against the
+            ServiceRoot schema
         """
-        super().__init__(schema_obj)
+        super().__init__(schemas_dict[SCHEMA_NAME])
         self.redfish["@odata.type"] = "#ServiceRoot.v1_2_0.ServiceRoot"
         self.redfish["Id"] = "RootService"
         self.redfish["Name"] = "Root Service"
@@ -58,3 +61,4 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["@odata.id"] = "/redfish/v1/"
         self.redfish["@Redfish.Copyright"] = \
             "Copyright (2017) Hewlett Packard Enterprise Development LP"
+        self._validate()

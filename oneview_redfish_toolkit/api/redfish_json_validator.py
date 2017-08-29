@@ -20,6 +20,8 @@ import collections
 import json
 import jsonschema
 
+from oneview_redfish_toolkit.util import config
+
 
 class RedfishJsonValidator(object):
     """Validates a json object against a Redfish schema
@@ -64,28 +66,22 @@ class RedfishJsonValidator(object):
         try:
             jsonschema.validate(self.redfish, self.schema_obj)
             return True
-        except Exception as e:
-            raise e
+        except Exception:
+            raise
 
-    def serialize(self, pretty=False):
+    def serialize(self):
         """Generates a json string from redfish content
 
-            Validates the content of redfish and generates a json string from
-            it on successful validation
-
-            Args:
-                pretty: bool value that defines if the generated json string
-                        should be indented for better visualizations
+            Serialize the contents of self.redfish. Uses the value of indent_json
+            from redfish section of ini file to indent or not the result.
 
             Returns:
                 string: json string with the contents of self.redfish
         """
 
-        self._validate()
-        if pretty:
+        if config['redfish']['indent_json']
             indent = 4
         else:
             indent = None
-        json_str = json.dumps(self.redfish, default=lambda o: o.__dict__,
+        return = json.dumps(self.redfish, default=lambda o: o.__dict__,
                               sort_keys=False, indent=indent)
-        return json_str

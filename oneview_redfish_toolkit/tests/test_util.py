@@ -15,32 +15,62 @@
 # under the License.
 
 """
-    Tests for load_config function from util.py
+    Tests for load_schemas function from util.py
 """
 
-import configparser
+import collections
+from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.error import OneViewRedfishResourceNotFoundError
+from oneview_redfish_toolkit.error import\
+    OneViewRedfishResourceNotFoundAccessible
 import unittest
 
-from oneview_redfish_toolkit import util
+
+class TestUtil(unittest.TestCase):
+    '''Test class for util
+
+        Tests:
+            load_ini()
+                - invalid ini file
+                - valid ini file
+                - have all expected sessions
+                - have all exepect options
+            load_schema()
+                - invalid schema dir
+                - valid schema dir invalid schemas dict
+                - valid schema dir and dict
+
+            get_oneview_client()
+                - invalid credentials
+                - valid credentials
+
+            load_config()
+                - checkes if globals vars are not none
 
 
-class TestUtilLoadConfig(unittest.TestCase):
 
+    '''
+
+    # load_ini() tests
     def setUp(self):
+        self.schema_dir = './oneview_redfish_toolkit/schemas'
         self.config_file = './oneview_redfish_toolkit/redfish.ini'
 
-    def test_invalid_config_file(self):
+    def test_load_ini_invalid_config_file(self):
         # Tests if passing a file that does not exists returns false.
-        self.assertIsNone(util.load_config('non-exist.ini'))
+        try:
+            util.load_ini('non-exist.ini')
+        except Exception as e:
+            assertIsInstance(e, OneViewRedfishResourceNotFoundError)
 
-    def test_valid_config_file(self):
+    def test_load_ini_valid_config_file(self):
         # Tests if passing a valid file returns a object
-        self.assertIsInstance(util.load_config(self.config_file),
+        self.assertIsInstance(util.load_ini(self.config_file),
                               configparser.ConfigParser)
 
-    def test_has_all_expect_sessions(self):
+    def test_load_ini_has_all_expect_sessions(self):
         # Tests if ini file has all expected sections
-        cfg = util.load_config(self.config_file)
+        cfg = util.load_ini(self.config_file)
 
         self.assertTrue(cfg.has_section('redfish'),
                         msg='Section {} not found in ini file {}'.format(
@@ -55,10 +85,10 @@ class TestUtilLoadConfig(unittest.TestCase):
                         msg='Section {} not found in ini file {}'.
                         format('schemas', self.config_file))
 
-    def test_has_all_options(self):
+    def test_load_ini_has_all_options(self):
         # Tests if ini file has all expected options
 
-        cfg = util.load_config(self.config_file)
+        cfg = util.load_ini(self.config_file)
 
         self.assertTrue(cfg.has_option('redfish', 'schema_dir'),
                         msg='Option {} not found in section {} in ini file {}'
@@ -87,3 +117,46 @@ class TestUtilLoadConfig(unittest.TestCase):
                         msg='Option {} not found in section {} in ini file {}'
                         .format('password', 'credentials',
                         self.config_file))
+
+    # load_schemas() tests
+    def test_load_schemas_invalid_schema_dir(self):
+        # Tests if passing a non existing schema dir returns False
+
+        schemas = dict()
+
+        try:
+            util.load_schemas('non-exist-schema-dir', schemas)
+        except Exception e:
+            self.assertIsInstance(e,
+                OneViewRedfishResourceNotFoundError,
+                msg="Unexpected exception: {}".format(e.msg)
+            )
+
+
+    def test_load_schemas_valid_schema_dir_invalid_dict(self):
+        # Tests if passing a valid schema dir and an invalid schema dict
+        # returns False
+
+        schemas = dict()
+        schemas['failed'] = 'fail.json'
+
+        try:
+            util.load_schemas(self.schema_dir, schemas)
+        except Exception as e:
+            self.assertIsInstance(
+                e,
+                OneViewRedfishResourceNotFoundError,
+                msg="Unexpected exception: {}".format(e.msg)
+            )
+
+    def test_load_schemas_valid_schema_dir_valid_dict(self):
+        # Tests if ini file has all expected sections
+
+        cfg = util.load_config(self.config_file)
+        schemas = dict(cfg.items('schemas'))
+
+        try:
+            schemas_dict = util.load_schemas(self.schema_dir, schemas)
+            self.assertIsInstance(schemas_dict, collections.OrderedDict)
+        except Exception as e:
+            self.fail('Failed to load schemas files: {}'.format(e.msg))

@@ -14,8 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from flask import abort
 from flask import Blueprint
-from flask import current_app
 from flask import Response
 from oneview_redfish_toolkit.api.service_root import ServiceRoot
 
@@ -28,11 +28,15 @@ def get_service_root():
 
     '''
 
-    obj = ServiceRoot(current_app.schemas_dict["ServiceRoot"])
-    json_str = obj.serialize(True)
-    response = Response(
-        response=json_str,
-        status=200,
-        mimetype='application/json'
-        )
-    return response
+    try:
+        obj = ServiceRoot()
+        json_str = obj.serialize()
+        return = Response(
+            response=json_str,
+            status=200,
+            mimetype='application/json'
+            )
+    except Exception as e:
+        #Todo: should be logging the error
+        print(e)
+        abort(500)
