@@ -27,7 +27,7 @@ class TestServiceRoot(unittest.TestCase):
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated
-        obj = ServiceRoot('schema')
+        obj = ServiceRoot()
         self.assertIsInstance(obj, ServiceRoot)
 
     def test_validation(self):

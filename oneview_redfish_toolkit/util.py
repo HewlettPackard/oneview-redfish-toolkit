@@ -18,16 +18,13 @@ import os
 import collections
 import configparser
 from hpOneView.oneview_client import OneViewClient
-from hpOneView.exceptions import HPOneViewException
 import json
 
-from oneview_redfish_toolkit.error import OneViewRedfishResourceNotFoundError
-from oneview_redfish_toolkit.error import \
-    OneViewRedfishResourceNotAccesibleError
+from oneview_redfish_toolkit.api import errors
 
 config = None
+ov_client = None
 ov_config = None
-ov_conn = None
 schemas_dict = None
 
 
@@ -56,7 +53,7 @@ def load_config(ini_file):
                 - if fails to connect to oneview
     """
 
-    global config ov_credential schemas_dict
+    global config, ov_credential, schemas_dict
 
     config = load_ini(ini_file)
 
@@ -64,21 +61,25 @@ def load_config(ini_file):
     # Setting ov_config
     ov_config = dict(config.items('oneview_config'))
     ov_config['credentials'] = dict(config.items('credentials'))
-    ov_config['api_version'] = int(oneviewconf['api_version'])
+    ov_config['api_version'] = int(ov_config['api_version'])
     # Setting schemas_dict
     schemas = dict(config.items('schemas'))
 
     # Load schemas and connect to oneview
     try:
-        schemas_dict = util.load_schemas(config['redfish']['schema_dir'], schemas)
+        schemas_dict = load_schemas(
+            config['redfish']['schema_dir'],
+            schemas
+        )
         get_oneview_client()
     except Exception:
         raise
 
+
 def load_ini(ini_file):
     """Loads ini file
 
-        Loads and parses the module ini file 
+        Loads and parses the module ini file
 
         Args:
             ini_file: string with the ini file name
@@ -92,15 +93,16 @@ def load_ini(ini_file):
     """
 
     if not os.path.isfile(ini_file):
-        raise OneViewRedfishResourceNotFoundError(ini_file, 'File')
+        raise errors.OneViewRedfishResourceNotFoundError(ini_file, 'File')
 
     config = configparser.ConfigParser()
     config.optionxform = str
     try:
         config.read(ini_file)
-    except Exception as e:
+    except Exception:
         raise
     return config
+
 
 def load_schemas(schema_dir, schemas):
     """Loads schemas
@@ -125,9 +127,12 @@ def load_schemas(schema_dir, schemas):
     """
 
     if os.path.isdir(schema_dir) is False:
-        raise OneViewRedfishResourceNotFoundError(schema_dir, 'Directory')
+        raise errors.OneViewRedfishResourceNotFoundError(
+            schema_dir,
+            'Directory'
+        )
     if os.access(schema_dir, os.R_OK) is False:
-        raise OneViewRedfishResourceNotAccessibleError(
+        raise errors.OneViewRedFishResourceNotAccessibleError(
             schema_dir,
             'directory'
         )
@@ -137,12 +142,13 @@ def load_schemas(schema_dir, schemas):
         try:
             with open(schema_dir + '/' + schemas[key]) as f:
                 schema_dict[key] = json.load(f)
-        except Exception as e:
-            raise OneViewRedfishResourceNotFoundError(
+        except Exception:
+            raise errors.OneViewRedfishResourceNotFoundError(
                 schemas[key],
                 'File'
             )
     return schema_dict
+
 
 def get_oneview_client():
     '''Establishes a OneView connction to be used in the module
@@ -152,7 +158,7 @@ def get_oneview_client():
         valid. If not tries to establish a new connection.
         Sets the connection on the ov_conn global var
 
-        Args: 
+        Args:
             None. Uses global var ov_config which is set by load_config
             with OV configuration and credentials
 
@@ -163,14 +169,14 @@ def get_oneview_client():
             HPOpneViewException if can't connect or reconnect to OV
     '''
 
-    global ov_client ov_config
+    global ov_client, ov_config
 
-    #If don't have ov_config start abort    
+    # If don't have ov_config start abort
     if ov_config is None:
-        raise OneviewRedfishError(
+        raise errors.OneViewRedfishError(
             'ov_config variable no set. Call load_config first'
         )
-        
+
     # If it's the first time just connect
     if ov_client is None:
         try:
@@ -187,10 +193,6 @@ def get_oneview_client():
         try:
             ov_client = OneViewClient(ov_config)
             return ov_client
-        #if faild abort
+        # if faild abort
         except Exception:
             raise
-
-
-
-

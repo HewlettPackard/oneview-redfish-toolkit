@@ -72,16 +72,21 @@ class RedfishJsonValidator(object):
     def serialize(self):
         """Generates a json string from redfish content
 
-            Serialize the contents of self.redfish. Uses the value of indent_json
-            from redfish section of ini file to indent or not the result.
+            Serialize the contents of self.redfish. Uses the value of
+            indent_json from redfish section of ini file to indent or
+            not the result.
 
             Returns:
                 string: json string with the contents of self.redfish
         """
 
-        if config['redfish']['indent_json']
+        if config['redfish']['indent_json']:
             indent = 4
         else:
             indent = None
-        return = json.dumps(self.redfish, default=lambda o: o.__dict__,
-                              sort_keys=False, indent=indent)
+        return json.dumps(
+            self.redfish,
+            default=lambda o: o.__dict__,
+            sort_keys=False,
+            indent=indent
+        )
