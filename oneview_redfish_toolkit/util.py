@@ -19,6 +19,40 @@ import collections
 import configparser
 import json
 
+import logging
+import logging.config
+
+
+def get_logger():
+    """Loads logging.ini file
+
+        Loads logging.ini file to create the logger configuration.
+
+        The logger configuration has two handlers, one of stream
+        (show logs in the console) and other of file (save a log file)
+        where you can choose one of it in [logger_root : handlers].
+        In it you can choose the logger level as well.
+
+        Level 	    Numeric value
+        -------------------------
+        CRITICAL 	    50
+        ERROR 	        40
+        WARNING 	    30
+        INFO 	        20
+        DEBUG 	        10
+        NOTSET 	        0
+        -------------------------
+
+        Returns:
+            logging: The root logger.
+    """
+    log_file_path = os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), "logging.ini")
+
+    logging.config.fileConfig(log_file_path)
+
+    return logging.getLogger()
+
 
 def load_config(ini_file):
     """Loads ini file
@@ -35,14 +69,14 @@ def load_config(ini_file):
     """
 
     if os.path.isfile(ini_file) is False:
-        print("Ini file {} not found".format(ini_file))
+        get_logger().info("Ini file {} not found".format(ini_file))
         return None
     config = configparser.ConfigParser()
     config.optionxform = str
     try:
         config.read(ini_file)
     except Exception as e:
-        print(e)
+        get_logger().info(e)
         return None
     return config
 
@@ -65,10 +99,11 @@ def load_schemas(schema_dir, schemas):
     """
 
     if os.path.isdir(schema_dir) is False:
-        print("Schema dir is not a valid dir: {}".format(schema_dir))
+        get_logger()\
+            .info("Schema dir is not a valid dir: {}".format(schema_dir))
         return None
     if os.access(schema_dir, os.R_OK) is False:
-        print("Can't access dir {}".format(schema_dir))
+        get_logger().info("Can't access dir {}".format(schema_dir))
         return None
 
     schema_dict = collections.OrderedDict()
@@ -77,6 +112,6 @@ def load_schemas(schema_dir, schemas):
             with open(schema_dir + '/' + schemas[key]) as f:
                 schema_dict[key] = json.load(f)
         except Exception as e:
-            print(e)
+            get_logger().info(e)
             return None
     return schema_dict
