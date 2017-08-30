@@ -22,6 +22,8 @@ import json
 import logging
 import logging.config
 
+LOG_FILE = "logging.ini"
+
 
 def get_logger():
     """Loads logging.ini file
@@ -43,11 +45,13 @@ def get_logger():
         NOTSET 	        0
         -------------------------
 
+        How to use: util.get_logger().info('message')
+
         Returns:
             logging: The root logger.
     """
     log_file_path = os.path.join(os.path.dirname(
-        os.path.abspath(__file__)), "logging.ini")
+        os.path.abspath(__file__)), LOG_FILE)
 
     logging.config.fileConfig(log_file_path)
 

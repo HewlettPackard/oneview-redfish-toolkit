@@ -60,6 +60,9 @@ ChangeLog
 # Files created by PyCharm
 .idea/
 
+# Created logging file
+*.log
+
 # Files created when running the API
 oneview_redfish_toolkit/__pycache__/
 oneview_redfish_toolkit/tests/__pycache__/
