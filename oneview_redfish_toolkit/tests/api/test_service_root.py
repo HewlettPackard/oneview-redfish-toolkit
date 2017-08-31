@@ -18,38 +18,37 @@
     Tests for redfish_json_validator.py
 """
 
+import unittest
+from unittest import mock
+
 from oneview_redfish_toolkit.api.service_root import ServiceRoot
 from oneview_redfish_toolkit import util
-import unittest
 
 
 class TestServiceRoot(unittest.TestCase):
+    """Tests for ServiceRoot class"""
+
+    @mock.patch.object(util, 'OneViewClient')
+    def setUp(self, ov_mock):
+        """Tests preparation """
+
+        # Load configuration on util module
+        util.load_config('oneview_redfish_toolkit/redfish.ini')
 
     def test_class_instantiation(self):
-        # Tests if class is correctly instantiated
-        obj = ServiceRoot()
+        """Tests class instantiation and validation"""
+
+        try:
+            obj = ServiceRoot()
+        except Exception as e:
+            self.fail("Failed to instanciate service root. Error: ".format(e))
         self.assertIsInstance(obj, ServiceRoot)
 
-    def test_validation(self):
-        # Tests if expected filed exists and are correctly populated by
-        # the constructor
-
-        cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
-        schemas = dict(cfg.items('schemas'))
-        schemas_dict = util.load_schemas('oneview_redfish_toolkit/schemas',
-                                         schemas)
-        obj = ServiceRoot(schemas_dict['ServiceRoot'])
-        self.assertTrue(obj._validate())
-
     def test_serialize(self):
-        # Tests the serialize function result against known result
+        """Tests the serialize function result against known result"""
 
-        cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
-        schemas = dict(cfg.items('schemas'))
-        schemas_dict = util.load_schemas('oneview_redfish_toolkit/schemas',
-                                         schemas)
-        obj = ServiceRoot(schemas_dict['ServiceRoot'])
-        json_str = obj.serialize(True)
+        obj = ServiceRoot()
+        json_str = obj.serialize()
 
         with open(
             'oneview_redfish_toolkit/mockups/ServiceRoot.json'

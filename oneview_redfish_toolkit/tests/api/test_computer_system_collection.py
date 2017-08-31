@@ -25,49 +25,55 @@ from oneview_redfish_toolkit.api.computer_system_collection \
 from oneview_redfish_toolkit import util
 
 import unittest
+from unittest import mock
 
 
 class TestComputerSystemCollection(unittest.TestCase):
+    """Tests for ComputerSystemCollection class"""
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated
-        obj = ComputerSystemCollection('schema', {})
-        self.assertIsInstance(obj, ComputerSystemCollection)
+    @mock.patch.object(util, 'OneViewClient')
+    def setUp(self, mock_ov):
+        """Tests preparation"""
 
-    def test_validation(self):
-        # Tests if expected filed exists and are correctly populated by
-        # the constructor
-        cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
-        schemas = dict(cfg.items('schemas'))
-        schemas_dict = util.load_schemas('oneview_redfish_toolkit/schemas',
-                                         schemas)
+        # Loading variable in util module
+        util.load_config('oneview_redfish_toolkit/redfish.ini')
 
+        # Loading server_hardware mockup value
         with open(
             'oneview_redfish_toolkit/mockups/'
             'ServerHardwares.json'
         ) as f:
-            mok_json = f.read()
+            self.server_hardware = json.load(f)
 
-        obj = ComputerSystemCollection(
-            schemas_dict['ComputerSystemCollection'], json.loads(mok_json))
-        self.assertTrue(obj._validate())
+        # Loading ComputerSystemCollection result mockup
+        with open(
+            'oneview_redfish_toolkit/mockups/'
+            'ComputerSystemCollection.json'
+        ) as f:
+            self.computer_system_collection = f.read()
+
+    def test_class_instantiation(self):
+        # Tests if class is correctly instantiated and validated
+
+        try:
+            obj = ComputerSystemCollection(self.server_hardware)
+        except Exception as e:
+            self.fail("Failed to instanciate ComputerSystemCollection class."
+                      " Error: {}".format(e))
+        self.assertIsInstance(obj, ComputerSystemCollection)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
-        cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
-        schemas = dict(cfg.items('schemas'))
-        schemas_dict = util.load_schemas('oneview_redfish_toolkit/schemas',
-                                         schemas)
 
-        with open(
-            'oneview_redfish_toolkit/mockups/'
-            'ServerHardwares.json'
-        ) as f:
-            mok_json = f.read()
+        try:
+            obj = ComputerSystemCollection(self.server_hardware)
+        except Exception as e:
+            self.fail("Failed to instanciate ComputerSystemCollection class")
 
-        obj = ComputerSystemCollection(
-            schemas_dict['ComputerSystemCollection'], json.loads(mok_json))
-        json_str = obj.serialize(pretty=True)
+        try:
+            json_str = obj.serialize()
+        except Exception as e:
+            self.fail("Failed to serialize. Error: ".format(e))
 
         with open(
             'oneview_redfish_toolkit/mockups/'

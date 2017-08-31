@@ -17,42 +17,42 @@
 import collections
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit import util
 
 
 class ComputerSystemCollection(RedfishJsonValidator):
     """Creates a Computer System Collection Redfish dict
 
-        Populates self.redfish with a hardcoded ComputerSystemCollection
+        Populates self.redfish with some hardcoded ComputerSystemCollection
         values and with the response of Oneview with all server hardware.
     """
 
-    def __init__(self, schema_obj, server_hardwares_obj):
+    SCHEMA_NAME = 'ComputerSystemCollection'
+
+    def __init__(self, server_hardware):
         """ComputerSystemCollection constructor
 
             Populates self.redfish with a hardcoded ComputerSystemCollection
             values and with the response of Oneview with all server hardware.
 
             Args:
-                schema_obj: An object containing the redfish schema to be used
-                            to validate the Redfish JSON created.
-
-                server_hardwares_obj: An object containing all server
-                            hardware to create the Redfish JSON.
+                server_hardware: A list of dicts of server hardware.
         """
-        super().__init__(schema_obj)
+        super().__init__(util.schemas_dict[self.SCHEMA_NAME])
 
-        self.server_hardwares_obj = server_hardwares_obj
+        self.server_hardware = server_hardware
 
         self.redfish["@odata.type"] = \
             "#ComputerSystemCollection.ComputerSystemCollection"
         self.redfish["Name"] = "Computer System Collection"
-        self.redfish["Members@odata.count"] = len(server_hardwares_obj)
+        self.redfish["Members@odata.count"] = len(server_hardware)
         self.redfish["Members"] = list()
         self._set_redfish_members()
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystemCollection" \
             ".ComputerSystemCollection"
         self.redfish["@odata.id"] = "/redfish/v1/Systems"
+        self._validate()
 
     def _set_redfish_members(self):
         """Mounts the list of Redfish members
@@ -61,8 +61,8 @@ class ComputerSystemCollection(RedfishJsonValidator):
             ComputerSystems.
         """
         for server_hardware, index in \
-                zip(self.server_hardwares_obj,
-                    range(len(self.server_hardwares_obj))):
+                zip(self.server_hardware,
+                    range(len(self.server_hardware))):
 
             self.redfish["Members"].append(collections.OrderedDict())
             self.redfish["Members"][index]["@odata.id"] = \

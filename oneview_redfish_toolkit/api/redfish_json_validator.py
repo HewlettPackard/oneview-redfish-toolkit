@@ -20,7 +20,7 @@ import collections
 import json
 import jsonschema
 
-from oneview_redfish_toolkit.util import config
+from oneview_redfish_toolkit import util
 
 
 class RedfishJsonValidator(object):
@@ -80,7 +80,7 @@ class RedfishJsonValidator(object):
                 string: json string with the contents of self.redfish
         """
 
-        if config['redfish']['indent_json']:
+        if util.config['redfish']['indent_json']:
             indent = 4
         else:
             indent = None

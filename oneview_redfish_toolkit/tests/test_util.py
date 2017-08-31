@@ -20,9 +20,11 @@
 
 import collections
 import configparser
+
 from oneview_redfish_toolkit.api import errors
 from oneview_redfish_toolkit import util
 import unittest
+from unittest import mock
 
 
 class TestUtil(unittest.TestCase):
@@ -40,8 +42,10 @@ class TestUtil(unittest.TestCase):
                 - valid schema dir and dict
 
             get_oneview_client()
-                - invalid credentials
-                - valid credentials
+                - connection recover
+                - connectino renew
+                - connecction failure
+
 
             load_config()
                 - checkes if globals vars are not none
@@ -159,3 +163,56 @@ class TestUtil(unittest.TestCase):
             self.assertIsInstance(schemas_dict, collections.OrderedDict)
         except Exception as e:
             self.fail('Failed to load schemas files: {}'.format(e.msg))
+
+    @mock.patch.object(util, 'OneViewClient')
+    def test_load_config(self, mock_ov):
+        # Teste load config function
+
+        util.load_config(self.config_file)
+
+        # After running loadconfig all variable should be set
+        self.assertIsNotNone(util.config, msg='Failed do load ini')
+        self.assertIsNotNone(util.ov_config, msg='Failed do create ov_config')
+        self.assertIsNotNone(util.schemas_dict, msg='Failed to load schemas')
+        self.assertIsNotNone(util.ov_client, msg='Failed to connect to OV')
+
+    @mock.patch.object(util, 'OneViewClient')
+    def test_get_ov_client_recover(self, mock_ovc):
+        # Tests a successful recover of a OV client
+
+        m = mock_ovc()
+        m.connection.get.return_value = list()
+
+        try:
+            ov_client = util.OneViewClient()
+        except Exception as e:
+            self.fail('Failed to connect to OneView: '.format(e))
+        self.assertIsNotNone(ov_client)
+
+    @mock.patch.object(util, 'OneViewClient')
+    def test_get_ov_client_renew(self, mock_ovc):
+        """Tests getting a OV client from expired session"""
+
+        m = mock_ovc()
+        m.connection.get.return_value = Exception('session expired')
+        m.connection.login.return_value = m
+
+        try:
+            ov_client = util.OneViewClient()
+        except Exception as e:
+            self.fail('Failed to connect to OneView: '.format(e))
+        self.assertIsNotNone(ov_client)
+
+    @mock.patch.object(util, 'OneViewClient')
+    def test_get_ov_client_oneview_offline(self, mock_ovc):
+        """Tests getting a OV client from an offline oneview"""
+
+        m = mock_ovc()
+        m.connection.get.return_value = Exception('OneViw not responding')
+        m.connection.login.return_value = Exception('OneView not responding')
+
+        try:
+            ov_client = util.OneViewClient()
+        except Exception as e:
+            self.fail('Failed to connect to OneView: '.format(e))
+        self.assertIsNotNone(ov_client)
