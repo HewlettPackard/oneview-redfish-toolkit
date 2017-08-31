@@ -25,8 +25,6 @@ from oneview_redfish_toolkit.api import errors
 import logging
 import logging.config
 
-LOG_FILE = "logging.ini"
-
 
 def get_logger():
     """Loads logging.ini file
@@ -38,25 +36,31 @@ def get_logger():
         where you can choose one of it in [logger_root : handlers].
         In it you can choose the logger level as well.
 
-        Level 	    Numeric value
-        -------------------------
-        CRITICAL 	    50
-        ERROR 	        40
-        WARNING 	    30
-        INFO 	        20
-        DEBUG 	        10
-        NOTSET 	        0
-        -------------------------
+        Level: Numeric value
+        ---------------------
+        CRITICAL: 50
+        ERROR:    40
+        WARNING:  30
+        INFO:     20
+        DEBUG:    10
+        NOTSET:   00
+        ---------------------
 
         How to use: util.get_logger().info('message')
 
         Returns:
             logging: The root logger.
+
+        Exception:
+            Exception: if logging.ini file not found.
     """
     log_file_path = os.path.join(os.path.dirname(
-        os.path.abspath(__file__)), LOG_FILE)
+        os.path.abspath(__file__)), "logging.ini")
 
-    logging.config.fileConfig(log_file_path)
+    if os.path.isfile(log_file_path) is False:
+        raise Exception
+    else:
+        logging.config.fileConfig(log_file_path)
 
     return logging.getLogger()
 
