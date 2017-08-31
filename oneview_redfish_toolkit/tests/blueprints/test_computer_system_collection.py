@@ -27,7 +27,7 @@ from oneview_redfish_toolkit.blueprints.computer_system_collection \
 
 
 class TestComputerSystemCollection(unittest.TestCase):
-    """Tests for ComputerSystemCollection bueprint"""
+    """Tests for ComputerSystemCollection blueprint"""
 
     @mock.patch.object(util, 'OneViewClient')
     @mock.patch.object(util, 'get_oneview_client')
@@ -39,10 +39,11 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         # creates a test client
         self.app = Flask(__name__)
+
         self.app.register_blueprint(
             computer_system_collection,
-            url_prefix='/redfish/v1/Systems'
-        )
+            url_prefix='/redfish/v1/Systems')
+
         self.app = self.app.test_client()
 
         # propagate the exceptions to the test client
@@ -50,7 +51,7 @@ class TestComputerSystemCollection(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_computer_system_collection_empty(self, mock_get_ov_client):
-        """Tests ComputerSystemCollection with an empyty list"""
+        """Tests ComputerSystemCollection with an empty list"""
 
         client = mock_get_ov_client()
         client.server_hardware.get_all.return_value = []
@@ -70,10 +71,10 @@ class TestComputerSystemCollection(unittest.TestCase):
         client.server_hardware.get_all.side_effect = Exception()
 
         response = self.app.get("/redfish/v1/Systems/")
+
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
-            response.status_code
-        )
+            response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
@@ -89,7 +90,7 @@ class TestComputerSystemCollection(unittest.TestCase):
         with open(
                 'oneview_redfish_toolkit/mockups/ComputerSystemCollection.json'
         ) as f:
-            computer_system_collection = f.read()
+            computer_system_collection_json = f.read()
 
         # Create mock response
         client = mock_get_ov_client()
@@ -98,10 +99,10 @@ class TestComputerSystemCollection(unittest.TestCase):
         # Get ComputerSystemCollection
         response = self.app.get("/redfish/v1/Systems/")
 
-        # Gets json from resopnse
+        # Gets json from response
         json_str = response.data.decode("utf-8")
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(computer_system_collection, json_str)
+        self.assertEqual(computer_system_collection_json, json_str)
