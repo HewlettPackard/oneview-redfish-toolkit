@@ -13,26 +13,30 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import os
 
 from flask import Flask
+
+import logging
 
 from oneview_redfish_toolkit.api.redfish_base_api import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 from oneview_redfish_toolkit import util
 
+util.configure_logging(os.getenv("LOGGING_FILE",
+                                 "oneview_redfish_toolkit/logging.ini"))
+
 cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
 
-logger = util.get_logger()
-
 if cfg is None:
-    logger.error("Could not load config file. Exiting")
+    logging.error("Could not load config file. Exiting")
     exit(1)
 
 schemas = dict(cfg.items('schemas'))
 schemas_dict = util.load_schemas(cfg['directories']['schema_dir'], schemas)
 
 if schemas_dict is None:
-    logger.error("Could not schemas. Exiting")
+    logging.error("Could not schemas. Exiting")
     exit(1)
 
 app = Flask(__name__)
