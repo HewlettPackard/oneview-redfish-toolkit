@@ -17,7 +17,6 @@
 import collections
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
-from oneview_redfish_toolkit import util
 
 
 class ComputerSystemCollection(RedfishJsonValidator):
@@ -38,7 +37,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
             Args:
                 server_hardware: A list of dicts of server hardware.
         """
-        super().__init__(util.schemas_dict[self.SCHEMA_NAME])
+        super().__init__(self.SCHEMA_NAME)
 
         self.server_hardware = server_hardware
 
