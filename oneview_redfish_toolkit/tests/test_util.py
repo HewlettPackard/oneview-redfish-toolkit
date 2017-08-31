@@ -28,14 +28,14 @@ from unittest import mock
 
 
 class TestUtil(unittest.TestCase):
-    '''Test class for util
+    """Test class for util
 
         Tests:
             load_ini()
                 - invalid ini file
                 - valid ini file
                 - have all expected sessions
-                - have all exepect options
+                - have all expected options
             load_schema()
                 - invalid schema dir
                 - valid schema dir invalid schemas dict
@@ -43,13 +43,13 @@ class TestUtil(unittest.TestCase):
 
             get_oneview_client()
                 - connection recover
-                - connectino renew
-                - connecction failure
+                - connection renew
+                - connection failure
 
 
             load_config()
                 - checkes if globals vars are not none
-    '''
+    """
 
     # load_ini() tests
     def setUp(self):
