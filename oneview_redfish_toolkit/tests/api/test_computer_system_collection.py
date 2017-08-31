@@ -58,7 +58,7 @@ class TestComputerSystemCollection(unittest.TestCase):
         try:
             obj = ComputerSystemCollection(self.server_hardware)
         except Exception as e:
-            self.fail("Failed to instanciate ComputerSystemCollection class."
+            self.fail("Failed to instantiate ComputerSystemCollection class."
                       " Error: {}".format(e))
         self.assertIsInstance(obj, ComputerSystemCollection)
 
@@ -68,17 +68,12 @@ class TestComputerSystemCollection(unittest.TestCase):
         try:
             obj = ComputerSystemCollection(self.server_hardware)
         except Exception as e:
-            self.fail("Failed to instanciate ComputerSystemCollection class")
+            self.fail("Failed to instantiate ComputerSystemCollection class."
+                      " Error: {}".format(e))
 
         try:
             json_str = obj.serialize()
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        with open(
-            'oneview_redfish_toolkit/mockups/'
-            'ComputerSystemCollection.json'
-        ) as f:
-            mok_json_result = f.read()
-
-        self.assertEqual(json_str, mok_json_result)
+        self.assertEqual(json_str, self.computer_system_collection)

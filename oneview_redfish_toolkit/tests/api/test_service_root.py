@@ -41,7 +41,7 @@ class TestServiceRoot(unittest.TestCase):
         try:
             obj = ServiceRoot()
         except Exception as e:
-            self.fail("Failed to instanciate service root. Error: ".format(e))
+            self.fail("Failed to instantiate service root. Error: ".format(e))
         self.assertIsInstance(obj, ServiceRoot)
 
     def test_serialize(self):
