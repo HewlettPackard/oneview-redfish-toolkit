@@ -39,11 +39,11 @@ def load_config(ini_file):
 
         Exception:
             OneViewRedfishResourceNotFoundError:
-                - if ini file not foud
+                - if ini file not found
                 - if any of the schemas files are not found
                 - if the schema directory is not found
             OneViewRedFishResourceNotAccessibleError:
-                - if can't acccess schema's directory
+                - if can't access schema's directory
             HPOneViewException:
                 - if fails to connect to oneview
     """
@@ -93,7 +93,7 @@ def load_ini(ini_file):
 
         Exception:
             OneViewRedfishResourceNotFoundError:
-                - if ini file not foud
+                - if ini file not found
     """
 
     if not os.path.isfile(ini_file):
@@ -122,11 +122,11 @@ def load_schemas(schema_dir, schemas):
         Returns:
             OrderedDict: A dict containing ('SchemasName' : schema_obj) pairs
 
-        Excetions:
+        Exceptions:
             OneviewRedfishResourceNotFoundError:
                 - if schema_dir is not found
                 - any of json files is not found
-            OneviewRedfishResounceNotAccessbile:
+            OneviewRedfishResourceNotAccessible:
                 - if schema_dir is can't be accessed
     """
 
@@ -155,7 +155,7 @@ def load_schemas(schema_dir, schemas):
 
 
 def get_oneview_client():
-    '''Establishes a OneView connction to be used in the module
+    """Establishes a OneView connection to be used in the module
 
         Establishes a OV connection if one does not exists.
         If one exists, do a single OV access to check if its sill
@@ -167,11 +167,11 @@ def get_oneview_client():
             with OV configuration and credentials
 
         Returns:
-            OneViewcliente object
+            OneViewClient object
 
         Exceptions:
-            HPOpneViewException if can't connect or reconnect to OV
-    '''
+            HPOneViewException if can't connect or reconnect to OV
+    """
 
     ov_client = globals()['ov_client']
     ov_config = globals()['ov_config']

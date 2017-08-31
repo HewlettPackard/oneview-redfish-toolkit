@@ -28,7 +28,7 @@ class TestServiceRoot(unittest.TestCase):
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, mock_ov):
-        """Tests ComputerSystemCollection bueprint"""
+        """Tests ComputerSystemCollection blueprint"""
 
         # Load config on util
         util.load_config('oneview_redfish_toolkit/redfish.ini')
