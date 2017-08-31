@@ -26,7 +26,7 @@ import logging
 import logging.config
 
 
-def get_logger():
+def configure_logging(log_file_path):
     """Loads logging.ini file
 
         Loads logging.ini file to create the logger configuration.
@@ -46,23 +46,18 @@ def get_logger():
         NOTSET:   00
         ---------------------
 
-        How to use: util.get_logger().info('message')
+        How to use: import logging and logging.error('message')
 
-        Returns:
-            logging: The root logger.
+        Args:
+            log_file_path: logging.ini path.
 
         Exception:
             Exception: if logging.ini file not found.
     """
-    log_file_path = os.path.join(os.path.dirname(
-        os.path.abspath(__file__)), "logging.ini")
-
     if os.path.isfile(log_file_path) is False:
-        raise Exception
+        raise Exception("Ini file {} not found".format(log_file_path))
     else:
         logging.config.fileConfig(log_file_path)
-
-    return logging.getLogger()
 
 
 def load_config(ini_file):
