@@ -26,8 +26,8 @@ from oneview_redfish_toolkit.api import errors
 def load_config(ini_file):
     """Loads ini file
 
-        Loads and parser the system ini file into config global var
-        Loads json schemas intro schemas_dict global var
+        Loads and parsers the system ini file into config global var
+        Loads json schemas into schemas_dict global var
         Established a connection with OneView and sets in as ov_conn
         global var
 
@@ -81,7 +81,7 @@ def load_config(ini_file):
 
 
 def load_ini(ini_file):
-    """Loads ini file
+    """Loads and parsesini file
 
         Loads and parses the module ini file
 
@@ -183,7 +183,7 @@ def get_oneview_client():
     # If expired try to make a new connection
     except Exception:
         try:
-            print('Reautenticou')
+            print('Re-authenticated')
             ov_client.connection.login(ov_config['credentials'])
             return ov_client
         # if faild abort

@@ -19,6 +19,7 @@
 """
 
 import collections
+
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
 import unittest
@@ -28,13 +29,13 @@ class TestRedfishJsonValidator(unittest.TestCase):
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated
-        obj = RedfishJsonValidator('schema')
+        obj = RedfishJsonValidator('ServiceRoot')
         self.assertIsInstance(obj, RedfishJsonValidator)
 
     def test_has_valid_config_file(self):
         # Tests if expected filed exists and are correctly populated by
         # the constructor
 
-        obj = RedfishJsonValidator('schema')
-        self.assertEqual(obj.schema_obj, 'schema')
+        obj = RedfishJsonValidator('ServiceRoot')
+        self.assertIsInstance(obj.schema_obj, dict)
         self.assertIsInstance(obj.redfish, collections.OrderedDict)

@@ -18,7 +18,6 @@
 import collections
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
-from oneview_redfish_toolkit import util
 
 
 class ServiceRoot(RedfishJsonValidator):
@@ -39,7 +38,7 @@ class ServiceRoot(RedfishJsonValidator):
             ServiceRoot schema
         """
 
-        super().__init__(util.schemas_dict[self.SCHEMA_NAME])
+        super().__init__(self.SCHEMA_NAME)
         self.redfish["@odata.type"] = "#ServiceRoot.v1_2_0.ServiceRoot"
         self.redfish["Id"] = "RootService"
         self.redfish["Name"] = "Root Service"

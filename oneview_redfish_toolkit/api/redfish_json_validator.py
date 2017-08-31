@@ -35,7 +35,7 @@ class RedfishJsonValidator(object):
         successful validation and raises an exception on validation failure
     """
 
-    def __init__(self, schema_obj):
+    def __init__(self, schema_name):
         """Constructor
 
             Adds the schema_obj to itself and creates and empty OrderedDict
@@ -47,7 +47,7 @@ class RedfishJsonValidator(object):
                             to validate the redfish json created
         """
 
-        self.schema_obj = schema_obj
+        self.schema_obj = util.schemas_dict[schema_name]
         self.redfish = collections.OrderedDict()
 
     def _validate(self):
@@ -57,7 +57,7 @@ class RedfishJsonValidator(object):
             on the object creation
 
             Returns:
-                True on success
+                None
 
             Exception:
                 raises an exception on validation failure
@@ -65,7 +65,6 @@ class RedfishJsonValidator(object):
 
         try:
             jsonschema.validate(self.redfish, self.schema_obj)
-            return True
         except Exception:
             raise
 
