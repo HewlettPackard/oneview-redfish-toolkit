@@ -18,7 +18,7 @@
 import collections
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
-from oneview_redfish_toolkit.util import schemas_dict
+from oneview_redfish_toolkit import util
 
 
 class ServiceRoot(RedfishJsonValidator):
@@ -39,7 +39,7 @@ class ServiceRoot(RedfishJsonValidator):
             ServiceRoot schema
         """
 
-        super().__init__(schemas_dict[self.SCHEMA_NAME])
+        super().__init__(util.schemas_dict[self.SCHEMA_NAME])
         self.redfish["@odata.type"] = "#ServiceRoot.v1_2_0.ServiceRoot"
         self.redfish["Id"] = "RootService"
         self.redfish["Name"] = "Root Service"
@@ -53,7 +53,6 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["Managers"]["@odata.id"] = "/redfish/v1/Managers"
         self.redfish["EventService"] = collections.OrderedDict()
         self.redfish["EventService"]["@odata.id"] = "/redfish/v1/EventService"
-
         self.redfish['Links'] = collections.OrderedDict()
         self.redfish['Links']['Sessions'] = collections.OrderedDict()
         self.redfish['Links']['Sessions']['@odata.id'] = \
@@ -63,4 +62,5 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["@odata.id"] = "/redfish/v1/"
         self.redfish["@Redfish.Copyright"] = \
             "Copyright (2017) Hewlett Packard Enterprise Development LP"
+
         self._validate()

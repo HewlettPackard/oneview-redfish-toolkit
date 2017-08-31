@@ -22,11 +22,6 @@ import json
 
 from oneview_redfish_toolkit.api import errors
 
-config = None
-ov_client = None
-ov_config = None
-schemas_dict = None
-
 
 def load_config(ini_file):
     """Loads ini file
@@ -53,15 +48,16 @@ def load_config(ini_file):
                 - if fails to connect to oneview
     """
 
-    global config, ov_credential, schemas_dict
-
     config = load_ini(ini_file)
+    globals()['config'] = config
 
     # Config file read set global vars
     # Setting ov_config
     ov_config = dict(config.items('oneview_config'))
     ov_config['credentials'] = dict(config.items('credentials'))
     ov_config['api_version'] = int(ov_config['api_version'])
+    globals()['ov_config'] = ov_config
+
     # Setting schemas_dict
     schemas = dict(config.items('schemas'))
 
@@ -71,9 +67,17 @@ def load_config(ini_file):
             config['redfish']['schema_dir'],
             schemas
         )
-        get_oneview_client()
-    except Exception:
-        raise
+        ov_client = OneViewClient(ov_config)
+        globals()['schemas_dict'] = schemas_dict
+        globals()['ov_client'] = ov_client
+    except errors.OneViewRedfishResourceNotFoundError as e:
+        raise errors.OneViewRedfishError(
+            'Failed to load schemas: {}'.format(e)
+        )
+    except Exception as e:
+        raise errors.OneViewRedfishError(
+            'Failed to connect to OneView: {}'.format(e)
+        )
 
 
 def load_ini(ini_file):
@@ -169,29 +173,18 @@ def get_oneview_client():
             HPOpneViewException if can't connect or reconnect to OV
     '''
 
-    global ov_client, ov_config
+    ov_client = globals()['ov_client']
+    ov_config = globals()['ov_config']
 
-    # If don't have ov_config start abort
-    if ov_config is None:
-        raise errors.OneViewRedfishError(
-            'ov_config variable no set. Call load_config first'
-        )
-
-    # If it's the first time just connect
-    if ov_client is None:
-        try:
-            ov_client = OneViewClient(ov_config)
-            return ov_client
-        except Exception:
-            raise
-    # If not the first time check if connection is up
+    # Check if connection is ok yet
     try:
-        ov_client.connection.get('/rest/logindomain')
+        ov_client.connection.get('/rest/logindomains')
         return ov_client
     # If expired try to make a new connection
     except Exception:
         try:
-            ov_client = OneViewClient(ov_config)
+            print('Reautenticou')
+            ov_client.connection.login(ov_config['credentials'])
             return ov_client
         # if faild abort
         except Exception:

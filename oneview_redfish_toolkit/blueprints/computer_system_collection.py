@@ -16,27 +16,17 @@
 
 from flask import abort
 from flask import Blueprint
-from flask import current_app
 from flask import jsonify
 from flask import make_response
 from flask import Response
 from flask_api import status
 
-from hpOneView.oneview_client import OneViewClient
-
 from oneview_redfish_toolkit.api.computer_system_collection \
     import ComputerSystemCollection
+from oneview_redfish_toolkit import util
+
 
 computer_system_collection = Blueprint("computer_system_collection", __name__)
-
-
-def get_ov_client():
-    """Get the Oneview Client
-
-        Returns:
-            Object: OneViewClient
-    """
-    return OneViewClient(current_app.oneview_config)
 
 
 @computer_system_collection.route("/", methods=["GET"])
@@ -50,24 +40,31 @@ def get_computer_system_collection():
                 JSON: JSON with ComputerSystemCollection.
     """
     try:
-        oneview_server_hardwares = get_ov_client().server_hardware.get_all()
-    except OSError:
-        return abort(status.HTTP_404_NOT_FOUND)
+        # Recover OV connection
+        ov_client = util.get_oneview_client()
 
-    computer_system_collection_obj = ComputerSystemCollection(
-        current_app.schemas_dict["ComputerSystemCollection"],
-        oneview_server_hardwares)
+        # Gets all server hardware
+        oneview_server_hardwares = ov_client.server_hardware.get_all()
 
-    json_str = computer_system_collection_obj.serialize(True)
+        # Build Computer System Collection object and validates it
+        csc = ComputerSystemCollection(oneview_server_hardwares)
 
-    return Response(
-        response=json_str,
-        status=status.HTTP_200_OK,
-        mimetype="application/json")
+        # Build redfish json
+        json_str = csc.serialize()
+
+        # Build response and returns
+        return Response(
+            response=json_str,
+            status=status.HTTP_200_OK,
+            mimetype="application/json")
+    except Exception as e:
+        # In case of error print exception and abort
+        print(e)
+        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @computer_system_collection.errorhandler(status.HTTP_404_NOT_FOUND)
-def not_found_computer_system_collection(error):
+def computer_system_collection_not_found(error):
     """Improve not found error message.
 
         Show a JSON with not found error message
@@ -77,5 +74,18 @@ def not_found_computer_system_collection(error):
                 JSON: error message.
     """
     return make_response(jsonify(
-        {"error": "Computer System Collection not found."}),
+        {"error": "URL not found."}),
         status.HTTP_404_NOT_FOUND)
+
+
+@computer_system_collection.errorhandler(
+    status.HTTP_500_INTERNAL_SERVER_ERROR
+)
+def internal_server_error(error):
+    """Creates a Insternal Server Error reponse"""
+    print(vars(error))
+    return Response(
+        response={'error': 'Inernal Server Error'},
+        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        mimetype='application/json'
+    )

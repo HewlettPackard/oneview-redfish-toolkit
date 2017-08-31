@@ -14,29 +14,39 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oneview_redfish_toolkit.app import app
-from oneview_redfish_toolkit import util
 import unittest
+from unittest import mock
+
+from flask import Flask
+
+from oneview_redfish_toolkit.blueprints.service_root import service_root
+from oneview_redfish_toolkit import util
 
 
 class TestServiceRoot(unittest.TestCase):
+    """Tests from ServiceRoot blueprint"""
 
-    def setUp(self):
+    @mock.patch.object(util, 'OneViewClient')
+    def setUp(self, mock_ov):
+        """Tests ComputerSystemCollection bueprint"""
 
-        cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
-
-        schemas = dict(cfg.items('schemas'))
-        schemas_dict = util.load_schemas(cfg['directories']['schema_dir'],
-                                         schemas)
+        # Load config on util
+        util.load_config('oneview_redfish_toolkit/redfish.ini')
 
         # creates a test client
-        self.app = app.test_client()
+        self.app = Flask(__name__)
+        self.app.register_blueprint(
+            service_root,
+            url_prefix='/redfish/v1/'
+        )
+        # creates a test client
+        self.app = self.app.test_client()
 
-        self.app.schemas_dict = schemas_dict
         # propagate the exceptions to the test client
         self.app.testing = True
 
     def test_get_service_root(self):
+        """Tests ServiceRoot blueprint result against know value """
         result = self.app.get("/redfish/v1/")
 
         json_str = result.data.decode("utf-8")
