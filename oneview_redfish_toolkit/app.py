@@ -22,15 +22,17 @@ from oneview_redfish_toolkit import util
 
 cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
 
+logger = util.get_logger()
+
 if cfg is None:
-    util.get_logger().info("Could not load config file. Exiting")
+    logger.error("Could not load config file. Exiting")
     exit(1)
 
 schemas = dict(cfg.items('schemas'))
 schemas_dict = util.load_schemas(cfg['directories']['schema_dir'], schemas)
 
 if schemas_dict is None:
-    util.get_logger().info("Could not schemas. Exiting")
+    logger.error("Could not schemas. Exiting")
     exit(1)
 
 app = Flask(__name__)
