@@ -222,7 +222,7 @@ def get_oneview_client():
     # If expired try to make a new connection
     except Exception:
         try:
-            print('Re-authenticated')
+            logging.error('Re-authenticated')
             ov_client.connection.login(ov_config['credentials'])
             return ov_client
         # if faild abort

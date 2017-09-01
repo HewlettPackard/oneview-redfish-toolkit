@@ -16,14 +16,14 @@
 
 from flask import abort
 from flask import Blueprint
-from flask import jsonify
-from flask import make_response
 from flask import Response
 from flask_api import status
 
 from oneview_redfish_toolkit.api.computer_system_collection \
     import ComputerSystemCollection
 from oneview_redfish_toolkit import util
+
+import logging
 
 
 computer_system_collection = Blueprint("computer_system_collection", __name__)
@@ -59,33 +59,25 @@ def get_computer_system_collection():
             mimetype="application/json")
     except Exception as e:
         # In case of error print exception and abort
-        print(e)
+        logging.error(e)
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @computer_system_collection.errorhandler(status.HTTP_404_NOT_FOUND)
 def computer_system_collection_not_found(error):
-    """Improve not found error message.
-
-        Show a JSON with not found error message
-        to Computer system collection.
-
-        Returns:
-                JSON: error message.
-    """
-    return make_response(jsonify(
-        {"error": "URL not found."}),
-        status.HTTP_404_NOT_FOUND)
+    """Creates a Not Found Error response"""
+    return Response(
+        response={'error': 'URL not found'},
+        status=status.HTTP_404_NOT_FOUND,
+        mimetype='application/json')
 
 
 @computer_system_collection.errorhandler(
-    status.HTTP_500_INTERNAL_SERVER_ERROR
-)
+    status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
-    """Creates a Insternal Server Error reponse"""
-    print(vars(error))
+    """Creates a Internal Server Error response"""
+    logging.error(vars(error))
     return Response(
-        response={'error': 'Inernal Server Error'},
+        response={'error': 'Internal Server Error'},
         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        mimetype='application/json'
-    )
+        mimetype='application/json')

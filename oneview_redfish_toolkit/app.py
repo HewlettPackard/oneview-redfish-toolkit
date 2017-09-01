@@ -23,6 +23,8 @@ from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 from oneview_redfish_toolkit import util
 
+import logging
+
 
 util.configure_logging(os.getenv("LOGGING_FILE",
                                  "oneview_redfish_toolkit/logging.ini"))
@@ -31,8 +33,8 @@ util.configure_logging(os.getenv("LOGGING_FILE",
 try:
     util.load_config('oneview_redfish_toolkit/redfish.ini')
 except Exception as e:
-    print('Failed to load app configuration')
-    print(e)
+    logging.error('Failed to load app configuration')
+    logging.error(e)
     exit(1)
 
 # Flask application
