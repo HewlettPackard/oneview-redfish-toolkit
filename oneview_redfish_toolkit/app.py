@@ -13,6 +13,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import os
 
 from flask import Flask
 
@@ -22,12 +23,18 @@ from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 from oneview_redfish_toolkit import util
 
+import logging
+
+
+util.configure_logging(os.getenv("LOGGING_FILE",
+                                 "oneview_redfish_toolkit/logging.ini"))
+
 # Load config file, schemas and creates a OV connection
 try:
     util.load_config('oneview_redfish_toolkit/redfish.ini')
 except Exception as e:
-    print('Failed to load app configuration')
-    print(e)
+    logging.error('Failed to load app configuration')
+    logging.error(e)
     exit(1)
 
 # Flask application

@@ -22,6 +22,43 @@ import json
 
 from oneview_redfish_toolkit.api import errors
 
+import logging
+import logging.config
+
+
+def configure_logging(log_file_path):
+    """Loads logging.ini file
+
+        Loads logging.ini file to create the logger configuration.
+
+        The logger configuration has two handlers, one of stream
+        (show logs in the console) and other of file (save a log file)
+        where you can choose one of it in [logger_root : handlers].
+        In it you can choose the logger level as well.
+
+        Level: Numeric value
+        ---------------------
+        CRITICAL: 50
+        ERROR:    40
+        WARNING:  30
+        INFO:     20
+        DEBUG:    10
+        NOTSET:   00
+        ---------------------
+
+        How to use: import logging and logging.error('message')
+
+        Args:
+            log_file_path: logging.ini path.
+
+        Exception:
+            Exception: if logging.ini file not found.
+    """
+    if os.path.isfile(log_file_path) is False:
+        raise Exception("Ini file {} not found".format(log_file_path))
+    else:
+        logging.config.fileConfig(log_file_path)
+
 
 def load_config(ini_file):
     """Loads ini file
@@ -105,6 +142,7 @@ def load_ini(ini_file):
         config.read(ini_file)
     except Exception:
         raise
+
     return config
 
 
@@ -151,6 +189,7 @@ def load_schemas(schema_dir, schemas):
                 schemas[key],
                 'File'
             )
+
     return schema_dict
 
 
@@ -183,7 +222,7 @@ def get_oneview_client():
     # If expired try to make a new connection
     except Exception:
         try:
-            print('Re-authenticated')
+            logging.error('Re-authenticated')
             ov_client.connection.login(ov_config['credentials'])
             return ov_client
         # if faild abort
