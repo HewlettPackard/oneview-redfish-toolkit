@@ -23,7 +23,6 @@ from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 from oneview_redfish_toolkit import util
 
-import logging
 
 util.configure_logging(os.getenv("LOGGING_FILE",
                                  "oneview_redfish_toolkit/logging.ini"))
