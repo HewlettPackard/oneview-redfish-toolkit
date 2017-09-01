@@ -20,72 +20,72 @@ import collections
 import json
 import jsonschema
 
+from oneview_redfish_toolkit import util
+
 
 class RedfishJsonValidator(object):
-    '''Validates a json object against a Redfish schema
+    """Validates a json object against a Redfish schema
 
         Base class for redfish classes. Have a builtin validate method and a
         serialize method.
-        Creates and emmty OrderedDict called redfish which must be populated
+        Creates and empty OrderedDict called redfish which must be populated
         with the redfish data for validation.
         The Serialize method always validates the redfish content before
         generating the json string, It returns the redfish json string on
         successful validation and raises an exception on validation failure
-    '''
+    """
 
-    def __init__(self, schema_obj):
-        '''Constructor
+    def __init__(self, schema_name):
+        """Constructor
 
             Adds the schema_obj to itself and creates and empty OrderedDict
             named redfish to be populates with the redfish data to create
             the redfish json
 
             Args:
-                schema_obj: An object containg the redfish schema to be used
+                schema_obj: An object containing the redfish schema to be used
                             to validate the redfish json created
-        '''
+        """
 
-        self.schema_obj = schema_obj
+        self.schema_obj = util.schemas_dict[schema_name]
         self.redfish = collections.OrderedDict()
 
     def _validate(self):
-        '''Validates self.redfish against self.schema_obj
+        """Validates self.redfish against self.schema_obj
 
-            Validates a redfish OrderedDict agains the schema object passed
+            Validates a redfish OrderedDict against the schema object passed
             on the object creation
 
             Returns:
-                True on sucess
+                None
 
             Exception:
-                reises an exception on validation failure
-        '''
+                raises an exception on validation failure
+        """
 
         try:
             jsonschema.validate(self.redfish, self.schema_obj)
-            return True
-        except Exception as e:
-            raise(e.message)
+        except Exception:
+            raise
 
-    def serialize(self, pretty=False):
-        '''Generates a json string from redfish content
+    def serialize(self):
+        """Generates a json string from redfish content
 
-            Validates the content of redfish and generates a json string from
-            it on successful validation
-
-            Args:
-                pretty: bool value that defines if the generated json string
-                        should be indented for better visualizations
+            Serialize the contents of self.redfish. Uses the value of
+            indent_json from redfish section of ini file to indent or
+            not the result.
 
             Returns:
                 string: json string with the contents of self.redfish
-        '''
+        """
 
-        self._validate()
-        if pretty:
+        if util.config['redfish']['indent_json']:
             indent = 4
         else:
             indent = None
-        json_str = json.dumps(self.redfish, default=lambda o: o.__dict__,
-                              sort_keys=False, indent=indent)
-        return (json_str)
+        return json.dumps(
+            self.redfish,
+            default=lambda o: o.__dict__,
+            sort_keys=False,
+            indent=indent
+        )

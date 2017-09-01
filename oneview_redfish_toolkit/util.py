@@ -17,33 +17,94 @@ import os
 
 import collections
 import configparser
+from hpOneView.oneview_client import OneViewClient
 import json
+
+from oneview_redfish_toolkit.api import errors
 
 
 def load_config(ini_file):
     """Loads ini file
 
-        Loads and parser the system ini file. The default file is redfish.ini.
-        Ini file keys are keep their cases.
+        Loads and parsers the system ini file into config global var
+        Loads json schemas into schemas_dict global var
+        Established a connection with OneView and sets in as ov_conn
+        global var
 
         Args:
             ini_file: string with the ini file name
 
         Returns:
-            If fails: print a error message and returns False
-            If succeed: ConfigParser object with init file contents
+            None
+
+        Exception:
+            OneViewRedfishResourceNotFoundError:
+                - if ini file not found
+                - if any of the schemas files are not found
+                - if the schema directory is not found
+            OneViewRedFishResourceNotAccessibleError:
+                - if can't access schema's directory
+            HPOneViewException:
+                - if fails to connect to oneview
     """
 
-    if os.path.isfile(ini_file) is False:
-        print("Ini file {} not found".format(ini_file))
-        return None
+    config = load_ini(ini_file)
+    globals()['config'] = config
+
+    # Config file read set global vars
+    # Setting ov_config
+    ov_config = dict(config.items('oneview_config'))
+    ov_config['credentials'] = dict(config.items('credentials'))
+    ov_config['api_version'] = int(ov_config['api_version'])
+    globals()['ov_config'] = ov_config
+
+    # Setting schemas_dict
+    schemas = dict(config.items('schemas'))
+
+    # Load schemas and connect to oneview
+    try:
+        schemas_dict = load_schemas(
+            config['redfish']['schema_dir'],
+            schemas
+        )
+        ov_client = OneViewClient(ov_config)
+        globals()['schemas_dict'] = schemas_dict
+        globals()['ov_client'] = ov_client
+    except errors.OneViewRedfishResourceNotFoundError as e:
+        raise errors.OneViewRedfishError(
+            'Failed to load schemas: {}'.format(e)
+        )
+    except Exception as e:
+        raise errors.OneViewRedfishError(
+            'Failed to connect to OneView: {}'.format(e)
+        )
+
+
+def load_ini(ini_file):
+    """Loads and parsesini file
+
+        Loads and parses the module ini file
+
+        Args:
+            ini_file: string with the ini file name
+
+        Returns:
+            configparser object with ini_file configs
+
+        Exception:
+            OneViewRedfishResourceNotFoundError:
+                - if ini file not found
+    """
+
+    if not os.path.isfile(ini_file):
+        raise errors.OneViewRedfishResourceNotFoundError(ini_file, 'File')
+
     config = configparser.ConfigParser()
     config.optionxform = str
     try:
         config.read(ini_file)
-    except Exception as e:
-        print(e)
-        return None
+    except Exception:
+        raise
     return config
 
 
@@ -59,24 +120,72 @@ def load_schemas(schema_dir, schemas):
                 as value. The key will also be the key in the returning dict
 
         Returns:
-            If fails: print a error message and returns False
-            If succeed: OrderedDict: A dict containing
-                ('SchemasName' : schema_obj) pairs
+            OrderedDict: A dict containing ('SchemasName' : schema_obj) pairs
+
+        Exceptions:
+            OneviewRedfishResourceNotFoundError:
+                - if schema_dir is not found
+                - any of json files is not found
+            OneviewRedfishResourceNotAccessible:
+                - if schema_dir is can't be accessed
     """
 
     if os.path.isdir(schema_dir) is False:
-        print("Schema dir is not a valid dir: {}".format(schema_dir))
-        return None
+        raise errors.OneViewRedfishResourceNotFoundError(
+            schema_dir,
+            'Directory'
+        )
     if os.access(schema_dir, os.R_OK) is False:
-        print("Can't access dir {}".format(schema_dir))
-        return None
+        raise errors.OneViewRedFishResourceNotAccessibleError(
+            schema_dir,
+            'directory'
+        )
 
     schema_dict = collections.OrderedDict()
     for key in schemas:
         try:
             with open(schema_dir + '/' + schemas[key]) as f:
                 schema_dict[key] = json.load(f)
-        except Exception as e:
-            print(e)
-            return None
+        except Exception:
+            raise errors.OneViewRedfishResourceNotFoundError(
+                schemas[key],
+                'File'
+            )
     return schema_dict
+
+
+def get_oneview_client():
+    """Establishes a OneView connection to be used in the module
+
+        Establishes a OV connection if one does not exists.
+        If one exists, do a single OV access to check if its sill
+        valid. If not tries to establish a new connection.
+        Sets the connection on the ov_conn global var
+
+        Args:
+            None. Uses global var ov_config which is set by load_config
+            with OV configuration and credentials
+
+        Returns:
+            OneViewClient object
+
+        Exceptions:
+            HPOneViewException if can't connect or reconnect to OV
+    """
+
+    ov_client = globals()['ov_client']
+    ov_config = globals()['ov_config']
+
+    # Check if connection is ok yet
+    try:
+        ov_client.connection.get('/rest/logindomains')
+        return ov_client
+    # If expired try to make a new connection
+    except Exception:
+        try:
+            print('Re-authenticated')
+            ov_client.connection.login(ov_config['credentials'])
+            return ov_client
+        # if faild abort
+        except Exception:
+            raise

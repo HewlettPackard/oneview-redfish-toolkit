@@ -16,26 +16,25 @@
 
 from flask import Flask
 
-from oneview_redfish_toolkit.api.redfish_base_api import redfish_base
+from oneview_redfish_toolkit.blueprints.computer_system_collection \
+    import computer_system_collection
+from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 from oneview_redfish_toolkit import util
 
-cfg = util.load_config('oneview_redfish_toolkit/redfish.ini')
-
-if cfg is None:
-    print("Could not load config file. Exiting")
+# Load config file, schemas and creates a OV connection
+try:
+    util.load_config('oneview_redfish_toolkit/redfish.ini')
+except Exception as e:
+    print('Failed to load app configuration')
+    print(e)
     exit(1)
 
-schemas = dict(cfg.items('schemas'))
-schemas_dict = util.load_schemas(cfg['directories']['schema_dir'], schemas)
-
-if schemas_dict is None:
-    print("Could not schemas. Exiting")
-    exit(1)
-
+# Flask application
 app = Flask(__name__)
 
-app.schemas_dict = schemas_dict
-
-app.register_blueprint(redfish_base)
+# Register blueprints
+app.register_blueprint(redfish_base, url_prefix="/redfish")
 app.register_blueprint(service_root, url_prefix='/redfish/v1/')
+app.register_blueprint(computer_system_collection,
+                       url_prefix='/redfish/v1/Systems')

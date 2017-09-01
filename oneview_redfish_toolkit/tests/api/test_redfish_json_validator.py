@@ -19,22 +19,32 @@
 """
 
 import collections
+import unittest
+from unittest import mock
+
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
-import unittest
+from oneview_redfish_toolkit import util
 
 
 class TestRedfishJsonValidator(unittest.TestCase):
 
+    @mock.patch.object(util, 'OneViewClient')
+    def setUp(self, ov_mock):
+        """Tests preparation """
+
+        # Load configuration on util module
+        util.load_config('oneview_redfish_toolkit/redfish.ini')
+
     def test_class_instantiation(self):
-        # Tests if class is correctly instanciated
-        obj = RedfishJsonValidator('schema')
+        # Tests if class is correctly instantiated
+        obj = RedfishJsonValidator('ServiceRoot')
         self.assertIsInstance(obj, RedfishJsonValidator)
 
     def test_has_valid_config_file(self):
         # Tests if expected filed exists and are correctly populated by
         # the constructor
 
-        obj = RedfishJsonValidator('schema')
-        self.assertEqual(obj.schema_obj, 'schema')
+        obj = RedfishJsonValidator('ServiceRoot')
+        self.assertIsInstance(obj.schema_obj, dict)
         self.assertIsInstance(obj.redfish, collections.OrderedDict)

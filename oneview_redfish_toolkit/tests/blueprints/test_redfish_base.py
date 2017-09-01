@@ -14,31 +14,28 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from flask_api import status
 import json
 import unittest
 
-from oneview_redfish_toolkit.app import app
+from flask import Flask
+from flask_api import status
+
+from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 
 
-class TestRedfishBaseAPI(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        pass
-
-    @classmethod
-    def tearDownClass(cls):
-        pass
+class TestRedfishBase(unittest.TestCase):
 
     def setUp(self):
+
+        self.app = Flask(__name__)
+        self.app.register_blueprint(
+            redfish_base,
+            url_prefix='/redfish/'
+        )
         # creates a test client
-        self.app = app.test_client()
+        self.app = self.app.test_client()
         # propagate the exceptions to the test client
         self.app.testing = True
-
-    def tearDown(self):
-        pass
 
     def test_get_redfish_base_status(self):
         # sends HTTP GET request to the application
