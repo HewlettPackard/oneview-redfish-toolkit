@@ -28,12 +28,11 @@ from oneview_redfish_toolkit import util
 import logging
 
 
-util.configure_logging(os.getenv("LOGGING_FILE",
-                                 "oneview_redfish_toolkit/logging.ini"))
+util.configure_logging(os.getenv("LOGGING_FILE", "logging.ini"))
 
 # Load config file, schemas and creates a OV connection
 try:
-    util.load_config('oneview_redfish_toolkit/redfish.ini')
+    util.load_config('redfish.ini')
 except Exception as e:
     logging.error('Failed to load app configuration')
     logging.error(e)
@@ -43,8 +42,8 @@ except Exception as e:
 app = Flask(__name__)
 
 # Register blueprints
-app.register_blueprint(redfish_base, url_prefix="/redfish")
+app.register_blueprint(redfish_base, url_prefix="/redfish/")
 app.register_blueprint(service_root, url_prefix='/redfish/v1/')
 app.register_blueprint(computer_system_collection,
-                       url_prefix='/redfish/v1/Systems')
-app.register_blueprint(chassis_collection, url_prefix='/redfish/v1/Chassis')
+                       url_prefix='/redfish/v1/Systems/')
+app.register_blueprint(chassis_collection, url_prefix='/redfish/v1/Chassis/')

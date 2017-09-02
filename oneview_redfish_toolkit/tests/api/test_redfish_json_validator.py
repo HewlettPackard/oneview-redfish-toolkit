@@ -34,7 +34,7 @@ class TestRedfishJsonValidator(unittest.TestCase):
         """Tests preparation """
 
         # Load configuration on util module
-        util.load_config('oneview_redfish_toolkit/redfish.ini')
+        util.load_config('redfish.ini')
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated

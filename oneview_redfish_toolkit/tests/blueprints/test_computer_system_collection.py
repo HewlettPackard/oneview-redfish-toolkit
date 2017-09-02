@@ -35,14 +35,14 @@ class TestComputerSystemCollection(unittest.TestCase):
         """Tests preparation"""
 
         # Load config on util
-        util.load_config('oneview_redfish_toolkit/redfish.ini')
+        util.load_config('redfish.ini')
 
         # creates a test client
         self.app = Flask(__name__)
 
         self.app.register_blueprint(
             computer_system_collection,
-            url_prefix='/redfish/v1/Systems')
+            url_prefix='/redfish/v1/Systems/')
 
         self.app = self.app.test_client()
 

@@ -15,8 +15,7 @@
 # under the License.
 
 from flask import Blueprint
-from flask import jsonify
-from flask import make_response
+from flask import Response
 from flask_api import status
 
 redfish_base = Blueprint("redfish_base", __name__)
@@ -26,19 +25,10 @@ redfish_base = Blueprint("redfish_base", __name__)
 def get_redfish_base():
     """Get JSON with Redfish version.
 
-    :return: Redfish version route.
-    :rtype: JSON
+        Returns:
+            json: Redfish JSON root.
     """
-    return make_response(jsonify({"v1": "/redfish/v1/"}), status.HTTP_200_OK)
-
-
-@redfish_base.errorhandler(status.HTTP_404_NOT_FOUND)
-def not_found(error):
-    """Improve not found error message.
-
-    :param error: Flask error.
-    :return: Error message.
-    :rtype: JSON
-    """
-    return make_response(jsonify({"error": "Redfish base not found."}),
-                         status.HTTP_404_NOT_FOUND)
+    return Response(
+        response='{"v1": "/redfish/v1/"}',
+        status=status.HTTP_200_OK,
+        mimetype="application/json")
