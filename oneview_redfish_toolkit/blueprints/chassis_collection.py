@@ -14,31 +14,43 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
+import logging
+
+# 3rd party libs
 from flask import abort
 from flask import Blueprint
 from flask import Response
 from flask_api import status
 
-from oneview_redfish_toolkit.api.chassis_collection \
-    import ChassisCollection
+# own libs
+from hpOneView.exceptions import HPOneViewException
+from oneview_redfish_toolkit.api.chassis_collection import ChassisCollection
 from oneview_redfish_toolkit import util
-
-import logging
 
 
 chassis_collection = Blueprint("chassis_collection", __name__)
 
 
-@chassis_collection.route("/", methods=["GET"])
+@chassis_collection.route("/redfish/v1/Chassis/", methods=["GET"])
 def get_chassis_collection():
     """Get the Redfish Chassis Collection.
 
-        Get method to return ChassisCollection JSON when
-        /redfish/v1/Chassis is requested.
+        Return ChassisCollection redfish JSON.
+        Logs exception of any error and return
+        Internal Server Error or Not Found.
 
         Returns:
-                JSON: JSON with Chassis Collection.
+            JSON: Redfish json with ChassisCollection.
+            When Server hardwares, enclosures or racks is not found
+            calls abort(404).
+
+        Exceptions:
+            HPOneViewException: if have some error with gets of
+            Oneview Resources (ServerHardware, Enclosures or Racks).
+            Exception: Generic error, logs the exception and call abort(500).
     """
+
     try:
         # Recover OV connection
         ov_client = util.get_oneview_client()
@@ -64,10 +76,51 @@ def get_chassis_collection():
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
+
+    except HPOneViewException as e:
+        if e.error_code == "RESOURCE_NOT_FOUND":
+            if e.msg.find("server-hardwares") >= 0:
+                logging.warning('ServerHardwares not found.')
+            elif e.msg.find("enclosures") >= 0:
+                logging.warning('Enclosures not found.')
+            else:
+                logging.warning('Racks not found.')
+
+            abort(status.HTTP_404_NOT_FOUND)
+
+        elif e.msg.find("server-hardwares") >= 0:
+            logging.error(
+                'OneView Exception while looking for server hardwares'
+                ' {}'.format(e))
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif e.msg.find("enclosures") >= 0:
+            logging.error(
+                'OneView Exception while looking for '
+                'enclosure: {}'.format(e))
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        elif e.msg.find("racks") >= 0:
+            logging.error(
+                'OneView Exception while looking for '
+                'racks: {}'.format(e))
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            logging.error('Unexpected OneView Exception: {}'.format(e))
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
     except Exception as e:
         # In case of error print exception and abort
-        logging.error(e)
+        logging.error('Unexpected error: '.format(e))
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@chassis_collection.errorhandler(status.HTTP_404_NOT_FOUND)
+def not_found(error):
+    """Creates a Not Found Error response"""
+    logging.error(vars(error))
+    return Response(
+        response='{"error": "URL not found"}',
+        status=status.HTTP_404_NOT_FOUND,
+        mimetype='application/json')
 
 
 @chassis_collection.errorhandler(

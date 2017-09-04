@@ -76,14 +76,11 @@ class ChassisCollection(RedfishJsonValidator):
     def _set_resource_links(self, oneview_resource):
         """Populates self.redfish["Members"] with the links resources"""
 
-        index = len(self.redfish["Members"])
-
         for resource in oneview_resource:
-            self.redfish["Members"].append(collections.OrderedDict())
-            self.redfish["Members"][index]["@odata.id"] = \
+            link_dict = collections.OrderedDict()
+            link_dict["@odata.id"] = \
                 "/redfish/v1/Chassis/" + resource["uuid"]
-
-            index += 1
+            self.redfish["Members"].append(link_dict)
 
     def _get_redfish_members_length(self):
         """Gets the length of redfish members"""

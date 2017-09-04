@@ -14,24 +14,38 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
 import json
 import unittest
 from unittest import mock
 
+# 3rd party libs
 from flask import Flask
 from flask_api import status
+from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit import util
 
+# Module libs
 from oneview_redfish_toolkit.blueprints.chassis_collection \
     import chassis_collection
 
 
 class TestChassisCollection(unittest.TestCase):
-    """Tests for ChassisCollection blueprint"""
+    """Tests for ChassisCollection blueprint
+
+        Tests:
+            - server hardware not found
+            - enclosures not found
+            - racks not found
+            - oneview exception server hardware
+            - oneview exception enclosures
+            - oneview exception racks
+            - oneview unexpected exception
+            - know chassis collection
+    """
 
     @mock.patch.object(util, 'OneViewClient')
-    @mock.patch.object(util, 'get_oneview_client')
-    def setUp(self, ov_mock, get_oneview_mock):
+    def setUp(self, ov_mock):
         """Tests preparation"""
 
         # Load config on util
@@ -40,9 +54,7 @@ class TestChassisCollection(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(
-            chassis_collection,
-            url_prefix='/redfish/v1/Chassis/')
+        self.app.register_blueprint(chassis_collection)
 
         self.app = self.app.test_client()
 
@@ -50,24 +62,8 @@ class TestChassisCollection(unittest.TestCase):
         self.app.testing = True
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_chassis_collection_empty(self, mock_get_ov_client):
-        """Tests ChassisCollection with an empty list"""
-
-        client = mock_get_ov_client()
-        client.server_hardware.get_all.return_value = []
-        client.enclosures.get_all.return_value = []
-        client.racks.get_all.return_value = []
-
-        response = self.app.get("/redfish/v1/Chassis/")
-
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        chassis_collection_members = json.loads(
-            response.data.decode("utf-8"))['Members']
-        self.assertEqual([], chassis_collection_members)
-
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_chassis_collection_fail(self, mock_get_ov_client):
+    def test_get_chassis_collection_unexpected_error(
+            self, mock_get_ov_client):
         """Tests ChassisCollection with an error"""
 
         client = mock_get_ov_client()
@@ -79,6 +75,115 @@ class TestChassisCollection(unittest.TestCase):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+        json_str = response.data.decode("utf-8")
+
+        self.assertEqual(json_str, '{"error": "Internal Server Error"}')
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_server_hardwares_not_found(self, mock_get_ov_client):
+        client = mock_get_ov_client()
+        e = HPOneViewException("server-hardwares not found")
+        e.error_code = "RESOURCE_NOT_FOUND"
+
+        client.server_hardware.get_all.side_effect = e
+
+        response = self.app.get("/redfish/v1/Chassis/")
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        json_str = response.data.decode("utf-8")
+
+        self.assertEqual(json_str, '{"error": "URL not found"}')
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_enclosures_not_found(self, mock_get_ov_client):
+        client = mock_get_ov_client()
+        e = HPOneViewException("enclosures not found")
+        e.error_code = "RESOURCE_NOT_FOUND"
+
+        client.enclosures.get_all.side_effect = e
+
+        response = self.app.get("/redfish/v1/Chassis/")
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        json_str = response.data.decode("utf-8")
+
+        self.assertEqual(json_str, '{"error": "URL not found"}')
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_racks_not_found(self, mock_get_ov_client):
+        client = mock_get_ov_client()
+        e = HPOneViewException("racks not found")
+        e.error_code = "RESOURCE_NOT_FOUND"
+
+        client.racks.get_all.side_effect = e
+
+        response = self.app.get("/redfish/v1/Chassis/")
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        json_str = response.data.decode("utf-8")
+
+        self.assertEqual(json_str, '{"error": "URL not found"}')
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_server_hardware_exception(self, mock_get_ov_client):
+        client = mock_get_ov_client()
+        e = HPOneViewException("server-hardware error")
+        e.error_code = "ANOTHER_ERROR"
+
+        client.server_hardware.get_all.side_effect = e
+
+        response = self.app.get("/redfish/v1/Chassis/")
+
+        self.assertEqual(status.HTTP_500_INTERNAL_SERVER_ERROR,
+                         response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        json_str = response.data.decode("utf-8")
+
+        self.assertEqual(json_str, '{"error": "Internal Server Error"}')
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_enclosures_exception(self, mock_get_ov_client):
+        client = mock_get_ov_client()
+        e = HPOneViewException("enclosures error")
+        e.error_code = "ANOTHER_ERROR"
+
+        client.enclosures.get_all.side_effect = e
+
+        response = self.app.get("/redfish/v1/Chassis/")
+
+        self.assertEqual(status.HTTP_500_INTERNAL_SERVER_ERROR,
+                         response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        json_str = response.data.decode("utf-8")
+
+        self.assertEqual(json_str, '{"error": "Internal Server Error"}')
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_racks_exception(self, mock_get_ov_client):
+        client = mock_get_ov_client()
+        e = HPOneViewException("racks error")
+        e.error_code = "ANOTHER_ERROR"
+
+        client.racks.get_all.side_effect = e
+
+        response = self.app.get("/redfish/v1/Chassis/")
+
+        self.assertEqual(status.HTTP_500_INTERNAL_SERVER_ERROR,
+                         response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        json_str = response.data.decode("utf-8")
+
+        self.assertEqual(json_str, '{"error": "Internal Server Error"}')
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_chassis_collection(self, mock_get_ov_client):
