@@ -23,10 +23,10 @@ from unittest import mock
 from flask import Flask
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
-from oneview_redfish_toolkit import util
 
 # Module libs
 from oneview_redfish_toolkit.blueprints.computer_system import computer_system
+from oneview_redfish_toolkit import util
 
 
 class TestComputerSystem(unittest.TestCase):
@@ -342,3 +342,20 @@ class TestComputerSystem(unittest.TestCase):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
+
+    def test_change_power_state_invalid_key(self):
+        """Tests change SH power state with JSON key different of ResetType"""
+
+        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
+                                 "-313133364752/Actions/ComputerSystem.Reset",
+                                 data=dict(INVALID_KEY="On"))
+
+        self.assertEqual(
+            status.HTTP_400_BAD_REQUEST,
+            response.status_code
+        )
+        self.assertEqual("application/json", response.mimetype)
+
+        json_str = response.data.decode("utf-8")
+
+        self.assertEqual(json_str, '{"error": "Invalid information"}')

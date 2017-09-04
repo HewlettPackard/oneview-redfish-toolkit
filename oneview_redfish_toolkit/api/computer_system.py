@@ -161,21 +161,23 @@ class ComputerSystem(RedfishJsonValidator):
                 reset_type is an unmapped value.
         """
 
-        if reset_type == "PushPowerButton":
-            if self.server_hardware["powerState"] == "On":
-                POWER_STATE_MAP["PushPowerButton"]["powerState"] = "Off"
-            else:
-                POWER_STATE_MAP["PushPowerButton"]["powerState"] = "On"
-
         if reset_type == "ForceOn" or reset_type == "Nmi":
             raise OneViewRedfishError({
                 "errorCode": "NOT_IMPLEMENTED",
                 "message": "{} not mapped to OneView".format(reset_type)})
 
         try:
-            return POWER_STATE_MAP[reset_type]
+            power_state_map = POWER_STATE_MAP[reset_type]
         except Exception:
             raise OneViewRedfishError({
                 "errorCode": "INVALID_INFORMATION",
                 "message": "There is no mapping for {} on the OneView"
                 .format(reset_type)})
+
+        if reset_type == "PushPowerButton":
+            if self.server_hardware["powerState"] == "On":
+                power_state_map["powerState"] = "Off"
+            else:
+                power_state_map["powerState"] = "On"
+
+        return power_state_map
