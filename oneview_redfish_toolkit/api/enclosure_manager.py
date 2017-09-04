@@ -41,6 +41,7 @@ class EnclosureManager(Manager):
 
         self.redfish["ManagerType"] = "EnclosureManager"
         self.redfish["Name"] = "Enclosure Manager"
+        self.redfish["Description"] = "HPE OneView Manager"
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["ManagerForChassis"] = list()
         self.redfish["Links"]["ManagerForChassis"].append(

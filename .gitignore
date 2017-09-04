@@ -57,6 +57,8 @@ ChangeLog
 *~
 .*.swp
 .*sw?
+*.sublime-project
+*.sublime-workspace
 
 # Files created by PyCharm
 .idea/
