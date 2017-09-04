@@ -63,8 +63,10 @@ class TestComputerSystem(unittest.TestCase):
         """Tests ComputerSystem with ServerHardware Not Found"""
 
         client = mock_get_ov_client()
-        e = HPOneViewException("server-hardware not found")
-        e.error_code = "RESOURCE_NOT_FOUND"
+        e = HPOneViewException({
+            'errorCode': 'RESOURCE_NOT_FOUND',
+            'message': 'server-hardware not found',
+        })
         client.server_hardware.get.side_effect = e
 
         response = self.app.get(
@@ -81,8 +83,10 @@ class TestComputerSystem(unittest.TestCase):
         client = mock_get_ov_client()
         client.server_hardware.get.return_value = \
             {'serverHardwareTypeUri': 'invalidUri'}
-        e = HPOneViewException("server-hardware-types not found")
-        e.error_code = "RESOURCE_NOT_FOUND"
+        e = HPOneViewException({
+            'errorCode': 'RESOURCE_NOT_FOUND',
+            'message': 'server-hardware-types not found',
+        })
         client.server_hardware_types.get.side_effect = e
 
         response = self.app.get(
@@ -97,8 +101,10 @@ class TestComputerSystem(unittest.TestCase):
         """Tests ComputerSystem with ServerHardware exception"""
 
         client = mock_get_ov_client()
-        e = HPOneViewException("server-hardware error")
-        e.error_code = "ANOTHER_ERROR"
+        e = HPOneViewException({
+            'errorCode': 'ANOTHER_ERROR',
+            'message': 'server-hardware error',
+        })
         client.server_hardware.get.side_effect = e
 
         response = self.app.get(
@@ -116,8 +122,10 @@ class TestComputerSystem(unittest.TestCase):
         """Tests ComputerSystem with  ServerHardwareTypes exception"""
 
         client = mock_get_ov_client()
-        e = HPOneViewException("server-hardware-types error")
-        e.error_code = "ANOTHER_ERROR"
+        e = HPOneViewException({
+            'errorCode': 'ANOTHER_ERROR',
+            'message': 'server-hardware-types error',
+        })
         client.server_hardware_types.get.side_effect = e
 
         response = self.app.get(

@@ -72,7 +72,7 @@ def get_computer_system(uuid):
             status=status.HTTP_200_OK,
             mimetype="application/json")
     except HPOneViewException as e:
-        if e.error_code == "RESOURCE_NOT_FOUND":
+        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
             if e.msg.find("server-hardware-types") >= 0:
                 logging.warning(
                     'ServerHardwareTypes ID {} not found'.
@@ -107,7 +107,7 @@ def get_computer_system(uuid):
 def not_found(error):
     """Creates a Not Found Error response"""
     return Response(
-        response={'error': 'URL not found'},
+        response={'error_code': 'URL not found'},
         status=status.HTTP_404_NOT_FOUND,
         mimetype='application/json')
 

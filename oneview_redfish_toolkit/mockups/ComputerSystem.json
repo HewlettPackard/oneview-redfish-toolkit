@@ -13,11 +13,11 @@
     "PowerState": "On",
     "Boot": {
         "BootSourceOverrideTarget@Redfish.AllowableValues": [
-            "CD",
-            "USB",
-            "HardDisk",
-            "FibreChannelHba",
-            "PXE"
+            "Cd",
+            "Usb",
+            "Hdd",
+            "RemoteDrive",
+            "Pxe"
         ]
     },
     "BiosVersion": "I37 v1.30 08/26/2014",

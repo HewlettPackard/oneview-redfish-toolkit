@@ -54,7 +54,7 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Boot"] = collections.OrderedDict()
         self.redfish["Boot"]["BootSourceOverrideTarget@Redfish."
                              "AllowableValues"] = \
-            sht_dict['bootCapabilities']
+            self.MapBoot(sht_dict['bootCapabilities'])
         self.redfish["BiosVersion"] = sh_dict["romVersion"]
         self.redfish["ProcessorSummary"] = collections.OrderedDict()
         self.redfish["ProcessorSummary"]['Count'] = sh_dict["processorCount"]
@@ -69,3 +69,35 @@ class ComputerSystem(RedfishJsonValidator):
             "/redfish/v1/Chassis/" + sh_dict['uuid']
 
         self._validate()
+
+    def MapBoot(self, boot_list):
+        """Maps Oneview's boot options to Redfish's boot option
+
+            Maps the known OneView boot options to Redfish boot option.
+            If a unknown boot option shows up it will be mapped to None
+
+            Args:
+                boot_list: List with OneView boot options
+
+            Returns:
+                list with Redfish boot options
+        """
+
+        redfish_oneview_boot_map = dict()
+        redfish_oneview_boot_map['PXE'] = 'Pxe'
+        redfish_oneview_boot_map['CD'] = 'Cd'
+        redfish_oneview_boot_map['HardDisk'] = 'Hdd'
+        redfish_oneview_boot_map['FibreChannelHba'] = 'RemoteDrive'
+        redfish_oneview_boot_map['Floppy'] = 'Floppy'
+        redfish_oneview_boot_map['USB'] = 'Usb'
+        redfish_boot_list = list()
+
+        try:
+            for boot_option in boot_list:
+                redfish_boot_list.append(
+                    redfish_oneview_boot_map[boot_option]
+                )
+        except Exception:
+            redfish_boot_list.append('None')
+
+        return redfish_boot_list
