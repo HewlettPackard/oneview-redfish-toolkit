@@ -73,15 +73,22 @@ def get_computer_system(uuid):
             mimetype="application/json")
     except HPOneViewException as e:
         if e.error_code == "RESOURCE_NOT_FOUND":
-            logging.warning('ServerHardware UUID {} not found'.format(uuid))
+            if e.msg.find("server-hardware-types") >= 0:
+                logging.warning(
+                    'ServerHardwareTypes ID {} not found'.
+                    format(sh['serverHardwareTypeUri']))
+            else:
+                logging.warning(
+                    'ServerHardware UUID {} not found'.
+                    format(uuid))
             abort(status.HTTP_404_NOT_FOUND)
-        elif e.message.find("server-hardware-types"):
+        elif e.msg.find("server-hardware-types") >= 0:
             logging.error(
                 'OneView Exception while looking for server hardware type'
                 ' {}'.format(e)
             )
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif e.message.find("server-hardware"):
+        elif e.msg.find("server-hardware") >= 0:
             logging.error(
                 'OneView Exception while looking for '
                 'server hardware: {}'.format(e)

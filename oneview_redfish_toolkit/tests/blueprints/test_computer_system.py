@@ -34,7 +34,10 @@ class TestComputerSystem(unittest.TestCase):
 
         Tests:
             - server hardware not found
-            - oneview exception
+            - server hardware types not found
+            - oneview exception server hardware
+            - oneview exception server hardware type
+            - oneview unexpected exception
             - know computer system
     """
 
@@ -56,12 +59,12 @@ class TestComputerSystem(unittest.TestCase):
         self.app.testing = True
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_not_found(self, mock_get_ov_client):
-        """Tests ComputerSystem with an empty list"""
+    def test_get_computer_system_sh_not_found(self, mock_get_ov_client):
+        """Tests ComputerSystem with ServerHardware Not Found"""
 
         client = mock_get_ov_client()
-        e = HPOneViewException("ServerHardware not found")
-        e.error_code = "RESOURCE_NOT_FOUND"""
+        e = HPOneViewException("server-hardware not found")
+        e.error_code = "RESOURCE_NOT_FOUND"
         client.server_hardware.get.side_effect = e
 
         response = self.app.get(
@@ -72,8 +75,64 @@ class TestComputerSystem(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_fail(self, mock_get_ov_client):
-        """Tests ComputerSystem with an error"""
+    def test_get_computer_system_sht_not_found(self, mock_get_ov_client):
+        """Tests ComputerSystem with ServerHardwareTypes not found"""
+
+        client = mock_get_ov_client()
+        client.server_hardware.get.return_value = \
+            {'serverHardwareTypeUri': 'invalidUri'}
+        e = HPOneViewException("server-hardware-types not found")
+        e.error_code = "RESOURCE_NOT_FOUND"
+        client.server_hardware_types.get.side_effect = e
+
+        response = self.app.get(
+            "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
+        )
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_computer_system_sh_exception(self, mock_get_ov_client):
+        """Tests ComputerSystem with ServerHardware exception"""
+
+        client = mock_get_ov_client()
+        e = HPOneViewException("server-hardware error")
+        e.error_code = "ANOTHER_ERROR"
+        client.server_hardware.get.side_effect = e
+
+        response = self.app.get(
+            "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
+        )
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code
+        )
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_computer_system_sht_exception(self, mock_get_ov_client):
+        """Tests ComputerSystem with  ServerHardwareTypes exception"""
+
+        client = mock_get_ov_client()
+        e = HPOneViewException("server-hardware-types error")
+        e.error_code = "ANOTHER_ERROR"
+        client.server_hardware_types.get.side_effect = e
+
+        response = self.app.get(
+            "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
+        )
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code
+        )
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_computer_system_unexpected_error(self, mock_get_ov_client):
+        """Tests ComputerSystem with an unexpected error"""
 
         client = mock_get_ov_client()
         client.server_hardware.get.side_effect = Exception()
@@ -89,7 +148,7 @@ class TestComputerSystem(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_computer_system(self, mock_get_ov_client):
-        """Tests ComputerSystem with a known Server Hardware list"""
+        """Tests ComputerSystem with a known Server Hardware"""
 
         # Loading server_hardware mockup value
         with open(
