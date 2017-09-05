@@ -4,6 +4,14 @@ oneview\_redfish\_toolkit\.blueprints package
 Submodules
 ----------
 
+oneview\_redfish\_toolkit\.blueprints\.computer\_system module
+--------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.computer_system
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 oneview\_redfish\_toolkit\.blueprints\.computer\_system\_collection module
 --------------------------------------------------------------------------
 

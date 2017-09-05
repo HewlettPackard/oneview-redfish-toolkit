@@ -40,9 +40,7 @@ class TestComputerSystemCollection(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(
-            computer_system_collection,
-            url_prefix='/redfish/v1/Systems')
+        self.app.register_blueprint(computer_system_collection)
 
         self.app = self.app.test_client()
 
