@@ -24,8 +24,9 @@ from flask import Response
 from flask_api import status
 
 # own libs
-from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.chassis_collection import ChassisCollection
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit import util
 
 
@@ -46,8 +47,10 @@ def get_chassis_collection():
             calls abort(404).
 
         Exceptions:
-            HPOneViewException: if have some error with gets of
-            Oneview Resources (ServerHardware, Enclosures or Racks).
+            OneViewRedfishResourceNotFoundError: if have some oneview resource
+            with empty value (ServerHardware, Enclosures or Racks).
+            Logs the exception and call abort(404).
+
             Exception: Generic error, logs the exception and call abort(500).
     """
 
@@ -64,6 +67,10 @@ def get_chassis_collection():
         # Gets all server hardware
         oneview_server_hardwares = ov_client.server_hardware.get_all()
 
+        # Checks if some oneview resource is an empty list
+        _empty_oneview_resource(oneview_server_hardwares,
+                                oneview_enclosures, oneview_racks)
+
         # Build Chassis Collection object and validates it
         cc = ChassisCollection(oneview_server_hardwares, oneview_enclosures,
                                oneview_racks)
@@ -77,40 +84,29 @@ def get_chassis_collection():
             status=status.HTTP_200_OK,
             mimetype="application/json")
 
-    except HPOneViewException as e:
-        if e.error_code == "RESOURCE_NOT_FOUND":
-            if e.msg.find("server-hardwares") >= 0:
-                logging.warning('ServerHardwares not found.')
-            elif e.msg.find("enclosures") >= 0:
-                logging.warning('Enclosures not found.')
-            else:
-                logging.warning('Racks not found.')
-
-            abort(status.HTTP_404_NOT_FOUND)
-
-        elif e.msg.find("server-hardwares") >= 0:
-            logging.error(
-                'OneView Exception while looking for server hardwares'
-                ' {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif e.msg.find("enclosures") >= 0:
-            logging.error(
-                'OneView Exception while looking for '
-                'enclosure: {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif e.msg.find("racks") >= 0:
-            logging.error(
-                'OneView Exception while looking for '
-                'racks: {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            logging.error('Unexpected OneView Exception: {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except OneViewRedfishResourceNotFoundError as e:
+        # In case of error print exception and abort
+        logging.error(e)
+        abort(status.HTTP_404_NOT_FOUND)
 
     except Exception as e:
         # In case of error print exception and abort
-        logging.error('Unexpected error: '.format(e))
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logging.error('Unexpected error: {}'.format(e))
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def _empty_oneview_resource(server_hardwares, enclosures, racks):
+    """Check if some oneview resource is empty and raise an exception"""
+
+    if not server_hardwares:
+        raise OneViewRedfishResourceNotFoundError(
+            "server-hardwares", "oneview-result")
+    if not enclosures:
+        raise OneViewRedfishResourceNotFoundError(
+            "enclosures", "oneview-result")
+    if not racks:
+        raise OneViewRedfishResourceNotFoundError(
+            "racks", "oneview-result")
 
 
 @chassis_collection.errorhandler(status.HTTP_404_NOT_FOUND)
@@ -118,7 +114,7 @@ def not_found(error):
     """Creates a Not Found Error response"""
     logging.error(vars(error))
     return Response(
-        response='{"error": "URL not found"}',
+        response='{"error": "Resource not found"}',
         status=status.HTTP_404_NOT_FOUND,
         mimetype='application/json')
 

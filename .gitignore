@@ -47,6 +47,7 @@ doc/build
 doc/source/modules.rst
 doc/source/oneview_redfish_toolkit.api.rst
 doc/source/oneview_redfish_toolkit.rst
+doc/source/oneview_redfish_toolkit.blueprints.rst
 
 # pbr generates these
 AUTHORS
