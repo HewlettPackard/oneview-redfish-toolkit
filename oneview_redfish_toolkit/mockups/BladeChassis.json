@@ -1,0 +1,17 @@
+{
+    "@odata.type": "#Chassis.v1_5_0.Chassis",
+    "Id": "36353738-3532-4753-4831-30315832524E",
+    "Name": "Encl1, bay 3",
+    "ChassisType": "Blade",
+    "Manufacturer": "HPE",
+    "Model": "ProLiant BL460c Gen10",
+    "SerialNumber": "SGH101X2RN",
+    "IndicatorLED": "Unknown",
+    "Links": {
+        "ComputerSystems": [
+            {
+                "@odata.id": "/redfish/v1/Systems/36353738-3532-4753-4831-30315832524E"
+            }
+        ]
+    }
+}

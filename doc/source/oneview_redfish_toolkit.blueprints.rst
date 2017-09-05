@@ -36,6 +36,13 @@ oneview\_redfish\_toolkit\.blueprints\.service\_root module
     :undoc-members:
     :show-inheritance:
 
+oneview\_redfish\_toolkit\.blueprints\.chassis\_system module
+--------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.chassis
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Module contents
 ---------------
