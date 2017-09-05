@@ -107,7 +107,7 @@ def get_computer_system(uuid):
 def not_found(error):
     """Creates a Not Found Error response"""
     return Response(
-        response="{'error': 'URL/data not found'}",
+        response='{"error": "URL/data not found"}',
         status=status.HTTP_404_NOT_FOUND,
         mimetype='application/json')
 
@@ -118,6 +118,6 @@ def internal_server_error(error):
     """Creates an Internal Server Error response"""
     logging.error(vars(error))
     return Response(
-        response="{'error': 'Internal Server Error'}",
+        response='{"error": "Internal Server Error"}',
         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         mimetype='application/json')
