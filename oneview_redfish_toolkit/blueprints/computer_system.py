@@ -34,10 +34,10 @@ computer_system = Blueprint("computer_system", __name__)
 
 @computer_system.route("/redfish/v1/Systems/<uuid>", methods=["GET"])
 def get_computer_system(uuid):
-    """Get the Redfish Computer System for a given UUDI.
+    """Get the Redfish Computer System for a given UUID.
 
         Return ComputerSystem redfish JSON for a given
-        server harder UUID.
+        server hardware UUID.
         Logs exception of any error and return abort(500)
         Internal Server Error.
 
@@ -57,7 +57,7 @@ def get_computer_system(uuid):
         # Gets serverhardware for given UUID
         sh = ov_client.server_hardware.get(uuid)
 
-        # Gets de server hardware type of the given server hardware
+        # Gets the server hardware type of the given server hardware
         sht = ov_client.server_hardware_types.get(sh['serverHardwareTypeUri'])
 
         # Build Computer System object and validates it
