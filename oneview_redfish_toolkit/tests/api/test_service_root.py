@@ -39,7 +39,7 @@ class TestServiceRoot(unittest.TestCase):
         """Tests class instantiation and validation"""
 
         try:
-            obj = ServiceRoot()
+            obj = ServiceRoot('00000000-0000-0000-0000-000000000000')
         except Exception as e:
             self.fail("Failed to instantiate service root. Error: ".format(e))
         self.assertIsInstance(obj, ServiceRoot)
@@ -47,7 +47,7 @@ class TestServiceRoot(unittest.TestCase):
     def test_serialize(self):
         """Tests the serialize function result against known result"""
 
-        obj = ServiceRoot()
+        obj = ServiceRoot('00000000-0000-0000-0000-000000000000')
         json_str = obj.serialize()
 
         with open(

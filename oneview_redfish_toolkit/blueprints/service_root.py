@@ -14,12 +14,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
+import logging
+
+# 3rd party libs
 from flask import abort
 from flask import Blueprint
 from flask import Response
-from oneview_redfish_toolkit.api.service_root import ServiceRoot
+from flask_api import status
 
-import logging
+# own libs
+from hpOneView.exceptions import HPOneViewException
+from oneview_redfish_toolkit.api.service_root import ServiceRoot
+from oneview_redfish_toolkit import util
 
 service_root = Blueprint('service_root', __name__)
 
@@ -28,15 +35,51 @@ service_root = Blueprint('service_root', __name__)
 def get_service_root():
     """Gets ServiceRoot
 
+        Recover OneView UUID from appliance and creates
+        ServiceRoot redfish JSON
     """
 
     try:
-        obj = ServiceRoot()
+        # Recover OV connection
+        ov_client = util.get_oneview_client()
+
+        # Gets serverhardware for given UUID
+        ov_info = ov_client.appliance_node_information.get_status()
+        uuid = ov_info['uuid']
+
+        obj = ServiceRoot(uuid)
         json_str = obj.serialize()
         return Response(
             response=json_str,
             status=200,
             mimetype='application/json')
+    except HPOneViewException as e:
+        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
+            logging.error("Resource not found: {}".format(e))
+            abort(status.HTTP_404_NOT_FOUND)
+        else:
+            logging.error("OneView Exception: {}".format(e))
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
-        logging.error(e)
-        abort(500)
+        logging.error('ServiceRoot error: {}'.format(e))
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@service_root.errorhandler(status.HTTP_404_NOT_FOUND)
+def not_found(error):
+    """Creates a Not Found Error response"""
+    return Response(
+        response='{"error": "URL/data not found"}',
+        status=status.HTTP_404_NOT_FOUND,
+        mimetype='application/json')
+
+
+@service_root.errorhandler(
+    status.HTTP_500_INTERNAL_SERVER_ERROR)
+def internal_server_error(error):
+    """Creates an Internal Server Error response"""
+    logging.error(vars(error))
+    return Response(
+        response='{"error": "Internal Server Error"}',
+        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        mimetype='application/json')

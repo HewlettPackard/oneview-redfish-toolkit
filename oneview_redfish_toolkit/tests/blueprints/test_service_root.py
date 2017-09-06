@@ -14,11 +14,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
 import unittest
 from unittest import mock
 
+# 3rd party libs
 from flask import Flask
+from flask_api import status
+from hpOneView.exceptions import HPOneViewException
 
+# Module libs
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 from oneview_redfish_toolkit import util
 
@@ -28,7 +33,7 @@ class TestServiceRoot(unittest.TestCase):
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, mock_ov):
-        """Tests ComputerSystemCollection blueprint"""
+        """Tests ServiceRoot blueprint setup"""
 
         # Load config on util
         util.load_config('oneview_redfish_toolkit/redfish.ini')
@@ -45,8 +50,56 @@ class TestServiceRoot(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    def test_get_service_root(self):
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_service_root_oneview_exception(self, mock_get_ov_client):
+        """Tests ServiceROOT with an exception"""
+
+        client = mock_get_ov_client()
+        e = HPOneViewException({
+            'errorCode': 'ANOTHER_ERROR',
+            'message': 'appliance error',
+        })
+
+        client.appliance_node_information.get_status.side_effect = e
+
+        response = self.app.get("/redfish/v1/")
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code
+        )
+
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_service_root_exception(self, mock_get_ov_client):
+        """Tests ServiceROOT with an exception"""
+
+        client = mock_get_ov_client()
+        e = HPOneViewException({
+            'errorCode': 'ANOTHER_ERROR',
+            'message': 'appliance error',
+        })
+
+        client.appliance_node_information.get_status.side_effect = e
+
+        response = self.app.get("/redfish/v1/")
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code
+        )
+
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_service_root(self, mock_get_ov_client):
         """Tests ServiceRoot blueprint result against know value """
+
+        client = mock_get_ov_client()
+        client.appliance_node_information.get_status.return_value = \
+            {'uuid': '00000000-0000-0000-0000-000000000000'}
+
         result = self.app.get("/redfish/v1/")
 
         json_str = result.data.decode("utf-8")
