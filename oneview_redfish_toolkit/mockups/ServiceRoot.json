@@ -3,7 +3,7 @@
     "Id": "RootService",
     "Name": "Root Service",
     "RedfishVersion": "1.2.0",
-    "UUID": "85775665-c110-4b85-8989-e6162170b3ec",
+    "UUID": "00000000-0000-0000-0000-000000000000",
     "Systems": {
         "@odata.id": "/redfish/v1/Systems"
     },

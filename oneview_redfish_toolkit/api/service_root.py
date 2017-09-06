@@ -30,7 +30,7 @@ class ServiceRoot(RedfishJsonValidator):
 
     SCHEMA_NAME = 'ServiceRoot'
 
-    def __init__(self):
+    def __init__(self, ov_uuid):
         """Constructor
 
             Populates self.redfish with a hardcoded ServiceRoot values for
@@ -43,7 +43,7 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["Id"] = "RootService"
         self.redfish["Name"] = "Root Service"
         self.redfish["RedfishVersion"] = "1.2.0"
-        self.redfish["UUID"] = "85775665-c110-4b85-8989-e6162170b3ec"
+        self.redfish["UUID"] = ov_uuid
         self.redfish["Systems"] = collections.OrderedDict()
         self.redfish["Systems"]["@odata.id"] = "/redfish/v1/Systems"
         self.redfish["Chassis"] = collections.OrderedDict()
