@@ -60,7 +60,7 @@ class TestServiceRoot(unittest.TestCase):
             'message': 'appliance error',
         })
 
-        client.appliance_node_information.get_status.side_effect = e
+        client.appliance_node_information.get_version.side_effect = e
 
         response = self.app.get("/redfish/v1/")
 
