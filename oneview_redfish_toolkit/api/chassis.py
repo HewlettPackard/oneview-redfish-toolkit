@@ -41,8 +41,6 @@ class Chassis(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        # TODO (danielreed) inspect hardware obj to make obj below
-
         self.redfish["@odata.type"] = \
             "#Chassis.v1_5_0.Chassis"
         self.redfish["Id"] = hardware["uuid"]

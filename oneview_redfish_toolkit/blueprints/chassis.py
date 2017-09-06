@@ -44,7 +44,6 @@ def get_chassis(uuid):
     try:
         ov_client = util.get_oneview_client()
 
-        # TODO (danielreed) make decision about which resource to get
         ov_sh = ov_client.server_hardware.get(uuid)
 
         sh_chassis = Chassis(ov_sh)
