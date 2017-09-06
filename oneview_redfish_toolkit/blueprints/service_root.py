@@ -44,7 +44,7 @@ def get_service_root():
         ov_client = util.get_oneview_client()
 
         # Gets serverhardware for given UUID
-        ov_info = ov_client.appliance_node_information.get_status()
+        ov_info = ov_client.appliance_node_information.get_version()
         uuid = ov_info['uuid']
 
         obj = ServiceRoot(uuid)
