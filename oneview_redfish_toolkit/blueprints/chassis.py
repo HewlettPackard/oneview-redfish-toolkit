@@ -30,6 +30,7 @@ from oneview_redfish_toolkit import util
 
 chassis = Blueprint("chassis", __name__)
 
+
 @chassis.route("/redfish/v1/Chassis/<uuid>", methods=["GET"])
 def get_chassis(uuid):
     """Get the Redfish Chassis.
@@ -43,7 +44,7 @@ def get_chassis(uuid):
     try:
         ov_client = util.get_oneview_client()
 
-        # TODO make decision about which resource to get
+        # TODO (danielreed) make decision about which resource to get
         ov_sh = ov_client.server_hardware.get(uuid)
 
         sh_chassis = Chassis(ov_sh)

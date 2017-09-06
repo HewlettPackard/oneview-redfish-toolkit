@@ -16,7 +16,7 @@
 
 import collections
 from oneview_redfish_toolkit.api.redfish_json_validator \
-  import RedfishJsonValidator
+    import RedfishJsonValidator
 
 
 class Chassis(RedfishJsonValidator):
@@ -41,7 +41,7 @@ class Chassis(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        # TODO inspect hardware obj to make obj below
+        # TODO (danielreed) inspect hardware obj to make obj below
 
         self.redfish["@odata.type"] = \
             "#Chassis.v1_5_0.Chassis"
@@ -54,8 +54,9 @@ class Chassis(RedfishJsonValidator):
         self.redfish["IndicatorLED"] = "Unknown"
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["ComputerSystems"] = list()
-        self.redfish["Links"]["ComputerSystems"].append(collections.OrderedDict())
+        self.redfish["Links"]["ComputerSystems"] \
+            .append(collections.OrderedDict())
         self.redfish["Links"]["ComputerSystems"][0]["@odata.id"] = \
-          "/redfish/v1/Systems/" + hardware['uuid']
+            "/redfish/v1/Systems/" + hardware['uuid']
 
         self._validate()
