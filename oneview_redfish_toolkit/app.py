@@ -51,4 +51,3 @@ app.register_blueprint(chassis_collection)
 app.register_blueprint(computer_system_collection)
 app.register_blueprint(computer_system)
 app.register_blueprint(chassis)
-
