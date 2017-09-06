@@ -60,7 +60,7 @@ class TestServiceRoot(unittest.TestCase):
             'message': 'appliance error',
         })
 
-        client.appliance_node_information.get_status.side_effect = e
+        client.appliance_node_information.get_version.side_effect = e
 
         response = self.app.get("/redfish/v1/")
 
@@ -81,7 +81,7 @@ class TestServiceRoot(unittest.TestCase):
             'message': 'appliance error',
         })
 
-        client.appliance_node_information.get_status.side_effect = e
+        client.appliance_node_information.get_version.side_effect = e
 
         response = self.app.get("/redfish/v1/")
 
@@ -97,7 +97,7 @@ class TestServiceRoot(unittest.TestCase):
         """Tests ServiceRoot blueprint result against know value """
 
         client = mock_get_ov_client()
-        client.appliance_node_information.get_status.return_value = \
+        client.appliance_node_information.get_version.return_value = \
             {'uuid': '00000000-0000-0000-0000-000000000000'}
 
         result = self.app.get("/redfish/v1/")
