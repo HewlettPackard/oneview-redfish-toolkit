@@ -54,7 +54,7 @@ class TestUtil(unittest.TestCase):
     # load_ini() tests
     def setUp(self):
         self.schema_dir = './oneview_redfish_toolkit/schemas'
-        self.config_file = './oneview_redfish_toolkit/redfish.ini'
+        self.config_file = './redfish.ini'
 
     def test_load_ini_invalid_config_file(self):
         # Tests if passing a file that does not exists returns false.

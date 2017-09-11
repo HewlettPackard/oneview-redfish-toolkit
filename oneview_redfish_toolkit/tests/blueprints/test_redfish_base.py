@@ -14,7 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
 import unittest
 
 from flask import Flask
@@ -48,6 +47,6 @@ class TestRedfishBase(unittest.TestCase):
     def test_get_redfish_base_response(self):
         result = self.app.get("/redfish/")
 
-        json_result = json.loads(result.data.decode("utf-8"))
+        json_str = result.data.decode("utf-8")
 
-        self.assertEqual(json_result, {"v1": "/redfish/v1/"})
+        self.assertEqual(json_str, '{"v1": "/redfish/v1/"}')

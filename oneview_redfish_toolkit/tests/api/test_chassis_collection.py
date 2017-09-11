@@ -15,21 +15,21 @@
 # under the License.
 
 """
-    Tests for computer_system_collection.py
+    Tests for chassis_collection.py
 """
 
 import json
 
-from oneview_redfish_toolkit.api.computer_system_collection \
-    import ComputerSystemCollection
+from oneview_redfish_toolkit.api.chassis_collection \
+    import ChassisCollection
 from oneview_redfish_toolkit import util
 
 import unittest
 from unittest import mock
 
 
-class TestComputerSystemCollection(unittest.TestCase):
-    """Tests for ComputerSystemCollection class"""
+class TestChassisCollection(unittest.TestCase):
+    """Tests for ChassisCollection class"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, mock_ov):
@@ -45,30 +45,46 @@ class TestComputerSystemCollection(unittest.TestCase):
         ) as f:
             self.server_hardware = json.load(f)
 
-        # Loading ComputerSystemCollection result mockup
+        # Loading enclosures mockup value
         with open(
             'oneview_redfish_toolkit/mockups/'
-            'ComputerSystemCollection.json'
+            'Enclosures.json'
         ) as f:
-            self.computer_system_collection = f.read()
+            self.enclosures = json.load(f)
+
+        # Loading racks mockup value
+        with open(
+            'oneview_redfish_toolkit/mockups/'
+            'Racks.json'
+        ) as f:
+            self.racks = json.load(f)
+
+        # Loading ChassisCollection result mockup
+        with open(
+            'oneview_redfish_toolkit/mockups/'
+            'ChassisCollection.json'
+        ) as f:
+            self.chassis_collection = f.read()
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = ComputerSystemCollection(self.server_hardware)
+            obj = ChassisCollection(self.server_hardware,
+                                    self.enclosures, self.racks)
         except Exception as e:
-            self.fail("Failed to instantiate ComputerSystemCollection class."
+            self.fail("Failed to instantiate ChassisCollection class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, ComputerSystemCollection)
+        self.assertIsInstance(obj, ChassisCollection)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = ComputerSystemCollection(self.server_hardware)
+            obj = ChassisCollection(self.server_hardware,
+                                    self.enclosures, self.racks)
         except Exception as e:
-            self.fail("Failed to instantiate ComputerSystemCollection class."
+            self.fail("Failed to instantiate ChassisCollection class."
                       " Error: {}".format(e))
 
         try:
@@ -76,4 +92,4 @@ class TestComputerSystemCollection(unittest.TestCase):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.computer_system_collection)
+        self.assertEqual(json_str, self.chassis_collection)
