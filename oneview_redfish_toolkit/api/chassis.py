@@ -50,6 +50,9 @@ class Chassis(RedfishJsonValidator):
         self.redfish["Model"] = hardware["model"]
         self.redfish["SerialNumber"] = hardware["serialNumber"]
         self.redfish["IndicatorLED"] = "Unknown"
+        self.redfish["Status"] = collections.OrderedDict()
+        self.redfish["Status"]["State"] = "Enabled"
+        self.redfish["Status"]["Health"] = hardware["status"]
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["ComputerSystems"] = list()
         self.redfish["Links"]["ComputerSystems"] \
