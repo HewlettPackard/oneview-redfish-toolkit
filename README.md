@@ -50,25 +50,44 @@ Logging configuration can be found in `logging.ini` file. The provided configura
 In order to start up oneview-redfish-toolkit service, there is some mandatory configuration at `redfish.ini` file to provide as explained below:
 
 * `redfish` section
-  * **schema_dir**: path to where DTMF's Redfish JSON schemas are stored
-  * **ident_json**: whether JSON objects on answers are idented
+
+  * **schema_dir**: path to where DTMF's Redfish JSON schemas are stored
+  
+  * **indent_json**: whether JSON objects on answers are idented
+
 * `oneview` section
+
   * **ip**: HPE OneView's IP or FQDN address
+  
   * **api_version**: HPE OneView's version. Defaults to 300.
+
 * `credentials` section
-  * **userName**: HPE OneView's username
-  * **password**: HPE OneView's password
+
+  * **username**: HPE OneView's username
+  
+  * **password**: HPE OneView's password
+
 * `schemas` section
-  * **ServiceRoot**: DTMF's Redfish JSON schema for the `Service Root` resource
-  * **ChassisCollection**: DTMF's Redfish JSON schema for `Chassis` collections
-  * **Chassis**: DTMF's Redfish JSON schema for `Chassis` resources
-  * **ComputerSystemCollection**: DTMF's Redfish JSON schema for `Computer Systems` collections
-  * **ComputerSystem**: DTMF's Redfish JSON schema for `Computer Systems` resources
-  * **ManagerCollection**: DTMF's Redfish JSON schema for `Managers` collections
-  * **Manager**: DTMF's Redfish JSON schema for `Manager` resources
-  * **EventService**: DTMF's Redfish JSON schema for the `Event Service` resource
-  * **EventDestination**: DTMF's Redfish JSON schema for `Event Destination` resources
-  * **Event**: DTMF's Redfish JSON schema for `Event` objects
+
+  * **ServiceRoot**: DTMF's Redfish JSON schema for the `Service Root` resource
+  
+  * **ChassisCollection**: DTMF's Redfish JSON schema for `Chassis` collections
+  
+  * **Chassis**: DTMF's Redfish JSON schema for `Chassis` resources
+  
+  * **ComputerSystemCollection**: DTMF's Redfish JSON schema for `Computer Systems` collections
+  
+  * **ComputerSystem**: DTMF's Redfish JSON schema for `Computer Systems` resources
+  
+  * **ManagerCollection**: DTMF's Redfish JSON schema for `Managers` collections
+  
+  * **Manager**: DTMF's Redfish JSON schema for `Manager` resources
+  
+  * **EventService**: DTMF's Redfish JSON schema for the `Event Service` resource
+  
+  * **EventDestination**: DTMF's Redfish JSON schema for `Event Destination` resources
+  
+  * **Event**: DTMF's Redfish JSON schema for `Event` objects
 
 Note: HPE OneView' credentials are stred in clear-text. Make sure only authorized users can access this file.
 
