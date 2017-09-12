@@ -17,6 +17,7 @@ import os
 
 from flask import Flask
 
+from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.chassis_collection \
     import chassis_collection
 from oneview_redfish_toolkit.blueprints.computer_system import computer_system
@@ -48,3 +49,4 @@ app.register_blueprint(service_root, url_prefix='/redfish/v1/')
 app.register_blueprint(chassis_collection)
 app.register_blueprint(computer_system_collection)
 app.register_blueprint(computer_system)
+app.register_blueprint(chassis)
