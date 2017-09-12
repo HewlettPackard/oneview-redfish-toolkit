@@ -17,10 +17,9 @@ import os
 
 from flask import Flask
 
-
+from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.chassis_collection \
     import chassis_collection
-from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.computer_system import computer_system
 from oneview_redfish_toolkit.blueprints.computer_system_collection \
     import computer_system_collection
