@@ -20,6 +20,7 @@ In a developement environment:
 $ git clone https://github.com/HewlettPackard/oneview-redfish-toolkit.git
 $ cd oneview-redfish-toolkit
 $ tox -epy35 --notest  # create an environment with all dependencies
+$ source .tox/py35/bin/activate # load the created environment
 $ python run.py    # to launch the service
 ```
 
@@ -42,9 +43,34 @@ The latest version of the SDK documentation can be found in the [SDK Documentati
 
 ## Logging
 
+Logging configuration can be found in `logging.ini` file. The provided configuration enables INFO level at both console and file output (which will generate a `redfish.log` file).
+
 ## Configuration
 
-UPDATE WITH CONFIGURATION FILE INSTRUCTIONS.
+In order to start up oneview-redfish-toolkit service, there is some mandatory configuration at `redfish.ini` file to provide as explained below:
+
+* `redfish` section
+  * **schema_dir**: path to where DTMF's Redfish JSON schemas are stored
+  * **ident_json**: whether JSON objects on answers are idented
+* `oneview` section
+  * **ip**: HPE OneView's IP or FQDN address
+  * **api_version**: HPE OneView's version. Defaults to 300.
+* `credentials` section
+  * **userName**: HPE OneView's username
+  * **password**: HPE OneView's password
+* `schemas` section
+  * **ServiceRoot**: DTMF's Redfish JSON schema for the `Service Root` resource
+  * **ChassisCollection**: DTMF's Redfish JSON schema for `Chassis` collections
+  * **Chassis**: DTMF's Redfish JSON schema for `Chassis` resources
+  * **ComputerSystemCollection**: DTMF's Redfish JSON schema for `Computer Systems` collections
+  * **ComputerSystem**: DTMF's Redfish JSON schema for `Computer Systems` resources
+  * **ManagerCollection**: DTMF's Redfish JSON schema for `Managers` collections
+  * **Manager**: DTMF's Redfish JSON schema for `Manager` resources
+  * **EventService**: DTMF's Redfish JSON schema for the `Event Service` resource
+  * **EventDestination**: DTMF's Redfish JSON schema for `Event Destination` resources
+  * **Event**: DTMF's Redfish JSON schema for `Event` objects
+
+Note: HPE OneView' credentials are stred in clear-text. Make sure only authorized users can access this file.
 
 ## Contributing
 
