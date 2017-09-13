@@ -1,0 +1,45 @@
+{
+    "@odata.type": "#Chassis.v1_2_0.Chassis",
+    "Id": "0000000000A66101",
+    "Name": "0000A66101",
+    "ChassisType": "Enclosure",
+    "Manufacturer": "HPE",
+    "Model": "Synergy 12000 Frame",
+    "SerialNumber": "0000A66101",
+    "PartNumber": "000000-010",
+    "IndicatorLED": "Lit",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Links": {
+        "Contains": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/30373737-3237-4D32-3230-313530314752"
+            },
+            {
+                "@odata.id": "/redfish/v1/Chassis/30373737-3237-4D32-3230-313530354752"
+            },
+            {
+                "@odata.id": "/redfish/v1/Chassis/30303437-3034-4D32-3230-313130304752"
+            },
+            {
+                "@odata.id": "/redfish/v1/Chassis/30303437-3034-4D32-3230-313130334752"
+            },
+            {
+                "@odata.id": "/redfish/v1/Chassis/30303437-3034-4D32-3230-313131324752"
+            },
+            {
+                "@odata.id": "/redfish/v1/Chassis/30303437-3034-4D32-3230-313131354752"
+            },
+            {
+                "@odata.id": "/redfish/v1/Chassis/30303437-3034-4D32-3230-313130364752"
+            },
+            {
+                "@odata.id": "/redfish/v1/Chassis/30303437-3034-4D32-3230-313130394752"
+            }
+        ]
+    },
+    "@odata.context": "/redfish/v1/$metadata#Chassis.Chassis",
+    "@odata.id": "/redfish/v1/Chassis/MultiBladeEncl"
+}
