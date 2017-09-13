@@ -2,11 +2,9 @@
 
 # HPE OneView Redfish Toolkit
 
-This toolkit provides a REST service to answer DMTF's Redfish compliant requests by querying an HPE OneView infrastructure.
+This toolkit provides a REST service to answer DMTF's Redfish compliant requests by querying HPE OneView.
 
-HPE OneView is a fresh approach to converged infrastructure management, inspired
-by the way you expect to work, with a single integrated view of your IT
-infrastructure.
+HPE OneView is a fresh approach to converged infrastructure management, inspired by the way you expect to work, with a single integrated view of your IT infrastructure.
 
 DMTF's Redfish is an open industry standard specification and schema that specifies a RESTful interface and utilizes JSON and OData to help customers integrate solutions within their existing tool chains.
 
@@ -93,20 +91,17 @@ Note: HPE OneView' credentials are stred in clear-text. Make sure only authorize
 
 ## Contributing
 
-You know the drill. Fork it, branch it, change it, commit it, and pull-request it.
-We are passionate about improving this project, and are glad to accept help to make it better. However, keep the following in mind:
+You know the drill. Fork it, branch it, change it, commit it, and pull-request it. We are passionate about improving this project, and are glad to accept help to make it better. However, keep the following in mind:
 
 We reserve the right to reject changes that we feel do not fit the scope of this project. For feature additions, please open an issue to discuss your ideas before doing the work.
 
 ## Feature Requests
 
-If you have a need not being met by the current implementation, please let us know (via a new issue).
-This feedback is crucial for us to deliver a useful product. Do not assume that we have already thought of everything, because we assure you that is not the case.
+If you have a need not being met by the current implementation, please let us know (via a new issue). This feedback is crucial for us to deliver a useful product. Do not assume that we have already thought of everything, because we assure you that is not the case.
 
 ## Testing
 
-We have already packaged everything you need to do to verify if the code is passing the tests.
-The tox script wraps the unit tests execution against Python 3, flake8 validation, and the test coverage report generation.
+We have already packaged everything you need to do to verify if the code is passing the tests. The tox script wraps the unit tests execution against Python 3, flake8 validation, and the test coverage report generation.
 
 Run the following command:
 
