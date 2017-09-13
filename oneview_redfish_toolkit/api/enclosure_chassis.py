@@ -30,7 +30,7 @@ class EnclosureChassis(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Chassis'
 
-    def __init__(self, enclosure):
+    def __init__(self, enclosure, environmental_configuration):
         """Enclosure Chassis constructor
 
         Populates self.redfish with hardcoded Enclosure Chassis
@@ -38,7 +38,10 @@ class EnclosureChassis(RedfishJsonValidator):
 
         Args:
             enclosure: An object containing the Oneview enclosure
-                       to create the Redfish JSON.
+            to create the Redfish JSON.
+
+            environmental_configuration: An object having information
+            about the rack that containing the enclosure.
         """
 
         super().__init__(self.SCHEMA_NAME)
@@ -60,6 +63,9 @@ class EnclosureChassis(RedfishJsonValidator):
         self.redfish["Links"]["Contains"] = list()
         self._set_links_to_computer_system(
             enclosure["deviceBays"])
+        self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
+        self.redfish["Links"]["ContainedBy"]["@odata.id"] = \
+            "/redfish/v1/Chassis/" + environmental_configuration["rackId"]
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Chassis.Chassis"
         self.redfish["@odata.id"] = "/redfish/v1/Chassis/MultiBladeEncl"
@@ -89,19 +95,19 @@ class EnclosureChassis(RedfishJsonValidator):
         except Exception:
             return "Unknown"
 
-    def _set_links_to_computer_system(self, oneview_device_uri):
+    def _set_links_to_computer_system(self, oneview_device_bays):
         """Mounts the list of Enclosure Links
 
             Populates self.redfish["Links"]["Contains"] with the links
             to all ComputerSystem chassis it contains.
 
             Args:
-                oneview_device_uri: list of dicts containing information
+                oneview_device_bays: list of dicts containing information
                 about devices and URI to OneView server hardwares.
         """
 
         computer_systems_uuid = self. \
-            _filter_by_computer_system_uuid(oneview_device_uri)
+            _filter_by_computer_system_uuid(oneview_device_bays)
 
         for computer_system_uuid in computer_systems_uuid:
             link_dict = collections.OrderedDict()
@@ -109,14 +115,14 @@ class EnclosureChassis(RedfishJsonValidator):
                 "/redfish/v1/Chassis/" + computer_system_uuid
             self.redfish["Links"]["Contains"].append(link_dict)
 
-    def _filter_by_computer_system_uuid(self, oneview_device_uri):
+    def _filter_by_computer_system_uuid(self, oneview_device_bays):
         """Return Computer Systems UUID
 
-            Iterate over oneview_device_uri and filter by only UUIDs
+            Iterate over oneview_device_bays and filter by only UUIDs
             related to server hardwares.
 
             Args:
-                oneview_device_uri: list of dicts containing information
+                oneview_device_bays: list of dicts containing information
                 about devices and URI to OneView server hardwares.
 
             Returns:
@@ -128,7 +134,7 @@ class EnclosureChassis(RedfishJsonValidator):
 
         computer_system_uuid = list()
 
-        for device_dict in oneview_device_uri:
+        for device_dict in oneview_device_bays:
             uri = device_dict["deviceUri"]
 
             if uri is not None:

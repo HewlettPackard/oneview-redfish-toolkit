@@ -39,6 +39,13 @@ class TestEnclosureChassis(unittest.TestCase):
         ) as f:
             self.ov_enclosure = json.load(f)
 
+        # Loading env_config mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/'
+                'EnclosureEnvironmentalConfig.json'
+        ) as f:
+            self.env_config = json.load(f)
+
         # Loading rf_enclosure mockup result
         with open(
             'oneview_redfish_toolkit/mockups/RedfishEnclosureChassis.json'
@@ -49,7 +56,7 @@ class TestEnclosureChassis(unittest.TestCase):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = EnclosureChassis(self.ov_enclosure)
+            obj = EnclosureChassis(self.ov_enclosure, self.env_config)
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
                       " Error: {}".format(e))
@@ -59,7 +66,7 @@ class TestEnclosureChassis(unittest.TestCase):
         # Tests the serialize function result against known result
 
         try:
-            obj = EnclosureChassis(self.ov_enclosure)
+            obj = EnclosureChassis(self.ov_enclosure, self.env_config)
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
                       " Error: {}".format(e))
