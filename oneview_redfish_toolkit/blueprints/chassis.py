@@ -44,11 +44,24 @@ def get_chassis(uuid):
     try:
         ov_client = util.get_oneview_client()
 
-        ov_sh = ov_client.server_hardware.get(uuid)
+        index_obj = ov_client.index_resources.get_all(filter='uuid=' + uuid)
+        category = index_obj[0]["category"]
 
-        sh_chassis = Chassis(ov_sh)
+        if category == 'server-hardware':
+            ov_sh = ov_client.server_hardware.get(uuid)
+            ch = Chassis(ov_sh)
+        elif category == 'enclosures':
+            # ov_encl = ov_client.enclosures.get(uuid)
+            # ch = Chassis(ov_encl)
+            abort(500)
+        elif category == 'racks':
+            # ov_racks = ov_client.racks.get(uuid)
+            # ch = Chassis(ov_racks)
+            abort(500)
+        else:
+            abort(404)
 
-        json_str = sh_chassis.serialize()
+        json_str = ch.serialize()
 
         return Response(
             response=json_str,
