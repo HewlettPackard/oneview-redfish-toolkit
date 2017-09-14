@@ -15,20 +15,18 @@
 # under the License.
 
 import collections
-from oneview_redfish_toolkit.api.redfish_json_validator \
-    import RedfishJsonValidator
+from oneview_redfish_toolkit.api.chassis \
+    import Chassis
 
 import re
 
 
-class EnclosureChassis(RedfishJsonValidator):
+class EnclosureChassis(Chassis):
     """Creates an Enclosure Chassis Redfish dict
 
          Populates self.redfish with some hardcoded Enclosure Chassis
-         values and with the response of OneView enclosure.
+         values and with the response of OneView enclosure resources.
     """
-
-    SCHEMA_NAME = 'Chassis'
 
     def __init__(self, enclosure, environmental_configuration):
         """Enclosure Chassis constructor
@@ -44,56 +42,20 @@ class EnclosureChassis(RedfishJsonValidator):
             about the rack that containing the enclosure.
         """
 
-        super().__init__(self.SCHEMA_NAME)
+        super().__init__(enclosure)
 
-        self.redfish["@odata.type"] = "#Chassis.v1_2_0.Chassis"
-        self.redfish["Id"] = enclosure["uuid"]
-        self.redfish["Name"] = enclosure["name"]
         self.redfish["ChassisType"] = "Enclosure"
-        self.redfish["Manufacturer"] = "HPE"
         self.redfish["Model"] = enclosure["enclosureModel"]
-        self.redfish["SerialNumber"] = enclosure["serialNumber"]
         self.redfish["PartNumber"] = enclosure["partNumber"]
-        self.redfish["IndicatorLED"] = self. \
-            _map_indicator_led(enclosure["uidState"])
-        self.redfish["Status"] = collections.OrderedDict()
-        self.redfish["Status"]["State"] = "Enabled"
-        self.redfish["Status"]["Health"] = enclosure["status"]
-        self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["Contains"] = list()
         self._set_links_to_computer_system(
             enclosure["deviceBays"])
         self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
         self.redfish["Links"]["ContainedBy"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + environmental_configuration["rackId"]
-        self.redfish["@odata.context"] = \
-            "/redfish/v1/$metadata#Chassis.Chassis"
         self.redfish["@odata.id"] = "/redfish/v1/Chassis/MultiBladeEncl"
 
         self._validate()
-
-    def _map_indicator_led(self, uid_state):
-        """Maps Oneview's uid state to Redfish's indicator led.
-
-            Maps the known OneView uid state to Redfish indicator led.
-            If a unknown uid state shows up it will be mapped to Unknown.
-
-            Args:
-                uid_state: Uid state of Oneview.
-
-            Returns:
-                string: Redfish indicator led.
-        """
-
-        redfish_oneview_indicator_led_map = dict()
-        redfish_oneview_indicator_led_map["On"] = "Lit"
-        redfish_oneview_indicator_led_map["Off"] = "Off"
-        redfish_oneview_indicator_led_map["Blink"] = "Blinking"
-
-        try:
-            return redfish_oneview_indicator_led_map[uid_state]
-        except Exception:
-            return "Unknown"
 
     def _set_links_to_computer_system(self, oneview_device_bays):
         """Mounts the list of Enclosure Links
