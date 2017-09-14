@@ -199,6 +199,87 @@ class TestChassis(unittest.TestCase):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    ########
-    # Rack #
-    ########
+    #############
+    # Blade #
+    #############
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_blade_chassis(
+            self, mock_get_ov_client):
+        """"Tests BladeChassis with a known Server Hardware"""
+
+        # Loading ov_serverhardware mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/ServerHardware.json'
+        ) as f:
+            ov_serverhardware = json.load(f)
+
+        # Loading rf_serverhardware mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/BladeChassis.json'
+        ) as f:
+            rf_blade = f.read()
+
+        ov = mock_get_ov_client()
+
+        ov.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        ov.server_hardware.get.return_value = ov_serverhardware
+
+        # Get BladeChassis
+        response = self.app.get(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+        )
+
+        json_str = response.data.decode("utf-8")
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual(rf_blade, json_str)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_server_hardware_not_found(self, mock_get_ov_client):
+        """Tests BladeChassis with Server Hardware not found"""
+
+        ov = mock_get_ov_client()
+
+        ov.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        ov.server_hardware.get.return_value = \
+            {'serverHardwareUri': 'invalidUri'}
+        e = HPOneViewException({
+            'errorCode': 'RESOURCE_NOT_FOUND',
+            'message': 'server hardware not found',
+        })
+
+        ov.server_hardware.get.side_effect = e
+
+        response = self.app.get(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+        )
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_server_hardware_unexpected_error(self, mock_get_ov_client):
+        """Tests BladeChassis with an unexpected error"""
+
+        ov = mock_get_ov_client()
+
+        ov.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        ov.server_hardware.get.side_effect = Exception()
+
+        response = self.app.get(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+        )
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        ########
+        # Rack #
+        ########
