@@ -49,7 +49,8 @@ class Chassis(RedfishJsonValidator):
         self.redfish["Manufacturer"] = "HPE"
         self.redfish["Model"] = hardware["model"]
         self.redfish["SerialNumber"] = hardware["serialNumber"]
-        self.redfish["IndicatorLED"] = "Unknown"
+        self.redfish["IndicatorLED"] = self. \
+            _map_indicator_led(hardware["uidState"])
         self.redfish["Status"] = collections.OrderedDict()
         self.redfish["Status"]["State"] = "Enabled"
         self.redfish["Status"]["Health"] = hardware["status"]
@@ -61,3 +62,26 @@ class Chassis(RedfishJsonValidator):
             "/redfish/v1/Systems/" + hardware['uuid']
 
         self._validate()
+
+    def _map_indicator_led(self, uid_state):
+        """Maps Oneview's uid state to Redfish's indicator led.
+
+            Maps the known OneView uid state to Redfish indicator led.
+            If a unknown uid state shows up it will be mapped to Unknown.
+
+            Args:
+                uid_state: Uid state of Oneview.
+
+            Returns:
+                string: Redfish indicator led.
+        """
+
+        redfish_oneview_indicator_led_map = dict()
+        redfish_oneview_indicator_led_map["On"] = "Lit"
+        redfish_oneview_indicator_led_map["Off"] = "Off"
+        redfish_oneview_indicator_led_map["Blink"] = "Blinking"
+
+        try:
+            return redfish_oneview_indicator_led_map[uid_state]
+        except Exception:
+            return "Unknown"

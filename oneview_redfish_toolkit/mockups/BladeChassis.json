@@ -6,7 +6,7 @@
     "Manufacturer": "HPE",
     "Model": "HPE Synergy 480 Gen9 Compute Module",
     "SerialNumber": "2M201136GR",
-    "IndicatorLED": "Unknown",
+    "IndicatorLED": "Off",
     "Status": {
         "State": "Enabled",
         "Health": "OK"
