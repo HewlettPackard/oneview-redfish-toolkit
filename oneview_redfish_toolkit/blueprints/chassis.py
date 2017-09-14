@@ -23,11 +23,12 @@ from flask import Blueprint
 from flask import Response
 from flask_api import status
 
-from oneview_redfish_toolkit.api import errors
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 
 # Own libs
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.chassis import Chassis
+from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
 from oneview_redfish_toolkit import util
 
 chassis = Blueprint("chassis", __name__)
@@ -51,29 +52,25 @@ def get_chassis(uuid):
         if index_obj:
             category = index_obj[0]["category"]
         else:
-            raise errors.OneViewRedfishError(
-                'Cannot find Index resource'
-            )
+            raise OneViewRedfishError('Cannot find Index resource')
 
         if category == 'server-hardware':
             ov_sh = ov_client.server_hardware.get(uuid)
             ch = Chassis(ov_sh)
         elif category == 'enclosures':
-            # ov_encl = ov_client.enclosures.get(uuid)
-            # ch = Chassis(ov_encl)
-            raise errors.OneViewRedfishError(
-                'Chassis type unknown'
-            )
+            ov_encl = ov_client.enclosures.get(uuid)
+            ov_encl_env_config = ov_client.enclosures. \
+                get_environmental_configuration(uuid)
+
+            ch = EnclosureChassis(ov_encl, ov_encl_env_config)
         elif category == 'racks':
             # ov_racks = ov_client.racks.get(uuid)
             # ch = Chassis(ov_racks)
-            raise errors.OneViewRedfishError(
+            raise OneViewRedfishError(
                 'Chassis type unknown'
             )
         else:
-            raise errors.OneViewRedfishError(
-                'Chassis type not found'
-            )
+            raise OneViewRedfishError('Chassis type not found')
 
         json_str = ch.serialize()
 
@@ -86,7 +83,7 @@ def get_chassis(uuid):
         logging.error(e)
         abort(status.HTTP_404_NOT_FOUND)
 
-    except errors.OneViewRedfishError as e:
+    except OneViewRedfishError as e:
         # In case of error print exception and abort
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_404_NOT_FOUND)

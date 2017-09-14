@@ -123,10 +123,10 @@ class EnclosureChassis(RedfishJsonValidator):
 
             Args:
                 oneview_device_bays: list of dicts containing information
-                about devices and URI to OneView server hardwares.
+                about devices and URI of OneView server hardwares.
 
             Returns:
-                A list of ComputerSystems UUID.
+                list: List of ComputerSystem UUID.
         """
 
         pattern = re.compile(r'\b[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-'
