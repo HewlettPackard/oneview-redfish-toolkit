@@ -29,6 +29,7 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.chassis import Chassis
 from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
+from oneview_redfish_toolkit.api.rack_chassis import RackChassis
 from oneview_redfish_toolkit import util
 
 chassis = Blueprint("chassis", __name__)
@@ -64,11 +65,8 @@ def get_chassis(uuid):
 
             ch = EnclosureChassis(ov_encl, ov_encl_env_config)
         elif category == 'racks':
-            # ov_racks = ov_client.racks.get(uuid)
-            # ch = Chassis(ov_racks)
-            raise OneViewRedfishError(
-                'Chassis type unknown'
-            )
+            ov_racks = ov_client.racks.get(uuid)
+            ch = RackChassis(ov_racks)
         else:
             raise OneViewRedfishError('Chassis type not found')
 
@@ -79,17 +77,17 @@ def get_chassis(uuid):
             status=status.HTTP_200_OK,
             mimetype="application/json")
     except HPOneViewException as e:
-        # In case of error print exception and abort
+        # In case of error log exception and abort
         logging.error(e)
         abort(status.HTTP_404_NOT_FOUND)
 
     except OneViewRedfishError as e:
-        # In case of error print exception and abort
+        # In case of error log exception and abort
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_404_NOT_FOUND)
 
     except Exception as e:
-        # In case of error print exception and abort
+        # In case of error log exception and abort
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
