@@ -30,11 +30,11 @@ from oneview_redfish_toolkit import util
 import logging
 
 
-util.configure_logging(os.getenv("LOGGING_FILE", "logging.ini"))
+util.configure_logging(os.getenv("LOGGING_FILE", "logging.conf"))
 
 # Load config file, schemas and creates a OV connection
 try:
-    util.load_config('redfish.ini')
+    util.load_config('redfish.conf')
 except Exception as e:
     logging.error('Failed to load app configuration')
     logging.error(e)

@@ -41,11 +41,11 @@ The latest version of the SDK documentation can be found in the [SDK Documentati
 
 ## Logging
 
-Logging configuration can be found in `logging.ini` file. The provided configuration enables INFO level at both console and file output (which will generate a `redfish.log` file).
+Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output (which will generate a `redfish.log` file).
 
 ## Configuration
 
-In order to start up oneview-redfish-toolkit service, there is some mandatory configuration at `redfish.ini` file to provide as explained below:
+In order to start up oneview-redfish-toolkit service, there is some mandatory configuration at `redfish.conf` file to provide as explained below:
 
 * `redfish` section
 

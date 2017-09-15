@@ -36,7 +36,7 @@ class TestComputerSystemCollection(unittest.TestCase):
         """Tests preparation"""
 
         # Loading variable in util module
-        util.load_config('redfish.ini')
+        util.load_config('redfish.conf')
 
         # Loading server_hardware mockup value
         with open(
