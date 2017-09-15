@@ -39,7 +39,7 @@ class TestRackChassis(unittest.TestCase):
         """Tests preparation"""
 
         # Loading variable in util module
-        util.load_config('redfish.ini')
+        util.load_config('redfish.conf')
 
         # Loading ov_rack mockup value
         with open(
@@ -49,7 +49,7 @@ class TestRackChassis(unittest.TestCase):
 
         # Loading rf_rack mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/RedfishRack.json'
+            'oneview_redfish_toolkit/mockups/RackChassis.json'
         ) as f:
             self.rf_rack = f.read()
 

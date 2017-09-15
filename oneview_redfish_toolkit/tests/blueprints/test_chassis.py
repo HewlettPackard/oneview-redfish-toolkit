@@ -299,7 +299,7 @@ class TestChassis(unittest.TestCase):
 
         # Loading rf_rack mockup result
         with open(
-                'oneview_redfish_toolkit/mockups/RedfishRack.json'
+                'oneview_redfish_toolkit/mockups/RackChassis.json'
         ) as f:
             rf_rack = f.read()
 
@@ -326,7 +326,7 @@ class TestChassis(unittest.TestCase):
 
         ov = mock_get_ov_client()
 
-        ov.index_resources.get_all.return_value = [{"category": "rack"}]
+        ov.index_resources.get_all.return_value = [{"category": "racks"}]
         ov.racks.get.return_value = {'rackeUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
@@ -341,6 +341,7 @@ class TestChassis(unittest.TestCase):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
+    @mock.patch.object(util, 'get_oneview_client')
     def test_rack_unexpected_error(self, mock_get_ov_client):
         """Tests RackChassis with an unexpected error"""
 
