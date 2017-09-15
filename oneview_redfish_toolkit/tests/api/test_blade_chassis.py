@@ -16,7 +16,7 @@
 
 import json
 
-from oneview_redfish_toolkit.api.chassis import Chassis
+from oneview_redfish_toolkit.api.blade_chassis import BladeChassis
 from oneview_redfish_toolkit import util
 
 import unittest
@@ -49,17 +49,17 @@ class TestBladeChassis(unittest.TestCase):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = Chassis(self.sh_dict)
+            obj = BladeChassis(self.sh_dict)
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, Chassis)
+        self.assertIsInstance(obj, BladeChassis)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = Chassis(self.sh_dict)
+            obj = BladeChassis(self.sh_dict)
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
                       " Error: {}".format(e))
