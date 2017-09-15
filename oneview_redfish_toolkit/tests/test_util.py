@@ -31,7 +31,7 @@ class TestUtil(unittest.TestCase):
     """Test class for util
 
         Tests:
-            load_ini()
+            load_conf()
                 - invalid ini file
                 - valid ini file
                 - have all expected sessions
@@ -51,29 +51,29 @@ class TestUtil(unittest.TestCase):
                 - checkes if globals vars are not none
     """
 
-    # load_ini() tests
+    # load_conf() tests
     def setUp(self):
         self.schema_dir = './oneview_redfish_toolkit/schemas'
-        self.config_file = './redfish.ini'
+        self.config_file = './redfish.conf'
 
-    def test_load_ini_invalid_config_file(self):
+    def test_load_conf_invalid_config_file(self):
         # Tests if passing a file that does not exists returns false.
         try:
-            util.load_ini('non-exist.ini')
+            util.load_conf('non-exist.conf')
         except Exception as e:
             self.assertIsInstance(
                 e,
                 errors.OneViewRedfishResourceNotFoundError
             )
 
-    def test_load_ini_valid_config_file(self):
+    def test_load_conf_valid_config_file(self):
         # Tests if passing a valid file returns a object
-        self.assertIsInstance(util.load_ini(self.config_file),
+        self.assertIsInstance(util.load_conf(self.config_file),
                               configparser.ConfigParser)
 
-    def test_load_ini_has_all_expect_sessions(self):
+    def test_load_conf_has_all_expect_sessions(self):
         # Tests if ini file has all expected sections
-        cfg = util.load_ini(self.config_file)
+        cfg = util.load_conf(self.config_file)
 
         self.assertTrue(cfg.has_section('redfish'),
                         msg='Section {} not found in ini file {}'.format(
@@ -88,10 +88,10 @@ class TestUtil(unittest.TestCase):
                         msg='Section {} not found in ini file {}'.
                         format('schemas', self.config_file))
 
-    def test_load_ini_has_all_options(self):
+    def test_load_conf_has_all_options(self):
         # Tests if ini file has all expected options
 
-        cfg = util.load_ini(self.config_file)
+        cfg = util.load_conf(self.config_file)
 
         self.assertTrue(cfg.has_option('redfish', 'schema_dir'),
                         msg='Option {} not found in section {} in ini file {}'
@@ -151,7 +151,7 @@ class TestUtil(unittest.TestCase):
     def test_load_schemas_valid_schema_dir_valid_dict(self):
         # Tests if ini file has all expected sections
 
-        cfg = util.load_ini(self.config_file)
+        cfg = util.load_conf(self.config_file)
         schemas = dict(cfg.items('schemas'))
 
         try:
