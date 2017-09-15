@@ -54,7 +54,7 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Boot"] = collections.OrderedDict()
         self.redfish["Boot"]["BootSourceOverrideTarget@Redfish."
                              "AllowableValues"] = \
-            self.MapBoot(sht_dict['bootCapabilities'])
+            self.map_boot(sht_dict['bootCapabilities'])
         self.redfish["BiosVersion"] = sh_dict["romVersion"]
         self.redfish["ProcessorSummary"] = collections.OrderedDict()
         self.redfish["ProcessorSummary"]['Count'] = sh_dict["processorCount"]
@@ -70,7 +70,7 @@ class ComputerSystem(RedfishJsonValidator):
 
         self._validate()
 
-    def MapBoot(self, boot_list):
+    def map_boot(self, boot_list):
         """Maps Oneview's boot options to Redfish's boot option
 
             Maps the known OneView boot options to Redfish boot option.
