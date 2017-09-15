@@ -46,14 +46,14 @@ class EnclosureChassis(Chassis):
 
         self.redfish["ChassisType"] = "Enclosure"
         self.redfish["Model"] = enclosure["enclosureModel"]
-        self.redfish["PartNumber"] = enclosure["partNumber"]
+        self.redfish["IndicatorLED"] = self. \
+            _map_indicator_led(enclosure["uidState"])
         self.redfish["Links"]["Contains"] = list()
         self._set_links_to_computer_system(
             enclosure["deviceBays"])
         self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
         self.redfish["Links"]["ContainedBy"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + environmental_configuration["rackId"]
-        self.redfish["@odata.id"] = "/redfish/v1/Chassis/MultiBladeEncl"
 
         self._validate()
 

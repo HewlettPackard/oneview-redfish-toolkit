@@ -40,6 +40,8 @@ class BladeChassis(Chassis):
 
         self.redfish["ChassisType"] = "Blade"
         self.redfish["Model"] = server_hardware["model"]
+        self.redfish["IndicatorLED"] = self. \
+            _map_indicator_led(server_hardware["uidState"])
         self.redfish["Links"]["ComputerSystems"] = list()
         self.redfish["Links"]["ComputerSystems"] \
             .append(collections.OrderedDict())

@@ -4,7 +4,7 @@
     "Name": "0000A66103, bay 5",
     "Manufacturer": "HPE",
     "SerialNumber": "2M201136GR",
-    "IndicatorLED": "Off",
+    "PartNumber": "740040-001",
     "Status": {
         "State": "Enabled",
         "Health": "OK"
@@ -16,7 +16,7 @@
             }
         ]
     },
-    "@odata.context": "/redfish/v1/$metadata#Chassis.Chassis",
     "ChassisType": "Blade",
-    "Model": "HPE Synergy 480 Gen9 Compute Module"
+    "Model": "HPE Synergy 480 Gen9 Compute Module",
+    "IndicatorLED": "Off"
 }

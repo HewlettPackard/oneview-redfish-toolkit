@@ -4,7 +4,7 @@
     "Name": "0000A66101",
     "Manufacturer": "HPE",
     "SerialNumber": "0000A66101",
-    "IndicatorLED": "Lit",
+    "PartNumber": "000000-010",
     "Status": {
         "State": "Enabled",
         "Health": "OK"
@@ -40,9 +40,7 @@
             "@odata.id": "/redfish/v1/Chassis/2AB100LMNB"
         }
     },
-    "@odata.context": "/redfish/v1/$metadata#Chassis.Chassis",
     "ChassisType": "Enclosure",
     "Model": "Synergy 12000 Frame",
-    "PartNumber": "000000-010",
-    "@odata.id": "/redfish/v1/Chassis/MultiBladeEncl"
+    "IndicatorLED": "Lit"
 }

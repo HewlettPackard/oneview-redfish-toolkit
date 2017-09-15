@@ -22,13 +22,12 @@ from flask import abort
 from flask import Blueprint
 from flask import Response
 from flask_api import status
-
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from hpOneView.exceptions import HPOneViewException
 
 # Own libs
-from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.blade_chassis import BladeChassis
 from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import util
 
 chassis = Blueprint("chassis", __name__)

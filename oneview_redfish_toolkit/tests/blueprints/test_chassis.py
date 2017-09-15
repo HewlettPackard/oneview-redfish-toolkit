@@ -73,7 +73,7 @@ class TestChassis(unittest.TestCase):
         # Loading env_config mockup value
         with open(
                 'oneview_redfish_toolkit/mockups/'
-                'EnvironmentalConfig.json'
+                'EnclosureEnvironmentalConfig.json'
         ) as f:
             env_config = json.load(f)
 

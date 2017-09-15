@@ -47,14 +47,12 @@ class Chassis(RedfishJsonValidator):
         self.redfish["Name"] = oneview_resource["name"]
         self.redfish["Manufacturer"] = "HPE"
         self.redfish["SerialNumber"] = oneview_resource["serialNumber"]
-        self.redfish["IndicatorLED"] = self. \
-            _map_indicator_led(oneview_resource["uidState"])
+        if oneview_resource["partNumber"] is not None:
+            self.redfish["PartNumber"] = oneview_resource["partNumber"]
         self.redfish["Status"] = collections.OrderedDict()
         self.redfish["Status"]["State"] = "Enabled"
         self.redfish["Status"]["Health"] = oneview_resource["status"]
         self.redfish["Links"] = collections.OrderedDict()
-        self.redfish["@odata.context"] = \
-            "/redfish/v1/$metadata#Chassis.Chassis"
 
     def _map_indicator_led(self, uid_state):
         """Maps Oneview's uid state to Redfish's indicator led.
