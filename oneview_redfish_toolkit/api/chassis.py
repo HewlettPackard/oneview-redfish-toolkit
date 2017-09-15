@@ -15,6 +15,9 @@
 # under the License.
 
 import collections
+
+import json
+
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 
@@ -75,4 +78,4 @@ class Chassis(RedfishJsonValidator):
         try:
             return redfish_oneview_indicator_led_map[uid_state]
         except Exception:
-            return "Unknown"
+            return json.dumps(None)
