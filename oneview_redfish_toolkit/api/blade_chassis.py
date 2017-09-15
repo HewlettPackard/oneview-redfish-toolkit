@@ -47,5 +47,9 @@ class BladeChassis(Chassis):
             .append(collections.OrderedDict())
         self.redfish["Links"]["ComputerSystems"][0]["@odata.id"] = \
             "/redfish/v1/Systems/" + server_hardware['uuid']
+        if server_hardware["locationUri"] is not None:
+            self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
+            self.redfish["Links"]["ContainedBy"]["@odata.id"] = "/redfish/v1/Chassis/" \
+                + server_hardware["locationUri"].split("/")[-1]
 
         self._validate()
