@@ -44,7 +44,7 @@ class TestChassis(unittest.TestCase):
         """Tests preparation"""
 
         # Load config on util
-        util.load_config('redfish.ini')
+        util.load_config('redfish.conf')
 
         # creates a test client
         self.app = Flask(__name__)
@@ -66,7 +66,7 @@ class TestChassis(unittest.TestCase):
 
         # Loading ov_enclosure mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/OneViewEnclosureChassis.json'
+                'oneview_redfish_toolkit/mockups/Enclosure.json'
         ) as f:
             ov_enclosure = json.load(f)
 
@@ -79,7 +79,7 @@ class TestChassis(unittest.TestCase):
 
         # Loading rf_enclosure mockup result
         with open(
-                'oneview_redfish_toolkit/mockups/RedfishEnclosureChassis.json'
+                'oneview_redfish_toolkit/mockups/EnclosureChassis.json'
         ) as f:
             rf_enclosure = f.read()
 
@@ -134,7 +134,7 @@ class TestChassis(unittest.TestCase):
 
         # Loading ov_enclosure mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/OneViewEnclosureChassis.json'
+                'oneview_redfish_toolkit/mockups/Enclosure.json'
         ) as f:
             ov_enclosure = json.load(f)
 
@@ -183,7 +183,7 @@ class TestChassis(unittest.TestCase):
 
         # Loading ov_enclosure mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/OneViewEnclosureChassis.json'
+                'oneview_redfish_toolkit/mockups/Enclosure.json'
         ) as f:
             ov_enclosure = json.load(f)
 

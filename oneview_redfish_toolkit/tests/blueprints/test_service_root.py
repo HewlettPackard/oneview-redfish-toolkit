@@ -36,7 +36,7 @@ class TestServiceRoot(unittest.TestCase):
         """Tests ServiceRoot blueprint setup"""
 
         # Load config on util
-        util.load_config('redfish.ini')
+        util.load_config('redfish.conf')
 
         # creates a test client
         self.app = Flask(__name__)

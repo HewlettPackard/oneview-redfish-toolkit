@@ -23,48 +23,39 @@ from oneview_redfish_toolkit.api.redfish_json_validator \
 
 
 class Chassis(RedfishJsonValidator):
-    """Creates a Chassis Redfish dict
+    """Super class of Chassis resources
 
-         Populates self.redfish with some hardcoded Chassis values and
-         with the response of OneView hardware resources.
+         Populates self.redfish with common value between Enclosure,
+         Rack and Blade.
     """
 
     SCHEMA_NAME = 'Chassis'
 
-    def __init__(self, hardware):
+    def __init__(self, oneview_resource):
         """Chassis constructor
 
-        Populates self.redfish with hardcoded Chassis values
-        and with the response of OneView server hardware
+        Populates self.redfish with common value between Enclosure,
+         Rack and Blade.
 
         Args:
-            hardware: An object containing hardware to
-                      create the Redfish JSON.
+            oneview_resource: An object some oneview_resource (ServerHardware,
+            Enclosure or Rack) to create the Redfish JSON.
         """
 
         super().__init__(self.SCHEMA_NAME)
 
         self.redfish["@odata.type"] = \
             "#Chassis.v1_5_0.Chassis"
-        self.redfish["Id"] = hardware["uuid"]
-        self.redfish["Name"] = hardware["name"]
-        self.redfish["ChassisType"] = "Blade"
+        self.redfish["Id"] = oneview_resource["uuid"]
+        self.redfish["Name"] = oneview_resource["name"]
         self.redfish["Manufacturer"] = "HPE"
-        self.redfish["Model"] = hardware["model"]
-        self.redfish["SerialNumber"] = hardware["serialNumber"]
-        self.redfish["IndicatorLED"] = self. \
-            _map_indicator_led(hardware["uidState"])
+        self.redfish["SerialNumber"] = oneview_resource["serialNumber"]
+        if oneview_resource["partNumber"] is not None:
+            self.redfish["PartNumber"] = oneview_resource["partNumber"]
         self.redfish["Status"] = collections.OrderedDict()
         self.redfish["Status"]["State"] = "Enabled"
-        self.redfish["Status"]["Health"] = hardware["status"]
+        self.redfish["Status"]["Health"] = oneview_resource["status"]
         self.redfish["Links"] = collections.OrderedDict()
-        self.redfish["Links"]["ComputerSystems"] = list()
-        self.redfish["Links"]["ComputerSystems"] \
-            .append(collections.OrderedDict())
-        self.redfish["Links"]["ComputerSystems"][0]["@odata.id"] = \
-            "/redfish/v1/Systems/" + hardware['uuid']
-
-        self._validate()
 
     def _map_indicator_led(self, uid_state):
         """Maps Oneview's uid state to Redfish's indicator led.

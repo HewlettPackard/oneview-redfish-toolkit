@@ -22,13 +22,12 @@ from flask import abort
 from flask import Blueprint
 from flask import Response
 from flask_api import status
-
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from hpOneView.exceptions import HPOneViewException
 
 # Own libs
-from hpOneView.exceptions import HPOneViewException
-from oneview_redfish_toolkit.api.chassis import Chassis
+from oneview_redfish_toolkit.api.blade_chassis import BladeChassis
 from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import util
 
 chassis = Blueprint("chassis", __name__)
@@ -56,7 +55,7 @@ def get_chassis(uuid):
 
         if category == 'server-hardware':
             ov_sh = ov_client.server_hardware.get(uuid)
-            ch = Chassis(ov_sh)
+            ch = BladeChassis(ov_sh)
         elif category == 'enclosures':
             ov_encl = ov_client.enclosures.get(uuid)
             ov_encl_env_config = ov_client.enclosures. \

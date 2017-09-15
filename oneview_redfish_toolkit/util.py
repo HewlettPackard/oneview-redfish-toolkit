@@ -13,23 +13,26 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import os
 
+# Python libs
 import collections
 import configparser
-from hpOneView.oneview_client import OneViewClient
 import json
-
-from oneview_redfish_toolkit.api import errors
-
 import logging
 import logging.config
+import os
+
+# 3rd party libs
+from hpOneView.oneview_client import OneViewClient
+
+# Modules own libs
+from oneview_redfish_toolkit.api import errors
 
 
 def configure_logging(log_file_path):
-    """Loads logging.ini file
+    """Loads logging.conf file
 
-        Loads logging.ini file to create the logger configuration.
+        Loads logging.conf file to create the logger configuration.
 
         The logger configuration has two handlers, one of stream
         (show logs in the console) and other of file (save a log file)
@@ -49,34 +52,34 @@ def configure_logging(log_file_path):
         How to use: import logging and logging.error('message')
 
         Args:
-            log_file_path: logging.ini path.
+            log_file_path: logging.conf path.
 
         Exception:
-            Exception: if logging.ini file not found.
+            Exception: if logging.conf file not found.
     """
     if os.path.isfile(log_file_path) is False:
-        raise Exception("Ini file {} not found".format(log_file_path))
+        raise Exception("Config file {} not found".format(log_file_path))
     else:
         logging.config.fileConfig(log_file_path)
 
 
-def load_config(ini_file):
-    """Loads ini file
+def load_config(conf_file):
+    """Loads redfish.conf file
 
-        Loads and parsers the system ini file into config global var
+        Loads and parsers the system conf file into config global var
         Loads json schemas into schemas_dict global var
         Established a connection with OneView and sets in as ov_conn
         global var
 
         Args:
-            ini_file: string with the ini file name
+            conf_file: string with the conf file name
 
         Returns:
             None
 
         Exception:
             OneViewRedfishResourceNotFoundError:
-                - if ini file not found
+                - if conf file not found
                 - if any of the schemas files are not found
                 - if the schema directory is not found
             OneViewRedFishResourceNotAccessibleError:
@@ -85,7 +88,7 @@ def load_config(ini_file):
                 - if fails to connect to oneview
     """
 
-    config = load_ini(ini_file)
+    config = load_conf(conf_file)
     globals()['config'] = config
 
     # Config file read set global vars
@@ -117,29 +120,29 @@ def load_config(ini_file):
         )
 
 
-def load_ini(ini_file):
-    """Loads and parsesini file
+def load_conf(conf_file):
+    """Loads and parses conf file
 
-        Loads and parses the module ini file
+        Loads and parses the module conf file
 
         Args:
-            ini_file: string with the ini file name
+            conf_file: string with the conf file name
 
         Returns:
-            configparser object with ini_file configs
+            configparser object with conf_file configs
 
         Exception:
             OneViewRedfishResourceNotFoundError:
-                - if ini file not found
+                - if conf file not found
     """
 
-    if not os.path.isfile(ini_file):
-        raise errors.OneViewRedfishResourceNotFoundError(ini_file, 'File')
+    if not os.path.isfile(conf_file):
+        raise errors.OneViewRedfishResourceNotFoundError(conf_file, 'File')
 
     config = configparser.ConfigParser()
     config.optionxform = str
     try:
-        config.read(ini_file)
+        config.read(conf_file)
     except Exception:
         raise
 
