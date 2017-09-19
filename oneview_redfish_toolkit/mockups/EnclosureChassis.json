@@ -44,5 +44,8 @@
     "@odata.id": "/redfish/v1/Chassis/0000000000A66101",
     "ChassisType": "Enclosure",
     "Model": "Synergy 12000 Frame",
-    "IndicatorLED": "Lit"
+    "IndicatorLED": "Lit",
+    "Thermal": {
+        "@odata.id": "/redfish/v1/Chassis/0000000000A66101/Thermal"
+    }
 }

@@ -1,0 +1,96 @@
+{
+	"unconnectedPowerSupplies": {
+		"1": {
+			"side": "A",
+			"id": 1
+		},
+		"2": {
+			"side": "B",
+			"id": 2
+		}
+	},
+	"powerDistributors": [],
+	"children": [{
+		"unconnectedPowerSupplies": {
+			"1": {
+				"side": "Dynamic",
+				"id": 1
+			},
+			"2": {
+				"side": "Dynamic",
+				"id": 2
+			},
+			"3": {
+				"side": "Dynamic",
+				"id": 3
+			},
+			"4": {
+				"side": "Dynamic",
+				"id": 4
+			},
+			"5": {
+				"side": "Dynamic",
+				"id": 5
+			},
+			"6": {
+				"side": "Dynamic",
+				"id": 6
+			}
+		},
+		"powerDistributors": [],
+		"children": [],
+		"height": 10,
+		"peakTemp": 23,
+		"peakTempTime": 1505813700000,
+		"inferredPosition": false,
+		"max": 1137,
+		"device": {
+			"uri": "/rest/enclosures/0000000000A66101",
+			"name": "MXQ72605PQ",
+			"status": "OK",
+			"state": "Configured",
+			"category": "enclosures",
+			"id": null,
+			"uuid": "b60a6d89-67f7-4172-82a2-118d8de80186",
+			"created": "2017-09-19T18:11:34.406Z",
+			"modified": "2017-09-19T18:11:34.406Z",
+			"model": "Synergy 12000 Frame",
+			"deviceType": "BladeSystem",
+			"maxPwrConsumed": null,
+			"eTag": "2017-09-19T18:11:34.406Z"
+		},
+		"capacity": 0
+	}],
+	"height": 0,
+	"peakTemp": 23,
+	"peakTempTime": 1505813700000,
+	"inferredPosition": false,
+	"max": 1137,
+	"device": {
+		"uHeight": 42,
+		"width": 600,
+		"height": 2001,
+		"depth": 1000,
+		"thermalLimit": null,
+		"partNumber": null,
+		"serialNumber": "",
+		"rackMounts": [{
+			"topUSlot": 42,
+			"mountUri": "/rest/enclosures/0000000000A66101",
+			"uHeight": 10,
+			"relativeOrder": 0,
+			"location": "CenterFront"
+		}],
+		"uri": "/rest/racks/2AB100LMNB",
+		"created": "2017-09-15T17:55:01.511Z",
+		"eTag": "2017-09-15T19:25:49.490Z",
+		"modified": "2017-09-15T19:25:49.490Z",
+		"uuid": "11dd3830-382f-440b-baf0-2582e13873b6",
+		"status": "OK",
+		"name": "rack",
+		"id": "11dd3830-382f-440b-baf0-2582e13873b6",
+		"state": "Unmanaged",
+		"category": "racks"
+	},
+	"capacity": 0
+}

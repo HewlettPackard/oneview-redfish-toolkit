@@ -1,0 +1,21 @@
+{
+    "@odata.type": "#Thermal.v1_3_0.Thermal",
+    "Id": "0000000000A66101",
+    "Name": "Enclosure Thermal",
+    "Temperatures": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/0000000000A66101/Thermal/Temperatures/0",
+            "MemberId": "0",
+            "Name": "AmbientTemperature",
+            "Status": {
+                "State": "Enabled",
+                "Health": "OK"
+            },
+            "PhysicalContext": "Intake",
+            "ReadingCelsius": 19,
+            "UpperThresholdCritical": 35,
+            "MinReadingRangeTemp": 10,
+            "MaxReadingRangeTemp": 35
+        }
+    ]
+}
