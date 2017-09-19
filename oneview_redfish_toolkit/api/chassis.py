@@ -75,4 +75,4 @@ class Chassis(RedfishJsonValidator):
         try:
             return redfish_oneview_indicator_led_map[uid_state]
         except Exception:
-            return "Unknown"
+            return None
