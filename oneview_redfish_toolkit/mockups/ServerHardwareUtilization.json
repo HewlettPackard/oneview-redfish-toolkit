@@ -1,0 +1,16 @@
+{
+	"metricList": [{
+		"metricName": "AmbientTemperature",
+		"metricSamples": [[1505772000000,
+		20]],
+		"metricCapacity": 35
+	}],
+	"refreshTaskUri": null,
+	"oldestSampleTime": "2017-07-24T15:10:00.000Z",
+	"newestSampleTime": "2017-09-18T22:05:00.000Z",
+	"sliceStartTime": "2017-09-17T22:05:00.000Z",
+	"sliceEndTime": "2017-09-18T22:05:00.000Z",
+	"isFresh": true,
+	"resolution": 300000,
+	"uri": "/rest/server-hardware/36343537-3338-4448-3538-4E5030333434"
+}

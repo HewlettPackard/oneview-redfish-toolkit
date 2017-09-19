@@ -1,0 +1,21 @@
+{
+    "@odata.type": "#Thermal.v1_3_0.Thermal",
+    "Id": "36343537-3338-4448-3538-4E5030333434",
+    "Name": "Blade Thermal",
+    "Temperatures": [
+        {
+            "@odata.id": "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal/Temperatures/0",
+            "MemberId": "0",
+            "Name": "AmbientTemperature",
+            "Status": {
+                "State": "Enabled",
+                "Health": "OK"
+            },
+            "PhysicalContext": "Intake",
+            "ReadingCelsius": 20,
+            "UpperThresholdCritical": 35,
+            "MinReadingRangeTemp": 10,
+            "MaxReadingRangeTemp": 35
+        }
+    ]
+}
