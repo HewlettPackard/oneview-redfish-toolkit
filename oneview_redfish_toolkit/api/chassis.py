@@ -55,6 +55,9 @@ class Chassis(RedfishJsonValidator):
             "/redfish/v1/$metadata#Chassis.Chassis"
         self.redfish["@odata.id"] = \
             "/redfish/v1/Chassis/" + oneview_resource['uuid']
+        self.redfish["Thermal"] = collections.OrderedDict()
+        self.redfish["Thermal"]["@odata.id"] = \
+            "/redfish/v1/Chassis/" + oneview_resource['uuid'] + "/Thermal"
 
     def _map_indicator_led(self, uid_state):
         """Maps Oneview's uid state to Redfish's indicator led.

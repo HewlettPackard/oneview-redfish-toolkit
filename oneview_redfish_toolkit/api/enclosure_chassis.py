@@ -54,9 +54,6 @@ class EnclosureChassis(Chassis):
         self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
         self.redfish["Links"]["ContainedBy"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + environmental_configuration["rackId"]
-        self.redfish["Thermal"] = collections.OrderedDict()
-        self.redfish["Thermal"]["@odata.id"] = \
-            "/redfish/v1/Chassis/" + enclosure['uuid'] + "/Thermal"
 
         self._validate()
 
