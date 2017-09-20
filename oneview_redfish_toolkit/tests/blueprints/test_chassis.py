@@ -37,6 +37,9 @@ class TestChassis(unittest.TestCase):
             - enclosures
             - blades
             - racks
+                - agains know value
+                - rack not found
+                - unexpected exception
     """
 
     @mock.patch.object(util, 'OneViewClient')
@@ -200,7 +203,7 @@ class TestChassis(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     #############
-    # Blade #
+    # Blade     #
     #############
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_blade_chassis(
@@ -243,9 +246,9 @@ class TestChassis(unittest.TestCase):
 
         ov = mock_get_ov_client()
 
-        ov.index_resources.get_all.return_value = \
-            [{"category": "server-hardware"}]
-        ov.server_hardware.get.return_value = \
+        ov.index_resources.get_all.return_value = [
+            {"category": "server-hardware"}]
+        ov.server_hardware.get.return_value =\
             {'serverHardwareUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
@@ -267,8 +270,8 @@ class TestChassis(unittest.TestCase):
 
         ov = mock_get_ov_client()
 
-        ov.index_resources.get_all.return_value = \
-            [{"category": "server-hardware"}]
+        ov.index_resources.get_all.return_value = [
+            {"category": "server-hardware"}]
         ov.server_hardware.get.side_effect = Exception()
 
         response = self.app.get(
@@ -280,6 +283,77 @@ class TestChassis(unittest.TestCase):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-        ########
-        # Rack #
-        ########
+    ########
+    # Rack #
+    ########
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_rack_chassis(
+            self, mock_get_ov_client):
+        """"Tests RackChassis with a known Rack"""
+
+        # Loading ov_rack mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/Rack.json'
+        ) as f:
+            ov_rack = json.load(f)
+
+        # Loading rf_rack mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/RedfishRack.json'
+        ) as f:
+            rf_rack = f.read()
+
+        ov = mock_get_ov_client()
+
+        ov.index_resources.get_all.return_value = [{"category": "racks"}]
+        ov.racks.get.return_value = ov_rack
+
+        # Get RackChassis
+        response = self.app.get(
+            "/redfish/v1/Chassis/2AB100LMNB"
+        )
+
+        json_str = response.data.decode("utf-8")
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual(json_str, rf_rack)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_rack_not_found(self, mock_get_ov_client):
+        """Tests RackChassis with Racks not found"""
+
+        ov = mock_get_ov_client()
+
+        ov.index_resources.get_all.return_value = [{"category": "rack"}]
+        ov.racks.get.return_value = {'rackeUri': 'invalidUri'}
+        e = HPOneViewException({
+            'errorCode': 'RESOURCE_NOT_FOUND',
+            'message': 'rack not found',
+        })
+
+        ov.racks.get.side_effect = e
+
+        response = self.app.get(
+            "/redfish/v1/Chassis/2AB100LMNB"
+        )
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    def test_rack_unexpected_error(self, mock_get_ov_client):
+        """Tests RackChassis with an unexpected error"""
+
+        ov = mock_get_ov_client()
+
+        ov.index_resources.get_all.return_value = [{"category": "racks"}]
+        ov.racks.get.side_effect = Exception()
+
+        response = self.app.get(
+            "/redfish/v1/Chassis/2AB100LMNB"
+        )
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code)
+        self.assertEqual("application/json", response.mimetype)
