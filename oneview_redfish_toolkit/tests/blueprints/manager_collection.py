@@ -76,11 +76,11 @@ class TestManagerCollection(unittest.TestCase):
         self.assertEqual(json_str, '{"error": "Internal Server Error"}')
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_server_hardwares_empty(self, mock_get_ov_client):
-        """Tests ManagerCollection with an empty list"""
+    def test_get_enclosures_empty(self, mock_get_ov_client):
+        """Tests ManagerCollection with enclosures response empty"""
 
         client = mock_get_ov_client()
-        client.server_hardware.get_all.return_value = []
+        client.enclosures.get_all.return_value = []
 
         response = self.app.get("/redfish/v1/Managers/")
 
@@ -92,11 +92,20 @@ class TestManagerCollection(unittest.TestCase):
         self.assertEqual(json_str, '{"error": "Resource not found"}')
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_enclosures_empty(self, mock_get_ov_client):
-        """Tests ManagerCollection with an empty list"""
+    def test_get_server_hardwares_empty(self, mock_get_ov_client):
+        """Tests ManagerCollection with server hardware response empty"""
 
         client = mock_get_ov_client()
-        client.enclosures.get_all.return_value = []
+
+        # Loading enclosures mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/'
+                'Enclosures.json'
+        ) as f:
+            enclosures = json.load(f)
+
+        client.enclosures.get_all.return_value = enclosures
+        client.server_hardware.get_all.return_value = []
 
         response = self.app.get("/redfish/v1/Managers/")
 

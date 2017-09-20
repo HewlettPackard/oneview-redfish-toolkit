@@ -43,28 +43,18 @@ class ManagerCollection(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        self.server_hardware = server_hardware
-        self.enclosures = enclosures
-
         self.redfish["@odata.type"] = "#ManagerCollection.ManagerCollection"
         self.redfish["Name"] = "Manager Collection"
-        self.redfish["Members@odata.count"] = self. \
-            _get_redfish_members_length()
+        self.redfish["Members@odata.count"] = \
+            len(server_hardware) + len(enclosures)
         self.redfish["Members"] = list()
-        self._set_redfish_members()
+        self._set_resource_links(enclosures)
+        self._set_resource_links(server_hardware)
+        self.redfish["@odata.context"] = \
+            "/redfish/v1/$metadata#ManagerCollection.ManagerCollection"
         self.redfish["@odata.id"] = "/redfish/v1/Managers"
 
         self._validate()
-
-    def _set_redfish_members(self):
-        """Mounts the list of Redfish members
-
-            Populates self.redfish["Members"] with the links to Redfish
-            EnclosureChassis, BladeChassis.
-        """
-
-        self._set_resource_links(self.enclosures)
-        self._set_resource_links(self.server_hardware)
 
     def _set_resource_links(self, oneview_resource):
         """Populates self.redfish["Members"] with the links resources"""
@@ -72,10 +62,5 @@ class ManagerCollection(RedfishJsonValidator):
         for resource in oneview_resource:
             link_dict = collections.OrderedDict()
             link_dict["@odata.id"] = \
-                "/redfish/v1/Chassis/" + resource["uuid"]
+                "/redfish/v1/Managers/" + resource["uuid"]
             self.redfish["Members"].append(link_dict)
-
-    def _get_redfish_members_length(self):
-        """Gets the length of redfish members"""
-
-        return len(self.server_hardware) + len(self.enclosures)
