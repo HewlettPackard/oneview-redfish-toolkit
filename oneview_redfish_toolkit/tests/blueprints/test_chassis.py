@@ -338,6 +338,7 @@ class TestChassis(unittest.TestCase):
         response = self.app.get(
             "/redfish/v1/Chassis/2AB100LMNB"
         )
+
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
