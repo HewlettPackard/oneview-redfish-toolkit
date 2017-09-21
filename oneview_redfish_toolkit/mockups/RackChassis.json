@@ -1,0 +1,32 @@
+{
+    "@odata.type": "#Chassis.v1_5_0.Chassis",
+    "Id": "2AB100LMNB",
+    "Name": "2AB100LMNB",
+    "Manufacturer": "HPE",
+    "SerialNumber": "2AB100LMNB",
+    "PartNumber": null,
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Links": {
+        "Contains": [
+            {
+                "@odata.id": "/redfish/v1/Chassis/0000000000A66103"
+            },
+            {
+                "@odata.id": "/redfish/v1/Chassis/0000000000A66101"
+            },
+            {
+                "@odata.id": "/redfish/v1/Chassis/0000000000A66102"
+            }
+        ]
+    },
+    "@odata.context": "/redfish/v1/$metadata#Chassis.Chassis",
+    "@odata.id": "/redfish/v1/Chassis/2AB100LMNB",
+    "Thermal": {
+        "@odata.id": "/redfish/v1/Chassis/2AB100LMNB/Thermal"
+    },
+    "ChassisType": "Rack",
+    "Model": "HP 42U Series Rack"
+}

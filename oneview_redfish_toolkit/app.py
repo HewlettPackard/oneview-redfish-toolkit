@@ -32,6 +32,7 @@ from oneview_redfish_toolkit.blueprints.manager_collection \
     import manager_collection
 from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
+from oneview_redfish_toolkit.blueprints.thermal import thermal
 from oneview_redfish_toolkit import util
 
 
@@ -56,3 +57,4 @@ app.register_blueprint(computer_system_collection)
 app.register_blueprint(computer_system)
 app.register_blueprint(chassis)
 app.register_blueprint(manager_collection)
+app.register_blueprint(thermal)

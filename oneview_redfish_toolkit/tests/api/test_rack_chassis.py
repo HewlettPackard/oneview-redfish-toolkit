@@ -14,17 +14,25 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
 import json
-
-from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
-from oneview_redfish_toolkit import util
-
 import unittest
 from unittest import mock
 
+# 3rd party libs
 
-class TestEnclosureChassis(unittest.TestCase):
-    """Tests for Chassis class"""
+# Own project libs
+from oneview_redfish_toolkit.api.rack_chassis import RackChassis
+from oneview_redfish_toolkit import util
+
+
+class TestRackChassis(unittest.TestCase):
+    """Tests for Chassis class
+
+        Tests:
+            - Rack chassis instantiation
+            - Rack chassis serialize
+    """
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, mock_ov):
@@ -33,42 +41,35 @@ class TestEnclosureChassis(unittest.TestCase):
         # Loading variable in util module
         util.load_config('redfish.conf')
 
-        # Loading ov_enclosure mockup value
+        # Loading ov_rack mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/Enclosure.json'
+            'oneview_redfish_toolkit/mockups/Rack.json'
         ) as f:
-            self.ov_enclosure = json.load(f)
+            self.ov_rack = json.load(f)
 
-        # Loading env_config mockup value
+        # Loading rf_rack mockup result
         with open(
-                'oneview_redfish_toolkit/mockups/'
-                'EnclosureEnvironmentalConfig.json'
+            'oneview_redfish_toolkit/mockups/RackChassis.json'
         ) as f:
-            self.env_config = json.load(f)
-
-        # Loading rf_enclosure mockup result
-        with open(
-            'oneview_redfish_toolkit/mockups/EnclosureChassis.json'
-        ) as f:
-            self.rf_enclosure = f.read()
+            self.rf_rack = f.read()
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = EnclosureChassis(self.ov_enclosure, self.env_config)
+            obj = RackChassis(self.ov_rack)
         except Exception as e:
-            self.fail("Failed to instantiate Chassis class."
+            self.fail("Failed to instantiate RackChassis class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, EnclosureChassis)
+        self.assertIsInstance(obj, RackChassis)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = EnclosureChassis(self.ov_enclosure, self.env_config)
+            obj = RackChassis(self.ov_rack)
         except Exception as e:
-            self.fail("Failed to instantiate Chassis class."
+            self.fail("Failed to instantiate RackChassis class."
                       " Error: {}".format(e))
 
         try:
@@ -76,4 +77,4 @@ class TestEnclosureChassis(unittest.TestCase):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.rf_enclosure)
+        self.assertEqual(json_str, self.rf_rack)

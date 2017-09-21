@@ -22,27 +22,32 @@ from flask import abort
 from flask import Blueprint
 from flask import Response
 from flask_api import status
-from hpOneView.exceptions import HPOneViewException
 
-# Own libs
-from oneview_redfish_toolkit.api.blade_chassis import BladeChassis
-from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
+# own libs
+from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-from oneview_redfish_toolkit.api.rack_chassis import RackChassis
+from oneview_redfish_toolkit.api.thermal import Thermal
 from oneview_redfish_toolkit import util
 
-chassis = Blueprint("chassis", __name__)
+
+thermal = Blueprint("thermal", __name__)
 
 
-@chassis.route("/redfish/v1/Chassis/<uuid>", methods=["GET"])
-def get_chassis(uuid):
-    """Get the Redfish Chassis.
+@thermal.route("/redfish/v1/Chassis/<uuid>/Thermal", methods=["GET"])
+def get_thermal(uuid):
+    """Get the Redfish Thermal for a given UUID.
 
-        Get method to return Chassis JSON when
-        /redfish/v1/Chassis/id is requested.
+        Return Thermal Redfish JSON for a given hardware UUID.
+        Logs exception of any error and return abort(500)
+        Internal Server Error.
 
         Returns:
-            JSON: JSON with Chassis.
+            JSON: Redfish json with Thermal
+            When hardware is not found calls abort(404)
+
+        Exceptions:
+            Logs the exception and call abort(500)
+
     """
     try:
         ov_client = util.get_oneview_client()
@@ -55,43 +60,44 @@ def get_chassis(uuid):
             raise OneViewRedfishError('Cannot find Index resource')
 
         if category == 'server-hardware':
-            ov_sh = ov_client.server_hardware.get(uuid)
-            ch = BladeChassis(ov_sh)
+            ov_sh = ov_client.server_hardware. \
+                get_utilization(uuid, fields='AmbientTemperature')
+            thrml = Thermal(ov_sh, uuid, 'Blade')
         elif category == 'enclosures':
-            ov_encl = ov_client.enclosures.get(uuid)
-            ov_encl_env_config = ov_client.enclosures. \
-                get_environmental_configuration(uuid)
-
-            ch = EnclosureChassis(ov_encl, ov_encl_env_config)
+            ov_encl = ov_client.enclosures. \
+                get_utilization(uuid, fields='AmbientTemperature')
+            thrml = Thermal(ov_encl, uuid, 'Enclosure')
         elif category == 'racks':
-            ov_racks = ov_client.racks.get(uuid)
-            ch = RackChassis(ov_racks)
+            ov_rack = ov_client.racks.\
+                get_device_topology(uuid)
+            thrml = Thermal(ov_rack, uuid, 'Rack')
         else:
-            raise OneViewRedfishError('Chassis type not found')
+            raise OneViewRedfishError('OneView resource not found')
 
-        json_str = ch.serialize()
+        json_str = thrml.serialize()
 
         return Response(
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
     except HPOneViewException as e:
-        # In case of error log exception and abort
+        # In case of error print exception and abort
         logging.error(e)
         abort(status.HTTP_404_NOT_FOUND)
 
     except OneViewRedfishError as e:
-        # In case of error log exception and abort
+        # In case of error print exception and abort
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_404_NOT_FOUND)
 
     except Exception as e:
-        # In case of error log exception and abort
+        # In case of error print exception and abort
+        logging.error(e)
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@chassis.errorhandler(status.HTTP_404_NOT_FOUND)
+@thermal.errorhandler(status.HTTP_404_NOT_FOUND)
 def not_found(error):
     """Creates a Not Found Error response"""
     return Response(
@@ -100,7 +106,7 @@ def not_found(error):
         mimetype='application/json')
 
 
-@chassis.errorhandler(
+@thermal.errorhandler(
     status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
     """Creates an Internal Server Error response"""

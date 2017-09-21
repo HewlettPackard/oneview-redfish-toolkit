@@ -40,6 +40,11 @@
             "@odata.id": "/redfish/v1/Chassis/2AB100LMNB"
         }
     },
+    "@odata.context": "/redfish/v1/$metadata#Chassis.Chassis",
+    "@odata.id": "/redfish/v1/Chassis/0000000000A66101",
+    "Thermal": {
+        "@odata.id": "/redfish/v1/Chassis/0000000000A66101/Thermal"
+    },
     "ChassisType": "Enclosure",
     "Model": "Synergy 12000 Frame",
     "IndicatorLED": "Lit"

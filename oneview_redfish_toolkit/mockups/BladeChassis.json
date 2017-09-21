@@ -19,6 +19,11 @@
             "@odata.id": "/redfish/v1/Chassis/0000000000A66103"
         }
     },
+    "@odata.context": "/redfish/v1/$metadata#Chassis.Chassis",
+    "@odata.id": "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752",
+    "Thermal": {
+        "@odata.id": "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752/Thermal"
+    },
     "ChassisType": "Blade",
     "Model": "HPE Synergy 480 Gen9 Compute Module",
     "IndicatorLED": "Off"
