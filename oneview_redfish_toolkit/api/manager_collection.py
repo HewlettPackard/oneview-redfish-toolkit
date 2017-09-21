@@ -30,9 +30,9 @@ class ManagerCollection(RedfishJsonValidator):
     SCHEMA_NAME = 'ManagerCollection'
 
     def __init__(self, server_hardware, enclosures):
-        """ChassisCollection constructor
+        """ManagerCollection constructor
 
-            Populates self.redfish with a hardcoded ChassisCollection
+            Populates self.redfish with a hardcoded ManagerCollection
             values and with the response of Oneview with all server hardware,
             enclosures resource.
 

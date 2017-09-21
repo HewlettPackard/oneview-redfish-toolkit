@@ -71,11 +71,11 @@ def get_manager_collection():
             raise OneViewRedfishResourceNotFoundError(
                 "server-hardwares", "oneview-result")
 
-        # Build Chassis Collection object and validates it
-        cc = ManagerCollection(oneview_server_hardwares, oneview_enclosures)
+        # Build Manager Collection object and validates it
+        mc = ManagerCollection(oneview_server_hardwares, oneview_enclosures)
 
         # Build redfish json
-        json_str = cc.serialize()
+        json_str = mc.serialize()
 
         # Build response and returns
         return Response(
