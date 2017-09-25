@@ -174,7 +174,7 @@ class TestComputerSystem(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/ComputerSystem.json'
         ) as f:
-            computer_system = f.read()
+            computer_system_str = f.read()
 
         # Create mock response
         ov = mock_get_ov_client()
@@ -192,4 +192,4 @@ class TestComputerSystem(unittest.TestCase):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(computer_system, json_str)
+        self.assertEqual(computer_system_str, json_str)
