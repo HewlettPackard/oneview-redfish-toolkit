@@ -183,7 +183,7 @@ def bad_request(error):
     logging.error(vars(error))
     return Response(
         response='{"error": "Invalid information"}',
-        status=status.HTTP_404_NOT_FOUND,
+        status=status.HTTP_400_BAD_REQUEST,
         mimetype='application/json')
 
 
