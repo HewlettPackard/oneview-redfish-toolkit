@@ -193,3 +193,16 @@ class TestComputerSystem(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(computer_system, json_str)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_change_power_state(self, mock_get_ov_client):
+        response = self.app.post("/redfish/v1/Systems/30373737-3237-4D32-3230"
+                                 "-313530314752/Actions/ComputerSystem.Reset",
+                                 data=dict(ResetType="On"))
+
+        ov = mock_get_ov_client()
+        ov.server_hardware.update_power_state.return_value = {"status": "OK"}
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)

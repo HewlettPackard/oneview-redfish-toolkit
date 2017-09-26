@@ -20,19 +20,21 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
+from flask import request
 from flask import Response
 from flask_api import status
 
 # own libs
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import util
 
 
-computer_system = Blueprint("computer_system", __name__)
+computer_system = Blueprint("computer_system", __name__, url_prefix="/redfish/v1/Systems/")
 
 
-@computer_system.route("/redfish/v1/Systems/<uuid>", methods=["GET"])
+@computer_system.route("<uuid>", methods=["GET"])
 def get_computer_system(uuid):
     """Get the Redfish Computer System for a given UUID.
 
@@ -103,9 +105,91 @@ def get_computer_system(uuid):
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@computer_system.route("<uuid>/Actions/ComputerSystem.Reset", methods=["POST"])
+def change_power_state(uuid):
+    reset_type = request.form["ResetType"]
+
+    reset_type_dict = dict()
+
+    reset_type_dict["On"] = dict()
+    reset_type_dict["On"]["powerState"] = "On"
+    reset_type_dict["On"]["powerControl"] = "MomentaryPress"
+
+    reset_type_dict["ForceOff"] = dict()
+    reset_type_dict["ForceOff"]["powerState"] = "Off"
+    reset_type_dict["ForceOff"]["powerControl"] = "PressAndHold"
+
+    reset_type_dict["GracefulShutdown"] = dict()
+    reset_type_dict["GracefulShutdown"]["powerState"] = "Off"
+    reset_type_dict["GracefulShutdown"]["powerControl"] = "MomentaryPress"
+
+    reset_type_dict["GracefulRestart"] = dict()
+    reset_type_dict["GracefulRestart"]["powerState"] = "On"
+    reset_type_dict["GracefulRestart"]["powerControl"] = "Reset"
+
+    reset_type_dict["ForceRestart"] = dict()
+    reset_type_dict["ForceRestart"]["powerState"] = "On"
+    reset_type_dict["ForceRestart"]["powerControl"] = "ColdBoot"
+
+    reset_type_dict["PushPowerButton"] = dict()
+    reset_type_dict["PushPowerButton"]["powerControl"] = "MomentaryPress"
+
+    try:
+
+        try:
+            new_state = reset_type_dict[reset_type]
+        except Exception:
+            raise OneViewRedfishError(
+                'There is no mapping for {} on the OneView'.format(reset_type)
+            )
+
+        ov_client = util.get_oneview_client()
+
+        if reset_type == "PushPowerButton":
+            sh_power_state = ov_client.server_hardware.get(uuid)["powerState"]
+
+            if sh_power_state == "On":
+                reset_type_dict["PushPowerButton"]["powerState"] = "Off"
+            else:
+                reset_type_dict["PushPowerButton"]["powerState"] = "On"
+
+        ov_client.server_hardware.update_power_state(new_state, uuid)
+
+        return Response(
+            response='{"ResetType": "%s"}' % reset_type,
+            status=status.HTTP_200_OK,
+            mimetype='application/json')
+
+    except HPOneViewException as e:
+        # In case of error log exception and abort
+        logging.error(e)
+        abort(status.HTTP_404_NOT_FOUND)
+
+    except OneViewRedfishError as e:
+        # In case of error log exception and abort
+        logging.error('Mapping error: {}'.format(e))
+        abort(status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        # In case of error log exception and abort
+        logging.error('Unexpected error: {}'.format(e))
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@computer_system.errorhandler(status.HTTP_400_BAD_REQUEST)
+def bad_request(error):
+    """Creates a Bad Request Error response"""
+    logging.error(vars(error))
+    return Response(
+        response='{"error": "Invalid information"}',
+        status=status.HTTP_404_NOT_FOUND,
+        mimetype='application/json')
+
+
 @computer_system.errorhandler(status.HTTP_404_NOT_FOUND)
 def not_found(error):
     """Creates a Not Found Error response"""
+    logging.error(vars(error))
     return Response(
         response='{"error": "URL/data not found"}',
         status=status.HTTP_404_NOT_FOUND,
