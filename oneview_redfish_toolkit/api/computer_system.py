@@ -34,7 +34,7 @@ class ComputerSystem(RedfishJsonValidator):
             ServerHardwareTypes dicts.
 
             Args:
-                sh_dict: Server Hardware dict from OneView
+                sh_dict: ServerHardware dict from OneView
                 sht_dict: ServerHardwareTypes dict from OneView
         """
         super().__init__(self.SCHEMA_NAME)
@@ -103,8 +103,7 @@ class ComputerSystem(RedfishJsonValidator):
         try:
             for boot_option in boot_list:
                 redfish_boot_list.append(
-                    redfish_oneview_boot_map[boot_option]
-                )
+                    redfish_oneview_boot_map[boot_option])
         except Exception:
             redfish_boot_list.append('None')
 
