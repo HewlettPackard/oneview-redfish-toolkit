@@ -31,7 +31,8 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import util
 
 
-computer_system = Blueprint("computer_system", __name__, url_prefix="/redfish/v1/Systems/")
+computer_system = Blueprint(
+    "computer_system", __name__, url_prefix="/redfish/v1/Systems/")
 
 
 @computer_system.route("<uuid>", methods=["GET"])
