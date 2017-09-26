@@ -13,22 +13,27 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
+# Python libs
+import logging
 import os
 
+# 3rd party libs
 from flask import Flask
 
+# own libs
 from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.chassis_collection \
     import chassis_collection
 from oneview_redfish_toolkit.blueprints.computer_system import computer_system
 from oneview_redfish_toolkit.blueprints.computer_system_collection \
     import computer_system_collection
+from oneview_redfish_toolkit.blueprints.manager_collection \
+    import manager_collection
 from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 from oneview_redfish_toolkit.blueprints.thermal import thermal
 from oneview_redfish_toolkit import util
-
-import logging
 
 
 util.configure_logging(os.getenv("LOGGING_FILE", "logging.conf"))
@@ -51,4 +56,5 @@ app.register_blueprint(chassis_collection)
 app.register_blueprint(computer_system_collection)
 app.register_blueprint(computer_system)
 app.register_blueprint(chassis)
+app.register_blueprint(manager_collection)
 app.register_blueprint(thermal)
