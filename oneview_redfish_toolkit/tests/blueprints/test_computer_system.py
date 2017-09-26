@@ -196,12 +196,26 @@ class TestComputerSystem(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_change_power_state(self, mock_get_ov_client):
-        response = self.app.post("/redfish/v1/Systems/30373737-3237-4D32-3230"
-                                 "-313530314752/Actions/ComputerSystem.Reset",
-                                 data=dict(ResetType="On"))
+        # Loading server_hardware mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/ServerHardware.json'
+        ) as f:
+            sh_dict = json.load(f)
+
+        # Loading ServerHardwareTypes mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/ServerHardwareTypes.json'
+        ) as f:
+            sht_dict = json.load(f)
 
         ov = mock_get_ov_client()
+        ov.server_hardware.get.return_value = sh_dict
+        ov.server_hardware_types.get.return_value = sht_dict
         ov.server_hardware.update_power_state.return_value = {"status": "OK"}
+
+        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
+                                 "-313133364752/Actions/ComputerSystem.Reset",
+                                 data=dict(ResetType="On"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)

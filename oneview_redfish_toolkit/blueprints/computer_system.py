@@ -111,19 +111,22 @@ def change_power_state(uuid):
     reset_type = request.form["ResetType"]
 
     try:
-        oneview_power_configuration = \
-            get_oneview_power_configuration(reset_type)
-
+        # Recover OV connection
         ov_client = util.get_oneview_client()
 
-        if reset_type == "PushPowerButton":
-            sh_power_state = ov_client.server_hardware.get(uuid)["powerState"]
+        # Gets ServerHardware for given UUID
+        sh = ov_client.server_hardware.get(uuid)
 
-            if sh_power_state == "On":
-                oneview_power_configuration["powerState"] = "Off"
-            else:
-                oneview_power_configuration["powerState"] = "On"
+        # Gets the ServerHardwareType of the given server hardware
+        sht = ov_client.server_hardware_types.get(sh['serverHardwareTypeUri'])
 
+        # Build Computer System object and validates it
+        computer_system_class = ComputerSystem(sh, sht)
+
+        oneview_power_configuration = computer_system_class \
+            .get_oneview_power_configuration(reset_type)
+
+        # Changes the ServerHardware power state
         ov_client.server_hardware.update_power_state(
             oneview_power_configuration, uuid)
 
@@ -146,39 +149,6 @@ def change_power_state(uuid):
         # In case of error log exception and abort
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-def get_oneview_power_configuration(reset_type):
-    reset_type_dict = dict()
-
-    reset_type_dict["On"] = dict()
-    reset_type_dict["On"]["powerState"] = "On"
-    reset_type_dict["On"]["powerControl"] = "MomentaryPress"
-
-    reset_type_dict["ForceOff"] = dict()
-    reset_type_dict["ForceOff"]["powerState"] = "Off"
-    reset_type_dict["ForceOff"]["powerControl"] = "PressAndHold"
-
-    reset_type_dict["GracefulShutdown"] = dict()
-    reset_type_dict["GracefulShutdown"]["powerState"] = "Off"
-    reset_type_dict["GracefulShutdown"]["powerControl"] = "MomentaryPress"
-
-    reset_type_dict["GracefulRestart"] = dict()
-    reset_type_dict["GracefulRestart"]["powerState"] = "On"
-    reset_type_dict["GracefulRestart"]["powerControl"] = "Reset"
-
-    reset_type_dict["ForceRestart"] = dict()
-    reset_type_dict["ForceRestart"]["powerState"] = "On"
-    reset_type_dict["ForceRestart"]["powerControl"] = "ColdBoot"
-
-    reset_type_dict["PushPowerButton"] = dict()
-    reset_type_dict["PushPowerButton"]["powerControl"] = "MomentaryPress"
-
-    try:
-        return reset_type_dict[reset_type]
-    except Exception:
-        raise OneViewRedfishError(
-            'There is no mapping for {} on the OneView'.format(reset_type))
 
 
 @computer_system.errorhandler(status.HTTP_400_BAD_REQUEST)
