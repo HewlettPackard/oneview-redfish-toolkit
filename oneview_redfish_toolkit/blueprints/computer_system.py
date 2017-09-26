@@ -110,6 +110,45 @@ def get_computer_system(uuid):
 def change_power_state(uuid):
     reset_type = request.form["ResetType"]
 
+    try:
+        oneview_power_configuration = \
+            get_oneview_power_configuration(reset_type)
+
+        ov_client = util.get_oneview_client()
+
+        if reset_type == "PushPowerButton":
+            sh_power_state = ov_client.server_hardware.get(uuid)["powerState"]
+
+            if sh_power_state == "On":
+                oneview_power_configuration["powerState"] = "Off"
+            else:
+                oneview_power_configuration["powerState"] = "On"
+
+        ov_client.server_hardware.update_power_state(
+            oneview_power_configuration, uuid)
+
+        return Response(
+            response='{"ResetType": "%s"}' % reset_type,
+            status=status.HTTP_200_OK,
+            mimetype='application/json')
+
+    except HPOneViewException as e:
+        # In case of error log exception and abort
+        logging.error(e)
+        abort(status.HTTP_404_NOT_FOUND)
+
+    except OneViewRedfishError as e:
+        # In case of error log exception and abort
+        logging.error('Mapping error: {}'.format(e))
+        abort(status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        # In case of error log exception and abort
+        logging.error('Unexpected error: {}'.format(e))
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def get_oneview_power_configuration(reset_type):
     reset_type_dict = dict()
 
     reset_type_dict["On"] = dict()
@@ -136,45 +175,10 @@ def change_power_state(uuid):
     reset_type_dict["PushPowerButton"]["powerControl"] = "MomentaryPress"
 
     try:
-
-        try:
-            new_state = reset_type_dict[reset_type]
-        except Exception:
-            raise OneViewRedfishError(
-                'There is no mapping for {} on the OneView'.format(reset_type)
-            )
-
-        ov_client = util.get_oneview_client()
-
-        if reset_type == "PushPowerButton":
-            sh_power_state = ov_client.server_hardware.get(uuid)["powerState"]
-
-            if sh_power_state == "On":
-                reset_type_dict["PushPowerButton"]["powerState"] = "Off"
-            else:
-                reset_type_dict["PushPowerButton"]["powerState"] = "On"
-
-        ov_client.server_hardware.update_power_state(new_state, uuid)
-
-        return Response(
-            response='{"ResetType": "%s"}' % reset_type,
-            status=status.HTTP_200_OK,
-            mimetype='application/json')
-
-    except HPOneViewException as e:
-        # In case of error log exception and abort
-        logging.error(e)
-        abort(status.HTTP_404_NOT_FOUND)
-
-    except OneViewRedfishError as e:
-        # In case of error log exception and abort
-        logging.error('Mapping error: {}'.format(e))
-        abort(status.HTTP_400_BAD_REQUEST)
-
-    except Exception as e:
-        # In case of error log exception and abort
-        logging.error('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return reset_type_dict[reset_type]
+    except Exception:
+        raise OneViewRedfishError(
+            'There is no mapping for {} on the OneView'.format(reset_type))
 
 
 @computer_system.errorhandler(status.HTTP_400_BAD_REQUEST)
