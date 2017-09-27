@@ -1,7 +1,6 @@
 {
     "@odata.type": "#Manager.v1_3_1.Manager",
     "Id": "0000000000A66101",
-    "Name": "Synergy",
     "Description": null,
     "FirmwareVersion": "3.00.07-0288219",
     "Status": {
@@ -11,6 +10,7 @@
     "@odata.context": "/redfish/v1/$metadata#Manager.Manager",
     "@odata.id": "/redfish/v1/Managers/0000000000A66101",
     "ManagerType": "EnclosureManager",
+    "Name": "Enclosure Manager",
     "Links": {
         "ManagerForChassis": [
             {

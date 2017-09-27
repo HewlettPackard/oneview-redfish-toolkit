@@ -51,5 +51,3 @@ class Manager(RedfishJsonValidator):
             "/redfish/v1/$metadata#Manager.Manager"
         self.redfish["@odata.id"] = \
             "/redfish/v1/Managers/" + oneview_resource['uuid']
-
-        self._validate()
