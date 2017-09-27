@@ -34,8 +34,8 @@ class ComputerSystem(RedfishJsonValidator):
             ServerHardwareTypes dicts.
 
             Args:
-                sh_dict: Serverhardware dict from OneView
-                sht_dict: ServerHardwareTypes dict from OneViwe
+                sh_dict: ServerHardware dict from OneView
+                sht_dict: ServerHardwareTypes dict from OneView
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -46,7 +46,6 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Manufacturer"] = "HPE"
         self.redfish["Model"] = sh_dict["model"]
         self.redfish["SerialNumber"] = sh_dict["serialNumber"]
-        # Status must be an object
         self.redfish["Status"] = collections.OrderedDict()
         self.redfish["Status"]["State"] = "Enabled"
         self.redfish["Status"]["Health"] = sh_dict["status"]
@@ -67,6 +66,16 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["Chassis"].append(collections.OrderedDict())
         self.redfish["Links"]["Chassis"][0]["@odata.id"] = \
             "/redfish/v1/Chassis/" + sh_dict['uuid']
+        self.redfish["Actions"] = collections.OrderedDict()
+        self.redfish["Actions"]["#ComputerSystem.Reset"] = \
+            collections.OrderedDict()
+        self.redfish["Actions"]["#ComputerSystem.Reset"]["target"] = \
+            "/redfish/v1/System/{}/Actions/ComputerSystem.Reset" \
+            .format(sh_dict["uuid"])
+        self.redfish["Actions"]["#ComputerSystem.Reset"][
+            "ResetType@Redfish.AllowableValues"] = \
+            ["On", "ForceOff", "GracefulShutdown", "GracefulRestart",
+             "ForceRestart", "Nmi", "ForceOn", "PushPowerButton"]
 
         self._validate()
 
@@ -95,8 +104,7 @@ class ComputerSystem(RedfishJsonValidator):
         try:
             for boot_option in boot_list:
                 redfish_boot_list.append(
-                    redfish_oneview_boot_map[boot_option]
-                )
+                    redfish_oneview_boot_map[boot_option])
         except Exception:
             redfish_boot_list.append('None')
 
