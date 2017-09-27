@@ -115,6 +115,22 @@ class ComputerSystem(RedfishJsonValidator):
         return redfish_boot_list
 
     def get_oneview_power_configuration(self, reset_type):
+        """Maps Redfish's power options to OneView's power option
+
+            Maps the known Redfish power options to OneView Power option.
+            If a unknown power option shows up it will raise an Exception.
+
+            Args:
+                reset_type: Redfish power option.
+
+            Returns:
+                dict: Dict with OneView power configuration.
+
+            Exception:
+                OneViewRedfishError: raises an exception if
+                reset_type is an unmapped value.
+        """
+
         reset_type_dict = dict()
 
         reset_type_dict["On"] = dict()

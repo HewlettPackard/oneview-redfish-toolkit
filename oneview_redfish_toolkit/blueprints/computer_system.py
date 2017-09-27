@@ -48,10 +48,8 @@ def get_computer_system(uuid):
             JSON: Redfish json with ComputerSystem
             When Server hardware is not found calls abort(404)
 
-
         Exceptions:
             Logs the exception and call abort(500)
-
     """
     try:
         # Recover OV connection
@@ -108,6 +106,26 @@ def get_computer_system(uuid):
 
 @computer_system.route("<uuid>/Actions/ComputerSystem.Reset", methods=["POST"])
 def change_power_state(uuid):
+    """Change the Oneview power state for a specific Server hardware.
+
+        Return ResetType Computer System redfish JSON for a
+        given server hardware UUID.
+        Logs exception of any error and return abort.
+
+        Returns:
+            JSON: Redfish JSON with ComputerSystem ResetType.
+
+        Exceptions:
+            HPOneViewException: When some OneView resource was not found.
+            return abort(404)
+
+            OneViewRedfishError: When occur a power state mapping error.
+            return abort(400)
+
+            Exception: Unexpected error.
+            return abort(500)
+    """
+
     reset_type = request.form["ResetType"]
 
     try:

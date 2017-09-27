@@ -214,10 +214,100 @@ class TestComputerSystem(unittest.TestCase):
         ov.server_hardware_types.get.return_value = sht_dict
         ov.server_hardware.update_power_state.return_value = {"status": "OK"}
 
+        reset_types = ["On", "ForceOff", "GracefulShutdown",
+                       "GracefulRestart", "ForceRestart", "PushPowerButton"]
+
+        for reset_type in reset_types:
+            response = self.app.post("/redfish/v1/Systems/30303437-3034"
+                                     "-4D32-3230-313133364752/Actions/"
+                                     "ComputerSystem.Reset",
+                                     data=dict(ResetType=reset_type))
+
+            # Tests response
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_change_power_state_invalid_value(self, mock_get_ov_client):
+        # Loading server_hardware mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+        ) as f:
+            sh_dict = json.load(f)
+
+        # Loading ServerHardwareTypes mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups_oneview/'
+                'ServerHardwareTypes.json'
+        ) as f:
+            sht_dict = json.load(f)
+
+        ov = mock_get_ov_client()
+        ov.server_hardware.get.return_value = sh_dict
+        ov.server_hardware_types.get.return_value = sht_dict
+
+        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
+                                 "-313133364752/Actions/ComputerSystem.Reset",
+                                 data=dict(ResetType="PushPowerButon"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_change_power_state_unexpected_error(self, mock_get_ov_client):
+        client = mock_get_ov_client()
+        client.server_hardware.get.side_effect = Exception()
+
         response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
                                  "-313133364752/Actions/ComputerSystem.Reset",
                                  data=dict(ResetType="On"))
 
-        # Tests response
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_change_power_state_sh_exception(self, mock_get_ov_client):
+        """Tests ComputerSystem with ServerHardware exception"""
+
+        client = mock_get_ov_client()
+        e = HPOneViewException({
+            'errorCode': 'ANOTHER_ERROR',
+            'message': 'server-hardware error',
+        })
+
+        client.server_hardware.get.side_effect = e
+
+        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
+                                 "-313133364752/Actions/ComputerSystem.Reset",
+                                 data=dict(ResetType="On"))
+
+        self.assertEqual(
+            status.HTTP_404_NOT_FOUND,
+            response.status_code
+        )
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_change_power_state_sht_exception(self, mock_get_ov_client):
+        """Tests ComputerSystem with  ServerHardwareTypes exception"""
+
+        client = mock_get_ov_client()
+        e = HPOneViewException({
+            'errorCode': 'ANOTHER_ERROR',
+            'message': 'server-hardware-types error',
+        })
+
+        client.server_hardware_types.get.side_effect = e
+
+        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
+                                 "-313133364752/Actions/ComputerSystem.Reset",
+                                 data=dict(ResetType="On"))
+
+        self.assertEqual(
+            status.HTTP_404_NOT_FOUND,
+            response.status_code
+        )
         self.assertEqual("application/json", response.mimetype)
