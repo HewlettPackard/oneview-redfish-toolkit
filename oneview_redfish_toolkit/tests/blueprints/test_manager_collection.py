@@ -99,7 +99,7 @@ class TestManagerCollection(unittest.TestCase):
 
         # Loading enclosures mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/'
+                'oneview_redfish_toolkit/mockups_oneview/'
                 'Enclosures.json'
         ) as f:
             enclosures = json.load(f)
@@ -122,20 +122,21 @@ class TestManagerCollection(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/'
+            'oneview_redfish_toolkit/mockups_oneview/'
             'ServerHardwares.json'
         ) as f:
             server_hardware = json.load(f)
 
         # Loading enclosures mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/'
+            'oneview_redfish_toolkit/mockups_oneview/'
             'Enclosures.json'
         ) as f:
             enclosures = json.load(f)
 
         with open(
-                'oneview_redfish_toolkit/mockups/ManagerCollection.json'
+                'oneview_redfish_toolkit/mockups_redfish/'
+                'ManagerCollection.json'
         ) as f:
             manager_collection_json = f.read()
 

@@ -57,7 +57,7 @@ def get_computer_system(uuid):
         # Recover OV connection
         ov_client = util.get_oneview_client()
 
-        # Gets serverhardware for given UUID
+        # Gets server hardware for given UUID
         sh = ov_client.server_hardware.get(uuid)
 
         # Gets the server hardware type of the given server hardware
@@ -102,7 +102,7 @@ def get_computer_system(uuid):
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         # In case of error print exception and abort
-        logging.error('Unexepected error: '.format(e))
+        logging.error('Unexpected error: '.format(e))
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

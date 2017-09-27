@@ -14,22 +14,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""
-    Tests for computer_system_collection.py
-"""
-
 import json
 
-from oneview_redfish_toolkit.api.computer_system_collection \
-    import ComputerSystemCollection
+from oneview_redfish_toolkit.api.enclosure_manager import EnclosureManager
 from oneview_redfish_toolkit import util
 
 import unittest
 from unittest import mock
 
 
-class TestComputerSystemCollection(unittest.TestCase):
-    """Tests for ComputerSystemCollection class"""
+class TestEnclosureManager(unittest.TestCase):
+    """Tests for EnclosureManager class"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, mock_ov):
@@ -38,37 +33,37 @@ class TestComputerSystemCollection(unittest.TestCase):
         # Loading variable in util module
         util.load_config('redfish.conf')
 
-        # Loading server_hardware mockup value
+        # Loading ov_enclosure mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/'
-            'ServerHardwares.json'
+            'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
         ) as f:
-            self.server_hardware = json.load(f)
+            self.ov_enclosure = json.load(f)
 
-        # Loading ComputerSystemCollection result mockup
+        # Loading rf_enclosure_manager mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/'
-            'ComputerSystemCollection.json'
+            'oneview_redfish_toolkit/mockups_redfish/EnclosureManager.json'
         ) as f:
-            self.computer_system_collection = f.read()
+            self.rf_enclosure_manager = f.read()
+
+        self.ov_version = "3.00.07-0288219"
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = ComputerSystemCollection(self.server_hardware)
+            obj = EnclosureManager(self.ov_enclosure, self.ov_version)
         except Exception as e:
-            self.fail("Failed to instantiate ComputerSystemCollection class."
+            self.fail("Failed to instantiate EnclosureManager class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, ComputerSystemCollection)
+        self.assertIsInstance(obj, EnclosureManager)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = ComputerSystemCollection(self.server_hardware)
+            obj = EnclosureManager(self.ov_enclosure, self.ov_version)
         except Exception as e:
-            self.fail("Failed to instantiate ComputerSystemCollection class."
+            self.fail("Failed to instantiate EnclosureManager class."
                       " Error: {}".format(e))
 
         try:
@@ -76,4 +71,4 @@ class TestComputerSystemCollection(unittest.TestCase):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.computer_system_collection)
+        self.assertEqual(json_str, self.rf_enclosure_manager)

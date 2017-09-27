@@ -51,7 +51,7 @@ class TestServiceRoot(unittest.TestCase):
         json_str = obj.serialize()
 
         with open(
-            'oneview_redfish_toolkit/mockups/ServiceRoot.json'
+            'oneview_redfish_toolkit/mockups_redfish/ServiceRoot.json'
         ) as f:
             mok_json = f.read()
         self.assertEqual(json_str, mok_json)

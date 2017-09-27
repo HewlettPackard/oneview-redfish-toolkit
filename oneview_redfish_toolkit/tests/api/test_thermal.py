@@ -35,37 +35,39 @@ class TestThermal(unittest.TestCase):
 
         # Loading OneView SH Utilization mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/ServerHardwareUtilization.json'
+            'oneview_redfish_toolkit/mockups_oneview/'
+            'ServerHardwareUtilization.json'
         ) as f:
             self.ov_sh_utilization = json.load(f)
 
         # Loading BladeChassisThermal mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/BladeChassisThermal.json'
+            'oneview_redfish_toolkit/mockups_redfish/BladeChassisThermal.json'
         ) as f:
             self.rf_blade_thermal = f.read()
 
         # Loading OneView Enclosure Utilization mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/EnclosureUtilization.json'
+            'oneview_redfish_toolkit/mockups_oneview/EnclosureUtilization.json'
         ) as f:
             self.ov_encl_utilization = json.load(f)
 
         # Loading EnclosureChassisThermal mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/EnclosureChassisThermal.json'
+            'oneview_redfish_toolkit/mockups_redfish/'
+            'EnclosureChassisThermal.json'
         ) as f:
             self.rf_encl_thermal = f.read()
 
         # Loading OneView Rack Topology mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/RackDeviceTopology.json'
+            'oneview_redfish_toolkit/mockups_oneview/RackDeviceTopology.json'
         ) as f:
             self.ov_rack_utilization = json.load(f)
 
         # Loading RackChassisThermal mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/RackChassisThermal.json'
+            'oneview_redfish_toolkit/mockups_redfish/RackChassisThermal.json'
         ) as f:
             self.rf_rack_thermal = f.read()
 

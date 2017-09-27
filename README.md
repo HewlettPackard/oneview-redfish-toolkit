@@ -10,15 +10,23 @@ DMTF's Redfish is an open industry standard specification and schema that specif
 
 ## Installation
 
+### Requirements
+
+HPE OneView Redfish Toolkit service relies on Python 3.5 or newer to run and pip for dependencies management. A full list of dependencies is available at [requirements.txt](requirements.txt) file.
+
+> There should be not problem in using Python 3.4 if your system does not have Python 3.5 available, but we do not guarantee complete compatibility as the test environment is set up on version 3.5.
+
+In order to run tests and documentation generation `tox` is also needed. General instructions on how to install are available [here](https://tox.readthedocs.io/en/latest/install.html).
+
 ### From source
 
-In a developement environment:
+In a developement environment with Python 3.5:
 
 ```bash
 $ git clone https://github.com/HewlettPackard/oneview-redfish-toolkit.git
 $ cd oneview-redfish-toolkit
-$ tox -epy35 --notest  # create an environment with all dependencies
-$ source .tox/py35/bin/activate # load the created environment
+$ tox -epy35 --notest  # create a Python 3.5 environment with all dependencies
+$ source .tox/py35/bin/activate # load the created environment for Python 3.5
 $ python run.py    # to launch the service
 ```
 

@@ -35,20 +35,20 @@ class TestEnclosureChassis(unittest.TestCase):
 
         # Loading ov_enclosure mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/Enclosure.json'
+            'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
         ) as f:
             self.ov_enclosure = json.load(f)
 
         # Loading env_config mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/'
+                'oneview_redfish_toolkit/mockups_oneview/'
                 'EnclosureEnvironmentalConfig.json'
         ) as f:
             self.env_config = json.load(f)
 
         # Loading rf_enclosure mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/EnclosureChassis.json'
+            'oneview_redfish_toolkit/mockups_redfish/EnclosureChassis.json'
         ) as f:
             self.rf_enclosure = f.read()
 

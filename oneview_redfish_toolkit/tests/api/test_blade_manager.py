@@ -14,22 +14,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""
-    Tests for computer_system_collection.py
-"""
-
 import json
 
-from oneview_redfish_toolkit.api.computer_system_collection \
-    import ComputerSystemCollection
+from oneview_redfish_toolkit.api.blade_manager import BladeManager
 from oneview_redfish_toolkit import util
 
 import unittest
 from unittest import mock
 
 
-class TestComputerSystemCollection(unittest.TestCase):
-    """Tests for ComputerSystemCollection class"""
+class TestBladeManager(unittest.TestCase):
+    """Tests for BladeManager class"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, mock_ov):
@@ -40,35 +35,35 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/'
-            'ServerHardwares.json'
+            'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
         ) as f:
-            self.server_hardware = json.load(f)
+            self.sh_dict = json.load(f)
 
-        # Loading ComputerSystemCollection result mockup
+        # Loading BladeManager mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/'
-            'ComputerSystemCollection.json'
+            'oneview_redfish_toolkit/mockups_redfish/BladeManager.json'
         ) as f:
-            self.computer_system_collection = f.read()
+            self.blade_manager = f.read()
+
+        self.ov_version = "3.00.07-0288219"
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = ComputerSystemCollection(self.server_hardware)
+            obj = BladeManager(self.sh_dict, self.ov_version)
         except Exception as e:
-            self.fail("Failed to instantiate ComputerSystemCollection class."
+            self.fail("Failed to instantiate BladeManager class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, ComputerSystemCollection)
+        self.assertIsInstance(obj, BladeManager)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = ComputerSystemCollection(self.server_hardware)
+            obj = BladeManager(self.sh_dict, self.ov_version)
         except Exception as e:
-            self.fail("Failed to instantiate ComputerSystemCollection class."
+            self.fail("Failed to instantiate BladeManager class."
                       " Error: {}".format(e))
 
         try:
@@ -76,4 +71,4 @@ class TestComputerSystemCollection(unittest.TestCase):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.computer_system_collection)
+        self.assertEqual(json_str, self.blade_manager)
