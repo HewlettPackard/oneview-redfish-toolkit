@@ -34,11 +34,13 @@ class BladeManager(Manager):
 
             Args:
                 server_hardware: A dict for a server hardware
+                ov_version: OneView version string
         """
 
         super().__init__(server_hardware, ov_version)
 
         self.redfish["ManagerType"] = "BMC"
+        self.redfish["Name"] = "Blade Manager"
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["ManagerForServers"] = list()
         self.redfish["Links"]["ManagerForServers"].append(

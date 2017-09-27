@@ -34,11 +34,13 @@ class EnclosureManager(Manager):
 
             Args:
                 enclosure: A dict for an enclosure
+                ov_version: OneView version string
         """
 
         super().__init__(enclosure, ov_version)
 
         self.redfish["ManagerType"] = "EnclosureManager"
+        self.redfish["Name"] = "Enclosure Manager"
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["ManagerForChassis"] = list()
         self.redfish["Links"]["ManagerForChassis"].append(

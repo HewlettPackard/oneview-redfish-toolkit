@@ -42,12 +42,10 @@ class Manager(RedfishJsonValidator):
 
         self.redfish["@odata.type"] = "#Manager.v1_3_1.Manager"
         self.redfish["Id"] = oneview_resource['uuid']
-        self.redfish["Name"] = "Synergy"
         self.redfish["Description"] = None
         self.redfish["FirmwareVersion"] = ov_version
         self.redfish["Status"] = collections.OrderedDict()
         self.redfish["Status"]["State"] = "Enabled"
-        self.redfish["Status"]["Health"] = oneview_resource["status"]
         self.redfish["Status"]["Health"] = oneview_resource["status"]
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Manager.Manager"
