@@ -16,15 +16,15 @@
 
 import json
 
-from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
+from oneview_redfish_toolkit.api.enclosure_manager import EnclosureManager
 from oneview_redfish_toolkit import util
 
 import unittest
 from unittest import mock
 
 
-class TestEnclosureChassis(unittest.TestCase):
-    """Tests for Chassis class"""
+class TestEnclosureManager(unittest.TestCase):
+    """Tests for EnclosureManager class"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, mock_ov):
@@ -39,36 +39,31 @@ class TestEnclosureChassis(unittest.TestCase):
         ) as f:
             self.ov_enclosure = json.load(f)
 
-        # Loading env_config mockup value
+        # Loading rf_enclosure_manager mockup result
         with open(
-                'oneview_redfish_toolkit/mockups/'
-                'EnclosureEnvironmentalConfig.json'
+            'oneview_redfish_toolkit/mockups/EnclosureManager.json'
         ) as f:
-            self.env_config = json.load(f)
+            self.rf_enclosure_manager = f.read()
 
-        # Loading rf_enclosure mockup result
-        with open(
-            'oneview_redfish_toolkit/mockups/EnclosureChassis.json'
-        ) as f:
-            self.rf_enclosure = f.read()
+        self.ov_version = "3.00.07-0288219"
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = EnclosureChassis(self.ov_enclosure, self.env_config)
+            obj = EnclosureManager(self.ov_enclosure, self.ov_version)
         except Exception as e:
-            self.fail("Failed to instantiate Chassis class."
+            self.fail("Failed to instantiate EnclosureManager class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, EnclosureChassis)
+        self.assertIsInstance(obj, EnclosureManager)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = EnclosureChassis(self.ov_enclosure, self.env_config)
+            obj = EnclosureManager(self.ov_enclosure, self.ov_version)
         except Exception as e:
-            self.fail("Failed to instantiate Chassis class."
+            self.fail("Failed to instantiate EnclosureManager class."
                       " Error: {}".format(e))
 
         try:
@@ -76,4 +71,4 @@ class TestEnclosureChassis(unittest.TestCase):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.rf_enclosure)
+        self.assertEqual(json_str, self.rf_enclosure_manager)
