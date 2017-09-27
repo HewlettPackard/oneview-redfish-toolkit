@@ -35,13 +35,13 @@ class TestBladeManager(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/ServerHardware.json'
+            'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
         ) as f:
             self.sh_dict = json.load(f)
 
         # Loading BladeManager mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/BladeManager.json'
+            'oneview_redfish_toolkit/mockups_redfish/BladeManager.json'
         ) as f:
             self.blade_manager = f.read()
 

@@ -35,13 +35,13 @@ class TestBladeChassis(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/ServerHardware.json'
+            'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
         ) as f:
             self.sh_dict = json.load(f)
 
         # Loading Chassis mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/BladeChassis.json'
+            'oneview_redfish_toolkit/mockups_redfish/BladeChassis.json'
         ) as f:
             self.blade_chassis = f.read()
 

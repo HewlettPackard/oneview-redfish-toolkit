@@ -43,13 +43,13 @@ class TestRackChassis(unittest.TestCase):
 
         # Loading ov_rack mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/Rack.json'
+            'oneview_redfish_toolkit/mockups_oneview/Rack.json'
         ) as f:
             self.ov_rack = json.load(f)
 
         # Loading rf_rack mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/RackChassis.json'
+            'oneview_redfish_toolkit/mockups_redfish/RackChassis.json'
         ) as f:
             self.rf_rack = f.read()
 

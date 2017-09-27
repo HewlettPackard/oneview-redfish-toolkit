@@ -130,27 +130,28 @@ class TestChassisCollection(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/'
+            'oneview_redfish_toolkit/mockups_oneview/'
             'ServerHardwares.json'
         ) as f:
             server_hardware = json.load(f)
 
         # Loading enclosures mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/'
+            'oneview_redfish_toolkit/mockups_oneview/'
             'Enclosures.json'
         ) as f:
             enclosures = json.load(f)
 
         # Loading racks mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/'
+            'oneview_redfish_toolkit/mockups_oneview/'
             'Racks.json'
         ) as f:
             racks = json.load(f)
 
         with open(
-                'oneview_redfish_toolkit/mockups/ChassisCollection.json'
+                'oneview_redfish_toolkit/mockups_redfish/'
+                'ChassisCollection.json'
         ) as f:
             chassis_collection_json = f.read()
 
