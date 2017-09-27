@@ -69,20 +69,20 @@ class TestChassis(unittest.TestCase):
 
         # Loading ov_enclosure mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/Enclosure.json'
+                'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
         ) as f:
             ov_enclosure = json.load(f)
 
         # Loading env_config mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/'
+                'oneview_redfish_toolkit/mockups_oneview/'
                 'EnclosureEnvironmentalConfig.json'
         ) as f:
             env_config = json.load(f)
 
         # Loading rf_enclosure mockup result
         with open(
-                'oneview_redfish_toolkit/mockups/EnclosureChassis.json'
+                'oneview_redfish_toolkit/mockups_redfish/EnclosureChassis.json'
         ) as f:
             rf_enclosure = f.read()
 
@@ -137,7 +137,7 @@ class TestChassis(unittest.TestCase):
 
         # Loading ov_enclosure mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/Enclosure.json'
+                'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
         ) as f:
             ov_enclosure = json.load(f)
 
@@ -186,7 +186,7 @@ class TestChassis(unittest.TestCase):
 
         # Loading ov_enclosure mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/Enclosure.json'
+                'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
         ) as f:
             ov_enclosure = json.load(f)
 
@@ -212,13 +212,13 @@ class TestChassis(unittest.TestCase):
 
         # Loading ov_serverhardware mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/ServerHardware.json'
+                'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
         ) as f:
             ov_serverhardware = json.load(f)
 
         # Loading rf_serverhardware mockup result
         with open(
-                'oneview_redfish_toolkit/mockups/BladeChassis.json'
+                'oneview_redfish_toolkit/mockups_redfish/BladeChassis.json'
         ) as f:
             rf_blade = f.read()
 
@@ -293,13 +293,13 @@ class TestChassis(unittest.TestCase):
 
         # Loading ov_rack mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/Rack.json'
+                'oneview_redfish_toolkit/mockups_oneview/Rack.json'
         ) as f:
             ov_rack = json.load(f)
 
         # Loading rf_rack mockup result
         with open(
-                'oneview_redfish_toolkit/mockups/RackChassis.json'
+                'oneview_redfish_toolkit/mockups_redfish/RackChassis.json'
         ) as f:
             rf_rack = f.read()
 

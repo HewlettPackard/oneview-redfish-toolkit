@@ -81,12 +81,13 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         # Read mock values
         with open(
-                'oneview_redfish_toolkit/mockups/ServerHardwares.json'
+                'oneview_redfish_toolkit/mockups_oneview/ServerHardwares.json'
         ) as f:
             fake_server_hardwares = json.loads(f.read())
 
         with open(
-                'oneview_redfish_toolkit/mockups/ComputerSystemCollection.json'
+                'oneview_redfish_toolkit/mockups_redfish/'
+                'ComputerSystemCollection.json'
         ) as f:
             computer_system_collection_json = f.read()
 

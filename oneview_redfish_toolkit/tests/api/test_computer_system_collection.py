@@ -40,14 +40,14 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/'
+            'oneview_redfish_toolkit/mockups_oneview/'
             'ServerHardwares.json'
         ) as f:
             self.server_hardware = json.load(f)
 
         # Loading ComputerSystemCollection result mockup
         with open(
-            'oneview_redfish_toolkit/mockups/'
+            'oneview_redfish_toolkit/mockups_redfish/'
             'ComputerSystemCollection.json'
         ) as f:
             self.computer_system_collection = f.read()
