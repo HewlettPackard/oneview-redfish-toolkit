@@ -39,6 +39,11 @@ class TestComputerSystem(unittest.TestCase):
             - oneview exception server hardware type
             - oneview unexpected exception
             - know computer system
+            - change power state with valid power value
+            - change power state with invalid power value
+            - change power state with unexpected exception
+            - change power state with SH not found
+            - change power state with SHT not found
     """
 
     @mock.patch.object(util, 'OneViewClient')
@@ -196,6 +201,8 @@ class TestComputerSystem(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_change_power_state(self, mock_get_ov_client):
+        """Tests change SH power state with valid power value"""
+
         # Loading server_hardware mockup value
         with open(
                 'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
@@ -227,8 +234,14 @@ class TestComputerSystem(unittest.TestCase):
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertEqual("application/json", response.mimetype)
 
+            json_str = response.data.decode("utf-8")
+
+            self.assertEqual(json_str, '{"ResetType": "%s"}' % reset_type)
+
     @mock.patch.object(util, 'get_oneview_client')
     def test_change_power_state_invalid_value(self, mock_get_ov_client):
+        """Tests change SH power state with invalid power value"""
+
         # Loading server_hardware mockup value
         with open(
                 'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
@@ -248,7 +261,7 @@ class TestComputerSystem(unittest.TestCase):
 
         response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
                                  "-313133364752/Actions/ComputerSystem.Reset",
-                                 data=dict(ResetType="PushPowerButon"))
+                                 data=dict(ResetType="INVALID_TYPE"))
 
         # Tests response
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -256,6 +269,8 @@ class TestComputerSystem(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_change_power_state_unexpected_error(self, mock_get_ov_client):
+        """Tests change SH power state with OneView unexpected error"""
+
         client = mock_get_ov_client()
         client.server_hardware.get.side_effect = Exception()
 
@@ -270,7 +285,7 @@ class TestComputerSystem(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_change_power_state_sh_exception(self, mock_get_ov_client):
-        """Tests ComputerSystem with ServerHardware exception"""
+        """Tests change SH power state with SH not found"""
 
         client = mock_get_ov_client()
         e = HPOneViewException({
@@ -292,7 +307,7 @@ class TestComputerSystem(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_change_power_state_sht_exception(self, mock_get_ov_client):
-        """Tests ComputerSystem with  ServerHardwareTypes exception"""
+        """Tests change SH power state with SHT not found"""
 
         client = mock_get_ov_client()
         e = HPOneViewException({

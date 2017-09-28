@@ -31,11 +31,10 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import util
 
 
-computer_system = Blueprint(
-    "computer_system", __name__, url_prefix="/redfish/v1/Systems/")
+computer_system = Blueprint("computer_system", __name__)
 
 
-@computer_system.route("<uuid>", methods=["GET"])
+@computer_system.route("/redfish/v1/Systems/<uuid>", methods=["GET"])
 def get_computer_system(uuid):
     """Get the Redfish Computer System for a given UUID.
 
@@ -104,7 +103,8 @@ def get_computer_system(uuid):
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@computer_system.route("<uuid>/Actions/ComputerSystem.Reset", methods=["POST"])
+@computer_system.route("/redfish/v1/Systems/<uuid>/"
+                       "Actions/ComputerSystem.Reset", methods=["POST"])
 def change_power_state(uuid):
     """Change the Oneview power state for a specific Server hardware.
 
@@ -139,10 +139,10 @@ def change_power_state(uuid):
         sht = ov_client.server_hardware_types.get(sh['serverHardwareTypeUri'])
 
         # Build Computer System object and validates it
-        computer_system_class = ComputerSystem(sh, sht)
+        cs = ComputerSystem(sh, sht)
 
-        oneview_power_configuration = computer_system_class \
-            .get_oneview_power_configuration(reset_type)
+        oneview_power_configuration = \
+            cs.get_oneview_power_configuration(reset_type)
 
         # Changes the ServerHardware power state
         ov_client.server_hardware.update_power_state(
@@ -172,7 +172,6 @@ def change_power_state(uuid):
 @computer_system.errorhandler(status.HTTP_400_BAD_REQUEST)
 def bad_request(error):
     """Creates a Bad Request Error response"""
-    logging.error(vars(error))
     return Response(
         response='{"error": "Invalid information"}',
         status=status.HTTP_400_BAD_REQUEST,
@@ -182,7 +181,6 @@ def bad_request(error):
 @computer_system.errorhandler(status.HTTP_404_NOT_FOUND)
 def not_found(error):
     """Creates a Not Found Error response"""
-    logging.error(vars(error))
     return Response(
         response='{"error": "URL/data not found"}',
         status=status.HTTP_404_NOT_FOUND,
@@ -193,7 +191,6 @@ def not_found(error):
     status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
     """Creates an Internal Server Error response"""
-    logging.error(vars(error))
     return Response(
         response='{"error": "Internal Server Error"}',
         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
