@@ -39,6 +39,7 @@ class BladeManager(Manager):
 
         super().__init__(server_hardware, ov_version)
 
+        self.redfish["FirmwareVersion"] = server_hardware['mpFirmwareVersion']
         self.redfish["ManagerType"] = "BMC"
         self.redfish["Name"] = "Blade Manager"
         self.redfish["Links"] = collections.OrderedDict()
