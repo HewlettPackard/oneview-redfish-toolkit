@@ -20,6 +20,7 @@ import collections
 import json
 import jsonschema
 
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import util
 
 
@@ -47,7 +48,10 @@ class RedfishJsonValidator(object):
                             to validate the redfish json created
         """
 
-        self.schema_obj = util.schemas_dict[schema_name]
+        if schema_name is None:
+            self.schema_obj = None
+        else:
+            self.schema_obj = util.schemas_dict[schema_name]
         self.redfish = collections.OrderedDict()
 
     def _validate(self):
@@ -62,7 +66,10 @@ class RedfishJsonValidator(object):
             Exception:
                 raises an exception on validation failure
         """
-
+        if self.schema_obj is None:
+            raise OneViewRedfishError(
+                "Can't serialize without a schema object. Schema name was"
+                " set to None at object instanciation.")
         try:
             jsonschema.validate(self.redfish, self.schema_obj)
         except Exception:
