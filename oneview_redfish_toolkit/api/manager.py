@@ -28,7 +28,7 @@ class Manager(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Manager'
 
-    def __init__(self, oneview_resource, ov_version):
+    def __init__(self, oneview_resource, firmware_version):
         """Manager constructor
 
             Populates self.redfish with some hardcoded Manager
@@ -43,7 +43,7 @@ class Manager(RedfishJsonValidator):
         self.redfish["@odata.type"] = "#Manager.v1_3_1.Manager"
         self.redfish["Id"] = oneview_resource['uuid']
         self.redfish["Description"] = None
-        self.redfish["FirmwareVersion"] = ov_version
+        self.redfish["FirmwareVersion"] = firmware_version
         self.redfish["Status"] = collections.OrderedDict()
         self.redfish["Status"]["State"] = "Enabled"
         self.redfish["Status"]["Health"] = oneview_resource["status"]

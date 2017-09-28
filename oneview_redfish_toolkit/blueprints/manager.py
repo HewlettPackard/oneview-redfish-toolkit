@@ -58,7 +58,7 @@ def get_managers(uuid):
 
         if category == 'server-hardware':
             ov_sh = ov_client.server_hardware.get(uuid)
-            manager = BladeManager(ov_sh, ov_version)
+            manager = BladeManager(ov_sh)
         elif category == 'enclosures':
             ov_encl = ov_client.enclosures.get(uuid)
             manager = EnclosureManager(ov_encl, ov_version)
