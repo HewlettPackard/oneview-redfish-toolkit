@@ -45,13 +45,11 @@ class TestBladeManager(unittest.TestCase):
         ) as f:
             self.blade_manager = f.read()
 
-        self.ov_version = "3.00.07-0288219"
-
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = BladeManager(self.sh_dict, self.ov_version)
+            obj = BladeManager(self.sh_dict)
         except Exception as e:
             self.fail("Failed to instantiate BladeManager class."
                       " Error: {}".format(e))
@@ -61,7 +59,7 @@ class TestBladeManager(unittest.TestCase):
         # Tests the serialize function result against known result
 
         try:
-            obj = BladeManager(self.sh_dict, self.ov_version)
+            obj = BladeManager(self.sh_dict)
         except Exception as e:
             self.fail("Failed to instantiate BladeManager class."
                       " Error: {}".format(e))
