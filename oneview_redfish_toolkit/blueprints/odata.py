@@ -48,15 +48,6 @@ def get_odata():
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@odata.errorhandler(status.HTTP_404_NOT_FOUND)
-def not_found(error):
-    """Creates a Not Found Error response"""
-    return Response(
-        response='{"error": "URL/data not found"}',
-        status=status.HTTP_404_NOT_FOUND,
-        mimetype='application/json')
-
-
 @odata.errorhandler(
     status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
