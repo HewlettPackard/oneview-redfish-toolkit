@@ -51,6 +51,10 @@ class EnclosureChassis(Chassis):
         self.redfish["Links"]["Contains"] = list()
         self._set_links_to_computer_system(
             enclosure["deviceBays"])
+        self.redfish["Links"]["ManagedBy"] = list()
+        self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
+        self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
+            "/redfish/v1/Managers/" + enclosure['uuid']
         self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
         self.redfish["Links"]["ContainedBy"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + environmental_configuration["rackId"]

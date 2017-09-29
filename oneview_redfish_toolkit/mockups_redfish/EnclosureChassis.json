@@ -36,6 +36,11 @@
                 "@odata.id": "/redfish/v1/Chassis/30303437-3034-4D32-3230-313130394752"
             }
         ],
+        "ManagedBy": [
+            {
+                "@odata.id": "/redfish/v1/Managers/0000000000A66101"
+            }
+        ],
         "ContainedBy": {
             "@odata.id": "/redfish/v1/Chassis/2AB100LMNB"
         }

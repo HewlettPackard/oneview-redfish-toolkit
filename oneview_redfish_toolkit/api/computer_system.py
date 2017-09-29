@@ -66,6 +66,10 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["Chassis"].append(collections.OrderedDict())
         self.redfish["Links"]["Chassis"][0]["@odata.id"] = \
             "/redfish/v1/Chassis/" + sh_dict['uuid']
+        self.redfish["Links"]["ManagedBy"] = list()
+        self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
+        self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
+            "/redfish/v1/Managers/" + sh_dict['uuid']
         self.redfish["Actions"] = collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
