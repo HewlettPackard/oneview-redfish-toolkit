@@ -66,7 +66,6 @@ def get_managers(uuid):
             raise OneViewRedfishError('Enclosure type not found')
 
         json_str = manager.serialize()
-        logging.info(json_str)
 
         return Response(
             response=json_str,

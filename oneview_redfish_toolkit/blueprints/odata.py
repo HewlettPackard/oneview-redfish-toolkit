@@ -24,57 +24,31 @@ from flask import Response
 from flask_api import status
 
 # own libs
-from hpOneView.exceptions import HPOneViewException
-from oneview_redfish_toolkit.api.service_root import ServiceRoot
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.api.odata import Odata
 
-service_root = Blueprint('service_root', __name__)
+odata = Blueprint('odata', __name__)
 
 
-@service_root.route('/', methods=["GET"])
-def get_service_root():
-    """Gets ServiceRoot
+@odata.route('/redfish/v1/odata', methods=["GET"])
+def get_odata():
+    """Gets Odata
 
-        Recover OneView UUID from appliance and creates
-        ServiceRoot redfish JSON
+        List the services offered by this server
     """
 
     try:
-        # Recover OV connection
-        ov_client = util.get_oneview_client()
-
-        # Gets serverhardware for given UUID
-        ov_info = ov_client.appliance_node_information.get_version()
-        uuid = ov_info['uuid']
-
-        obj = ServiceRoot(uuid)
+        obj = Odata()
         json_str = obj.serialize()
         return Response(
             response=json_str,
             status=200,
             mimetype='application/json')
-    except HPOneViewException as e:
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            logging.error("Resource not found: {}".format(e))
-            abort(status.HTTP_404_NOT_FOUND)
-        else:
-            logging.error("OneView Exception: {}".format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
-        logging.error('ServiceRoot error: {}'.format(e))
+        logging.error('Odata error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@service_root.errorhandler(status.HTTP_404_NOT_FOUND)
-def not_found(error):
-    """Creates a Not Found Error response"""
-    return Response(
-        response='{"error": "URL/data not found"}',
-        status=status.HTTP_404_NOT_FOUND,
-        mimetype='application/json')
-
-
-@service_root.errorhandler(
+@odata.errorhandler(
     status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
     """Creates an Internal Server Error response"""
