@@ -52,16 +52,18 @@ def get_computer_system(uuid):
     """
     try:
         # Recover OV connection
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
         # Gets serverhardware for given UUID
-        sh = ov_client.server_hardware.get(uuid)
+        server_hardware = oneview_client.server_hardware.get(uuid)
 
         # Gets the server hardware type of the given server hardware
-        sht = ov_client.server_hardware_types.get(sh['serverHardwareTypeUri'])
+        server_hardware_types = oneview_client.server_hardware_types.get(
+            server_hardware['serverHardwareTypeUri']
+        )
 
         # Build Computer System object and validates it
-        cs = ComputerSystem(sh, sht)
+        cs = ComputerSystem(server_hardware, server_hardware_types)
 
         # Build redfish json
         json_str = cs.serialize()
@@ -76,7 +78,7 @@ def get_computer_system(uuid):
             if e.msg.find("server-hardware-types") >= 0:
                 logging.warning(
                     'ServerHardwareTypes ID {} not found'.
-                    format(sh['serverHardwareTypeUri']))
+                    format(server_hardware['serverHardwareTypeUri']))
             else:
                 logging.warning(
                     'ServerHardware UUID {} not found'.

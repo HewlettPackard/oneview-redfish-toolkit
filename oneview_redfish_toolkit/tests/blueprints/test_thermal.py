@@ -40,7 +40,7 @@ class TestChassis(unittest.TestCase):
     """
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, ov_mock):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
         # Load config on util
@@ -61,28 +61,29 @@ class TestChassis(unittest.TestCase):
     #############
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_blade_thermal(
-            self, mock_get_ov_client):
+            self, get_oneview_client_mockup):
         """"Tests BladeThermal with a known SH"""
 
-        # Loading ov_sh_utilization mockup value
+        # Loading ServerHadwareUtilization mockup value
         with open(
                 'oneview_redfish_toolkit/mockups_oneview/'
                 'ServerHardwareUtilization.json'
         ) as f:
-            ov_sh_utilization = json.load(f)
+            server_hardware_utilization = json.load(f)
 
-        # Loading rf_blade_thermal mockup result
+        # Loading BladeChassisTermal mockup result
         with open(
                 'oneview_redfish_toolkit/mockups_redfish/'
                 'BladeChassisThermal.json'
         ) as f:
-            rf_blade_thermal = f.read()
+            blade_chassis_thermal_mockup = f.read()
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = \
+        oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        ov.server_hardware.get_utilization.return_value = ov_sh_utilization
+        oneview_client.server_hardware.get_utilization.return_value = \
+            server_hardware_utilization
 
         # Get BladeThermal
         response = self.app.get(
@@ -94,24 +95,24 @@ class TestChassis(unittest.TestCase):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(rf_blade_thermal, json_str)
+        self.assertEqual(blade_chassis_thermal_mockup, json_str)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_blade_not_found(self, mock_get_ov_client):
+    def test_get_blade_not_found(self, get_oneview_client_mockup):
         """Tests BladeThermal with SH not found"""
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = \
+        oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        ov.server_hardware.get_utilization.return_value = \
+        oneview_client.server_hardware.get_utilization.return_value = \
             {'serverHardwareUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server hardware not found',
         })
 
-        ov.server_hardware.get_utilization.side_effect = e
+        oneview_client.server_hardware.get_utilization.side_effect = e
 
         response = self.app.get(
             "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
@@ -121,14 +122,15 @@ class TestChassis(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_blade_unexpected_error(self, mock_get_ov_client):
+    def test_blade_unexpected_error(self, get_oneview_client_mockup):
         """Tests BladeThermal with an unexpected error"""
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = \
+        oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        ov.server_hardware.get_utilization.side_effect = Exception()
+        oneview_client.server_hardware.get_utilization.side_effect = \
+            Exception()
 
         response = self.app.get(
             "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
@@ -143,28 +145,29 @@ class TestChassis(unittest.TestCase):
     # Enclosure #
     #############
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_encl_thermal(self, mock_get_ov_client):
+    def test_get_encl_thermal(self, get_oneview_client_mockup):
         """"Tests EnclosureThermal with a known Enclosure"""
 
-        # Loading ov_encl_utilization mockup value
+        # Loading EnclosureUtilization mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/'
             'EnclosureUtilization.json'
         ) as f:
-            ov_encl_utilization = json.load(f)
+            enclosure_utilization = json.load(f)
 
-        # Loading rf_enclosure_thermal mockup result
+        # Loading EnclosureChassisThermal mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/'
             'EnclosureChassisThermal.json'
         ) as f:
-            rf_enclosure_thermal = f.read()
+            enclosure_chasssis_thermal_mockup = f.read()
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = \
+        oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
-        ov.enclosures.get_utilization.return_value = ov_encl_utilization
+        oneview_client.enclosures.get_utilization.return_value = \
+            enclosure_utilization
 
         # Get EnclosureThermal
         response = self.app.get(
@@ -176,33 +179,33 @@ class TestChassis(unittest.TestCase):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(rf_enclosure_thermal, json_str)
+        self.assertEqual(enclosure_chasssis_thermal_mockup, json_str)
 
     ########
     # Rack #
     ########
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_rack_thermal(self, mock_get_ov_client):
+    def test_get_rack_thermal(self, get_oneview_client_mockup):
         """"Tests RackThermal with a known Rack"""
 
-        # Loading ov_rack_utilization mockup value
+        # Loading RackDeviceTopology mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/'
             'RackDeviceTopology.json'
         ) as f:
-            ov_rack_topo = json.load(f)
+            rack_topology = json.load(f)
 
-        # Loading rf_rack_thermal mockup result
+        # Loading RackChassisThermal mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/RackChassisThermal.json'
         ) as f:
-            rf_enclosure_thermal = f.read()
+            rack_chassis_thermal_mockup = f.read()
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = \
+        oneview_client.index_resources.get_all.return_value = \
             [{"category": "racks"}]
-        ov.racks.get_device_topology.return_value = ov_rack_topo
+        oneview_client.racks.get_device_topology.return_value = rack_topology
 
         # Get RackThermal
         response = self.app.get(
@@ -214,4 +217,4 @@ class TestChassis(unittest.TestCase):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(rf_enclosure_thermal, json_str)
+        self.assertEqual(rack_chassis_thermal_mockup, json_str)

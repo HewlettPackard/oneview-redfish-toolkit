@@ -29,7 +29,7 @@ class TestServiceRoot(unittest.TestCase):
     """Tests for ServiceRoot class"""
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, ov_mock):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation """
 
         # Load configuration on util module
@@ -39,19 +39,19 @@ class TestServiceRoot(unittest.TestCase):
         """Tests class instantiation and validation"""
 
         try:
-            obj = ServiceRoot('00000000-0000-0000-0000-000000000000')
+            service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
         except Exception as e:
             self.fail("Failed to instantiate service root. Error: ".format(e))
-        self.assertIsInstance(obj, ServiceRoot)
+        self.assertIsInstance(service_root, ServiceRoot)
 
     def test_serialize(self):
         """Tests the serialize function result against known result"""
 
-        obj = ServiceRoot('00000000-0000-0000-0000-000000000000')
-        json_str = obj.serialize()
+        service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
+        json_str = service_root.serialize()
 
         with open(
             'oneview_redfish_toolkit/mockups_redfish/ServiceRoot.json'
         ) as f:
-            mok_json = f.read()
-        self.assertEqual(json_str, mok_json)
+            service_root_mockup = f.read()
+        self.assertEqual(service_root_mockup, json_str)

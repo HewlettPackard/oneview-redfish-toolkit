@@ -173,11 +173,11 @@ class TestUtil(unittest.TestCase):
         self.assertIsNotNone(util.ov_client, msg='Failed to connect to OV')
 
     @mock.patch.object(util, 'OneViewClient')
-    def test_get_ov_client_recover(self, mock_ovc):
+    def test_get_ov_client_recover(self, oneview_client_mockup):
         # Tests a successful recover of a OV client
 
-        m = mock_ovc()
-        m.connection.get.return_value = list()
+        oneview_client = oneview_client_mockup()
+        oneview_client.connection.get.return_value = list()
 
         try:
             ov_client = util.OneViewClient()
@@ -186,12 +186,13 @@ class TestUtil(unittest.TestCase):
         self.assertIsNotNone(ov_client)
 
     @mock.patch.object(util, 'OneViewClient')
-    def test_get_ov_client_renew(self, mock_ovc):
+    def test_get_ov_client_renew(self, oneview_client_mockup):
         """Tests getting a OV client from expired session"""
 
-        m = mock_ovc()
-        m.connection.get.return_value = Exception('session expired')
-        m.connection.login.return_value = m
+        oneview_client = oneview_client_mockup()
+        oneview_client.connection.get.return_value = \
+            Exception('session expired')
+        oneview_client.connection.login.return_value = oneview_client
 
         try:
             ov_client = util.OneViewClient()
@@ -200,12 +201,14 @@ class TestUtil(unittest.TestCase):
         self.assertIsNotNone(ov_client)
 
     @mock.patch.object(util, 'OneViewClient')
-    def test_get_ov_client_oneview_offline(self, mock_ovc):
+    def test_get_ov_client_oneview_offline(self, oneview_client_mockup):
         """Tests getting a OV client from an offline oneview"""
 
-        m = mock_ovc()
-        m.connection.get.return_value = Exception('OneViw not responding')
-        m.connection.login.return_value = Exception('OneView not responding')
+        oneview_client = oneview_client_mockup()
+        oneview_client.connection.get.return_value = \
+            Exception('OneViw not responding')
+        oneview_client.connection.login.return_value = \
+            Exception('OneView not responding')
 
         try:
             ov_client = util.OneViewClient()

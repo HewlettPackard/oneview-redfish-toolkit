@@ -32,7 +32,7 @@ class TestChassisCollection(unittest.TestCase):
     """Tests for ChassisCollection class"""
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self, oneview_client_mock):
         """Tests preparation"""
 
         # Loading variable in util module
@@ -64,32 +64,38 @@ class TestChassisCollection(unittest.TestCase):
             'oneview_redfish_toolkit/mockups_redfish/'
             'ChassisCollection.json'
         ) as f:
-            self.chassis_collection = f.read()
+            self.chassis_collection_mockup = f.read()
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = ChassisCollection(self.server_hardware,
-                                    self.enclosures, self.racks)
+            chassis_collection = ChassisCollection(
+                self.server_hardware,
+                self.enclosures,
+                self.racks
+            )
         except Exception as e:
             self.fail("Failed to instantiate ChassisCollection class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, ChassisCollection)
+        self.assertIsInstance(chassis_collection, ChassisCollection)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = ChassisCollection(self.server_hardware,
-                                    self.enclosures, self.racks)
+            chassis_collection = ChassisCollection(
+                self.server_hardware,
+                self.enclosures,
+                self.racks
+            )
         except Exception as e:
             self.fail("Failed to instantiate ChassisCollection class."
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            json_str = chassis_collection.serialize()
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.chassis_collection)
+        self.assertEqual(self.chassis_collection_mockup, json_str)

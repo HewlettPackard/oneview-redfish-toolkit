@@ -23,11 +23,11 @@ class OneViewRedfishError(Exception):
 
 class OneViewRedfishResourceNotFoundError(OneViewRedfishError):
 
-    def __init__(self, res_name, res_type):
-        self.msg = "{} {} not found".format(res_type, res_name)
+    def __init__(self, resource_name, resource_type):
+        self.msg = "{} {} not found".format(resource_type, resource_name)
 
 
 class OneViewRedfishResourceNotAccessibleError(OneViewRedfishError):
 
-    def __init__(self, res_name, res_type):
-        self.msg = "Can't access {} {}".format(res_type, res_name)
+    def __init__(self, resource_name, resource_type):
+        self.msg = "Can't access {} {}".format(resource_type, resource_name)

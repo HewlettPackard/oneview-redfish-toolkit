@@ -27,48 +27,54 @@ class TestEnclosureManager(unittest.TestCase):
     """Tests for EnclosureManager class"""
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
         # Loading variable in util module
         util.load_config('redfish.conf')
 
-        # Loading ov_enclosure mockup value
+        # Loading enclosure mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
         ) as f:
-            self.ov_enclosure = json.load(f)
+            self.enclosure = json.load(f)
 
-        # Loading rf_enclosure_manager mockup result
+        # Loading enclosure_manager_mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/EnclosureManager.json'
         ) as f:
-            self.rf_enclosure_manager = f.read()
+            self.enclosure_manager_mockup = f.read()
 
-        self.ov_version = "3.00.07-0288219"
+        self.oneview_version = "3.00.07-0288219"
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = EnclosureManager(self.ov_enclosure, self.ov_version)
+            enclosure_manager = EnclosureManager(
+                self.enclosure,
+                self.oneview_version
+            )
         except Exception as e:
             self.fail("Failed to instantiate EnclosureManager class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, EnclosureManager)
+        self.assertIsInstance(enclosure_manager, EnclosureManager)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = EnclosureManager(self.ov_enclosure, self.ov_version)
+            enclosure_manager = EnclosureManager(
+                self.enclosure,
+                self.oneview_version
+            )
         except Exception as e:
             self.fail("Failed to instantiate EnclosureManager class."
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            json_str = enclosure_manager.serialize()
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.rf_enclosure_manager)
+        self.assertEqual(self.enclosure_manager_mockup, json_str)

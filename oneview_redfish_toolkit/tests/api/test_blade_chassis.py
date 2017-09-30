@@ -27,7 +27,7 @@ class TestBladeChassis(unittest.TestCase):
     """Tests for Chassis class"""
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self, oneview_client_mock):
         """Tests preparation"""
 
         # Loading variable in util module
@@ -37,36 +37,36 @@ class TestBladeChassis(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
         ) as f:
-            self.sh_dict = json.load(f)
+            self.server_hardware = json.load(f)
 
         # Loading Chassis mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/BladeChassis.json'
         ) as f:
-            self.blade_chassis = f.read()
+            self.blade_chassis_mockup = f.read()
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = BladeChassis(self.sh_dict)
+            blade_chassis = BladeChassis(self.server_hardware)
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, BladeChassis)
+        self.assertIsInstance(blade_chassis, BladeChassis)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = BladeChassis(self.sh_dict)
+            blade_chassis = BladeChassis(self.server_hardware)
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            json_str = blade_chassis.serialize()
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.blade_chassis)
+        self.assertEqual(self.blade_chassis_mockup, json_str)

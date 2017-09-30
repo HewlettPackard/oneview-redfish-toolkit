@@ -30,7 +30,7 @@ from oneview_redfish_toolkit import util
 class TestRedfishJsonValidator(unittest.TestCase):
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, ov_mock):
+    def setUp(self, oneviwe_client_mockup):
         """Tests preparation """
 
         # Load configuration on util module
@@ -38,13 +38,20 @@ class TestRedfishJsonValidator(unittest.TestCase):
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated
-        obj = RedfishJsonValidator('ServiceRoot')
-        self.assertIsInstance(obj, RedfishJsonValidator)
+        try:
+            redfish_json_validator = RedfishJsonValidator('ServiceRoot')
+        except Exception as e:
+            self.fail("Failed to instantiate RedfishJsonValidator class."
+                      " Error: {}".format(e))
+        self.assertIsInstance(redfish_json_validator, RedfishJsonValidator)
 
     def test_has_valid_config_file(self):
         # Tests if expected filed exists and are correctly populated by
         # the constructor
 
-        obj = RedfishJsonValidator('ServiceRoot')
-        self.assertIsInstance(obj.schema_obj, dict)
-        self.assertIsInstance(obj.redfish, collections.OrderedDict)
+        redfish_json_validator = RedfishJsonValidator('ServiceRoot')
+        self.assertIsInstance(redfish_json_validator.schema_obj, dict)
+        self.assertIsInstance(
+            redfish_json_validator.redfish,
+            collections.OrderedDict
+        )

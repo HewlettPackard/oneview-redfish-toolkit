@@ -41,13 +41,13 @@ def get_computer_system_collection():
     """
     try:
         # Recover OV connection
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
         # Gets all server hardware
-        oneview_server_hardwares = ov_client.server_hardware.get_all()
+        server_hardwares = oneview_client.server_hardware.get_all()
 
         # Build Computer System Collection object and validates it
-        csc = ComputerSystemCollection(oneview_server_hardwares)
+        csc = ComputerSystemCollection(server_hardwares)
 
         # Build redfish json
         json_str = csc.serialize()

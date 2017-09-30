@@ -35,46 +35,46 @@ class TestRackChassis(unittest.TestCase):
     """
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
         # Loading variable in util module
         util.load_config('redfish.conf')
 
-        # Loading ov_rack mockup value
+        # Loading rack mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/Rack.json'
         ) as f:
-            self.ov_rack = json.load(f)
+            self.rack = json.load(f)
 
-        # Loading rf_rack mockup result
+        # Loading rack_chassis_mockup mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/RackChassis.json'
         ) as f:
-            self.rf_rack = f.read()
+            self.rack_chassis_mockup = f.read()
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = RackChassis(self.ov_rack)
+            rack_chassis = RackChassis(self.rack)
         except Exception as e:
             self.fail("Failed to instantiate RackChassis class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, RackChassis)
+        self.assertIsInstance(rack_chassis, RackChassis)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = RackChassis(self.ov_rack)
+            rack_chassis = RackChassis(self.rack)
         except Exception as e:
             self.fail("Failed to instantiate RackChassis class."
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            json_str = rack_chassis.serialize()
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.rf_rack)
+        self.assertEqual(self.rack_chassis_mockup, json_str)

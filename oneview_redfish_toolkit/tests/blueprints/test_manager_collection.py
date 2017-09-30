@@ -40,7 +40,7 @@ class TestManagerCollection(unittest.TestCase):
     """
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, ov_mock):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
         # Load config on util
@@ -58,11 +58,11 @@ class TestManagerCollection(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_manager_collection_unexpected_error(
-            self, mock_get_ov_client):
+            self, get_oneview_client_mockup):
         """Tests ManagerCollection with an error"""
 
-        client = mock_get_ov_client()
-        client.server_hardware.get_all.side_effect = Exception()
+        oneview_client = get_oneview_client_mockup()
+        oneview_client.server_hardware.get_all.side_effect = Exception()
 
         response = self.app.get("/redfish/v1/Managers/")
 
@@ -76,11 +76,11 @@ class TestManagerCollection(unittest.TestCase):
         self.assertEqual(json_str, '{"error": "Internal Server Error"}')
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_enclosures_empty(self, mock_get_ov_client):
+    def test_get_enclosures_empty(self, get_oneview_client_mockup):
         """Tests ManagerCollection with enclosures response empty"""
 
-        client = mock_get_ov_client()
-        client.enclosures.get_all.return_value = []
+        oneview_client = get_oneview_client_mockup()
+        oneview_client.enclosures.get_all.return_value = []
 
         response = self.app.get("/redfish/v1/Managers/")
 
@@ -92,10 +92,10 @@ class TestManagerCollection(unittest.TestCase):
         self.assertEqual(json_str, '{"error": "Resource not found"}')
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_server_hardwares_empty(self, mock_get_ov_client):
+    def test_get_server_hardwares_empty(self, get_oneview_client_mockup):
         """Tests ManagerCollection with server hardware response empty"""
 
-        client = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
         # Loading enclosures mockup value
         with open(
@@ -104,8 +104,8 @@ class TestManagerCollection(unittest.TestCase):
         ) as f:
             enclosures = json.load(f)
 
-        client.enclosures.get_all.return_value = enclosures
-        client.server_hardware.get_all.return_value = []
+        oneview_client.enclosures.get_all.return_value = enclosures
+        oneview_client.server_hardware.get_all.return_value = []
 
         response = self.app.get("/redfish/v1/Managers/")
 
@@ -117,7 +117,7 @@ class TestManagerCollection(unittest.TestCase):
         self.assertEqual(json_str, '{"error": "Resource not found"}')
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_manager_collection(self, mock_get_ov_client):
+    def test_get_manager_collection(self, get_oneview_client_mockup):
         """Tests a valid ManagerCollection"""
 
         # Loading server_hardware mockup value
@@ -125,7 +125,7 @@ class TestManagerCollection(unittest.TestCase):
             'oneview_redfish_toolkit/mockups_oneview/'
             'ServerHardwares.json'
         ) as f:
-            server_hardware = json.load(f)
+            server_hardwares = json.load(f)
 
         # Loading enclosures mockup value
         with open(
@@ -138,12 +138,12 @@ class TestManagerCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups_redfish/'
                 'ManagerCollection.json'
         ) as f:
-            manager_collection_json = f.read()
+            manager_collection_mockup = f.read()
 
         # Create mock response
-        client = mock_get_ov_client()
-        client.server_hardware.get_all.return_value = server_hardware
-        client.enclosures.get_all.return_value = enclosures
+        oneview_client = get_oneview_client_mockup()
+        oneview_client.server_hardware.get_all.return_value = server_hardwares
+        oneview_client.enclosures.get_all.return_value = enclosures
 
         # Get ManagerCollection
         response = self.app.get("/redfish/v1/Managers/")
@@ -154,4 +154,4 @@ class TestManagerCollection(unittest.TestCase):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(manager_collection_json, json_str)
+        self.assertEqual(manager_collection_mockup, json_str)

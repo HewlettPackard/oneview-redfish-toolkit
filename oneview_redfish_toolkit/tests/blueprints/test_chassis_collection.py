@@ -41,7 +41,7 @@ class TestChassisCollection(unittest.TestCase):
     """
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, ov_mock):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
         # Load config on util
@@ -59,81 +59,77 @@ class TestChassisCollection(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_chassis_collection_unexpected_error(
-            self, mock_get_ov_client):
+            self, get_oneview_client_mockup):
         """Tests ChassisCollection with an error"""
 
-        client = mock_get_ov_client()
+        client = get_oneview_client_mockup()
         client.server_hardware.get_all.side_effect = Exception()
 
         response = self.app.get("/redfish/v1/Chassis/")
+
+        json_str = response.data.decode("utf-8")
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
-
-        json_str = response.data.decode("utf-8")
-
-        self.assertEqual(json_str, '{"error": "Internal Server Error"}')
+        self.assertEqual('{"error": "Internal Server Error"}', json_str)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_server_hardwares_empty(self, mock_get_ov_client):
-        """Tests ChassisCollection with an empty list"""
+    def test_get_server_hardwares_empty(self, get_oneview_client_mockup):
+        """Tests ChassisCollection with an empty server hardware list"""
 
-        client = mock_get_ov_client()
+        client = get_oneview_client_mockup()
         client.server_hardware.get_all.return_value = []
 
         response = self.app.get("/redfish/v1/Chassis/")
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-
         json_str = response.data.decode("utf-8")
 
-        self.assertEqual(json_str, '{"error": "Resource not found"}')
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual('{"error": "Resource not found"}', json_str)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_enclosures_empty(self, mock_get_ov_client):
-        """Tests ChassisCollection with an empty list"""
+    def test_get_enclosures_empty(self, get_oneview_client_mockup):
+        """Tests ChassisCollection with an empty enclosure list"""
 
-        client = mock_get_ov_client()
+        client = get_oneview_client_mockup()
         client.enclosures.get_all.return_value = []
 
         response = self.app.get("/redfish/v1/Chassis/")
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-
         json_str = response.data.decode("utf-8")
 
-        self.assertEqual(json_str, '{"error": "Resource not found"}')
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual('{"error": "Resource not found"}', json_str)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_racks_empty(self, mock_get_ov_client):
-        """Tests ChassisCollection with an empty list"""
+    def test_get_racks_empty(self, get_oneview_client_mockup):
+        """Tests ChassisCollection with an empty rack list"""
 
-        client = mock_get_ov_client()
+        client = get_oneview_client_mockup()
         client.racks.get_all.return_value = []
 
         response = self.app.get("/redfish/v1/Chassis/")
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-
         json_str = response.data.decode("utf-8")
 
-        self.assertEqual(json_str, '{"error": "Resource not found"}')
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual('{"error": "Resource not found"}', json_str)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_chassis_collection(self, mock_get_ov_client):
-        """Tests ChassisCollection with a known Server Hardware list"""
+    def test_get_chassis_collection(self, get_oneview_client_mockup):
+        """Tests ChassisCollection with a known Results"""
 
         # Loading server_hardware mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/'
             'ServerHardwares.json'
         ) as f:
-            server_hardware = json.load(f)
+            server_hardwares = json.load(f)
 
         # Loading enclosures mockup value
         with open(
@@ -153,11 +149,11 @@ class TestChassisCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups_redfish/'
                 'ChassisCollection.json'
         ) as f:
-            chassis_collection_json = f.read()
+            chassis_collection_mockup = f.read()
 
         # Create mock response
-        client = mock_get_ov_client()
-        client.server_hardware.get_all.return_value = server_hardware
+        client = get_oneview_client_mockup()
+        client.server_hardware.get_all.return_value = server_hardwares
         client.enclosures.get_all.return_value = enclosures
         client.racks.get_all.return_value = racks
 
@@ -170,4 +166,4 @@ class TestChassisCollection(unittest.TestCase):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(chassis_collection_json, json_str)
+        self.assertEqual(chassis_collection_mockup, json_str)

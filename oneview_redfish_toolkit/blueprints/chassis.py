@@ -45,27 +45,31 @@ def get_chassis(uuid):
             JSON: JSON with Chassis.
     """
     try:
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
-        index_obj = ov_client.index_resources.get_all(filter='uuid=' + uuid)
+        resource_index = oneview_client.index_resources.get_all(
+            filter='uuid=' + uuid
+        )
 
-        if index_obj:
-            category = index_obj[0]["category"]
+        if resource_index:
+            category = resource_index[0]["category"]
         else:
             raise OneViewRedfishError('Cannot find Index resource')
 
         if category == 'server-hardware':
-            ov_sh = ov_client.server_hardware.get(uuid)
-            ch = BladeChassis(ov_sh)
+            server_hardware = oneview_client.server_hardware.get(uuid)
+            ch = BladeChassis(server_hardware)
         elif category == 'enclosures':
-            ov_encl = ov_client.enclosures.get(uuid)
-            ov_encl_env_config = ov_client.enclosures. \
+            enclosure = oneview_client.enclosures.get(uuid)
+            enclosure_environment_config = oneview_client.enclosures.\
                 get_environmental_configuration(uuid)
-
-            ch = EnclosureChassis(ov_encl, ov_encl_env_config)
+            ch = EnclosureChassis(
+                enclosure,
+                enclosure_environment_config
+            )
         elif category == 'racks':
-            ov_racks = ov_client.racks.get(uuid)
-            ch = RackChassis(ov_racks)
+            racks = oneview_client.racks.get(uuid)
+            ch = RackChassis(racks)
         else:
             raise OneViewRedfishError('Chassis type not found')
 

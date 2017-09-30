@@ -27,7 +27,7 @@ class TestBladeManager(unittest.TestCase):
     """Tests for BladeManager class"""
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self, oneview_client_mock):
         """Tests preparation"""
 
         # Loading variable in util module
@@ -37,36 +37,36 @@ class TestBladeManager(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
         ) as f:
-            self.sh_dict = json.load(f)
+            self.server_hardware = json.load(f)
 
         # Loading BladeManager mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/BladeManager.json'
         ) as f:
-            self.blade_manager = f.read()
+            self.blade_manager_mockup = f.read()
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = BladeManager(self.sh_dict)
+            blade_manager = BladeManager(self.server_hardware)
         except Exception as e:
             self.fail("Failed to instantiate BladeManager class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, BladeManager)
+        self.assertIsInstance(blade_manager, BladeManager)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = BladeManager(self.sh_dict)
+            blade_manager = BladeManager(self.server_hardware)
         except Exception as e:
             self.fail("Failed to instantiate BladeManager class."
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            json_str = blade_manager.serialize()
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.blade_manager)
+        self.assertEqual(self.blade_manager_mockup, json_str)
