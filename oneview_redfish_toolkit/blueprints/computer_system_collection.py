@@ -44,10 +44,10 @@ def get_computer_system_collection():
         oneview_client = util.get_oneview_client()
 
         # Gets all server hardware
-        server_hardwares = oneview_client.server_hardware.get_all()
+        server_hardware_list = oneview_client.server_hardware.get_all()
 
         # Build Computer System Collection object and validates it
-        csc = ComputerSystemCollection(server_hardwares)
+        csc = ComputerSystemCollection(server_hardware_list)
 
         # Build redfish json
         json_str = csc.serialize()

@@ -76,7 +76,7 @@ class TestChassisCollection(unittest.TestCase):
         self.assertEqual('{"error": "Internal Server Error"}', json_str)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_server_hardwares_empty(self, get_oneview_client_mockup):
+    def test_get_server_hardware_list_empty(self, get_oneview_client_mockup):
         """Tests ChassisCollection with an empty server hardware list"""
 
         client = get_oneview_client_mockup()
@@ -129,7 +129,7 @@ class TestChassisCollection(unittest.TestCase):
             'oneview_redfish_toolkit/mockups_oneview/'
             'ServerHardwares.json'
         ) as f:
-            server_hardwares = json.load(f)
+            server_hardware_list = json.load(f)
 
         # Loading enclosures mockup value
         with open(
@@ -153,7 +153,7 @@ class TestChassisCollection(unittest.TestCase):
 
         # Create mock response
         client = get_oneview_client_mockup()
-        client.server_hardware.get_all.return_value = server_hardwares
+        client.server_hardware.get_all.return_value = server_hardware_list
         client.enclosures.get_all.return_value = enclosures
         client.racks.get_all.return_value = racks
 

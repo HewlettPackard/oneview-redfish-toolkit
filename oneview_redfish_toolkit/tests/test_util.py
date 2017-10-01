@@ -206,7 +206,7 @@ class TestUtil(unittest.TestCase):
 
         oneview_client = oneview_client_mockup()
         oneview_client.connection.get.return_value = \
-            Exception('OneViw not responding')
+            Exception('OneView not responding')
         oneview_client.connection.login.return_value = \
             Exception('OneView not responding')
 

@@ -65,14 +65,14 @@ def get_manager_collection():
                 "enclosures", "oneview-result")
 
         # Gets all server hardware
-        server_hardwares = oneview_client.server_hardware.get_all()
+        server_hardware_list = oneview_client.server_hardware.get_all()
 
-        if not server_hardwares:
+        if not server_hardware_list:
             raise OneViewRedfishResourceNotFoundError(
                 "server-hardwares", "oneview-result")
 
         # Build Manager Collection object and validates it
-        mc = ManagerCollection(server_hardwares, enclosures)
+        mc = ManagerCollection(server_hardware_list, enclosures)
 
         # Build redfish json
         json_str = mc.serialize()

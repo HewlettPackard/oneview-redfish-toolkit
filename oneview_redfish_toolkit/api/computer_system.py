@@ -27,57 +27,57 @@ class ComputerSystem(RedfishJsonValidator):
 
     SCHEMA_NAME = 'ComputerSystem'
 
-    def __init__(self, server_hadware, server_hadware_types):
+    def __init__(self, server_hardware, server_hardware_types):
         """ComputerSystem constructor
 
             Populates self.redfish with the contents of ServerHardware and
             ServerHardwareTypes dicts.
 
             Args:
-                server_hadware: ServerHardware dict from OneView
-                server_hadware_types: ServerHardwareTypes dict from OneView
+                server_hardware: ServerHardware dict from OneView
+                server_hardware_types: ServerHardwareTypes dict from OneView
         """
         super().__init__(self.SCHEMA_NAME)
 
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
-        self.redfish["Id"] = server_hadware["uuid"]
-        self.redfish["Name"] = server_hadware["name"]
+        self.redfish["Id"] = server_hardware["uuid"]
+        self.redfish["Name"] = server_hardware["name"]
         self.redfish["SystemType"] = "Physical"
         self.redfish["Manufacturer"] = "HPE"
-        self.redfish["Model"] = server_hadware["model"]
-        self.redfish["SerialNumber"] = server_hadware["serialNumber"]
+        self.redfish["Model"] = server_hardware["model"]
+        self.redfish["SerialNumber"] = server_hardware["serialNumber"]
         self.redfish["Status"] = collections.OrderedDict()
         self.redfish["Status"]["State"] = "Enabled"
-        self.redfish["Status"]["Health"] = server_hadware["status"]
-        self.redfish["PowerState"] = server_hadware["powerState"]
+        self.redfish["Status"]["Health"] = server_hardware["status"]
+        self.redfish["PowerState"] = server_hardware["powerState"]
         self.redfish["Boot"] = collections.OrderedDict()
         self.redfish["Boot"]["BootSourceOverrideTarget@Redfish."
                              "AllowableValues"] = \
-            self.map_boot(server_hadware_types['bootCapabilities'])
-        self.redfish["BiosVersion"] = server_hadware["romVersion"]
+            self.map_boot(server_hardware_types['bootCapabilities'])
+        self.redfish["BiosVersion"] = server_hardware["romVersion"]
         self.redfish["ProcessorSummary"] = collections.OrderedDict()
         self.redfish["ProcessorSummary"]['Count'] = \
-            server_hadware["processorCount"]
+            server_hardware["processorCount"]
         self.redfish["ProcessorSummary"]["Model"] = \
-            server_hadware["processorType"]
+            server_hardware["processorType"]
         self.redfish["MemorySummary"] = collections.OrderedDict()
         self.redfish["MemorySummary"]["TotalSystemMemoryGiB"] = \
-            server_hadware["memoryMb"] / 1024
+            server_hardware["memoryMb"] / 1024
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["Chassis"] = list()
         self.redfish["Links"]["Chassis"].append(collections.OrderedDict())
         self.redfish["Links"]["Chassis"][0]["@odata.id"] = \
-            "/redfish/v1/Chassis/" + server_hadware['uuid']
+            "/redfish/v1/Chassis/" + server_hardware['uuid']
         self.redfish["Links"]["ManagedBy"] = list()
         self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
-            "/redfish/v1/Managers/" + server_hadware['uuid']
+            "/redfish/v1/Managers/" + server_hardware['uuid']
         self.redfish["Actions"] = collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"]["target"] = \
             "/redfish/v1/System/{}/Actions/ComputerSystem.Reset" \
-            .format(server_hadware["uuid"])
+            .format(server_hardware["uuid"])
         self.redfish["Actions"]["#ComputerSystem.Reset"][
             "ResetType@Redfish.AllowableValues"] = \
             ["On", "ForceOff", "GracefulShutdown", "GracefulRestart",

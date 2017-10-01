@@ -30,7 +30,7 @@ from oneview_redfish_toolkit import util
 class TestRedfishJsonValidator(unittest.TestCase):
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneviwe_client_mockup):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation """
 
         # Load configuration on util module

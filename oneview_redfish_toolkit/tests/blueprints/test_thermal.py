@@ -64,7 +64,7 @@ class TestChassis(unittest.TestCase):
             self, get_oneview_client_mockup):
         """"Tests BladeThermal with a known SH"""
 
-        # Loading ServerHadwareUtilization mockup value
+        # Loading ServerHardwareUtilization mockup value
         with open(
                 'oneview_redfish_toolkit/mockups_oneview/'
                 'ServerHardwareUtilization.json'

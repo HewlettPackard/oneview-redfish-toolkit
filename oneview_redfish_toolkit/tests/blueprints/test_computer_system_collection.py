@@ -89,7 +89,7 @@ class TestComputerSystemCollection(unittest.TestCase):
         with open(
                 'oneview_redfish_toolkit/mockups_oneview/ServerHardwares.json'
         ) as f:
-            server_hardwares = json.loads(f.read())
+            server_hardware_list = json.loads(f.read())
 
         with open(
                 'oneview_redfish_toolkit/mockups_redfish/'
@@ -99,7 +99,8 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         # Create mock response
         oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get_all.return_value = server_hardwares
+        oneview_client.server_hardware.get_all.return_value = \
+            server_hardware_list
 
         # Get ComputerSystemCollection
         response = self.app.get("/redfish/v1/Systems/")
