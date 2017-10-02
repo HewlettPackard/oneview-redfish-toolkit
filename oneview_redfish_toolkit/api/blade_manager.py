@@ -39,9 +39,9 @@ class BladeManager(Manager):
 
         super().__init__(server_hardware, server_hardware['mpFirmwareVersion'])
 
-        self.redfish["FirmwareVersion"] = server_hardware['mpFirmwareVersion']
         self.redfish["ManagerType"] = "BMC"
         self.redfish["Name"] = "Blade Manager"
+        self.redfish["Description"] = "HPE Integrated Lights Out"
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["ManagerForServers"] = list()
         self.redfish["Links"]["ManagerForServers"].append(

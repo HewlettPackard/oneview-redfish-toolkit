@@ -1,7 +1,7 @@
 {
     "@odata.type": "#Manager.v1_3_1.Manager",
     "Id": "0000000000A66101",
-    "Description": null,
+    "Description": "HPE Onboard Administrator",
     "FirmwareVersion": "3.00.07-0288219",
     "Status": {
         "State": "Enabled",
