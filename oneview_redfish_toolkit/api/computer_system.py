@@ -21,6 +21,30 @@ from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 
 
+POWER_STATE_MAP = {
+    "On": {
+        "powerState": "On",
+    },
+    "ForceOff": {
+        "powerState": "Off",
+        "powerControl": "PressAndHold"
+    },
+    "GracefulShutdown": {
+        "powerState": "Off",
+        "powerControl": "MomentaryPress"
+    },
+    "GracefulRestart": {
+        "powerState": "On"
+    },
+    "ForceRestart": {
+        "powerState": "On"
+    },
+    "PushPowerButton": {
+        "powerControl": "MomentaryPress"
+    }
+}
+
+
 class ComputerSystem(RedfishJsonValidator):
     """Creates a Computer System Redfish dict
 
@@ -131,41 +155,21 @@ class ComputerSystem(RedfishJsonValidator):
                 reset_type is an unmapped value.
         """
 
-        reset_type_dict = dict()
-
-        reset_type_dict["On"] = dict()
-        reset_type_dict["On"]["powerState"] = "On"
-        reset_type_dict["On"]["powerControl"] = "MomentaryPress"
-
-        reset_type_dict["ForceOff"] = dict()
-        reset_type_dict["ForceOff"]["powerState"] = "Off"
-        reset_type_dict["ForceOff"]["powerControl"] = "PressAndHold"
-
-        reset_type_dict["GracefulShutdown"] = dict()
-        reset_type_dict["GracefulShutdown"]["powerState"] = "Off"
-        reset_type_dict["GracefulShutdown"]["powerControl"] = "MomentaryPress"
-
-        reset_type_dict["GracefulRestart"] = dict()
-        reset_type_dict["GracefulRestart"]["powerState"] = "On"
-        reset_type_dict["GracefulRestart"]["powerControl"] = "Reset"
-
-        reset_type_dict["ForceRestart"] = dict()
-        reset_type_dict["ForceRestart"]["powerState"] = "On"
-        reset_type_dict["ForceRestart"]["powerControl"] = "ColdBoot"
-
-        reset_type_dict["PushPowerButton"] = dict()
-
         if reset_type == "PushPowerButton":
             if self.server_hardware["powerState"] == "On":
-                reset_type_dict["PushPowerButton"]["powerState"] = "Off"
+                POWER_STATE_MAP["PushPowerButton"]["powerState"] = "Off"
             else:
-                reset_type_dict["PushPowerButton"]["powerState"] = "On"
+                POWER_STATE_MAP["PushPowerButton"]["powerState"] = "On"
 
-        reset_type_dict["PushPowerButton"]["powerControl"] = "MomentaryPress"
+        if reset_type == "ForceOn" or reset_type == "Nmi":
+            raise OneViewRedfishError({
+                "errorCode": "NOT_IMPLEMENTED",
+                "message": "{} not mapped to OneView".format(reset_type)})
 
         try:
-            return reset_type_dict[reset_type]
+            return POWER_STATE_MAP[reset_type]
         except Exception:
-            raise OneViewRedfishError(
-                'There is no mapping for {} on the OneView'
-                .format(reset_type))
+            raise OneViewRedfishError({
+                "errorCode": "INVALID_INFORMATION",
+                "message": "There is no mapping for {} on the OneView"
+                .format(reset_type)})

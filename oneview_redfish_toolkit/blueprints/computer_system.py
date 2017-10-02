@@ -126,9 +126,14 @@ def change_power_state(uuid):
             return abort(500)
     """
 
-    reset_type = request.form["ResetType"]
-
     try:
+        try:
+            reset_type = request.form["ResetType"]
+        except Exception:
+            raise OneViewRedfishError(
+                {"errorCode": "INVALID_INFORMATION",
+                 "message": "Invalid JSON key"})
+
         # Recover OV connection
         ov_client = util.get_oneview_client()
 
@@ -161,7 +166,11 @@ def change_power_state(uuid):
     except OneViewRedfishError as e:
         # In case of error log exception and abort
         logging.error('Mapping error: {}'.format(e))
-        abort(status.HTTP_400_BAD_REQUEST)
+
+        if e.msg["errorCode"] == "NOT_IMPLEMENTED":
+            abort(status.HTTP_501_NOT_IMPLEMENTED)
+        else:
+            abort(status.HTTP_400_BAD_REQUEST)
 
     except Exception as e:
         # In case of error log exception and abort
@@ -194,4 +203,13 @@ def internal_server_error(error):
     return Response(
         response='{"error": "Internal Server Error"}',
         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        mimetype='application/json')
+
+
+@computer_system.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
+def not_implemented(error):
+    """Creates a Not Implemented Error response"""
+    return Response(
+        response='{"error": "Not implemented"}',
+        status=status.HTTP_501_NOT_IMPLEMENTED,
         mimetype='application/json')

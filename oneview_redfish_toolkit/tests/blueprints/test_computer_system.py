@@ -201,7 +201,16 @@ class TestComputerSystem(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_change_power_state(self, mock_get_ov_client):
-        """Tests change SH power state with valid power value"""
+        """Tests change SH power state with valid power values
+
+            Valid Power Values:
+                - On
+                - ForceOff
+                - GracefulShutdown
+                - GracefulRestart
+                - ForceRestart
+                - PushPowerButton
+        """
 
         # Loading server_hardware mockup value
         with open(
