@@ -63,6 +63,9 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["MemorySummary"] = collections.OrderedDict()
         self.redfish["MemorySummary"]["TotalSystemMemoryGiB"] = \
             server_hardware["memoryMb"] / 1024
+        self.redfish["Storage"] = collections.OrderedDict()
+        self.redfish["Storage"]["@odata.id"] = \
+            "/redfish/v1/Systems/" + server_hardware['uuid'] + "/Storage"
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["Chassis"] = list()
         self.redfish["Links"]["Chassis"].append(collections.OrderedDict())
