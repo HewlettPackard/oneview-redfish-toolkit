@@ -92,7 +92,7 @@ class TestManagerCollection(unittest.TestCase):
         self.assertEqual(json_str, '{"error": "Resource not found"}')
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_server_hardwares_empty(self, get_oneview_client_mockup):
+    def test_get_server_hardware_list_empty(self, get_oneview_client_mockup):
         """Tests ManagerCollection with server hardware response empty"""
 
         oneview_client = get_oneview_client_mockup()
@@ -125,7 +125,7 @@ class TestManagerCollection(unittest.TestCase):
             'oneview_redfish_toolkit/mockups_oneview/'
             'ServerHardwares.json'
         ) as f:
-            server_hardwares = json.load(f)
+            server_hardware_list = json.load(f)
 
         # Loading enclosures mockup value
         with open(
@@ -142,7 +142,7 @@ class TestManagerCollection(unittest.TestCase):
 
         # Create mock response
         oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get_all.return_value = server_hardwares
+        oneview_client.server_hardware.get_all.return_value = server_hardware_list
         oneview_client.enclosures.get_all.return_value = enclosures
 
         # Get ManagerCollection
