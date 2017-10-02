@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 # -*- coding: utf-8 -*-
 
 # Copyright (2017) Hewlett Packard Enterprise Development LP
