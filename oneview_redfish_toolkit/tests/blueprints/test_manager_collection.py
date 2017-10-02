@@ -142,7 +142,8 @@ class TestManagerCollection(unittest.TestCase):
 
         # Create mock response
         oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get_all.return_value = server_hardware_list
+        oneview_client.server_hardware.get_all.return_value = \
+            server_hardware_list
         oneview_client.enclosures.get_all.return_value = enclosures
 
         # Get ManagerCollection
