@@ -66,7 +66,7 @@ class TestChassis(unittest.TestCase):
         ) as f:
             self.enclosure = json.load(f)
 
-        # Loading EnclouserEnvironmentalConfig mockup value
+        # Loading EnclosureEnvironmentalConfig mockup value
         with open(
                 'oneview_redfish_toolkit/mockups_oneview/'
                 'EnclosureEnvironmentalConfig.json'

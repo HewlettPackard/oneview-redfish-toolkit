@@ -38,12 +38,12 @@ class TestComputerSystemCollection(unittest.TestCase):
         # Loading variable in util module
         util.load_config('redfish.conf')
 
-        # Loading ServerHawrdware list mockup value
+        # Loading ServerHardware list mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/'
             'ServerHardwares.json'
         ) as f:
-            self.server_hardwares = json.load(f)
+            self.server_hardware_list = json.load(f)
 
         # Loading ComputerSystemCollection result mockup
         with open(
@@ -57,7 +57,7 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         try:
             computer_system_collection = ComputerSystemCollection(
-                self.server_hardwares
+                self.server_hardware_list
             )
         except Exception as e:
             self.fail("Failed to instantiate ComputerSystemCollection class."
@@ -72,7 +72,7 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         try:
             computer_system_collection = ComputerSystemCollection(
-                self.server_hardwares
+                self.server_hardware_list
             )
         except Exception as e:
             self.fail("Failed to instantiate ComputerSystemCollection class."
