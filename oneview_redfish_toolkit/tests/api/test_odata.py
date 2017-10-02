@@ -14,44 +14,42 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""
-    Tests for redfish_json_validator.py
-"""
 
 import unittest
 from unittest import mock
 
-from oneview_redfish_toolkit.api.service_root import ServiceRoot
+
+from oneview_redfish_toolkit.api.odata import Odata
 from oneview_redfish_toolkit import util
 
 
-class TestServiceRoot(unittest.TestCase):
-    """Tests for ServiceRoot class"""
+class TestOdata(unittest.TestCase):
+    """Tests for Odata class"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, oneview_client_mockup):
-        """Tests preparation """
+        """Tests preparation"""
 
-        # Load configuration on util module
+        # Loading variable in util module
         util.load_config('redfish.conf')
 
     def test_class_instantiation(self):
         """Tests class instantiation and validation"""
 
         try:
-            service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
+            odata = Odata()
         except Exception as e:
-            self.fail("Failed to instantiate service root. Error: ".format(e))
-        self.assertIsInstance(service_root, ServiceRoot)
+            self.fail("Failed to instantiate Odata. Error: ".format(e))
+        self.assertIsInstance(odata, Odata)
 
     def test_serialize(self):
         """Tests the serialize function result against known result"""
 
-        service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
-        json_str = service_root.serialize()
+        odata = Odata()
+        json_str = odata.serialize()
 
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/ServiceRoot.json'
+            'oneview_redfish_toolkit/mockups_redfish/Odata.json'
         ) as f:
-            service_root_mockup = f.read()
-        self.assertEqual(service_root_mockup, json_str)
+            odata_mockup = f.read()
+        self.assertEqual(odata_mockup, json_str)

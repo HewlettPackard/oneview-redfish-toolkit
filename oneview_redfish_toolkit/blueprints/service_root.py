@@ -41,14 +41,15 @@ def get_service_root():
 
     try:
         # Recover OV connection
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
         # Gets serverhardware for given UUID
-        ov_info = ov_client.appliance_node_information.get_version()
-        uuid = ov_info['uuid']
+        appliance_node_information = \
+            oneview_client.appliance_node_information.get_version()
+        uuid = appliance_node_information['uuid']
 
-        obj = ServiceRoot(uuid)
-        json_str = obj.serialize()
+        sr = ServiceRoot(uuid)
+        json_str = sr.serialize()
         return Response(
             response=json_str,
             status=200,
@@ -78,7 +79,6 @@ def not_found(error):
     status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
     """Creates an Internal Server Error response"""
-    logging.error(vars(error))
     return Response(
         response='{"error": "Internal Server Error"}',
         status=status.HTTP_500_INTERNAL_SERVER_ERROR,

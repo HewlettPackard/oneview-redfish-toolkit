@@ -27,7 +27,7 @@ class TestThermal(unittest.TestCase):
     """Tests for Thermal class"""
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
         # Loading variable in util module
@@ -38,44 +38,44 @@ class TestThermal(unittest.TestCase):
             'oneview_redfish_toolkit/mockups_oneview/'
             'ServerHardwareUtilization.json'
         ) as f:
-            self.ov_sh_utilization = json.load(f)
+            self.server_hardware_utilization = json.load(f)
 
         # Loading BladeChassisThermal mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/BladeChassisThermal.json'
         ) as f:
-            self.rf_blade_thermal = f.read()
+            self.blade_thermal_mockup = f.read()
 
         # Loading OneView Enclosure Utilization mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/EnclosureUtilization.json'
         ) as f:
-            self.ov_encl_utilization = json.load(f)
+            self.enclosure_utilization = json.load(f)
 
         # Loading EnclosureChassisThermal mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/'
             'EnclosureChassisThermal.json'
         ) as f:
-            self.rf_encl_thermal = f.read()
+            self.enclosure_thermal_mockup = f.read()
 
         # Loading OneView Rack Topology mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/RackDeviceTopology.json'
         ) as f:
-            self.ov_rack_utilization = json.load(f)
+            self.rack_utilization = json.load(f)
 
         # Loading RackChassisThermal mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/RackChassisThermal.json'
         ) as f:
-            self.rf_rack_thermal = f.read()
+            self.rack_thermal_mockup = f.read()
 
     def test_class_instantiation_for_blade(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = Thermal(self.ov_sh_utilization, 'uuid', 'Blade')
+            obj = Thermal(self.server_hardware_utilization, 'uuid', 'Blade')
         except Exception as e:
             self.fail("Failed to instantiate Thermal class."
                       " Error: {}".format(e))
@@ -85,7 +85,7 @@ class TestThermal(unittest.TestCase):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = Thermal(self.ov_encl_utilization, 'uuid', 'Enclosure')
+            obj = Thermal(self.enclosure_utilization, 'uuid', 'Enclosure')
         except Exception as e:
             self.fail("Failed to instantiate Thermal class."
                       " Error: {}".format(e))
@@ -95,7 +95,7 @@ class TestThermal(unittest.TestCase):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = Thermal(self.ov_rack_utilization, 'uuid', 'Rack')
+            obj = Thermal(self.rack_utilization, 'uuid', 'Rack')
         except Exception as e:
             self.fail("Failed to instantiate Thermal class."
                       " Error: {}".format(e))
@@ -106,7 +106,7 @@ class TestThermal(unittest.TestCase):
 
         try:
             obj = Thermal(
-                self.ov_sh_utilization,
+                self.server_hardware_utilization,
                 "36343537-3338-4448-3538-4E5030333434",
                 "Blade")
         except Exception as e:
@@ -118,14 +118,14 @@ class TestThermal(unittest.TestCase):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.rf_blade_thermal)
+        self.assertEqual(self.blade_thermal_mockup, json_str)
 
     def test_serialize_for_enclosure(self):
         # Tests the serialize function result against known result
 
         try:
             obj = Thermal(
-                self.ov_encl_utilization,
+                self.enclosure_utilization,
                 "0000000000A66101",
                 "Enclosure")
         except Exception as e:
@@ -137,14 +137,14 @@ class TestThermal(unittest.TestCase):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.rf_encl_thermal)
+        self.assertEqual(self.enclosure_thermal_mockup, json_str)
 
     def test_serialize_for_rack(self):
         # Tests the serialize function result against known result
 
         try:
             obj = Thermal(
-                self.ov_rack_utilization,
+                self.rack_utilization,
                 "2AB100LMNB",
                 "Rack")
         except Exception as e:
@@ -156,4 +156,4 @@ class TestThermal(unittest.TestCase):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-            self.assertEqual(json_str, self.rf_rack_thermal)
+            self.assertEqual(self.rack_thermal_mockup, json_str)

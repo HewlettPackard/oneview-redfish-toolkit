@@ -27,53 +27,59 @@ class TestEnclosureChassis(unittest.TestCase):
     """Tests for Chassis class"""
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self, oneview_client_mock):
         """Tests preparation"""
 
         # Loading variable in util module
         util.load_config('redfish.conf')
 
-        # Loading ov_enclosure mockup value
+        # Loading enclosure mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
         ) as f:
-            self.ov_enclosure = json.load(f)
+            self.enclosure = json.load(f)
 
-        # Loading env_config mockup value
+        # Loading environment_config mockup value
         with open(
                 'oneview_redfish_toolkit/mockups_oneview/'
                 'EnclosureEnvironmentalConfig.json'
         ) as f:
-            self.env_config = json.load(f)
+            self.environment_config = json.load(f)
 
-        # Loading rf_enclosure mockup result
+        # Loading enclosure_mockup mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/EnclosureChassis.json'
         ) as f:
-            self.rf_enclosure = f.read()
+            self.enclosure_mockup = f.read()
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = EnclosureChassis(self.ov_enclosure, self.env_config)
+            enclosure_chassis = EnclosureChassis(
+                self.enclosure,
+                self.environment_config
+            )
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, EnclosureChassis)
+        self.assertIsInstance(enclosure_chassis, EnclosureChassis)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = EnclosureChassis(self.ov_enclosure, self.env_config)
+            enclosure_chassis = EnclosureChassis(
+                self.enclosure,
+                self.environment_config
+            )
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            json_str = enclosure_chassis.serialize()
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.rf_enclosure)
+        self.assertEqual(self.enclosure_mockup, json_str)

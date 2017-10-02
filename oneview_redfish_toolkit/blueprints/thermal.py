@@ -50,9 +50,11 @@ def get_thermal(uuid):
 
     """
     try:
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
-        index_obj = ov_client.index_resources.get_all(filter='uuid=' + uuid)
+        index_obj = oneview_client.index_resources.get_all(
+            filter='uuid=' + uuid
+        )
 
         if index_obj:
             category = index_obj[0]["category"]
@@ -60,17 +62,17 @@ def get_thermal(uuid):
             raise OneViewRedfishError('Cannot find Index resource')
 
         if category == 'server-hardware':
-            ov_sh = ov_client.server_hardware. \
+            server_hardware = oneview_client.server_hardware. \
                 get_utilization(uuid, fields='AmbientTemperature')
-            thrml = Thermal(ov_sh, uuid, 'Blade')
+            thrml = Thermal(server_hardware, uuid, 'Blade')
         elif category == 'enclosures':
-            ov_encl = ov_client.enclosures. \
+            enclosure = oneview_client.enclosures. \
                 get_utilization(uuid, fields='AmbientTemperature')
-            thrml = Thermal(ov_encl, uuid, 'Enclosure')
+            thrml = Thermal(enclosure, uuid, 'Enclosure')
         elif category == 'racks':
-            ov_rack = ov_client.racks.\
+            rack = oneview_client.racks.\
                 get_device_topology(uuid)
-            thrml = Thermal(ov_rack, uuid, 'Rack')
+            thrml = Thermal(rack, uuid, 'Rack')
         else:
             raise OneViewRedfishError('OneView resource not found')
 

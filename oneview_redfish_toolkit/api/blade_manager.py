@@ -26,7 +26,7 @@ class BladeManager(Manager):
         values and with the response from OneView.
     """
 
-    def __init__(self, server_hardware, ov_version):
+    def __init__(self, server_hardware):
         """BladeManager constructor
 
             Populates self.redfish with some hardcoded Manager
@@ -37,8 +37,9 @@ class BladeManager(Manager):
                 ov_version: OneView version string
         """
 
-        super().__init__(server_hardware, ov_version)
+        super().__init__(server_hardware, server_hardware['mpFirmwareVersion'])
 
+        self.redfish["FirmwareVersion"] = server_hardware['mpFirmwareVersion']
         self.redfish["ManagerType"] = "BMC"
         self.redfish["Name"] = "Blade Manager"
         self.redfish["Links"] = collections.OrderedDict()

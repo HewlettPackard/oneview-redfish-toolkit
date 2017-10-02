@@ -30,12 +30,15 @@ class ServiceRoot(RedfishJsonValidator):
 
     SCHEMA_NAME = 'ServiceRoot'
 
-    def __init__(self, ov_uuid):
+    def __init__(self, oneview_uuid):
         """Constructor
 
             Populates self.redfish with a hardcoded ServiceRoot values for
             a BladeSystem. Validates the self.redfish content against the
             ServiceRoot schema
+
+            Parameters:
+                oneview_uuid: string containing OneView's UUID
         """
 
         super().__init__(self.SCHEMA_NAME)
@@ -43,19 +46,20 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["Id"] = "RootService"
         self.redfish["Name"] = "Root Service"
         self.redfish["RedfishVersion"] = "1.2.0"
-        self.redfish["UUID"] = ov_uuid
+        self.redfish["UUID"] = oneview_uuid
         self.redfish["Systems"] = collections.OrderedDict()
         self.redfish["Systems"]["@odata.id"] = "/redfish/v1/Systems"
         self.redfish["Chassis"] = collections.OrderedDict()
         self.redfish["Chassis"]["@odata.id"] = "/redfish/v1/Chassis"
         self.redfish["Managers"] = collections.OrderedDict()
         self.redfish["Managers"]["@odata.id"] = "/redfish/v1/Managers"
-        self.redfish["EventService"] = collections.OrderedDict()
-        self.redfish["EventService"]["@odata.id"] = "/redfish/v1/EventService"
+        # self.redfish["EventService"] = collections.OrderedDict()
+        # self.redfish["EventService"]["@odata.id"] = \
+        # "/redfish/v1/EventService"
         self.redfish['Links'] = collections.OrderedDict()
-        self.redfish['Links']['Sessions'] = collections.OrderedDict()
-        self.redfish['Links']['Sessions']['@odata.id'] = \
-            "/redfish/v1/SessionService/Sessions"
+        # self.redfish['Links']['Sessions'] = collections.OrderedDict()
+        # self.redfish['Links']['Sessions']['@odata.id'] = \
+        #    "/redfish/v1/SessionService/Sessions"
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ServiceRoot.ServiceRoot"
         self.redfish["@odata.id"] = "/redfish/v1/"

@@ -56,24 +56,24 @@ def get_chassis_collection():
 
     try:
         # Recover OV connection
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
         # Gets all enclosures
-        oneview_enclosures = ov_client.enclosures.get_all()
+        enclosures = oneview_client.enclosures.get_all()
 
         # Gets all racks
-        oneview_racks = ov_client.racks.get_all()
+        racks = oneview_client.racks.get_all()
 
         # Gets all server hardware
-        oneview_server_hardwares = ov_client.server_hardware.get_all()
+        server_hardware_list = oneview_client.server_hardware.get_all()
 
         # Checks if some oneview resource is an empty list
-        _empty_oneview_resource(oneview_server_hardwares,
-                                oneview_enclosures, oneview_racks)
+        _empty_oneview_resource(server_hardware_list,
+                                enclosures, racks)
 
         # Build Chassis Collection object and validates it
-        cc = ChassisCollection(oneview_server_hardwares, oneview_enclosures,
-                               oneview_racks)
+        cc = ChassisCollection(server_hardware_list, enclosures,
+                               racks)
 
         # Build redfish json
         json_str = cc.serialize()
@@ -95,10 +95,10 @@ def get_chassis_collection():
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-def _empty_oneview_resource(server_hardwares, enclosures, racks):
+def _empty_oneview_resource(server_hardware_list, enclosures, racks):
     """Check if some oneview resource is empty and raise an exception"""
 
-    if not server_hardwares:
+    if not server_hardware_list:
         raise OneViewRedfishResourceNotFoundError(
             "server-hardwares", "oneview-result")
     if not enclosures:

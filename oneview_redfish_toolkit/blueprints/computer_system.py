@@ -52,16 +52,18 @@ def get_computer_system(uuid):
     """
     try:
         # Recover OV connection
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
         # Gets server hardware for given UUID
-        sh = ov_client.server_hardware.get(uuid)
+        server_hardware = oneview_client.server_hardware.get(uuid)
 
         # Gets the server hardware type of the given server hardware
-        sht = ov_client.server_hardware_types.get(sh['serverHardwareTypeUri'])
+        server_hardware_types = oneview_client.server_hardware_types.get(
+            server_hardware['serverHardwareTypeUri']
+        )
 
         # Build Computer System object and validates it
-        cs = ComputerSystem(sh, sht)
+        cs = ComputerSystem(server_hardware, server_hardware_types)
 
         # Build redfish json
         json_str = cs.serialize()
@@ -76,7 +78,7 @@ def get_computer_system(uuid):
             if e.msg.find("server-hardware-types") >= 0:
                 logging.warning(
                     'ServerHardwareTypes ID {} not found'.
-                    format(sh['serverHardwareTypeUri']))
+                    format(server_hardware['serverHardwareTypeUri']))
             else:
                 logging.warning(
                     'ServerHardware UUID {} not found'.
@@ -135,13 +137,14 @@ def change_power_state(uuid):
                  "message": "Invalid JSON key"})
 
         # Recover OV connection
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
         # Gets ServerHardware for given UUID
-        sh = ov_client.server_hardware.get(uuid)
+        sh = oneview_client.server_hardware.get(uuid)
 
         # Gets the ServerHardwareType of the given server hardware
-        sht = ov_client.server_hardware_types.get(sh['serverHardwareTypeUri'])
+        sht = oneview_client.server_hardware_types. \
+            get(sh['serverHardwareTypeUri'])
 
         # Build Computer System object and validates it
         cs = ComputerSystem(sh, sht)
@@ -150,7 +153,7 @@ def change_power_state(uuid):
             cs.get_oneview_power_configuration(reset_type)
 
         # Changes the ServerHardware power state
-        ov_client.server_hardware.update_power_state(
+        oneview_client.server_hardware.update_power_state(
             oneview_power_configuration, uuid)
 
         return Response(
