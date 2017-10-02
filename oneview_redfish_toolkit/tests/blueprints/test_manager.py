@@ -42,7 +42,7 @@ class TestManager(unittest.TestCase):
     """
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, ov_mock):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
         # Load config on util
@@ -63,26 +63,27 @@ class TestManager(unittest.TestCase):
     #############
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_enclosure_manager(
-            self, mock_get_ov_client):
+            self, get_oneview_client_mockup):
         """"Tests EnclosureManager with a known Enclosure"""
 
-        # Loading ov_enclosure mockup value
+        # Loading Enclosure mockup value
         with open(
                 'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
         ) as f:
             ov_enclosure = json.load(f)
 
-        # Loading rf_enclosure mockup result
+        # Loading EnclosureManager mockup result
         with open(
                 'oneview_redfish_toolkit/mockups_redfish/EnclosureManager.json'
         ) as f:
             rf_enclosure_manager = f.read()
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = [{"category": "enclosures"}]
-        ov.enclosures.get.return_value = ov_enclosure
-        ov. appliance_node_information.get_version.return_value = \
+        oneview_client.index_resources.get_all.return_value = \
+            [{"category": "enclosures"}]
+        oneview_client.enclosures.get.return_value = ov_enclosure
+        oneview_client. appliance_node_information.get_version.return_value = \
             {"softwareVersion": "3.00.07-0288219"}
 
         # Get EnclosureManager
@@ -98,20 +99,21 @@ class TestManager(unittest.TestCase):
         self.assertEqual(rf_enclosure_manager, json_str)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_enclosure_not_found(self, mock_get_ov_client):
+    def test_get_enclosure_not_found(self, get_oneview_client_mockup):
         """Tests EnclosureManager with Enclosure not found"""
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = [{"category": "enclosures"}]
-        ov.enclosures.get.return_value = \
+        oneview_client.index_resources.get_all.return_value = \
+            [{"category": "enclosures"}]
+        oneview_client.enclosures.get.return_value = \
             {'enclosureUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'enclosure not found',
         })
 
-        ov.enclosures.get.side_effect = e
+        oneview_client.enclosures.get.side_effect = e
 
         response = self.app.get(
             "/redfish/v1/Managers/0000000000A66101"
@@ -121,13 +123,14 @@ class TestManager(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_enclosure_unexpected_error(self, mock_get_ov_client):
+    def test_enclosure_unexpected_error(self, get_oneview_client_mockup):
         """Tests EnclosureManager with an unexpected error"""
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = [{"category": "enclosures"}]
-        ov.enclosures.get.side_effect = Exception()
+        oneview_client.index_resources.get_all.return_value = \
+            [{"category": "enclosures"}]
+        oneview_client.enclosures.get.side_effect = Exception()
 
         response = self.app.get(
             "/redfish/v1/Managers/0000000000A66101"
@@ -143,27 +146,27 @@ class TestManager(unittest.TestCase):
     #############
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_blade_manager(
-            self, mock_get_ov_client):
+            self, get_oneview_client_mockup):
         """"Tests BladeManager with a known Server Hardware"""
 
-        # Loading ov_serverhardware mockup value
+        # Loading ServerHardware mockup value
         with open(
                 'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
         ) as f:
-            ov_serverhardware = json.load(f)
+            server_hardware = json.load(f)
 
-        # Loading rf_serverhardware mockup result
+        # Loading BladeManager mockup result
         with open(
                 'oneview_redfish_toolkit/mockups_redfish/BladeManager.json'
         ) as f:
-            rf_blade_manager = f.read()
+            blade_manager_mockup = f.read()
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = \
+        oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        ov.server_hardware.get.return_value = ov_serverhardware
-        ov. appliance_node_information.get_version.return_value = \
+        oneview_client.server_hardware.get.return_value = server_hardware
+        oneview_client. appliance_node_information.get_version.return_value = \
             {"softwareVersion": "3.00.07-0288219"}
 
         # Get BladeManager
@@ -176,24 +179,24 @@ class TestManager(unittest.TestCase):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(rf_blade_manager, json_str)
+        self.assertEqual(blade_manager_mockup, json_str)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_server_hardware_not_found(self, mock_get_ov_client):
+    def test_get_server_hardware_not_found(self, get_oneview_client_mockup):
         """Tests BladeManager with Server Hardware not found"""
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = [
+        oneview_client.index_resources.get_all.return_value = [
             {"category": "server-hardware"}]
-        ov.server_hardware.get.return_value =\
+        oneview_client.server_hardware.get.return_value =\
             {'serverHardwareUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server hardware not found',
         })
 
-        ov.server_hardware.get.side_effect = e
+        oneview_client.server_hardware.get.side_effect = e
 
         response = self.app.get(
             "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"
@@ -203,14 +206,14 @@ class TestManager(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_server_hardware_unexpected_error(self, mock_get_ov_client):
+    def test_server_hardware_unexpected_error(self, get_oneview_client_mockup):
         """Tests BladeManager with an unexpected error"""
 
-        ov = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
 
-        ov.index_resources.get_all.return_value = [
+        oneview_client.index_resources.get_all.return_value = [
             {"category": "server-hardware"}]
-        ov.server_hardware.get.side_effect = Exception()
+        oneview_client.server_hardware.get.side_effect = Exception()
 
         response = self.app.get(
             "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"

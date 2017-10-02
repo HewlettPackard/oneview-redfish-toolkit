@@ -27,7 +27,7 @@ class TestOdata(unittest.TestCase):
     """Tests for Odata class"""
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, ov_mock):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
         # Loading variable in util module
@@ -37,19 +37,19 @@ class TestOdata(unittest.TestCase):
         """Tests class instantiation and validation"""
 
         try:
-            obj = Odata()
+            odata = Odata()
         except Exception as e:
             self.fail("Failed to instantiate Odata. Error: ".format(e))
-        self.assertIsInstance(obj, Odata)
+        self.assertIsInstance(odata, Odata)
 
     def test_serialize(self):
         """Tests the serialize function result against known result"""
 
-        obj = Odata()
-        json_str = obj.serialize()
+        odata = Odata()
+        json_str = odata.serialize()
 
         with open(
             'oneview_redfish_toolkit/mockups_redfish/Odata.json'
         ) as f:
-            mok_json = f.read()
-        self.assertEqual(json_str, mok_json)
+            odata_mockup = f.read()
+        self.assertEqual(odata_mockup, json_str)

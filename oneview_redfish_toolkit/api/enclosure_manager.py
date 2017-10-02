@@ -26,7 +26,7 @@ class EnclosureManager(Manager):
         values and with the response from OneView.
     """
 
-    def __init__(self, enclosure, ov_version):
+    def __init__(self, enclosure, oneview_version):
         """EnclosureManager constructor
 
             Populates self.redfish with some hardcoded Manager
@@ -34,10 +34,10 @@ class EnclosureManager(Manager):
 
             Args:
                 enclosure: A dict for an enclosure
-                ov_version: OneView version string
+                oneview_version: OneView version string
         """
 
-        super().__init__(enclosure, ov_version)
+        super().__init__(enclosure, oneview_version)
 
         self.redfish["ManagerType"] = "EnclosureManager"
         self.redfish["Name"] = "Enclosure Manager"

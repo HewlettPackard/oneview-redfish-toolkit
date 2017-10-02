@@ -42,7 +42,7 @@ class TestComputerSystem(unittest.TestCase):
     """
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, ov_mock):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
         # Load config on util
@@ -59,15 +59,15 @@ class TestComputerSystem(unittest.TestCase):
         self.app.testing = True
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_sh_not_found(self, mock_get_ov_client):
+    def test_get_computer_system_sh_not_found(self, get_oneview_client_mockup):
         """Tests ComputerSystem with ServerHardware Not Found"""
 
-        client = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        client.server_hardware.get.side_effect = e
+        oneview_client.server_hardware.get.side_effect = e
 
         response = self.app.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -77,17 +77,19 @@ class TestComputerSystem(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_sht_not_found(self, mock_get_ov_client):
+    def test_get_computer_system_sht_not_found(
+            self,
+            get_oneview_client_mockup):
         """Tests ComputerSystem with ServerHardwareTypes not found"""
 
-        client = mock_get_ov_client()
-        client.server_hardware.get.return_value = \
+        oneview_client = get_oneview_client_mockup()
+        oneview_client.server_hardware.get.return_value = \
             {'serverHardwareTypeUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware-types not found',
         })
-        client.server_hardware_types.get.side_effect = e
+        oneview_client.server_hardware_types.get.side_effect = e
 
         response = self.app.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -97,15 +99,15 @@ class TestComputerSystem(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_sh_exception(self, mock_get_ov_client):
+    def test_get_computer_system_sh_exception(self, get_oneview_client_mockup):
         """Tests ComputerSystem with ServerHardware exception"""
 
-        client = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware error',
         })
-        client.server_hardware.get.side_effect = e
+        oneview_client.server_hardware.get.side_effect = e
 
         response = self.app.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -118,15 +120,17 @@ class TestComputerSystem(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_sht_exception(self, mock_get_ov_client):
+    def test_get_computer_system_sht_exception(
+            self,
+            get_oneview_client_mockup):
         """Tests ComputerSystem with  ServerHardwareTypes exception"""
 
-        client = mock_get_ov_client()
+        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware-types error',
         })
-        client.server_hardware_types.get.side_effect = e
+        oneview_client.server_hardware_types.get.side_effect = e
 
         response = self.app.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -139,11 +143,13 @@ class TestComputerSystem(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_unexpected_error(self, mock_get_ov_client):
+    def test_get_computer_system_unexpected_error(
+            self,
+            get_oneview_client_mockup):
         """Tests ComputerSystem with an unexpected error"""
 
-        client = mock_get_ov_client()
-        client.server_hardware.get.side_effect = Exception()
+        oneview_client = get_oneview_client_mockup()
+        oneview_client.server_hardware.get.side_effect = Exception()
 
         response = self.app.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -155,31 +161,32 @@ class TestComputerSystem(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system(self, mock_get_ov_client):
+    def test_get_computer_system(self, get_oneview_client_mockup):
         """Tests ComputerSystem with a known Server Hardware"""
 
         # Loading server_hardware mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
         ) as f:
-            sh_dict = json.load(f)
+            server_hardware = json.load(f)
 
         # Loading ServerHardwareTypes mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/ServerHardwareTypes.json'
         ) as f:
-            sht_dict = json.load(f)
+            server_hardware_types = json.load(f)
 
         # Loading ComputerSystem mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/ComputerSystem.json'
         ) as f:
-            computer_system_str = f.read()
+            computer_system_mockup = f.read()
 
         # Create mock response
-        ov = mock_get_ov_client()
-        ov.server_hardware.get.return_value = sh_dict
-        ov.server_hardware_types.get.return_value = sht_dict
+        oneview_client = get_oneview_client_mockup()
+        oneview_client.server_hardware.get.return_value = server_hardware
+        oneview_client.server_hardware_types.get.return_value = \
+            server_hardware_types
 
         # Get ComputerSystem
         response = self.app.get(
@@ -192,4 +199,4 @@ class TestComputerSystem(unittest.TestCase):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(computer_system_str, json_str)
+        self.assertEqual(computer_system_mockup, json_str)

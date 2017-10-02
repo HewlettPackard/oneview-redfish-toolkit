@@ -50,7 +50,8 @@ class TestOdata(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups_redfish/Odata.json'
         ) as f:
-            mok_json = f.read()
+            odata_mockup = f.read()
+
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(json_str, mok_json)
+        self.assertEqual(odata_mockup, json_str)

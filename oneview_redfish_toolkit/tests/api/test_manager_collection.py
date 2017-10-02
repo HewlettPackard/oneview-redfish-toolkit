@@ -57,30 +57,36 @@ class TestManagerCollection(unittest.TestCase):
             'oneview_redfish_toolkit/mockups_redfish/'
             'ManagerCollection.json'
         ) as f:
-            self.manager_collection = f.read()
+            self.manager_collection_mockup = f.read()
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = ManagerCollection(self.server_hardware, self.enclosures)
+            manager_collection = ManagerCollection(
+                self.server_hardware,
+                self.enclosures
+            )
         except Exception as e:
             self.fail("Failed to instantiate ManagerCollection class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, ManagerCollection)
+        self.assertIsInstance(manager_collection, ManagerCollection)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = ManagerCollection(self.server_hardware, self.enclosures)
+            manager_collection = ManagerCollection(
+                self.server_hardware,
+                self.enclosures
+            )
         except Exception as e:
             self.fail("Failed to instantiate ManagerCollection class."
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            json_str = manager_collection.serialize()
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.manager_collection)
+        self.assertEqual(self.manager_collection_mockup, json_str)

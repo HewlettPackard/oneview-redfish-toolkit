@@ -55,24 +55,24 @@ def get_manager_collection():
 
     try:
         # Recover OV connection
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
         # Gets all enclosures
-        oneview_enclosures = ov_client.enclosures.get_all()
+        enclosures = oneview_client.enclosures.get_all()
 
-        if not oneview_enclosures:
+        if not enclosures:
             raise OneViewRedfishResourceNotFoundError(
                 "enclosures", "oneview-result")
 
         # Gets all server hardware
-        oneview_server_hardwares = ov_client.server_hardware.get_all()
+        server_hardware_list = oneview_client.server_hardware.get_all()
 
-        if not oneview_server_hardwares:
+        if not server_hardware_list:
             raise OneViewRedfishResourceNotFoundError(
                 "server-hardwares", "oneview-result")
 
         # Build Manager Collection object and validates it
-        mc = ManagerCollection(oneview_server_hardwares, oneview_enclosures)
+        mc = ManagerCollection(server_hardware_list, enclosures)
 
         # Build redfish json
         json_str = mc.serialize()

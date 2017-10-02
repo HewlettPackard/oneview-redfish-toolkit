@@ -44,24 +44,27 @@ def get_managers(uuid):
             JSON: JSON with Managers info for Enclosure or ServerHardware.
     """
     try:
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
-        ov_info = ov_client.appliance_node_information.get_version()
-        ov_version = ov_info['softwareVersion']
+        appliance_information = \
+            oneview_client.appliance_node_information.get_version()
+        oneview_version = appliance_information['softwareVersion']
 
-        index_obj = ov_client.index_resources.get_all(filter='uuid=' + uuid)
+        resource_index = oneview_client.index_resources.get_all(
+            filter='uuid=' + uuid
+        )
 
-        if index_obj:
-            category = index_obj[0]["category"]
+        if resource_index:
+            category = resource_index[0]["category"]
         else:
             raise OneViewRedfishError('Cannot find Index resource')
 
         if category == 'server-hardware':
-            ov_sh = ov_client.server_hardware.get(uuid)
-            manager = BladeManager(ov_sh)
+            server_hardware = oneview_client.server_hardware.get(uuid)
+            manager = BladeManager(server_hardware)
         elif category == 'enclosures':
-            ov_encl = ov_client.enclosures.get(uuid)
-            manager = EnclosureManager(ov_encl, ov_version)
+            enclosure = oneview_client.enclosures.get(uuid)
+            manager = EnclosureManager(enclosure, oneview_version)
         else:
             raise OneViewRedfishError('Enclosure type not found')
 

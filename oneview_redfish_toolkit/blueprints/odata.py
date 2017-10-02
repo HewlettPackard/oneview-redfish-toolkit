@@ -37,8 +37,8 @@ def get_odata():
     """
 
     try:
-        obj = Odata()
-        json_str = obj.serialize()
+        odt = Odata()
+        json_str = odt.serialize()
         return Response(
             response=json_str,
             status=200,

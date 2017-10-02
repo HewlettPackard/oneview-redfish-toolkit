@@ -27,15 +27,14 @@ class Thermal(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Thermal'
 
-    def __init__(self, utilization_dict, uuid, name):
+    def __init__(self, utilization, uuid, name):
         """Thermal constructor
 
             Populates self.redfish with the contents of utilization or
             topology dict.
 
             Args:
-                utilization_dict: Hardware utilization or
-                topology dict from OneView
+                utilization: Hardware utilization or topology dict from OneView
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -54,13 +53,13 @@ class Thermal(RedfishJsonValidator):
         self.redfish["Temperatures"][0]["PhysicalContext"] = "Intake"
         if name is not 'Rack':
             self.redfish["Temperatures"][0]["ReadingCelsius"] = \
-                utilization_dict["metricList"][0]["metricSamples"][0][1]
+                utilization["metricList"][0]["metricSamples"][0][1]
             self.redfish["Temperatures"][0]["UpperThresholdCritical"] = \
-                utilization_dict["metricList"][0]["metricCapacity"]
+                utilization["metricList"][0]["metricCapacity"]
             self.redfish["Temperatures"][0]["MinReadingRangeTemp"] = 10
             self.redfish["Temperatures"][0]["MaxReadingRangeTemp"] = 35
         else:
             self.redfish["Temperatures"][0]["ReadingCelsius"] = \
-                utilization_dict["peakTemp"]
+                utilization["peakTemp"]
 
         self._validate()

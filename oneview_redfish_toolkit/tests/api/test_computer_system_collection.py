@@ -32,48 +32,55 @@ class TestComputerSystemCollection(unittest.TestCase):
     """Tests for ComputerSystemCollection class"""
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self, oneview_client_mock):
         """Tests preparation"""
 
         # Loading variable in util module
         util.load_config('redfish.conf')
 
-        # Loading server_hardware mockup value
+        # Loading ServerHardware list mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/'
             'ServerHardwares.json'
         ) as f:
-            self.server_hardware = json.load(f)
+            self.server_hardware_list = json.load(f)
 
         # Loading ComputerSystemCollection result mockup
         with open(
             'oneview_redfish_toolkit/mockups_redfish/'
             'ComputerSystemCollection.json'
         ) as f:
-            self.computer_system_collection = f.read()
+            self.computer_system_collection_mockup = f.read()
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = ComputerSystemCollection(self.server_hardware)
+            computer_system_collection = ComputerSystemCollection(
+                self.server_hardware_list
+            )
         except Exception as e:
             self.fail("Failed to instantiate ComputerSystemCollection class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, ComputerSystemCollection)
+        self.assertIsInstance(
+            computer_system_collection,
+            ComputerSystemCollection
+        )
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = ComputerSystemCollection(self.server_hardware)
+            computer_system_collection = ComputerSystemCollection(
+                self.server_hardware_list
+            )
         except Exception as e:
             self.fail("Failed to instantiate ComputerSystemCollection class."
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            json_str = computer_system_collection.serialize()
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.computer_system_collection)
+        self.assertEqual(self.computer_system_collection_mockup, json_str)

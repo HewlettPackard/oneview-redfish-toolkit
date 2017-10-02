@@ -27,7 +27,7 @@ class TestComputerSystem(unittest.TestCase):
     """Tests for ComputerSystem class"""
 
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self, oneview_client_mock):
         """Tests preparation"""
 
         # Loading variable in util module
@@ -37,42 +37,48 @@ class TestComputerSystem(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
         ) as f:
-            self.sh_dict = json.load(f)
+            self.server_hardware = json.load(f)
 
         # Loading ServerHardwareTypes mockup value
         with open(
             'oneview_redfish_toolkit/mockups_oneview/ServerHardwareTypes.json'
         ) as f:
-            self.sht_dict = json.load(f)
+            self.server_hardware_types = json.load(f)
 
         # Loading ComputerSystem mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/ComputerSystem.json'
         ) as f:
-            self.computer_system = f.read()
+            self.computer_system_mockup = f.read()
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            obj = ComputerSystem(self.sh_dict, self.sht_dict)
+            computer_system = ComputerSystem(
+                self.server_hardware,
+                self.server_hardware_types
+            )
         except Exception as e:
             self.fail("Failed to instantiate ComputerSystem class."
                       " Error: {}".format(e))
-        self.assertIsInstance(obj, ComputerSystem)
+        self.assertIsInstance(computer_system, ComputerSystem)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            obj = ComputerSystem(self.sh_dict, self.sht_dict)
+            computer_system = ComputerSystem(
+                self.server_hardware,
+                self.server_hardware_types
+            )
         except Exception as e:
             self.fail("Failed to instantiate ComputerSystem class."
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            json_str = computer_system.serialize()
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(json_str, self.computer_system)
+        self.assertEqual(self.computer_system_mockup, json_str)
