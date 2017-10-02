@@ -62,3 +62,42 @@ app.register_blueprint(manager_collection)
 app.register_blueprint(manager)
 app.register_blueprint(odata)
 app.register_blueprint(thermal)
+
+if __name__ == "__main__":
+
+    config = util.config
+
+    try:
+        port = int(config["redfish"]["redfish_port"])
+    except Exception:
+        logging.error("Port must be an integer number between 1 and 65536")
+        exit(1)
+    # Checking port range
+    if port < 1 or port > 65536:
+        logging.error("Port must be an integer number between 1 and 65536")
+        exit(1)
+
+    ssl_type = config["ssl"]["SSLType"]
+    # Check SSLType:
+    if ssl_type not in ('disabled', 'adhoc', 'certs'):
+        logging.error(
+            "Invalid SSL type: {}. Must be one of: None, adhoc or certs".
+            format(ssl_type))
+        exit(1)
+
+    if ssl_type == 'disabled':
+        app.run(host="0.0.0.0", port=port, debug=True)
+    elif ssl_type == 'adhoc':
+        app.run(host="0.0.0.0", port=port, debug=True, ssl_context="adhoc")
+    else:
+        # We should use certs file provided by the user
+        ssl_cert_file = config["ssl"]["SSLCertFile"]
+        ssl_key_file = config["ssl"]["SSLKeyFile"]
+        if ssl_cert_file == "" or ssl_key_file == "":
+            logging.error(
+                "SSL type: is 'cert' but one of the files are missing on"
+                "the config file. SSLCertFile: {}, SSLKeyFile: {}.".
+                format(ssl_cert_file, ssl_key_file))
+
+        ssl_context = (ssl_cert_file, ssl_key_file)
+        app.run(host="0.0.0.0", port=port, debug=True, ssl_context=ssl_context)
