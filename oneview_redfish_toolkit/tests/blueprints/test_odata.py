@@ -31,7 +31,7 @@ class TestOdata(unittest.TestCase):
     """Tests for Odata blueprint"""
     
     @mock.patch.object(util, 'OneViewClient')
-    def setUp(self):
+    def setUp(self, oneview_client):
         """Tests Odata blueprint setup"""
 
         # Loading variable in util module
