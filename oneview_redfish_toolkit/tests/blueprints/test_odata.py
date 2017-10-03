@@ -16,6 +16,7 @@
 
 # Python libs
 import unittest
+from unittest import mock
 
 # 3rd party libs
 from flask import Flask
@@ -23,13 +24,18 @@ from flask_api import status
 
 # Module libs
 from oneview_redfish_toolkit.blueprints.odata import odata
+from oneview_redfish_toolkit import util
 
 
 class TestOdata(unittest.TestCase):
     """Tests for Odata blueprint"""
 
-    def setUp(self):
+    @mock.patch.object(util, 'OneViewClient')
+    def setUp(self, oneview_client):
         """Tests Odata blueprint setup"""
+
+        # Loading variable in util module
+        util.load_config('redfish.conf')
 
         # creates a test client
         self.app = Flask(__name__)
