@@ -41,7 +41,7 @@ class BladeManager(Manager):
 
         self.redfish["ManagerType"] = "BMC"
         self.redfish["Name"] = "Blade Manager"
-        self.redfish["Description"] = "HPE Integrated Lights Out"
+        self.redfish["Description"] = "HPE OneView Blade Manager"
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["ManagerForServers"] = list()
         self.redfish["Links"]["ManagerForServers"].append(
