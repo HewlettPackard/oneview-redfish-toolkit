@@ -23,7 +23,7 @@ class StorageCollection(RedfishJsonValidator):
     """Creates a Storage Collection Redfish dict
 
         Populates self.redfish with some hardcoded StorageCollection
-        values and with the...
+        values
     """
 
     SCHEMA_NAME = 'StorageCollection'
@@ -31,11 +31,11 @@ class StorageCollection(RedfishJsonValidator):
     def __init__(self, uuid):
         """StorageCollection constructor
 
-            Populates self.redfish with a hardcoded StorageCollection
-            values and with the response of...
+            Populates self.redfish with hardcoded StorageCollection
+            values
 
             Args:
-                ...
+                UUID of server hardware
         """
         super().__init__(self.SCHEMA_NAME)
 

@@ -21,8 +21,6 @@ from flask_api import status
 from oneview_redfish_toolkit.api.storage_collection \
     import StorageCollection
 
-import logging
-
 storage_collection = Blueprint("storage_collection", __name__)
 
 
@@ -41,15 +39,4 @@ def get_storage_collection(uuid):
     return Response(
         response=json_str,
         status=status.HTTP_200_OK,
-        mimetype="application/json")
-
-
-@storage_collection.errorhandler(
-    status.HTTP_500_INTERNAL_SERVER_ERROR)
-def internal_server_error(error):
-    """Creates a Internal Server Error response"""
-    logging.error(vars(error))
-    return Response(
-        response='{"error": "Internal Server Error"}',
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         mimetype="application/json")
