@@ -81,7 +81,7 @@ if __name__ == "__main__":
     # Check SSLType:
     if ssl_type not in ('disabled', 'adhoc', 'certs'):
         logging.error(
-            "Invalid SSL type: {}. Must be one of: None, adhoc or certs".
+            "Invalid SSL type: {}. Must be one of: disabled, adhoc or certs".
             format(ssl_type))
         exit(1)
 
