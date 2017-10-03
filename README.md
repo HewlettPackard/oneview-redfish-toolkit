@@ -12,7 +12,7 @@ DMTF's Redfish is an open industry standard specification and schema that specif
 
 ### Requirements
 
-HPE OneView Redfish Toolkit service relies on Python 3.5 or newer to run and pip for dependencies management. A full list of dependencies is available at [requirements.txt](requirements.txt) file.
+HPE OneView Redfish Toolkit service relies on Python 3.5 or newer to run and pip for dependencies management. A full list of dependencies is available at [requirements.txt](requirements.txt) file. For pyOpenSSL module please make sure to have OpenSSL lib installed in you system.
 
 > There should be not problem in using Python 3.4 if your system does not have Python 3.5 available, but we do not guarantee complete compatibility as the test environment is set up on version 3.5.
 
