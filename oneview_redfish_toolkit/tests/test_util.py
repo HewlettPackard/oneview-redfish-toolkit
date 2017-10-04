@@ -54,6 +54,7 @@ class TestUtil(unittest.TestCase):
     # load_conf() tests
     def setUp(self):
         self.schema_dir = './oneview_redfish_toolkit/schemas'
+        self.registry_dir = './oneview_redfish_toolkit/registry'
         self.config_file = './redfish.conf'
 
     def test_load_conf_invalid_config_file(self):
@@ -87,6 +88,9 @@ class TestUtil(unittest.TestCase):
         self.assertTrue(cfg.has_section('schemas'),
                         msg='Section {} not found in ini file {}'.
                         format('schemas', self.config_file))
+        self.assertTrue(cfg.has_section('registry'),
+                        msg='Section {} not found in ini file {}'.
+                        format('registry', self.config_file))
 
     def test_load_conf_has_all_options(self):
         # Tests if ini file has all expected options
@@ -149,7 +153,7 @@ class TestUtil(unittest.TestCase):
             )
 
     def test_load_schemas_valid_schema_dir_valid_dict(self):
-        # Tests if ini file has all expected sections
+        # Tests loading schemas files from redfish.conf
 
         cfg = util.load_conf(self.config_file)
         schemas = dict(cfg.items('schemas'))
@@ -159,6 +163,49 @@ class TestUtil(unittest.TestCase):
             self.assertIsInstance(schemas_dict, collections.OrderedDict)
         except Exception as e:
             self.fail('Failed to load schemas files: {}'.format(e.msg))
+
+    # load_schemas() tests
+    def test_load_registries_invalid_registry_dir(self):
+        # Tests load_registry() passing a non existing registry dir
+
+        schemas = dict()
+
+        try:
+            util.load_schemas('non-exist-registry-dir', schemas)
+        except Exception as e:
+            self.assertIsInstance(
+                e,
+                errors.OneViewRedfishResourceNotFoundError,
+                msg="Unexpected exception: {}".format(e.msg)
+            )
+
+    def test_load_registries_valid_registry_dir_invalid_dict(self):
+        # Tests load_registry() passing a valid registry dir and an invalid
+        # registry dict
+
+        registries = dict()
+        registries['failed'] = 'fail.json'
+
+        try:
+            util.load_registry(self.registry_dir, registries)
+        except Exception as e:
+            self.assertIsInstance(
+                e,
+                errors.OneViewRedfishResourceNotFoundError,
+                msg="Unexpected exception: {}".format(e.msg)
+            )
+
+    def test_load_registries_valid_registry_dir_valid_dict(self):
+        # Tests loading regitry files from redfish.conf
+
+        cfg = util.load_conf(self.config_file)
+        registries = dict(cfg.items('registry'))
+
+        try:
+            registry_dict = util.load_schemas(self.registry_dir, registries)
+            self.assertIsInstance(registry_dict, collections.OrderedDict)
+        except Exception as e:
+            self.fail('Failed to load registries files: {}'.format(e.msg))
 
     @mock.patch.object(util, 'OneViewClient')
     def test_load_config(self, mock_ov):
@@ -170,6 +217,7 @@ class TestUtil(unittest.TestCase):
         self.assertIsNotNone(util.config, msg='Failed do load ini')
         self.assertIsNotNone(util.ov_config, msg='Failed do create ov_config')
         self.assertIsNotNone(util.schemas_dict, msg='Failed to load schemas')
+        self.assertIsNotNone(util.registry_dict, msg='Failed to load schemas')
         self.assertIsNotNone(util.ov_client, msg='Failed to connect to OV')
 
     @mock.patch.object(util, 'OneViewClient')

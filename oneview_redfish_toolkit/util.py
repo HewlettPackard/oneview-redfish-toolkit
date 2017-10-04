@@ -100,6 +100,7 @@ def load_config(conf_file):
 
     # Setting schemas_dict
     schemas = dict(config.items('schemas'))
+    registries = dict(config.items('registry'))
 
     # Load schemas and connect to oneview
     try:
@@ -110,9 +111,14 @@ def load_config(conf_file):
         ov_client = OneViewClient(ov_config)
         globals()['schemas_dict'] = schemas_dict
         globals()['ov_client'] = ov_client
+        registry_dict = load_registry(
+            config['redfish']['registry_dir'],
+            registries
+            )
+        globals()['registry_dict'] = registry_dict
     except errors.OneViewRedfishResourceNotFoundError as e:
         raise errors.OneViewRedfishError(
-            'Failed to load schemas: {}'.format(e)
+            'Failed to load schemas or registries: {}'.format(e)
         )
     except Exception as e:
         raise errors.OneViewRedfishError(
@@ -194,6 +200,53 @@ def load_schemas(schema_dir, schemas):
             )
 
     return schema_dict
+
+
+def load_registry(registry_dir, registries):
+    """Loads Registries
+
+        Loads all registries listed in the config file using registry_dir
+        directory
+
+        Args:
+            registry_dir: string with the directory to load registries from
+            registries: dict with registry name as key and registry file_name
+                as value. The key will also be the key in the returning dict
+
+        Returns:
+            OrderedDict: A dict containing 'RegistryName': registry_obj
+
+        Exceptions:
+            OneviewRedfishResourceNotFoundError:
+                - if registry_dir is not found
+                - any of json files is not found
+            OneviewRedfishResourceNotAccessible:
+                - if registry_dir is can't be accessed
+    """
+
+    if os.path.isdir(registry_dir) is False:
+        raise errors.OneViewRedfishResourceNotFoundError(
+            registry_dir,
+            'Directory'
+        )
+    if os.access(registry_dir, os.R_OK) is False:
+        raise errors.OneViewRedFishResourceNotAccessibleError(
+            registry_dir,
+            'directory'
+        )
+
+    registries_dict = collections.OrderedDict()
+    for key in registries:
+        try:
+            with open(registry_dir + '/' + registries[key]) as f:
+                registries_dict[key] = json.load(f)
+        except Exception:
+            raise errors.OneViewRedfishResourceNotFoundError(
+                registries[key],
+                'File'
+            )
+
+    return registries_dict
 
 
 def get_oneview_client():
