@@ -50,7 +50,7 @@ class RedfishError(RedfishJsonValidator):
         self.redfish["error"]["message"] = message
         self.redfish["error"]["@Message.ExtendedInfo"] = list()
 
-    def AddExtendedInfo(
+    def add_extended_info(
         self,
         message_id,
         message=None,

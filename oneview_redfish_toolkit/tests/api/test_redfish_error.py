@@ -57,16 +57,16 @@ class TestRedfishError(unittest.TestCase):
         self.assertEqual(redfish_error_mockup, json_str)
 
     def test_add_extended_info_message_message_args_exclusion_fail(self):
-        """Tests the AddExtendedInfo with mutual exclusion of Message failling
+        """Tests the add_extended_info with mutual exclusion of Message failling
 
-            Tests AddExtendedInfo with the mutual exclusion check of Message
+            Tests add_extended_info with the mutual exclusion check of Message
             and MessageArgs failling
         """
 
         redfish_error = RedfishError("GeneralError", "General Error")
 
         try:
-            redfish_error.AddExtendedInfo(
+            redfish_error.add_extended_info(
                 "GeneralError",
                 "General Message",
                 ["Conflicting args"])
@@ -76,12 +76,12 @@ class TestRedfishError(unittest.TestCase):
                 "Message and MessageArgs are mutual excusive parameters")
 
     def test_add_extended_info_invalid_error_code(self):
-        """Tests the AddExtendedInfo invalid error code"""
+        """Tests the add_extended_info invalid error code"""
 
         redfish_error = RedfishError("GeneralError", "General Error")
 
         try:
-            redfish_error.AddExtendedInfo(
+            redfish_error.add_extended_info(
                 "InvalidCode",
                 "General Message")
         except errors.OneViewRedfishResourceNotFoundError as e:
@@ -90,12 +90,12 @@ class TestRedfishError(unittest.TestCase):
                 "message_id InvalidCode not found")
 
     def test_add_extended_info_invalid_message_args(self):
-        """Tests the AddExtendedInfo invalid message_args"""
+        """Tests the add_extended_info invalid message_args"""
 
         redfish_error = RedfishError("GeneralError", "General Error")
 
         try:
-            redfish_error.AddExtendedInfo(
+            redfish_error.add_extended_info(
                 message_id="PropertyValueNotInList",
                 message_args=["Only 1, need 2"])
         except errors.OneViewRedfishError as e:
@@ -104,7 +104,7 @@ class TestRedfishError(unittest.TestCase):
                 'Message has 2 replacements to be made but 1 args where sent')
 
     def test_add_extended_info_personal_message(self):
-        """Tests the AddExtendedInfo invalid message_args"""
+        """Tests the add_extended_info invalid message_args"""
 
         redfish_error = RedfishError("GeneralError", "General Error")
 
@@ -115,7 +115,7 @@ class TestRedfishError(unittest.TestCase):
             redfish_error_mockup = f.read()
 
         try:
-            redfish_error.AddExtendedInfo(
+            redfish_error.add_extended_info(
                 message_id="PropertyValueNotInList",
                 message="Personalized message")
         except errors.OneViewRedfishError as e:
@@ -126,7 +126,7 @@ class TestRedfishError(unittest.TestCase):
         self.assertEqual(redfish_error_mockup, json_str)
 
     def test_redfish_error_with_extended_info(self):
-        """Tests the AddExtendedInfo with two aditional info"""
+        """Tests the add_extended_info with two aditional info"""
 
         with open(
             'oneview_redfish_toolkit/mockups_errors/'
@@ -139,11 +139,11 @@ class TestRedfishError(unittest.TestCase):
                 "GeneralError",
                 "A general error has occurred. See ExtendedInfo "
                 "for more information.")
-            redfish_error.AddExtendedInfo(
+            redfish_error.add_extended_info(
                 message_id="PropertyValueNotInList",
                 message_args=["RED", "IndicatorLED"],
                 related_properties=["#/IndicatorLED"])
-            redfish_error.AddExtendedInfo(
+            redfish_error.add_extended_info(
                 message_id="PropertyNotWritable",
                 message_args=["SKU"],
                 related_properties=["#/SKU"])
