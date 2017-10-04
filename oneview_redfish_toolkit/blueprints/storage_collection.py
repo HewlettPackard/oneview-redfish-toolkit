@@ -14,12 +14,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from flask import abort
 from flask import Blueprint
 from flask import Response
 from flask_api import status
 
+from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.storage_collection \
     import StorageCollection
+
+from oneview_redfish_toolkit import util
+
+import logging
 
 storage_collection = Blueprint("storage_collection", __name__)
 
@@ -31,12 +37,54 @@ def get_storage_collection(uuid):
 
     Return StorageCollection Redfish JSON.
     """
+    try:
+        oneview_client = util.get_oneview_client()
 
-    storage = StorageCollection(uuid)
+        oneview_client.server_hardware.get(uuid)
 
-    json_str = storage.serialize()
+        storage = StorageCollection(uuid)
 
+        json_str = storage.serialize()
+
+        return Response(
+            response=json_str,
+            status=status.HTTP_200_OK,
+            mimetype="application/json")
+
+    except HPOneViewException as e:
+        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
+            logging.warning('Server hardware UUID {} not found'.format(uuid))
+            abort(status.HTTP_404_NOT_FOUND)
+        elif e.msg.find("server-hardware") >= 0:
+            logging.error(
+                'OneView Exception while looking for '
+                'server hardware: {}'.format(e)
+            )
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            logging.error('Unexpected OneView Exception: {}'.format(e))
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Exception as e:
+        # In case of error print exception and abort
+        logging.error('Unexpected error: '.format(e))
+        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@storage_collection.errorhandler(status.HTTP_404_NOT_FOUND)
+def not_found(error):
+    """Creates a Not Found Error response"""
     return Response(
-        response=json_str,
-        status=status.HTTP_200_OK,
+        response='{"error": "URL/data not found"}',
+        status=status.HTTP_404_NOT_FOUND,
+        mimetype='application/json')
+
+
+@storage_collection.errorhandler(
+    status.HTTP_500_INTERNAL_SERVER_ERROR)
+def internal_server_error(error):
+    """Creates a Internal Server Error response"""
+    logging.error(vars(error))
+    return Response(
+        response='{"error": "Internal Server Error"}',
+        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         mimetype="application/json")
