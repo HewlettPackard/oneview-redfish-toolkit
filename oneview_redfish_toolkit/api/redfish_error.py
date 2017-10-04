@@ -88,8 +88,8 @@ class RedfishError(RedfishJsonValidator):
             severity = messages[message_id]["Severity"]
         except Exception:
             raise OneViewRedfishResourceNotFoundError(
-                "message_id",
-                "Registry")
+                message_id,
+                "message_id")
 
         # If message is none we are going to use the value from registry
         # and make eventual necessary sybstitution

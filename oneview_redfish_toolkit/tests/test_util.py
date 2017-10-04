@@ -217,7 +217,9 @@ class TestUtil(unittest.TestCase):
         self.assertIsNotNone(util.config, msg='Failed do load ini')
         self.assertIsNotNone(util.ov_config, msg='Failed do create ov_config')
         self.assertIsNotNone(util.schemas_dict, msg='Failed to load schemas')
-        self.assertIsNotNone(util.registry_dict, msg='Failed to load schemas')
+        self.assertIsNotNone(
+            util.registry_dict,
+            msg='Failed to load registries')
         self.assertIsNotNone(util.ov_client, msg='Failed to connect to OV')
 
     @mock.patch.object(util, 'OneViewClient')

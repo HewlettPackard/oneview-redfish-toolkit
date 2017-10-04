@@ -87,7 +87,7 @@ class TestRedfishError(unittest.TestCase):
         except errors.OneViewRedfishResourceNotFoundError as e:
             self.assertEqual(
                 e.msg,
-                "Registry message_id not found")
+                "message_id InvalidCode not found")
 
     def test_add_extended_info_invalid_message_args(self):
         """Tests the AddExtendedInfo invalid message_args"""
