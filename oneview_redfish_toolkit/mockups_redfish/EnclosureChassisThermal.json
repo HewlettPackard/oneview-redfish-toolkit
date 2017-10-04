@@ -17,5 +17,7 @@
             "MinReadingRangeTemp": 10,
             "MaxReadingRangeTemp": 35
         }
-    ]
+    ],
+    "@odata.context": "/redfish/v1/$metadata#Thermal.Thermal",
+    "@odata.id": "/redfish/v1/Chassis/0000000000A66101/Thermal"
 }

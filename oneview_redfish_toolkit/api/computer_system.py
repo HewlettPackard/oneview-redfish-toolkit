@@ -85,6 +85,10 @@ class ComputerSystem(RedfishJsonValidator):
             "ResetType@Redfish.AllowableValues"] = \
             ["On", "ForceOff", "GracefulShutdown", "GracefulRestart",
              "ForceRestart", "Nmi", "ForceOn", "PushPowerButton"]
+        self.redfish["@odata.context"] = \
+            "/redfish/v1/$metadata#ComputerSystem.ComputerSystem"
+        self.redfish["@odata.id"] = \
+            "/redfish/v1/Systems/" + server_hardware["uuid"]
 
         self._validate()
 
