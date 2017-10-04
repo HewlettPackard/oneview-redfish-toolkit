@@ -130,7 +130,7 @@ def change_power_state(uuid):
 
     try:
         try:
-            reset_type = request.form["ResetType"]
+            reset_type = request.get_json()["ResetType"]
         except Exception:
             raise OneViewRedfishError(
                 {"errorCode": "INVALID_INFORMATION",
@@ -164,7 +164,11 @@ def change_power_state(uuid):
     except HPOneViewException as e:
         # In case of error log exception and abort
         logging.error(e)
-        abort(status.HTTP_404_NOT_FOUND)
+
+        if "INVALID_POWER_CONTROL_REQUEST" in e.oneview_response["errorCode"]:
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            abort(status.HTTP_404_NOT_FOUND)
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
@@ -204,7 +208,7 @@ def not_found(error):
 def internal_server_error(error):
     """Creates an Internal Server Error response"""
     return Response(
-        response='{"error": "Internal Server Error"}',
+        response='{"error": "Unable to reset"}',
         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
         mimetype='application/json')
 

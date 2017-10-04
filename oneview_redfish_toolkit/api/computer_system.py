@@ -34,10 +34,12 @@ POWER_STATE_MAP = {
         "powerControl": "MomentaryPress"
     },
     "GracefulRestart": {
-        "powerState": "On"
+        "powerState": "On",
+        "powerControl": "Reset"
     },
     "ForceRestart": {
-        "powerState": "On"
+        "powerState": "On",
+        "powerControl": "ColdBoot"
     },
     "PushPowerButton": {
         "powerControl": "MomentaryPress"
