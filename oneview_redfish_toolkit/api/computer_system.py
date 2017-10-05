@@ -19,6 +19,7 @@ import collections
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+import oneview_redfish_toolkit.api.status_mapping as status_mapping
 
 
 POWER_STATE_MAP = {
@@ -77,8 +78,10 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Model"] = server_hardware["model"]
         self.redfish["SerialNumber"] = server_hardware["serialNumber"]
         self.redfish["Status"] = collections.OrderedDict()
-        self.redfish["Status"]["State"] = "Enabled"
-        self.redfish["Status"]["Health"] = server_hardware["status"]
+        self.redfish["Status"]["State"] = \
+            status_mapping.get_redfish_state(server_hardware["status"])
+        self.redfish["Status"]["Health"] = \
+            status_mapping.get_redfish_health(server_hardware["status"])
         self.redfish["PowerState"] = server_hardware["powerState"]
         self.redfish["Boot"] = collections.OrderedDict()
         self.redfish["Boot"]["BootSourceOverrideTarget@Redfish."

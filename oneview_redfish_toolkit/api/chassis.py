@@ -15,8 +15,10 @@
 # under the License.
 
 import collections
+
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+import oneview_redfish_toolkit.api.status_mapping as status_mapping
 
 
 class Chassis(RedfishJsonValidator):
@@ -48,8 +50,10 @@ class Chassis(RedfishJsonValidator):
         self.redfish["SerialNumber"] = oneview_resource["serialNumber"]
         self.redfish["PartNumber"] = oneview_resource["partNumber"]
         self.redfish["Status"] = collections.OrderedDict()
-        self.redfish["Status"]["State"] = "Enabled"
-        self.redfish["Status"]["Health"] = oneview_resource["status"]
+        self.redfish["Status"]["State"] = \
+            status_mapping.get_redfish_state(oneview_resource["status"])
+        self.redfish["Status"]["Health"] = \
+            status_mapping.get_redfish_health(oneview_resource["status"])
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Chassis.Chassis"
