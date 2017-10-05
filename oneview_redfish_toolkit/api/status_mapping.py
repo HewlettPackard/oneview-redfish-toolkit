@@ -21,7 +21,7 @@ STATUS_MAP = {
     },
     "Disabled": {
         "State": "Disabled",
-        "Health": "OK"
+        "Health": "Warning"
     },
     "Warning": {
         "State": "Enabled",
@@ -33,7 +33,7 @@ STATUS_MAP = {
     },
     "Unknown": {
         "State": "Absent",
-        "Health": "OK"
+        "Health": "Critical"
     }
 }
 
