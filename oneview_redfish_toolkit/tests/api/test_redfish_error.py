@@ -56,25 +56,6 @@ class TestRedfishError(unittest.TestCase):
             redfish_error_mockup = f.read()
         self.assertEqual(redfish_error_mockup, json_str)
 
-    def test_add_extended_info_message_message_args_exclusion_fail(self):
-        """Tests the add_extended_info with mutual exclusion of Message failling
-
-            Tests add_extended_info with the mutual exclusion check of Message
-            and MessageArgs failling
-        """
-
-        redfish_error = RedfishError("GeneralError", "General Error")
-
-        try:
-            redfish_error.add_extended_info(
-                "GeneralError",
-                "General Message",
-                ["Conflicting args"])
-        except errors.OneViewRedfishError as e:
-            self.assertEqual(
-                e.msg,
-                "Message and MessageArgs are mutual excusive parameters")
-
     def test_add_extended_info_invalid_error_code(self):
         """Tests the add_extended_info invalid error code"""
 
@@ -102,28 +83,6 @@ class TestRedfishError(unittest.TestCase):
             self.assertEqual(
                 e.msg,
                 'Message has 2 replacements to be made but 1 args where sent')
-
-    def test_add_extended_info_personal_message(self):
-        """Tests the add_extended_info invalid message_args"""
-
-        redfish_error = RedfishError("GeneralError", "General Error")
-
-        with open(
-            'oneview_redfish_toolkit/mockups_errors/'
-            'RedfishErrorPersonalizedMessage.json'
-        ) as f:
-            redfish_error_mockup = f.read()
-
-        try:
-            redfish_error.add_extended_info(
-                message_id="PropertyValueNotInList",
-                message="Personalized message")
-        except errors.OneViewRedfishError as e:
-            self.fail("Failled to add Extended info".format(e))
-
-        json_str = redfish_error.serialize()
-
-        self.assertEqual(redfish_error_mockup, json_str)
 
     def test_redfish_error_with_extended_info(self):
         """Tests the add_extended_info with two aditional info"""

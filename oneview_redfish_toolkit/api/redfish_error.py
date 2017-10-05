@@ -53,34 +53,23 @@ class RedfishError(RedfishJsonValidator):
     def add_extended_info(
         self,
         message_id,
-        message=None,
         message_args=[],
         related_properties=[]):
         """Adds an item to ExtendedInfo list using values from DMTF registry
 
             Adds an item to ExtendedInfo list using the values for Message,
-            Severity and Resolution from DMTF Base Registry. Message parameter
-            can be personalized by the developer or can you the default value
-            from Redfish registry with substituton values sent in the
-            message_args parameter if necessary.
+            Severity and Resolution from DMTF Base Registry. 
 
             Parameters:
                 message_id: Id of the message; oneOf the keys in Redfish
                     Registry Messages
-                message: A string with the human readable error message. This
-                parameter is mutual exclusive with message_args
                 message_args: List of string to replace markers on Redfish
                     messages. Must have the same length as the number of %
-                    sign found in the registry Message field
+                    signs found in the registry Message field
                 related_properties: Proprerties relates to this e error if
                     necessary
 
         """
-        # Checking mutal exclusion of message and message_args
-        if message is not None and len(message_args) > 0:
-            raise OneViewRedfishError(
-                "Message and MessageArgs are mutual excusive parameters")
-
         messages = util.registry_dict["Base"]["Messages"]
 
         # Verify if message_id existis in registry
@@ -91,23 +80,20 @@ class RedfishError(RedfishJsonValidator):
                 message_id,
                 "message_id")
 
-        # If message is none we are going to use the value from registry
-        # and make eventual necessary sybstitution
-        if message is None:
-            message = messages[message_id]["Message"]
+        message = messages[message_id]["Message"]
 
-            # Check if numbers of replacemets and message_args length match
-            replaces = message.count('%')
-            replacements = len(message_args)
-            if replaces != replacements:
-                raise OneViewRedfishError(
-                    'Message has {} replacements to be made but {} args '
-                    'where sent'.
-                    format(replaces, replacements))
-            # Replacing the marks in the message. A better way to do this
-            # is welcome.
-            for i in range(replaces):
-                message = message.replace('%' + str(i + 1), message_args[i])
+        # Check if numbers of replacemets and message_args length match
+        replaces = message.count('%')
+        replacements = len(message_args)
+        if replaces != replacements:
+            raise OneViewRedfishError(
+                'Message has {} replacements to be made but {} args '
+                'where sent'.
+                format(replaces, replacements))
+        # Replacing the marks in the message. A better way to do this
+        # is welcome.
+        for i in range(replaces):
+            message = message.replace('%' + str(i + 1), message_args[i])
 
         # Construct the dict
         extended_info = collections.OrderedDict()
