@@ -1,0 +1,35 @@
+{
+    "error": {
+        "code": "Base.1.1.GeneralError",
+        "message": "A general error has occurred. See ExtendedInfo for more information.",
+        "@Message.ExtendedInfo": [
+            {
+                "@odata.type": "#Message.v1_0_5.Message",
+                "MessageId": "Base.1.1.PropertyValueNotInList",
+                "Message": "The value RED for the property IndicatorLED is not in the list of acceptable values.",
+                "RelatedProperties": [
+                    "#/IndicatorLED"
+                ],
+                "MessageArgs": [
+                    "RED",
+                    "IndicatorLED"
+                ],
+                "Severity": "Warning",
+                "Resolution": "Choose a value from the enumeration list that the implementation can support and resubmit the request if the operation failed."
+            },
+            {
+                "@odata.type": "#Message.v1_0_5.Message",
+                "MessageId": "Base.1.1.PropertyNotWritable",
+                "Message": "The property SKU is a read only property and cannot be assigned a value.",
+                "RelatedProperties": [
+                    "#/SKU"
+                ],
+                "MessageArgs": [
+                    "SKU"
+                ],
+                "Severity": "Warning",
+                "Resolution": "Remove the property from the request body and resubmit the request if the operation failed."
+            }
+        ]
+    }
+}
