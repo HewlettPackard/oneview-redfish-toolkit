@@ -189,5 +189,3 @@ def change_power_state(uuid):
         # In case of error log exception and abort
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-

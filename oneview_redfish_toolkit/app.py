@@ -70,33 +70,6 @@ app.register_blueprint(thermal)
 app.register_blueprint(storage_collection)
 
 
-@app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-def internal_server_error(error):
-    """General InternalServerError handler for the app"""
-
-    redfish_error = RedfishError(
-        "InternalError",
-        "The request failed due to an internal service error.  "
-        "The service is still operational.")
-    redfish_error.add_extended_info("InternalError")
-    error_str = redfish_error.serialize()
-    return Response(
-        response=error_str,
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        mimetype="application/json")
-
-
-@app.errorhandler(status.HTTP_404_NOT_FOUND)
-def not_found(error):
-    """Creates a Not Found Error response"""
-    redfish_error = RedfishError(
-        "GeneralError", error.description)
-    error_str = redfish_error.serialize()
-    return Response(
-        response=error_str,
-        status=status.HTTP_404_NOT_FOUND,
-        mimetype='application/json')
-
 @app.errorhandler(status.HTTP_400_BAD_REQUEST)
 def bad_request(error):
     """Creates a Bad Request Error response"""
@@ -113,6 +86,34 @@ def bad_request(error):
         response=error_str,
         status=status.HTTP_400_BAD_REQUEST,
         mimetype='application/json')
+
+
+@app.errorhandler(status.HTTP_404_NOT_FOUND)
+def not_found(error):
+    """Creates a Not Found Error response"""
+    redfish_error = RedfishError(
+        "GeneralError", error.description)
+    error_str = redfish_error.serialize()
+    return Response(
+        response=error_str,
+        status=status.HTTP_404_NOT_FOUND,
+        mimetype='application/json')
+
+
+@app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
+def internal_server_error(error):
+    """General InternalServerError handler for the app"""
+
+    redfish_error = RedfishError(
+        "InternalError",
+        "The request failed due to an internal service error.  "
+        "The service is still operational.")
+    redfish_error.add_extended_info("InternalError")
+    error_str = redfish_error.serialize()
+    return Response(
+        response=error_str,
+        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        mimetype="application/json")
 
 
 @app.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)

@@ -86,6 +86,38 @@ class TestComputerSystem(unittest.TestCase):
                 status=status.HTTP_404_NOT_FOUND,
                 mimetype='application/json')
 
+        @self.app.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
+        def not_implemented(error):
+            """Creates a Not Implemented Error response"""
+            redfish_error = RedfishError(
+                "ActionNotSupported", error.description)
+            redfish_error.add_extended_info(
+                message_id="ActionNotSupported",
+                message_args=["action"])
+
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_501_NOT_IMPLEMENTED,
+                mimetype='application/json')
+
+        @self.app.errorhandler(status.HTTP_400_BAD_REQUEST)
+        def bad_request(error):
+            """Creates a Bad Request Error response"""
+            redfish_error = RedfishError(
+                "PropertyValueNotInList", error.description)
+
+            redfish_error.add_extended_info(
+                message_id="PropertyValueNotInList",
+                message_args=["VALUE", "PROPERTY"],
+                related_properties=["PROPERTY"])
+
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_400_BAD_REQUEST,
+                mimetype='application/json')
+
         self.app = self.app.test_client()
 
         # propagate the exceptions to the test client
@@ -427,12 +459,17 @@ class TestComputerSystem(unittest.TestCase):
                                  data=json.dumps(dict(INVALID_KEY="On")),
                                  content_type='application/json')
 
+        json_str = response.data.decode("utf-8")
+
+        with open(
+                'oneview_redfish_toolkit/mockups_errors/'
+                'InvalidJsonKey.json'
+        ) as f:
+            invalide_json_key = f.read()
+
         self.assertEqual(
             status.HTTP_400_BAD_REQUEST,
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-
-        json_str = response.data.decode("utf-8")
-
-        self.assertEqual(json_str, '{"error": "Invalid information"}')
+        self.assertEqual(json_str, invalide_json_key)
