@@ -58,7 +58,7 @@ class RedfishError(RedfishJsonValidator):
         """Adds an item to ExtendedInfo list using values from DMTF registry
 
             Adds an item to ExtendedInfo list using the values for Message,
-            Severity and Resolution from DMTF Base Registry. 
+            Severity and Resolution from DMTF Base Registry.
 
             Parameters:
                 message_id: Id of the message; oneOf the keys in Redfish
