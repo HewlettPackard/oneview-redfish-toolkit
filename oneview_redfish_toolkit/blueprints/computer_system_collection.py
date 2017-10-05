@@ -21,6 +21,8 @@ from flask_api import status
 
 from oneview_redfish_toolkit.api.computer_system_collection \
     import ComputerSystemCollection
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit import util
 
 import logging
@@ -45,6 +47,9 @@ def get_computer_system_collection():
 
         # Gets all server hardware
         server_hardware_list = oneview_client.server_hardware.get_all()
+        if not server_hardware_list:
+            raise OneViewRedfishResourceNotFoundError(
+                "server-hardware-list", "Resource")
 
         # Build Computer System Collection object and validates it
         csc = ComputerSystemCollection(server_hardware_list)
@@ -57,18 +62,11 @@ def get_computer_system_collection():
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
+    except OneViewRedfishResourceNotFoundError as e:
+        # In case of error log exception and abort
+        logging.error('Unexpected error: {}'.format(e))
+        abort(status.HTTP_404_NOT_FOUND, e.msg)
     except Exception as e:
         # In case of error print exception and abort
         logging.error(e)
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@computer_system_collection.errorhandler(
-    status.HTTP_500_INTERNAL_SERVER_ERROR)
-def internal_server_error(error):
-    """Creates a Internal Server Error response"""
-    logging.error(vars(error))
-    return Response(
-        response='{"error": "Internal Server Error"}',
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        mimetype="application/json")
