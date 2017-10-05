@@ -61,5 +61,8 @@ class Thermal(RedfishJsonValidator):
         else:
             self.redfish["Temperatures"][0]["ReadingCelsius"] = \
                 utilization["peakTemp"]
+        self.redfish["@odata.context"] = \
+            "/redfish/v1/$metadata#Thermal.Thermal"
+        self.redfish["@odata.id"] = "/redfish/v1/Chassis/" + uuid + "/Thermal"
 
         self._validate()
