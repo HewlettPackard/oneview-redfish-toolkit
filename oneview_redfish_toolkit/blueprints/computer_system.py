@@ -81,14 +81,14 @@ def get_computer_system(uuid):
                     format(server_hardware['serverHardwareTypeUri']))
                 abort(
                     status.HTTP_404_NOT_FOUND,
-                    "ServerHardwareTypes not found")
+                    "Server hardware types not found")
             else:
                 logging.warning(
-                    'ServerHardware UUID {} not found'.
+                    'Server hardware UUID {} not found'.
                     format(uuid))
                 abort(
                     status.HTTP_404_NOT_FOUND,
-                    "ServerHardware not found")
+                    "Server hardware not found")
 
         elif e.msg.find("server-hardware-types") >= 0:
             logging.error(
@@ -174,7 +174,7 @@ def change_power_state(uuid):
         if "INVALID_POWER_CONTROL_REQUEST" in e.oneview_response["errorCode"]:
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            abort(status.HTTP_404_NOT_FOUND, "ServerHardware not found")
+            abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort

@@ -102,7 +102,7 @@ def not_found(error):
 
 @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
-    """General InternalServerError handler for the app"""
+    """Creates an Internal Server Error response"""
 
     redfish_error = RedfishError(
         "InternalError",
