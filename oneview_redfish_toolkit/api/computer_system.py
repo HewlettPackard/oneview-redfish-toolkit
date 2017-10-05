@@ -15,8 +15,36 @@
 # under the License.
 
 import collections
+
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+
+
+POWER_STATE_MAP = {
+    "On": {
+        "powerState": "On",
+    },
+    "ForceOff": {
+        "powerState": "Off",
+        "powerControl": "PressAndHold"
+    },
+    "GracefulShutdown": {
+        "powerState": "Off",
+        "powerControl": "MomentaryPress"
+    },
+    "GracefulRestart": {
+        "powerState": "On",
+        "powerControl": "Reset"
+    },
+    "ForceRestart": {
+        "powerState": "On",
+        "powerControl": "ColdBoot"
+    },
+    "PushPowerButton": {
+        "powerControl": "MomentaryPress"
+    }
+}
 
 
 class ComputerSystem(RedfishJsonValidator):
@@ -38,6 +66,8 @@ class ComputerSystem(RedfishJsonValidator):
                 server_hardware_types: ServerHardwareTypes dict from OneView
         """
         super().__init__(self.SCHEMA_NAME)
+
+        self.server_hardware = server_hardware
 
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
         self.redfish["Id"] = server_hardware["uuid"]
@@ -122,3 +152,41 @@ class ComputerSystem(RedfishJsonValidator):
             redfish_boot_list.append('None')
 
         return redfish_boot_list
+
+    def get_oneview_power_configuration(self, reset_type):
+        """Maps Redfish's power options to OneView's power option
+
+            Maps the known Redfish power options to OneView Power option.
+            If a unknown power option shows up it will raise an Exception.
+
+            Args:
+                reset_type: Redfish power option.
+
+            Returns:
+                dict: Dict with OneView power configuration.
+
+            Exception:
+                OneViewRedfishError: raises an exception if
+                reset_type is an unmapped value.
+        """
+
+        if reset_type == "ForceOn" or reset_type == "Nmi":
+            raise OneViewRedfishError({
+                "errorCode": "NOT_IMPLEMENTED",
+                "message": "{} not mapped to OneView".format(reset_type)})
+
+        try:
+            power_state_map = POWER_STATE_MAP[reset_type]
+        except Exception:
+            raise OneViewRedfishError({
+                "errorCode": "INVALID_INFORMATION",
+                "message": "There is no mapping for {} on the OneView"
+                .format(reset_type)})
+
+        if reset_type == "PushPowerButton":
+            if self.server_hardware["powerState"] == "On":
+                power_state_map["powerState"] = "Off"
+            else:
+                power_state_map["powerState"] = "On"
+
+        return power_state_map

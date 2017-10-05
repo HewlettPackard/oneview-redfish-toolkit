@@ -17,6 +17,7 @@
 import json
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import util
 
 import unittest
@@ -82,3 +83,14 @@ class TestComputerSystem(unittest.TestCase):
             self.fail("Failed to serialize. Error: ".format(e))
 
         self.assertEqual(self.computer_system_mockup, json_str)
+
+    def test_get_oneview_power_configuration(self):
+        # Tests invalid mapping values of power state
+        #
+        obj = ComputerSystem(self.server_hardware, self.server_hardware_types)
+
+        self.assertRaises(OneViewRedfishError, obj.
+                          get_oneview_power_configuration, "ForceOn")
+
+        self.assertRaises(OneViewRedfishError, obj.
+                          get_oneview_power_configuration, "INVALID")

@@ -20,12 +20,14 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
+from flask import request
 from flask import Response
 from flask_api import status
 
 # own libs
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import util
 
 
@@ -45,16 +47,14 @@ def get_computer_system(uuid):
             JSON: Redfish json with ComputerSystem
             When Server hardware is not found calls abort(404)
 
-
         Exceptions:
             Logs the exception and call abort(500)
-
     """
     try:
         # Recover OV connection
         oneview_client = util.get_oneview_client()
 
-        # Gets serverhardware for given UUID
+        # Gets server hardware for given UUID
         server_hardware = oneview_client.server_hardware.get(uuid)
 
         # Gets the server hardware type of the given server hardware
@@ -105,6 +105,95 @@ def get_computer_system(uuid):
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@computer_system.route("/redfish/v1/Systems/<uuid>/"
+                       "Actions/ComputerSystem.Reset", methods=["POST"])
+def change_power_state(uuid):
+    """Change the Oneview power state for a specific Server hardware.
+
+        Return ResetType Computer System redfish JSON for a
+        given server hardware UUID.
+        Logs exception of any error and return abort.
+
+        Returns:
+            JSON: Redfish JSON with ComputerSystem ResetType.
+
+        Exceptions:
+            HPOneViewException: When some OneView resource was not found.
+            return abort(404)
+
+            OneViewRedfishError: When occur a power state mapping error.
+            return abort(400)
+
+            Exception: Unexpected error.
+            return abort(500)
+    """
+
+    try:
+        try:
+            reset_type = request.get_json()["ResetType"]
+        except Exception:
+            raise OneViewRedfishError(
+                {"errorCode": "INVALID_INFORMATION",
+                 "message": "Invalid JSON key"})
+
+        # Recover OV connection
+        oneview_client = util.get_oneview_client()
+
+        # Gets ServerHardware for given UUID
+        sh = oneview_client.server_hardware.get(uuid)
+
+        # Gets the ServerHardwareType of the given server hardware
+        sht = oneview_client.server_hardware_types. \
+            get(sh['serverHardwareTypeUri'])
+
+        # Build Computer System object and validates it
+        cs = ComputerSystem(sh, sht)
+
+        oneview_power_configuration = \
+            cs.get_oneview_power_configuration(reset_type)
+
+        # Changes the ServerHardware power state
+        oneview_client.server_hardware.update_power_state(
+            oneview_power_configuration, uuid)
+
+        return Response(
+            response='{"ResetType": "%s"}' % reset_type,
+            status=status.HTTP_200_OK,
+            mimetype='application/json')
+
+    except HPOneViewException as e:
+        # In case of error log exception and abort
+        logging.error(e)
+
+        if "INVALID_POWER_CONTROL_REQUEST" in e.oneview_response["errorCode"]:
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            abort(status.HTTP_404_NOT_FOUND)
+
+    except OneViewRedfishError as e:
+        # In case of error log exception and abort
+        logging.error('Mapping error: {}'.format(e))
+
+        if e.msg["errorCode"] == "NOT_IMPLEMENTED":
+            abort(status.HTTP_501_NOT_IMPLEMENTED)
+        else:
+            abort(status.HTTP_400_BAD_REQUEST)
+
+    except Exception as e:
+        # In case of error log exception and abort
+        logging.error('Unexpected error: {}'.format(e))
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@computer_system.errorhandler(status.HTTP_400_BAD_REQUEST)
+def bad_request(error):
+    """Creates a Bad Request Error response"""
+    return Response(
+        response='{"error": "Invalid information"}',
+        status=status.HTTP_400_BAD_REQUEST,
+        mimetype='application/json')
+
+
 @computer_system.errorhandler(status.HTTP_404_NOT_FOUND)
 def not_found(error):
     """Creates a Not Found Error response"""
@@ -118,8 +207,16 @@ def not_found(error):
     status.HTTP_500_INTERNAL_SERVER_ERROR)
 def internal_server_error(error):
     """Creates an Internal Server Error response"""
-    logging.error(vars(error))
     return Response(
-        response='{"error": "Internal Server Error"}',
+        response='{"error": "Unable to reset"}',
         status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        mimetype='application/json')
+
+
+@computer_system.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
+def not_implemented(error):
+    """Creates a Not Implemented Error response"""
+    return Response(
+        response='{"error": "Not implemented"}',
+        status=status.HTTP_501_NOT_IMPLEMENTED,
         mimetype='application/json')
