@@ -1,0 +1,22 @@
+{
+    "@odata.id": "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/Storage/1",
+    "@odata.context": "/redfish/v1/$metadata#Storage.Storage",
+    "@odata.type": "#Storage.v1_2_0.Storage",
+    "StorageControllers@odata.count": 1,
+    "Id": "1",
+    "Name": "Storage Controller",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "StorageControllers": [
+        {
+            "Manufacturer": "HPE",
+            "Model": "HPE Smart Array",
+            "SupportedDeviceProtocols": [
+                "SAS",
+                "SATA"
+            ]
+        }
+    ]
+}
