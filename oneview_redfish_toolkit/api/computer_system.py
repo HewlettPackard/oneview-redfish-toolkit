@@ -112,7 +112,7 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"]["target"] = \
-            "/redfish/v1/System/{}/Actions/ComputerSystem.Reset" \
+            "/redfish/v1/Systems/{}/Actions/ComputerSystem.Reset" \
             .format(server_hardware["uuid"])
         self.redfish["Actions"]["#ComputerSystem.Reset"][
             "ResetType@Redfish.AllowableValues"] = \
