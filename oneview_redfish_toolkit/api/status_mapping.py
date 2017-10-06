@@ -33,7 +33,7 @@ STATUS_MAP = {
     },
     "Unknown": {
         "State": "Absent",
-        "Health": "Critical"
+        "Health": None
     }
 }
 
