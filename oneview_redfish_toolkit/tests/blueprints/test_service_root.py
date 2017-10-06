@@ -20,10 +20,12 @@ from unittest import mock
 
 # 3rd party libs
 from flask import Flask
+from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
+from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 from oneview_redfish_toolkit import util
 
@@ -41,6 +43,22 @@ class TestServiceRoot(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
         self.app.register_blueprint(service_root, url_prefix='/redfish/v1/')
+
+        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        def internal_server_error(error):
+            """Creates an Internal Server Error response"""
+
+            redfish_error = RedfishError(
+                "InternalError",
+                "The request failed due to an internal service error.  "
+                "The service is still operational.")
+            redfish_error.add_extended_info("InternalError")
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                mimetype="application/json")
+
         # creates a test client
         self.app = self.app.test_client()
 

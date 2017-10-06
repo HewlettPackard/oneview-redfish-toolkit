@@ -366,7 +366,7 @@ class TestComputerSystem(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_change_power_state_sh_exception(self, mock_get_ov_client):
-        """Tests change SH power state with SH not found"""
+        """Tests change SH power state with SH exception"""
 
         client = mock_get_ov_client()
         e = HPOneViewException({
@@ -382,7 +382,7 @@ class TestComputerSystem(unittest.TestCase):
                                  content_type='application/json')
 
         self.assertEqual(
-            status.HTTP_404_NOT_FOUND,
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
@@ -430,7 +430,7 @@ class TestComputerSystem(unittest.TestCase):
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_change_power_state_sht_exception(self, mock_get_ov_client):
-        """Tests change SH power state with SHT not found"""
+        """Tests change SH power state with SHT exception"""
 
         client = mock_get_ov_client()
         e = HPOneViewException({
@@ -446,7 +446,7 @@ class TestComputerSystem(unittest.TestCase):
                                  content_type='application/json')
 
         self.assertEqual(
-            status.HTTP_404_NOT_FOUND,
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
