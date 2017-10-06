@@ -77,34 +77,14 @@ def get_managers(uuid):
     except HPOneViewException as e:
         # In case of error log exception and abort
         logging.error(e)
-        abort(status.HTTP_404_NOT_FOUND)
+        abort(status.HTTP_404_NOT_FOUND, "Manager not found")
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
         logging.error('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND)
+        abort(status.HTTP_404_NOT_FOUND, e.msg)
 
     except Exception as e:
         # In case of error log exception and abort
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@manager.errorhandler(status.HTTP_404_NOT_FOUND)
-def not_found(error):
-    """Creates a Not Found Error response"""
-    return Response(
-        response='{"error": "URL/data not found"}',
-        status=status.HTTP_404_NOT_FOUND,
-        mimetype='application/json')
-
-
-@manager.errorhandler(
-    status.HTTP_500_INTERNAL_SERVER_ERROR)
-def internal_server_error(error):
-    """Creates an Internal Server Error response"""
-    logging.error(vars(error))
-    return Response(
-        response='{"error": "Internal Server Error"}',
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        mimetype='application/json')

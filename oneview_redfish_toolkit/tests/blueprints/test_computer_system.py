@@ -21,10 +21,12 @@ from unittest import mock
 
 # 3rd party libs
 from flask import Flask
+from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
+from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints.computer_system import computer_system
 from oneview_redfish_toolkit import util
 
@@ -57,6 +59,64 @@ class TestComputerSystem(unittest.TestCase):
         self.app = Flask(__name__)
 
         self.app.register_blueprint(computer_system)
+
+        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        def internal_server_error(error):
+            """General InternalServerError handler for the app"""
+
+            redfish_error = RedfishError(
+                "InternalError",
+                "The request failed due to an internal service error.  "
+                "The service is still operational.")
+            redfish_error.add_extended_info("InternalError")
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                mimetype="application/json")
+
+        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
+        def not_found(error):
+            """Creates a Not Found Error response"""
+            redfish_error = RedfishError(
+                "GeneralError", error.description)
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_404_NOT_FOUND,
+                mimetype='application/json')
+
+        @self.app.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
+        def not_implemented(error):
+            """Creates a Not Implemented Error response"""
+            redfish_error = RedfishError(
+                "ActionNotSupported", error.description)
+            redfish_error.add_extended_info(
+                message_id="ActionNotSupported",
+                message_args=["action"])
+
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_501_NOT_IMPLEMENTED,
+                mimetype='application/json')
+
+        @self.app.errorhandler(status.HTTP_400_BAD_REQUEST)
+        def bad_request(error):
+            """Creates a Bad Request Error response"""
+            redfish_error = RedfishError(
+                "PropertyValueNotInList", error.description)
+
+            redfish_error.add_extended_info(
+                message_id="PropertyValueNotInList",
+                message_args=["VALUE", "PROPERTY"],
+                related_properties=["PROPERTY"])
+
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_400_BAD_REQUEST,
+                mimetype='application/json')
 
         self.app = self.app.test_client()
 
@@ -399,12 +459,17 @@ class TestComputerSystem(unittest.TestCase):
                                  data=json.dumps(dict(INVALID_KEY="On")),
                                  content_type='application/json')
 
+        json_str = response.data.decode("utf-8")
+
+        with open(
+                'oneview_redfish_toolkit/mockups_errors/'
+                'InvalidJsonKey.json'
+        ) as f:
+            invalide_json_key = f.read()
+
         self.assertEqual(
             status.HTTP_400_BAD_REQUEST,
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-
-        json_str = response.data.decode("utf-8")
-
-        self.assertEqual(json_str, '{"error": "Invalid information"}')
+        self.assertEqual(json_str, invalide_json_key)

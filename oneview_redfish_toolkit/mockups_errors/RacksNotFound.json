@@ -1,0 +1,7 @@
+{
+    "error": {
+        "code": "Base.1.1.GeneralError",
+        "message": "Resource racks not found",
+        "@Message.ExtendedInfo": []
+    }
+}

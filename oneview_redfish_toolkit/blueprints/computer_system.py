@@ -79,11 +79,17 @@ def get_computer_system(uuid):
                 logging.warning(
                     'ServerHardwareTypes ID {} not found'.
                     format(server_hardware['serverHardwareTypeUri']))
+                abort(
+                    status.HTTP_404_NOT_FOUND,
+                    "Server hardware types not found")
             else:
                 logging.warning(
-                    'ServerHardware UUID {} not found'.
+                    'Server hardware UUID {} not found'.
                     format(uuid))
-            abort(status.HTTP_404_NOT_FOUND)
+                abort(
+                    status.HTTP_404_NOT_FOUND,
+                    "Server hardware not found")
+
         elif e.msg.find("server-hardware-types") >= 0:
             logging.error(
                 'OneView Exception while looking for server hardware type'
@@ -168,55 +174,18 @@ def change_power_state(uuid):
         if "INVALID_POWER_CONTROL_REQUEST" in e.oneview_response["errorCode"]:
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            abort(status.HTTP_404_NOT_FOUND)
+            abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
         logging.error('Mapping error: {}'.format(e))
 
         if e.msg["errorCode"] == "NOT_IMPLEMENTED":
-            abort(status.HTTP_501_NOT_IMPLEMENTED)
+            abort(status.HTTP_501_NOT_IMPLEMENTED, e.msg['message'])
         else:
-            abort(status.HTTP_400_BAD_REQUEST)
+            abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
 
     except Exception as e:
         # In case of error log exception and abort
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@computer_system.errorhandler(status.HTTP_400_BAD_REQUEST)
-def bad_request(error):
-    """Creates a Bad Request Error response"""
-    return Response(
-        response='{"error": "Invalid information"}',
-        status=status.HTTP_400_BAD_REQUEST,
-        mimetype='application/json')
-
-
-@computer_system.errorhandler(status.HTTP_404_NOT_FOUND)
-def not_found(error):
-    """Creates a Not Found Error response"""
-    return Response(
-        response='{"error": "URL/data not found"}',
-        status=status.HTTP_404_NOT_FOUND,
-        mimetype='application/json')
-
-
-@computer_system.errorhandler(
-    status.HTTP_500_INTERNAL_SERVER_ERROR)
-def internal_server_error(error):
-    """Creates an Internal Server Error response"""
-    return Response(
-        response='{"error": "Unable to reset"}',
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        mimetype='application/json')
-
-
-@computer_system.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
-def not_implemented(error):
-    """Creates a Not Implemented Error response"""
-    return Response(
-        response='{"error": "Not implemented"}',
-        status=status.HTTP_501_NOT_IMPLEMENTED,
-        mimetype='application/json')

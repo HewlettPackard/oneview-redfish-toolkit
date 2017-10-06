@@ -62,21 +62,20 @@ def get_manager_collection():
 
         if not enclosures:
             raise OneViewRedfishResourceNotFoundError(
-                "enclosures", "oneview-result")
+                "enclosures", "Resource")
 
         # Gets all server hardware
         server_hardware_list = oneview_client.server_hardware.get_all()
 
         if not server_hardware_list:
             raise OneViewRedfishResourceNotFoundError(
-                "server-hardwares", "oneview-result")
+                "server-hardware-list", "Resource")
 
         # Build Manager Collection object and validates it
         mc = ManagerCollection(server_hardware_list, enclosures)
 
         # Build redfish json
         json_str = mc.serialize()
-
         # Build response and returns
         return Response(
             response=json_str,
@@ -86,30 +85,9 @@ def get_manager_collection():
     except OneViewRedfishResourceNotFoundError as e:
         # In case of error print exception and abort
         logging.error(e)
-        abort(status.HTTP_404_NOT_FOUND)
+        abort(status.HTTP_404_NOT_FOUND, e.msg)
 
     except Exception as e:
         # In case of error print exception and abort
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@manager_collection.errorhandler(status.HTTP_404_NOT_FOUND)
-def not_found(error):
-    """Creates a Not Found Error response"""
-    logging.error(vars(error))
-    return Response(
-        response='{"error": "Resource not found"}',
-        status=status.HTTP_404_NOT_FOUND,
-        mimetype='application/json')
-
-
-@manager_collection.errorhandler(
-    status.HTTP_500_INTERNAL_SERVER_ERROR)
-def internal_server_error(error):
-    """Creates a Internal Server Error response"""
-    logging.error(vars(error))
-    return Response(
-        response='{"error": "Internal Server Error"}',
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        mimetype="application/json")
