@@ -28,6 +28,7 @@ DEVICE_PROTOCOLS_MAP = {
     "NVMeSsd": "NVMe"
 }
 
+
 class Storage(RedfishJsonValidator):
     """Creates a Storage Redfish dict
 
