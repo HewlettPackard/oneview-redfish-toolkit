@@ -48,14 +48,14 @@ def get_storage(uuid):
 
     """
     try:
-        ov_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client()
 
-        server_hardware = ov_client.server_hardware. \
+        server_hardware = oneview_client.server_hardware. \
             get(uuid)
-        if server_hardware:
-            sht_uri = server_hardware['serverHardwareTypeUri']
-            server_hardware_type = \
-                ov_client.server_hardware_types.get(sht_uri)
+
+        sht_uri = server_hardware['serverHardwareTypeUri']
+        server_hardware_type = \
+            oneview_client.server_hardware_types.get(sht_uri)
 
         st = Storage(uuid, server_hardware_type)
 

@@ -17,7 +17,16 @@
 import collections
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+import oneview_redfish_toolkit.api.status_mapping as status_mapping
 
+DEVICE_PROTOCOLS_MAP = {
+    "SasHdd": "SAS",
+    "SasSsd": "SAS",
+    "SataHdd": "SATA",
+    "SataSsd": "SATA",
+    "NVMeHdd": "NVMe",
+    "NVMeSsd": "NVMe"
+}
 
 class Storage(RedfishJsonValidator):
     """Creates a Storage Redfish dict
@@ -49,8 +58,10 @@ class Storage(RedfishJsonValidator):
         self.redfish["Id"] = "1"
         self.redfish["Name"] = "Storage Controller"
         self.redfish["Status"] = collections.OrderedDict()
-        self.redfish["Status"]["State"] = "Enabled"
-        self.redfish["Status"]["Health"] = "OK"
+        self.redfish["Status"]["State"] = \
+            status_mapping.get_redfish_state("OK")
+        self.redfish["Status"]["Health"] = \
+            status_mapping.get_redfish_health("OK")
         self.redfish["StorageControllers"] = list()
         self.redfish["StorageControllers"].append(collections.OrderedDict())
         self.redfish["StorageControllers"][0]["Manufacturer"] = "HPE"
@@ -61,20 +72,12 @@ class Storage(RedfishJsonValidator):
         self._validate()
 
     def map_supported_device_protos(self, drive_technologies):
-
-        redfish_oneview_drive_technologies = dict()
-        redfish_oneview_drive_technologies['SasHdd'] = 'SAS'
-        redfish_oneview_drive_technologies['SasSsd'] = 'SAS'
-        redfish_oneview_drive_technologies['SataHdd'] = 'SATA'
-        redfish_oneview_drive_technologies['SataSsd'] = 'SATA'
-        redfish_oneview_drive_technologies['NVMeHdd'] = 'NVMe'
-        redfish_oneview_drive_technologies['NVMeSsd'] = 'NVMe'
         supported_device_protocols = set()
 
         try:
             for drive_option in drive_technologies:
                 supported_device_protocols.add(
-                    redfish_oneview_drive_technologies[drive_option])
+                    DEVICE_PROTOCOLS_MAP[drive_option])
         except Exception:
             supported_device_protocols.add('')
 
