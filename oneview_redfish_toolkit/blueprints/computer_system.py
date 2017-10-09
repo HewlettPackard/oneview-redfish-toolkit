@@ -171,10 +171,10 @@ def change_power_state(uuid):
         # In case of error log exception and abort
         logging.error(e)
 
-        if "INVALID_POWER_CONTROL_REQUEST" in e.oneview_response["errorCode"]:
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
+        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
             abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
+        else:
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
