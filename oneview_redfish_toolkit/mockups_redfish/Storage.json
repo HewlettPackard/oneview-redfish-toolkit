@@ -11,8 +11,13 @@
     },
     "StorageControllers": [
         {
+            "SupportedDeviceProtocols": [
+                "SAS",
+                "SATA"
+            ]
+        },
+        {
             "Manufacturer": "HPE",
-            "Model": "HPE Smart Array",
             "SupportedDeviceProtocols": [
                 "SAS",
                 "SATA"

@@ -64,10 +64,23 @@ class Storage(RedfishJsonValidator):
         self.redfish["Status"]["Health"] = \
             status_mapping.get_redfish_health("OK")
         self.redfish["StorageControllers"] = list()
+
+        # adapter storage capabilities (if any)
+        for adapter, idx in zip(server_hardware_type['adapters'],
+                                range(len(server_hardware_type['adapters']))):
+            if adapter['storageCapabilities']:
+                self.redfish["StorageControllers"].\
+                    append(collections.OrderedDict())
+                self.redfish["StorageControllers"][idx]["SupportedDeviceProtocols"] = \
+                    sorted(self.
+                           map_supported_device_protos(drive_technologies))
+
+        # internal storage capabilities
+        storage_controller_count = len(self.redfish["StorageControllers"])
         self.redfish["StorageControllers"].append(collections.OrderedDict())
-        self.redfish["StorageControllers"][0]["Manufacturer"] = "HPE"
-        self.redfish["StorageControllers"][0]["Model"] = "HPE Smart Array"
-        self.redfish["StorageControllers"][0]["SupportedDeviceProtocols"] = \
+        self.redfish["StorageControllers"][storage_controller_count]["Manufacturer"] =  \
+            "HPE"
+        self.redfish["StorageControllers"][storage_controller_count]["SupportedDeviceProtocols"] = \
             sorted(self.map_supported_device_protos(drive_technologies))
 
         self._validate()
