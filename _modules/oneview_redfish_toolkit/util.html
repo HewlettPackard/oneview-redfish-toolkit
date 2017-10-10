@@ -1,0 +1,503 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>oneview_redfish_toolkit.util &mdash; HPE OneView Redfish Toolkit 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="HPE OneView Redfish Toolkit 1.0.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> HPE OneView Redfish Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">HPE OneView Redfish Toolkit</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>oneview_redfish_toolkit.util</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for oneview_redfish_toolkit.util</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># Copyright (2017) Hewlett Packard Enterprise Development LP</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may</span>
+<span class="c1"># not use this file except in compliance with the License. You may obtain</span>
+<span class="c1"># a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT</span>
+<span class="c1"># WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c1"># License for the specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+
+<span class="c1"># Python libs</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">logging.config</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="c1"># 3rd party libs</span>
+<span class="kn">from</span> <span class="nn">hpOneView.oneview_client</span> <span class="k">import</span> <span class="n">OneViewClient</span>
+
+<span class="c1"># Modules own libs</span>
+<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api</span> <span class="k">import</span> <span class="n">errors</span>
+
+
+<div class="viewcode-block" id="configure_logging"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.configure_logging">[docs]</a><span class="k">def</span> <span class="nf">configure_logging</span><span class="p">(</span><span class="n">log_file_path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loads logging.conf file</span>
+
+<span class="sd">        Loads logging.conf file to create the logger configuration.</span>
+
+<span class="sd">        The logger configuration has two handlers, one of stream</span>
+<span class="sd">        (show logs in the console) and other of file (save a log file)</span>
+<span class="sd">        where you can choose one of it in [logger_root : handlers].</span>
+<span class="sd">        In it you can choose the logger level as well.</span>
+
+<span class="sd">        Level: Numeric value</span>
+<span class="sd">        ---------------------</span>
+<span class="sd">        CRITICAL: 50</span>
+<span class="sd">        ERROR:    40</span>
+<span class="sd">        WARNING:  30</span>
+<span class="sd">        INFO:     20</span>
+<span class="sd">        DEBUG:    10</span>
+<span class="sd">        NOTSET:   00</span>
+<span class="sd">        ---------------------</span>
+
+<span class="sd">        How to use: import logging and logging.error(&#39;message&#39;)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            log_file_path: logging.conf path.</span>
+
+<span class="sd">        Exception:</span>
+<span class="sd">            Exception: if logging.conf file not found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">log_file_path</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Config file </span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_file_path</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">fileConfig</span><span class="p">(</span><span class="n">log_file_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_config"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.load_config">[docs]</a><span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="n">conf_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loads redfish.conf file</span>
+
+<span class="sd">        Loads and parsers the system conf file into config global var</span>
+<span class="sd">        Loads json schemas into schemas_dict global var</span>
+<span class="sd">        Established a connection with OneView and sets in as ov_conn</span>
+<span class="sd">        global var</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            conf_file: string with the conf file name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+
+<span class="sd">        Exception:</span>
+<span class="sd">            OneViewRedfishResourceNotFoundError:</span>
+<span class="sd">                - if conf file not found</span>
+<span class="sd">                - if any of the schemas files are not found</span>
+<span class="sd">                - if the schema directory is not found</span>
+<span class="sd">            OneViewRedFishResourceNotAccessibleError:</span>
+<span class="sd">                - if can&#39;t access schema&#39;s directory</span>
+<span class="sd">            HPOneViewException:</span>
+<span class="sd">                - if fails to connect to oneview</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">load_conf</span><span class="p">(</span><span class="n">conf_file</span><span class="p">)</span>
+    <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;config&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+
+    <span class="c1"># Config file read set global vars</span>
+    <span class="c1"># Setting ov_config</span>
+    <span class="n">ov_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s1">&#39;oneview_config&#39;</span><span class="p">))</span>
+    <span class="n">ov_config</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s1">&#39;credentials&#39;</span><span class="p">))</span>
+    <span class="n">ov_config</span><span class="p">[</span><span class="s1">&#39;api_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ov_config</span><span class="p">[</span><span class="s1">&#39;api_version&#39;</span><span class="p">])</span>
+    <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;ov_config&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ov_config</span>
+
+    <span class="c1"># Setting schemas_dict</span>
+    <span class="n">schemas</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s1">&#39;schemas&#39;</span><span class="p">))</span>
+    <span class="n">registries</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s1">&#39;registry&#39;</span><span class="p">))</span>
+
+    <span class="c1"># Load schemas and connect to oneview</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">schemas_dict</span> <span class="o">=</span> <span class="n">load_schemas</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">[</span><span class="s1">&#39;redfish&#39;</span><span class="p">][</span><span class="s1">&#39;schema_dir&#39;</span><span class="p">],</span>
+            <span class="n">schemas</span>
+        <span class="p">)</span>
+        <span class="n">ov_client</span> <span class="o">=</span> <span class="n">OneViewClient</span><span class="p">(</span><span class="n">ov_config</span><span class="p">)</span>
+        <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;schemas_dict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schemas_dict</span>
+        <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;ov_client&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ov_client</span>
+        <span class="n">registry_dict</span> <span class="o">=</span> <span class="n">load_registry</span><span class="p">(</span>
+            <span class="n">config</span><span class="p">[</span><span class="s1">&#39;redfish&#39;</span><span class="p">][</span><span class="s1">&#39;registry_dir&#39;</span><span class="p">],</span>
+            <span class="n">registries</span>
+            <span class="p">)</span>
+        <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;registry_dict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">registry_dict</span>
+    <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishError</span><span class="p">(</span>
+            <span class="s1">&#39;Failed to load schemas or registries: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishError</span><span class="p">(</span>
+            <span class="s1">&#39;Failed to connect to OneView: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="load_conf"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.load_conf">[docs]</a><span class="k">def</span> <span class="nf">load_conf</span><span class="p">(</span><span class="n">conf_file</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loads and parses conf file</span>
+
+<span class="sd">        Loads and parses the module conf file</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            conf_file: string with the conf file name</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            configparser object with conf_file configs</span>
+
+<span class="sd">        Exception:</span>
+<span class="sd">            OneViewRedfishResourceNotFoundError:</span>
+<span class="sd">                - if conf file not found</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">conf_file</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span><span class="n">conf_file</span><span class="p">,</span> <span class="s1">&#39;File&#39;</span><span class="p">)</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">optionxform</span> <span class="o">=</span> <span class="nb">str</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">conf_file</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">raise</span>
+
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="load_schemas"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.load_schemas">[docs]</a><span class="k">def</span> <span class="nf">load_schemas</span><span class="p">(</span><span class="n">schema_dir</span><span class="p">,</span> <span class="n">schemas</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loads schemas</span>
+
+<span class="sd">        Loads all schemas in listed in schemas searching on schema_dir</span>
+<span class="sd">        directory</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            schema_dir: string with the directory to load schemas from</span>
+<span class="sd">            schemas: dict with schema name as key and schema file_name</span>
+<span class="sd">                as value. The key will also be the key in the returning dict</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict: A dict containing (&#39;SchemasName&#39; : schema_obj) pairs</span>
+
+<span class="sd">        Exceptions:</span>
+<span class="sd">            OneviewRedfishResourceNotFoundError:</span>
+<span class="sd">                - if schema_dir is not found</span>
+<span class="sd">                - any of json files is not found</span>
+<span class="sd">            OneviewRedfishResourceNotAccessible:</span>
+<span class="sd">                - if schema_dir is can&#39;t be accessed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">schema_dir</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
+            <span class="n">schema_dir</span><span class="p">,</span>
+            <span class="s1">&#39;Directory&#39;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">schema_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedFishResourceNotAccessibleError</span><span class="p">(</span>
+            <span class="n">schema_dir</span><span class="p">,</span>
+            <span class="s1">&#39;directory&#39;</span>
+        <span class="p">)</span>
+
+    <span class="n">schema_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">schemas</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">schema_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">schemas</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">schema_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
+                <span class="n">schemas</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+                <span class="s1">&#39;File&#39;</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">schema_dict</span></div>
+
+
+<div class="viewcode-block" id="load_registry"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.load_registry">[docs]</a><span class="k">def</span> <span class="nf">load_registry</span><span class="p">(</span><span class="n">registry_dir</span><span class="p">,</span> <span class="n">registries</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Loads Registries</span>
+
+<span class="sd">        Loads all registries listed in the config file using registry_dir</span>
+<span class="sd">        directory</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            registry_dir: string with the directory to load registries from</span>
+<span class="sd">            registries: dict with registry name as key and registry file_name</span>
+<span class="sd">                as value. The key will also be the key in the returning dict</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OrderedDict: A dict containing &#39;RegistryName&#39;: registry_obj</span>
+
+<span class="sd">        Exceptions:</span>
+<span class="sd">            OneviewRedfishResourceNotFoundError:</span>
+<span class="sd">                - if registry_dir is not found</span>
+<span class="sd">                - any of json files is not found</span>
+<span class="sd">            OneviewRedfishResourceNotAccessible:</span>
+<span class="sd">                - if registry_dir is can&#39;t be accessed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">registry_dir</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
+            <span class="n">registry_dir</span><span class="p">,</span>
+            <span class="s1">&#39;Directory&#39;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">registry_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedFishResourceNotAccessibleError</span><span class="p">(</span>
+            <span class="n">registry_dir</span><span class="p">,</span>
+            <span class="s1">&#39;directory&#39;</span>
+        <span class="p">)</span>
+
+    <span class="n">registries_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">registries</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">registry_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">registries</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">registries_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
+                <span class="n">registries</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
+                <span class="s1">&#39;File&#39;</span>
+            <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">registries_dict</span></div>
+
+
+<div class="viewcode-block" id="get_oneview_client"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.get_oneview_client">[docs]</a><span class="k">def</span> <span class="nf">get_oneview_client</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Establishes a OneView connection to be used in the module</span>
+
+<span class="sd">        Establishes a OV connection if one does not exists.</span>
+<span class="sd">        If one exists, do a single OV access to check if its sill</span>
+<span class="sd">        valid. If not tries to establish a new connection.</span>
+<span class="sd">        Sets the connection on the ov_conn global var</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            None. Uses global var ov_config which is set by load_config</span>
+<span class="sd">            with OV configuration and credentials</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            OneViewClient object</span>
+
+<span class="sd">        Exceptions:</span>
+<span class="sd">            HPOneViewException if can&#39;t connect or reconnect to OV</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">ov_client</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;ov_client&#39;</span><span class="p">]</span>
+    <span class="n">ov_config</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;ov_config&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Check if connection is ok yet</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ov_client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/rest/logindomains&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ov_client</span>
+    <span class="c1"># If expired try to make a new connection</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Re-authenticated&#39;</span><span class="p">)</span>
+            <span class="n">ov_client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">ov_config</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">ov_client</span>
+        <span class="c1"># if faild abort</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">raise</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright (C) 2017 Hewlett Packard Enterprise Development LP.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,312 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>oneview_redfish_toolkit.blueprints.chassis &mdash; HPE OneView Redfish Toolkit 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="HPE OneView Redfish Toolkit 1.0.0 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> HPE OneView Redfish Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">HPE OneView Redfish Toolkit</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>oneview_redfish_toolkit.blueprints.chassis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for oneview_redfish_toolkit.blueprints.chassis</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="c1"># Copyright (2017) Hewlett Packard Enterprise Development LP</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may</span>
+<span class="c1"># not use this file except in compliance with the License. You may obtain</span>
+<span class="c1"># a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1"># http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS, WITHOUT</span>
+<span class="c1"># WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
+<span class="c1"># License for the specific language governing permissions and limitations</span>
+<span class="c1"># under the License.</span>
+
+<span class="c1"># Python libs</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+
+<span class="c1"># 3rd party libs</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">abort</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">flask_api</span> <span class="k">import</span> <span class="n">status</span>
+<span class="kn">from</span> <span class="nn">hpOneView.exceptions</span> <span class="k">import</span> <span class="n">HPOneViewException</span>
+
+<span class="c1"># Own libs</span>
+<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.blade_chassis</span> <span class="k">import</span> <span class="n">BladeChassis</span>
+<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.enclosure_chassis</span> <span class="k">import</span> <span class="n">EnclosureChassis</span>
+<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.errors</span> <span class="k">import</span> <span class="n">OneViewRedfishError</span>
+<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.rack_chassis</span> <span class="k">import</span> <span class="n">RackChassis</span>
+<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit</span> <span class="k">import</span> <span class="n">util</span>
+
+<span class="n">chassis</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;chassis&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_chassis"><a class="viewcode-back" href="../../../oneview_redfish_toolkit.blueprints.html#oneview_redfish_toolkit.blueprints.chassis.get_chassis">[docs]</a><span class="nd">@chassis</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/redfish/v1/Chassis/&lt;uuid&gt;&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_chassis</span><span class="p">(</span><span class="n">uuid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the Redfish Chassis.</span>
+
+<span class="sd">        Get method to return Chassis JSON when</span>
+<span class="sd">        /redfish/v1/Chassis/id is requested.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            JSON: JSON with Chassis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">oneview_client</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_oneview_client</span><span class="p">()</span>
+
+        <span class="n">resource_index</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">index_resources</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span>
+            <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;uuid=&#39;</span> <span class="o">+</span> <span class="n">uuid</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">resource_index</span><span class="p">:</span>
+            <span class="n">category</span> <span class="o">=</span> <span class="n">resource_index</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;category&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span><span class="s1">&#39;Cannot find Index resource&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">category</span> <span class="o">==</span> <span class="s1">&#39;server-hardware&#39;</span><span class="p">:</span>
+            <span class="n">server_hardware</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="n">BladeChassis</span><span class="p">(</span><span class="n">server_hardware</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">category</span> <span class="o">==</span> <span class="s1">&#39;enclosures&#39;</span><span class="p">:</span>
+            <span class="n">enclosure</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">enclosures</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="n">enclosure_environment_config</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">enclosures</span><span class="o">.</span>\
+                <span class="n">get_environmental_configuration</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="n">EnclosureChassis</span><span class="p">(</span>
+                <span class="n">enclosure</span><span class="p">,</span>
+                <span class="n">enclosure_environment_config</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">category</span> <span class="o">==</span> <span class="s1">&#39;racks&#39;</span><span class="p">:</span>
+            <span class="n">racks</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">racks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="n">ch</span> <span class="o">=</span> <span class="n">RackChassis</span><span class="p">(</span><span class="n">racks</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span><span class="s1">&#39;Chassis type not found&#39;</span><span class="p">)</span>
+
+        <span class="n">json_str</span> <span class="o">=</span> <span class="n">ch</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span>
+            <span class="n">response</span><span class="o">=</span><span class="n">json_str</span><span class="p">,</span>
+            <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
+            <span class="n">mimetype</span><span class="o">=</span><span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">HPOneViewException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># In case of error log exception and abort</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">OneViewRedfishError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># In case of error log exception and abort</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unexpected error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="s2">&quot;Chassis not found&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="c1"># In case of error log exception and abort</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unexpected error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright (C) 2017 Hewlett Packard Enterprise Development LP.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

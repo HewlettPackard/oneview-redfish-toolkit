@@ -1,0 +1,637 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>oneview_redfish_toolkit.api package &mdash; HPE OneView Redfish Toolkit 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="HPE OneView Redfish Toolkit 1.0.0 documentation" href="index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> HPE OneView Redfish Toolkit
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">oneview_redfish_toolkit.api package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.blade_chassis">oneview_redfish_toolkit.api.blade_chassis module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.blade_manager">oneview_redfish_toolkit.api.blade_manager module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.chassis">oneview_redfish_toolkit.api.chassis module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.chassis_collection">oneview_redfish_toolkit.api.chassis_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.computer_system">oneview_redfish_toolkit.api.computer_system module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.computer_system_collection">oneview_redfish_toolkit.api.computer_system_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.enclosure_chassis">oneview_redfish_toolkit.api.enclosure_chassis module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.enclosure_manager">oneview_redfish_toolkit.api.enclosure_manager module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.errors">oneview_redfish_toolkit.api.errors module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.manager">oneview_redfish_toolkit.api.manager module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.manager_collection">oneview_redfish_toolkit.api.manager_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.odata">oneview_redfish_toolkit.api.odata module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.rack_chassis">oneview_redfish_toolkit.api.rack_chassis module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.redfish_error">oneview_redfish_toolkit.api.redfish_error module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.redfish_json_validator">oneview_redfish_toolkit.api.redfish_json_validator module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.service_root">oneview_redfish_toolkit.api.service_root module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.status_mapping">oneview_redfish_toolkit.api.status_mapping module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.storage_collection">oneview_redfish_toolkit.api.storage_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.thermal">oneview_redfish_toolkit.api.thermal module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">HPE OneView Redfish Toolkit</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>oneview_redfish_toolkit.api package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/oneview_redfish_toolkit.api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="oneview-redfish-toolkit-api-package">
+<h1>oneview_redfish_toolkit.api package<a class="headerlink" href="#oneview-redfish-toolkit-api-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.blade_chassis">
+<span id="oneview-redfish-toolkit-api-blade-chassis-module"></span><h2>oneview_redfish_toolkit.api.blade_chassis module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.blade_chassis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.blade_chassis.BladeChassis">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.blade_chassis.</code><code class="descname">BladeChassis</code><span class="sig-paren">(</span><em>server_hardware</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/blade_chassis.html#BladeChassis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.blade_chassis.BladeChassis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.chassis.Chassis" title="oneview_redfish_toolkit.api.chassis.Chassis"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.chassis.Chassis</span></code></a></p>
+<p>Creates a Blade Chassis Redfish dict</p>
+<p>Populates self.redfish with some hardcoded Chassis values and
+with the response of OneView server hardware resources.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.blade_manager">
+<span id="oneview-redfish-toolkit-api-blade-manager-module"></span><h2>oneview_redfish_toolkit.api.blade_manager module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.blade_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.blade_manager.BladeManager">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.blade_manager.</code><code class="descname">BladeManager</code><span class="sig-paren">(</span><em>server_hardware</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/blade_manager.html#BladeManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.blade_manager.BladeManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.manager.Manager" title="oneview_redfish_toolkit.api.manager.Manager"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.manager.Manager</span></code></a></p>
+<p>Creates a Manager Redfish dict for a Blade</p>
+<p>Populates self.redfish with some hardcoded Manager
+values and with the response from OneView.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.chassis">
+<span id="oneview-redfish-toolkit-api-chassis-module"></span><h2>oneview_redfish_toolkit.api.chassis module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.chassis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.chassis.Chassis">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.chassis.</code><code class="descname">Chassis</code><span class="sig-paren">(</span><em>oneview_resource</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/chassis.html#Chassis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.chassis.Chassis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Super class of Chassis resources</p>
+<p>Populates self.redfish with common value between Enclosure,
+Rack and Blade.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.chassis.Chassis.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'Chassis'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.chassis.Chassis.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.chassis_collection">
+<span id="oneview-redfish-toolkit-api-chassis-collection-module"></span><h2>oneview_redfish_toolkit.api.chassis_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.chassis_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.chassis_collection.ChassisCollection">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.chassis_collection.</code><code class="descname">ChassisCollection</code><span class="sig-paren">(</span><em>server_hardware</em>, <em>enclosures</em>, <em>racks</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/chassis_collection.html#ChassisCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.chassis_collection.ChassisCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Chassis Collection Redfish dict</p>
+<p>Populates self.redfish with some hardcoded ChassisCollection
+values and with the response of Oneview with all server hardware,
+enclosures and racks resource.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.chassis_collection.ChassisCollection.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'ChassisCollection'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.chassis_collection.ChassisCollection.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.computer_system">
+<span id="oneview-redfish-toolkit-api-computer-system-module"></span><h2>oneview_redfish_toolkit.api.computer_system module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.computer_system" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.computer_system.ComputerSystem">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.computer_system.</code><code class="descname">ComputerSystem</code><span class="sig-paren">(</span><em>server_hardware</em>, <em>server_hardware_types</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/computer_system.html#ComputerSystem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.computer_system.ComputerSystem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Computer System Redfish dict</p>
+<p>Populates self.redfish with ComputerSystem data retrieved from oneview</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.computer_system.ComputerSystem.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'ComputerSystem'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.computer_system.ComputerSystem.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="oneview_redfish_toolkit.api.computer_system.ComputerSystem.get_oneview_power_configuration">
+<code class="descname">get_oneview_power_configuration</code><span class="sig-paren">(</span><em>reset_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/computer_system.html#ComputerSystem.get_oneview_power_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.computer_system.ComputerSystem.get_oneview_power_configuration" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps Redfish’s power options to OneView’s power option</p>
+<p>Maps the known Redfish power options to OneView Power option.
+If a unknown power option shows up it will raise an Exception.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reset_type</strong> – Redfish power option.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dict with OneView power configuration.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Exception:</dt>
+<dd>OneViewRedfishError: raises an exception if
+reset_type is an unmapped value.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="oneview_redfish_toolkit.api.computer_system.ComputerSystem.map_boot">
+<code class="descname">map_boot</code><span class="sig-paren">(</span><em>boot_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/computer_system.html#ComputerSystem.map_boot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.computer_system.ComputerSystem.map_boot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps Oneview’s boot options to Redfish’s boot option</p>
+<p>Maps the known OneView boot options to Redfish boot option.
+If a unknown boot option shows up it will be mapped to None</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>boot_list</strong> – List with OneView boot options</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list with Redfish boot options</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.computer_system_collection">
+<span id="oneview-redfish-toolkit-api-computer-system-collection-module"></span><h2>oneview_redfish_toolkit.api.computer_system_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.computer_system_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.computer_system_collection.ComputerSystemCollection">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.computer_system_collection.</code><code class="descname">ComputerSystemCollection</code><span class="sig-paren">(</span><em>server_hardware</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/computer_system_collection.html#ComputerSystemCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.computer_system_collection.ComputerSystemCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Computer System Collection Redfish dict</p>
+<p>Populates self.redfish with some hardcoded ComputerSystemCollection
+values and with the response of Oneview with all server hardware.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.computer_system_collection.ComputerSystemCollection.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'ComputerSystemCollection'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.computer_system_collection.ComputerSystemCollection.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.enclosure_chassis">
+<span id="oneview-redfish-toolkit-api-enclosure-chassis-module"></span><h2>oneview_redfish_toolkit.api.enclosure_chassis module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.enclosure_chassis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.enclosure_chassis.EnclosureChassis">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.enclosure_chassis.</code><code class="descname">EnclosureChassis</code><span class="sig-paren">(</span><em>enclosure</em>, <em>environmental_configuration</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/enclosure_chassis.html#EnclosureChassis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.enclosure_chassis.EnclosureChassis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.chassis.Chassis" title="oneview_redfish_toolkit.api.chassis.Chassis"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.chassis.Chassis</span></code></a></p>
+<p>Creates an Enclosure Chassis Redfish dict</p>
+<p>Populates self.redfish with some hardcoded Enclosure Chassis
+values and with the response of OneView enclosure resources.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.enclosure_manager">
+<span id="oneview-redfish-toolkit-api-enclosure-manager-module"></span><h2>oneview_redfish_toolkit.api.enclosure_manager module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.enclosure_manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.enclosure_manager.EnclosureManager">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.enclosure_manager.</code><code class="descname">EnclosureManager</code><span class="sig-paren">(</span><em>enclosure</em>, <em>oneview_version</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/enclosure_manager.html#EnclosureManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.enclosure_manager.EnclosureManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.manager.Manager" title="oneview_redfish_toolkit.api.manager.Manager"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.manager.Manager</span></code></a></p>
+<p>Creates a Manager Redfish dict for Enclosure</p>
+<p>Populates self.redfish with some hardcoded Manager
+values and with the response from OneView.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.errors">
+<span id="oneview-redfish-toolkit-api-errors-module"></span><h2>oneview_redfish_toolkit.api.errors module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.errors" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="oneview_redfish_toolkit.api.errors.OneViewRedfishError">
+<em class="property">exception </em><code class="descclassname">oneview_redfish_toolkit.api.errors.</code><code class="descname">OneViewRedfishError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/errors.html#OneViewRedfishError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.errors.OneViewRedfishError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="oneview_redfish_toolkit.api.errors.OneViewRedfishResourceNotAccessibleError">
+<em class="property">exception </em><code class="descclassname">oneview_redfish_toolkit.api.errors.</code><code class="descname">OneViewRedfishResourceNotAccessibleError</code><span class="sig-paren">(</span><em>resource_name</em>, <em>resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/errors.html#OneViewRedfishResourceNotAccessibleError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.errors.OneViewRedfishResourceNotAccessibleError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.errors.OneViewRedfishError" title="oneview_redfish_toolkit.api.errors.OneViewRedfishError"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.errors.OneViewRedfishError</span></code></a></p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="oneview_redfish_toolkit.api.errors.OneViewRedfishResourceNotFoundError">
+<em class="property">exception </em><code class="descclassname">oneview_redfish_toolkit.api.errors.</code><code class="descname">OneViewRedfishResourceNotFoundError</code><span class="sig-paren">(</span><em>resource_name</em>, <em>resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/errors.html#OneViewRedfishResourceNotFoundError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.errors.OneViewRedfishResourceNotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.errors.OneViewRedfishError" title="oneview_redfish_toolkit.api.errors.OneViewRedfishError"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.errors.OneViewRedfishError</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.manager">
+<span id="oneview-redfish-toolkit-api-manager-module"></span><h2>oneview_redfish_toolkit.api.manager module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.manager.Manager">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.manager.</code><code class="descname">Manager</code><span class="sig-paren">(</span><em>oneview_resource</em>, <em>firmware_version</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/manager.html#Manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.manager.Manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Manager Redfish dict</p>
+<p>Populates self.redfish with some hardcoded Manager
+values and with the response from OneView.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.manager.Manager.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'Manager'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.manager.Manager.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.manager_collection">
+<span id="oneview-redfish-toolkit-api-manager-collection-module"></span><h2>oneview_redfish_toolkit.api.manager_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.manager_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.manager_collection.ManagerCollection">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.manager_collection.</code><code class="descname">ManagerCollection</code><span class="sig-paren">(</span><em>server_hardware</em>, <em>enclosures</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/manager_collection.html#ManagerCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.manager_collection.ManagerCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Manager Collection Redfish dict</p>
+<p>Populates self.redfish with some hardcoded ManagerCollection
+values and with the response of Oneview with all server hardware,
+enclosures resource.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.manager_collection.ManagerCollection.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'ManagerCollection'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.manager_collection.ManagerCollection.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.odata">
+<span id="oneview-redfish-toolkit-api-odata-module"></span><h2>oneview_redfish_toolkit.api.odata module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.odata" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.odata.Odata">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.odata.</code><code class="descname">Odata</code><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/odata.html#Odata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.odata.Odata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a hardcoded odata redfish dict</p>
+<p>Populates self.redfish with a hardcoded odata values. These should
+have all service ofered by the servers.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.odata.Odata.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = None</em><a class="headerlink" href="#oneview_redfish_toolkit.api.odata.Odata.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.rack_chassis">
+<span id="oneview-redfish-toolkit-api-rack-chassis-module"></span><h2>oneview_redfish_toolkit.api.rack_chassis module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.rack_chassis" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.rack_chassis.RackChassis">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.rack_chassis.</code><code class="descname">RackChassis</code><span class="sig-paren">(</span><em>rack</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/rack_chassis.html#RackChassis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.rack_chassis.RackChassis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.chassis.Chassis" title="oneview_redfish_toolkit.api.chassis.Chassis"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.chassis.Chassis</span></code></a></p>
+<p>Creates a Rack Chassis Redfish dict</p>
+<p>Populates self.redfish with some hardcoded Rack Chassis
+values and with the response of OneView Rack.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.redfish_error">
+<span id="oneview-redfish-toolkit-api-redfish-error-module"></span><h2>oneview_redfish_toolkit.api.redfish_error module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.redfish_error" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.redfish_error.RedfishError">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.redfish_error.</code><code class="descname">RedfishError</code><span class="sig-paren">(</span><em>code</em>, <em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/redfish_error.html#RedfishError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.redfish_error.RedfishError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Redfish Error Dict</p>
+<p>Populates self.redfish with errors. Will not validate as there’s no
+schema to validate agains.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.redfish_error.RedfishError.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = None</em><a class="headerlink" href="#oneview_redfish_toolkit.api.redfish_error.RedfishError.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="oneview_redfish_toolkit.api.redfish_error.RedfishError.add_extended_info">
+<code class="descname">add_extended_info</code><span class="sig-paren">(</span><em>message_id</em>, <em>message_args=[]</em>, <em>related_properties=[]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/redfish_error.html#RedfishError.add_extended_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.redfish_error.RedfishError.add_extended_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds an item to ExtendedInfo list using values from DMTF registry</p>
+<p>Adds an item to ExtendedInfo list using the values for Message,
+Severity and Resolution from DMTF Base Registry.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>message_id</strong> – Id of the message; oneOf the keys in Redfish
+Registry Messages</li>
+<li><strong>message_args</strong> – List of string to replace markers on Redfish
+messages. Must have the same length as the number of %
+signs found in the registry Message field</li>
+<li><strong>related_properties</strong> – Proprerties relates to this e error if
+necessary</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.redfish_json_validator">
+<span id="oneview-redfish-toolkit-api-redfish-json-validator-module"></span><h2>oneview_redfish_toolkit.api.redfish_json_validator module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.redfish_json_validator" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.redfish_json_validator.</code><code class="descname">RedfishJsonValidator</code><span class="sig-paren">(</span><em>schema_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/redfish_json_validator.html#RedfishJsonValidator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Validates a json object against a Redfish schema</p>
+<p>Base class for redfish classes. Have a builtin validate method and a
+serialize method.
+Creates and empty OrderedDict called redfish which must be populated
+with the redfish data for validation.
+The Serialize method always validates the redfish content before
+generating the json string, It returns the redfish json string on
+successful validation and raises an exception on validation failure</p>
+<dl class="method">
+<dt id="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator.serialize">
+<code class="descname">serialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/redfish_json_validator.html#RedfishJsonValidator.serialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator.serialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a json string from redfish content</p>
+<p>Serialize the contents of self.redfish. Uses the value of
+indent_json from redfish section of ini file to indent or
+not the result.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">json string with the contents of self.redfish</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.service_root">
+<span id="oneview-redfish-toolkit-api-service-root-module"></span><h2>oneview_redfish_toolkit.api.service_root module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.service_root" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.service_root.ServiceRoot">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.service_root.</code><code class="descname">ServiceRoot</code><span class="sig-paren">(</span><em>oneview_uuid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/service_root.html#ServiceRoot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.service_root.ServiceRoot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a hardcoded ServiceRoot redfish dict</p>
+<p>Populates self.redfish with a hardcoded ServiceRoot values for
+a BladeSystem</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.service_root.ServiceRoot.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'ServiceRoot'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.service_root.ServiceRoot.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.status_mapping">
+<span id="oneview-redfish-toolkit-api-status-mapping-module"></span><h2>oneview_redfish_toolkit.api.status_mapping module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.status_mapping" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.api.status_mapping.get_redfish_health">
+<code class="descclassname">oneview_redfish_toolkit.api.status_mapping.</code><code class="descname">get_redfish_health</code><span class="sig-paren">(</span><em>oneview_status</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/status_mapping.html#get_redfish_health"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.status_mapping.get_redfish_health" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets corresponding Redfish Health</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="oneview_redfish_toolkit.api.status_mapping.get_redfish_state">
+<code class="descclassname">oneview_redfish_toolkit.api.status_mapping.</code><code class="descname">get_redfish_state</code><span class="sig-paren">(</span><em>oneview_status</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/status_mapping.html#get_redfish_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.status_mapping.get_redfish_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets corresponding Redfish State</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.storage_collection">
+<span id="oneview-redfish-toolkit-api-storage-collection-module"></span><h2>oneview_redfish_toolkit.api.storage_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.storage_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.storage_collection.StorageCollection">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.storage_collection.</code><code class="descname">StorageCollection</code><span class="sig-paren">(</span><em>uuid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/storage_collection.html#StorageCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.storage_collection.StorageCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Storage Collection Redfish dict</p>
+<p>Populates self.redfish with some hardcoded StorageCollection
+values</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.storage_collection.StorageCollection.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'StorageCollection'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.storage_collection.StorageCollection.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.thermal">
+<span id="oneview-redfish-toolkit-api-thermal-module"></span><h2>oneview_redfish_toolkit.api.thermal module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.thermal" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.thermal.Thermal">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.thermal.</code><code class="descname">Thermal</code><span class="sig-paren">(</span><em>utilization</em>, <em>uuid</em>, <em>name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/thermal.html#Thermal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.thermal.Thermal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Thermal Redfish dict</p>
+<p>Populates self.redfish with Thermal data retrieved from OneView</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.thermal.Thermal.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'Thermal'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.thermal.Thermal.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-oneview_redfish_toolkit.api" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright (C) 2017 Hewlett Packard Enterprise Development LP.
+
+    </p>
+  </div> 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
