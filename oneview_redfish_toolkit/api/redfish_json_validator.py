@@ -18,7 +18,6 @@
 import collections
 import json
 import jsonschema
-import logging
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import util
