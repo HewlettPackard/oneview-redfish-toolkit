@@ -45,7 +45,7 @@ A status of the Redfish standand covered by the implemented service is available
 
 ## SDK Documentation
 
-The latest version of the SDK documentation can be found in the [SDK Documentation section] (https://hewlettpackard.github.io/oneview-redfish-toolkit/index.html).
+The latest version of the SDK documentation can be found in the [SDK Documentation section](https://hewlettpackard.github.io/oneview-redfish-toolkit/index.html).
 
 ## Logging
 
