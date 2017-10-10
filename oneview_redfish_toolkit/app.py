@@ -34,6 +34,8 @@ from oneview_redfish_toolkit.blueprints.computer_system_collection \
 from oneview_redfish_toolkit.blueprints.manager import manager
 from oneview_redfish_toolkit.blueprints.manager_collection \
     import manager_collection
+from oneview_redfish_toolkit.blueprints.network_interface_collection \
+    import network_interface_collection
 from oneview_redfish_toolkit.blueprints.odata import odata
 from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
@@ -68,6 +70,7 @@ app.register_blueprint(manager)
 app.register_blueprint(odata)
 app.register_blueprint(thermal)
 app.register_blueprint(storage_collection)
+app.register_blueprint(network_interface_collection)
 
 
 @app.errorhandler(status.HTTP_400_BAD_REQUEST)
