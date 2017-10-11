@@ -99,6 +99,11 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Storage"] = collections.OrderedDict()
         self.redfish["Storage"]["@odata.id"] = \
             "/redfish/v1/Systems/" + server_hardware['uuid'] + "/Storage"
+        self.redfish["NetworkInterfaces"] = collections.OrderedDict()
+        self.redfish["NetworkInterfaces"]["@odata.id"] = \
+            "/redfish/v1/Systems/" + \
+            server_hardware['uuid'] + \
+            "/NetworkInterfaces"
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["Chassis"] = list()
         self.redfish["Links"]["Chassis"].append(collections.OrderedDict())
