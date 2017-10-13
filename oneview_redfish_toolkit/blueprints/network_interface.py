@@ -14,58 +14,66 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
+import logging
+
+# 3rd party libs
 from flask import abort
 from flask import Blueprint
 from flask import Response
 from flask_api import status
 
+# own libs
 from hpOneView.exceptions import HPOneViewException
-from oneview_redfish_toolkit.api.network_interface_collection \
-    import NetworkInterfaceCollection
-
+from oneview_redfish_toolkit.api.network_interface import NetworkInterface
 from oneview_redfish_toolkit import util
 
-import logging
 
-network_interface_collection = Blueprint(
-    "network_interface_collection", __name__)
+network_interface = Blueprint("network_interface", __name__)
 
 
-@network_interface_collection.route(
-    "/redfish/v1/Systems/<uuid>/NetworkInterfaces/", methods=["GET"])
-def get_network_interface_collection(uuid):
-    """Get the Redfish Network Interfaces Collection.
+@network_interface.route(
+    "/redfish/v1/Systems/<uuid>/NetworkInterfaces/<device_id>",
+    methods=["GET"])
+def get_network_interface(uuid, device_id):
+    """Get the Redfish NetworkInterface for a given UUID and device_id.
 
-    Return NetworkInterfaceCollection Redfish JSON.
+        Return NetworkInterface Redfish JSON for a given hardware UUID
+        and device_id.
+
+        Parameters:
+            uuid: the UUID of the server_hardware
+            device_id: The id of the network device
+
+        Returns:
+            JSON: Redfish json with Thermal
+
+        Exceptions:
+            When hardware is not found calls abort(404)
+            When other errors occur calls abort(500)
+
     """
     try:
         oneview_client = util.get_oneview_client()
 
         server_hardware = oneview_client.server_hardware.get(uuid)
 
-        nic = NetworkInterfaceCollection(server_hardware)
+        ni = NetworkInterface(device_id, server_hardware)
 
-        json_str = nic.serialize()
+        json_str = ni.serialize()
 
         return Response(
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
-
     except HPOneViewException as e:
+        # In case of error log exception and abort
+        logging.error(e)
         if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            logging.warning('Server hardware UUID {} not found'.format(uuid))
             abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
-        elif e.msg.find("server-hardware") >= 0:
-            logging.error(
-                'OneView Exception while looking for '
-                'server hardware: {}'.format(e)
-            )
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            logging.error('Unexpected OneView Exception: {}'.format(e))
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
-        # In case of error print exception and abort
-        logging.error('Unexpected error: '.format(e))
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        # In case of error log exception and abort
+        logging.error('Unexpected error: {}'.format(e))
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
