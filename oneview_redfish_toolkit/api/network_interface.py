@@ -62,5 +62,5 @@ class NetworkInterface(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#NetworkInterface.NetworkInterface"
         self.redfish["@odata.id"] = "/redfish/v1/Systems/" + \
-            server_hardware["uuid"] + "/NetworkInterface/" + device_id
+            server_hardware["uuid"] + "/NetworkInterfaces/" + device_id
         self._validate()
