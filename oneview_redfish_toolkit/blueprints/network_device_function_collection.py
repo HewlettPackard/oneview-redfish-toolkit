@@ -20,32 +20,33 @@ from flask import Response
 from flask_api import status
 
 from hpOneView.exceptions import HPOneViewException
-from oneview_redfish_toolkit.api.network_interface_collection \
-    import NetworkInterfaceCollection
+from oneview_redfish_toolkit.api.network_device_function_collection import\
+    NetworkDeviceFunctionCollection
 
 from oneview_redfish_toolkit import util
 
 import logging
 
-network_interface_collection = Blueprint(
-    "network_interface_collection", __name__)
+network_device_function_collection = Blueprint(
+    "network_device_function_collection", __name__)
 
 
-@network_interface_collection.route(
-    "/redfish/v1/Systems/<uuid>/NetworkInterfaces/", methods=["GET"])
-def get_network_interface_collection(uuid):
+@network_device_function_collection.route(
+    "/redfish/v1/Chassis/<uuid>/NetworkAdapters/<device_id>"
+    "/NetworkDeviceFunctions/", methods=["GET"])
+def get_network_device_function_collection(uuid, device_id):
     """Get the Redfish Network Interfaces Collection.
 
-    Return NetworkInterfaceCollection Redfish JSON.
+    Return NetworkDeviceFunctionCollection Redfish JSON.
     """
     try:
         oneview_client = util.get_oneview_client()
 
         server_hardware = oneview_client.server_hardware.get(uuid)
 
-        nic = NetworkInterfaceCollection(server_hardware)
+        ndfc = NetworkDeviceFunctionCollection(device_id, server_hardware)
 
-        json_str = nic.serialize()
+        json_str = ndfc.serialize()
 
         return Response(
             response=json_str,
@@ -67,5 +68,5 @@ def get_network_interface_collection(uuid):
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         # In case of error print exception and abort
-        logging.error('Unexpected error: {}'.format(e))
+        logging.error('Unexpected error: '.format(e))
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

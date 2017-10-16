@@ -28,12 +28,12 @@ from oneview_redfish_toolkit import util
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.network_interface_collection \
-    import network_interface_collection
+from oneview_redfish_toolkit.blueprints.network_device_function_collection \
+    import network_device_function_collection
 
 
-class TestNetworkInterfaceCollection(unittest.TestCase):
-    """Tests for NetworkInterfaceCollection blueprint"""
+class TestNetworkDeviceFunctionCollection(unittest.TestCase):
+    """Tests for NetworkDeviceFunctionCollection blueprint"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, oneview_client_mockup):
@@ -45,7 +45,7 @@ class TestNetworkInterfaceCollection(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(network_interface_collection)
+        self.app.register_blueprint(network_device_function_collection)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -79,8 +79,9 @@ class TestNetworkInterfaceCollection(unittest.TestCase):
         self.app.testing = True
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_interface_collection(self, get_oneview_client_mockup):
-        """Tests NetworkInterfaceCollection"""
+    def test_get_network_device_function_collection(
+        self, get_oneview_client_mockup):
+        """Tests NetworkDeviceFunctionCollection"""
 
         # Loading server_hardware mockup value
         with open(
@@ -88,21 +89,21 @@ class TestNetworkInterfaceCollection(unittest.TestCase):
         ) as f:
             server_hardware = json.load(f)
 
-        # Loading NetworkInterfaceCollection mockup result
+        # Loading NetworkDeviceFunctionCollection mockup result
         with open(
             'oneview_redfish_toolkit/mockups_redfish/'
-            'NetworkInterfaceCollection.json'
+            'NetworkDeviceFunctionCollection.json'
         ) as f:
-            network_interface_collection_mockup = f.read()
+            network_device_function_collection_mockup = f.read()
 
         # Create mock response
         oneview_client = get_oneview_client_mockup()
         oneview_client.server_hardware.get.return_value = server_hardware
 
-        # Get NetworkInterfaceCollection
+        # Get NetworkDeviceFunctionCollection
         response = self.app.get(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
-            "NetworkInterfaces/"
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752/"
+            "NetworkAdapters/3/NetworkDeviceFunctions/"
         )
 
         # Gets json from response
@@ -111,12 +112,12 @@ class TestNetworkInterfaceCollection(unittest.TestCase):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(network_interface_collection_mockup, json_str)
+        self.assertEqual(network_device_function_collection_mockup, json_str)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_interface_collection_sh_not_found(
+    def test_get_network_device_function_collection_sh_not_found(
         self, get_oneview_client_mockup):
-        """Tests NetworkInterfaceCollection"""
+        """Tests NetworkDeviceFunctionCollection"""
 
         oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
@@ -125,19 +126,19 @@ class TestNetworkInterfaceCollection(unittest.TestCase):
         })
         oneview_client.server_hardware.get.side_effect = e
 
-        # Get NetworkInterfaceCollection
+        # Get NetworkDeviceFunctionCollection
         response = self.app.get(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
-            "NetworkInterfaces/"
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752/"
+            "NetworkAdapters/3/NetworkDeviceFunctions/"
         )
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_interface_collection_sh_exception(
+    def test_get_network_device_function_collection_sh_exception(
         self, get_oneview_client_mockup):
-        """Tests NetworkInterfaceCollection"""
+        """Tests NetworkDeviceFunctionCollection"""
 
         oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
@@ -146,10 +147,10 @@ class TestNetworkInterfaceCollection(unittest.TestCase):
         })
         oneview_client.server_hardware.get.side_effect = e
 
-        # Get NetworkInterfaceCollection
+        # Get NetworkDeviceFunctionCollection
         response = self.app.get(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
-            "NetworkInterfaces/"
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752/"
+            "NetworkAdapters/3/NetworkDeviceFunctions/"
         )
 
         self.assertEqual(
