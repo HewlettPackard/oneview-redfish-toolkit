@@ -114,6 +114,30 @@ class TestNetworkInterface(unittest.TestCase):
         self.assertEqual(network_interface_mockup, json_str)
 
     @mock.patch.object(util, 'get_oneview_client')
+    def test_get_network_interface_invalid_id(self, get_oneview_client_mockup):
+        """Tests NetworkInterfaceCollection"""
+
+        # Loading server_hardware mockup value
+        with open(
+            'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+        ) as f:
+            server_hardware = json.load(f)
+
+        # Create mock response
+        oneview_client = get_oneview_client_mockup()
+        oneview_client.server_hardware.get.return_value = server_hardware
+
+        # Get NetworkInterfaceCollection
+        response = self.app.get(
+            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
+            "NetworkInterfaces/invalid_id"
+        )
+
+        # Tests response
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(util, 'get_oneview_client')
     def test_get_network_interface_sh_not_found(
         self, get_oneview_client_mockup):
         """Tests NetworkInterface server hardware not found"""

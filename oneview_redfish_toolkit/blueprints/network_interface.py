@@ -22,9 +22,12 @@ from flask import abort
 from flask import Blueprint
 from flask import Response
 from flask_api import status
+from hpOneView.exceptions import HPOneViewException
 
 # own libs
-from hpOneView.exceptions import HPOneViewException
+
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.network_interface import NetworkInterface
 from oneview_redfish_toolkit import util
 
@@ -46,7 +49,7 @@ def get_network_interface(uuid, device_id):
             device_id: The id of the network device
 
         Returns:
-            JSON: Redfish json with Thermal
+            JSON: Redfish json with NetworkInterface
 
         Exceptions:
             When hardware is not found calls abort(404)
@@ -56,7 +59,14 @@ def get_network_interface(uuid, device_id):
     try:
         oneview_client = util.get_oneview_client()
 
+        device_id_validation = int(device_id)
+
         server_hardware = oneview_client.server_hardware.get(uuid)
+
+        if device_id_validation < 0 or (device_id_validation - 1) >= \
+            len(server_hardware["portMap"]["deviceSlots"]):
+            raise OneViewRedfishResourceNotFoundError(
+                device_id, "Network interface")
 
         ni = NetworkInterface(device_id, server_hardware)
 
@@ -66,6 +76,14 @@ def get_network_interface(uuid, device_id):
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
+    except ValueError:
+        # Failed to convert device_id to int
+        logging.error("Failed to convert device id {} to integer.".
+                      format(device_id))
+        abort(status.HTTP_404_NOT_FOUND, "Network interface not found")
+    except OneViewRedfishResourceNotFoundError as e:
+        logging.error(e.msg)
+        abort(status.HTTP_404_NOT_FOUND, e.msg)
     except HPOneViewException as e:
         # In case of error log exception and abort
         logging.error(e)
