@@ -55,5 +55,9 @@ class BladeChassis(Chassis):
             self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
             self.redfish["Links"]["ContainedBy"]["@odata.id"] = "/redfish/v1/Chassis/" \
                 + server_hardware["locationUri"].split("/")[-1]
+        self.redfish["NetworkAdapters"] = dict()
+        self.redfish["NetworkAdapters"]["@odata.id"] = \
+            "/redfish/v1/Chassis/" + server_hardware["uuid"] + \
+            "/NetworkAdapters/"
 
         self._validate()
