@@ -32,7 +32,7 @@ network_interface_collection = Blueprint(
 
 
 @network_interface_collection.route(
-    "/redfish/v1/Systems/<uuid>/NetworkInterfaces", methods=["GET"])
+    "/redfish/v1/Systems/<uuid>/NetworkInterfaces/", methods=["GET"])
 def get_network_interface_collection(uuid):
     """Get the Redfish Network Interfaces Collection.
 
@@ -67,5 +67,5 @@ def get_network_interface_collection(uuid):
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         # In case of error print exception and abort
-        logging.error('Unexpected error: '.format(e))
+        logging.error('Unexpected error: {}'.format(e))
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
