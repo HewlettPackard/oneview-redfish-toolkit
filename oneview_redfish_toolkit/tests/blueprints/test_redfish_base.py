@@ -27,10 +27,7 @@ class TestRedfishBase(unittest.TestCase):
     def setUp(self):
 
         self.app = Flask(__name__)
-        self.app.register_blueprint(
-            redfish_base,
-            url_prefix='/redfish/'
-        )
+        self.app.register_blueprint(redfish_base)
         # creates a test client
         self.app = self.app.test_client()
         # propagate the exceptions to the test client

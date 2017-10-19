@@ -32,7 +32,8 @@ network_interface_collection = Blueprint(
 
 
 @network_interface_collection.route(
-    "/redfish/v1/Systems/<uuid>/NetworkInterfaces/", methods=["GET"])
+    "/redfish/v1/Systems/<uuid>/NetworkInterfaces/", methods=["GET"],
+    strict_slashes=False)
 def get_network_interface_collection(uuid):
     """Get the Redfish Network Interfaces Collection.
 

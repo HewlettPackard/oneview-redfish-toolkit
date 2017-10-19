@@ -34,7 +34,8 @@ from oneview_redfish_toolkit import util
 computer_system = Blueprint("computer_system", __name__)
 
 
-@computer_system.route("/redfish/v1/Systems/<uuid>", methods=["GET"])
+@computer_system.route("/redfish/v1/Systems/<uuid>/", methods=["GET"],
+                       strict_slashes=False)
 def get_computer_system(uuid):
     """Get the Redfish Computer System for a given UUID.
 
@@ -112,7 +113,8 @@ def get_computer_system(uuid):
 
 
 @computer_system.route("/redfish/v1/Systems/<uuid>/"
-                       "Actions/ComputerSystem.Reset", methods=["POST"])
+                       "Actions/ComputerSystem.Reset/", methods=["POST"],
+                       strict_slashes=False)
 def change_power_state(uuid):
     """Change the Oneview power state for a specific Server hardware.
 

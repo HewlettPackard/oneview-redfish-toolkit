@@ -63,8 +63,8 @@ except Exception as e:
 app = Flask(__name__)
 
 # Register blueprints
-app.register_blueprint(redfish_base, url_prefix="/redfish/")
-app.register_blueprint(service_root, url_prefix='/redfish/v1/')
+app.register_blueprint(redfish_base)
+app.register_blueprint(service_root)
 app.register_blueprint(chassis_collection)
 app.register_blueprint(computer_system_collection)
 app.register_blueprint(computer_system)

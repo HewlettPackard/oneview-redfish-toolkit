@@ -31,7 +31,8 @@ import logging
 computer_system_collection = Blueprint("computer_system_collection", __name__)
 
 
-@computer_system_collection.route("/redfish/v1/Systems/", methods=["GET"])
+@computer_system_collection.route("/redfish/v1/Systems/", methods=["GET"],
+                                  strict_slashes=False)
 def get_computer_system_collection():
     """Get the Redfish Computer System Collection.
 

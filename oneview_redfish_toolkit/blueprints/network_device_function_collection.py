@@ -33,7 +33,7 @@ network_device_function_collection = Blueprint(
 
 @network_device_function_collection.route(
     "/redfish/v1/Chassis/<uuid>/NetworkAdapters/<device_id>"
-    "/NetworkDeviceFunctions/", methods=["GET"])
+    "/NetworkDeviceFunctions/", methods=["GET"], strict_slashes=False)
 def get_network_device_function_collection(uuid, device_id):
     """Get the Redfish Network Interfaces Collection.
 

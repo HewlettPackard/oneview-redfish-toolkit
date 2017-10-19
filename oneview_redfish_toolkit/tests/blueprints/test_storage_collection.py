@@ -100,7 +100,7 @@ class TestStorageCollection(unittest.TestCase):
 
         # Get StorageCollection
         response = self.app.get(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/Storage"
+            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/Storage/"
         )
 
         # Gets json from response
@@ -125,7 +125,7 @@ class TestStorageCollection(unittest.TestCase):
 
         # Get StorageCollection
         response = self.app.get(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/Storage"
+            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/Storage/"
         )
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
@@ -145,7 +145,7 @@ class TestStorageCollection(unittest.TestCase):
 
         # Get StorageCollection
         response = self.app.get(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/Storage"
+            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/Storage/"
         )
 
         self.assertEqual(

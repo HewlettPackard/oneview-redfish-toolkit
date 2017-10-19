@@ -33,7 +33,8 @@ from oneview_redfish_toolkit import util
 thermal = Blueprint("thermal", __name__)
 
 
-@thermal.route("/redfish/v1/Chassis/<uuid>/Thermal", methods=["GET"])
+@thermal.route("/redfish/v1/Chassis/<uuid>/Thermal/", methods=["GET"],
+               strict_slashes=False)
 def get_thermal(uuid):
     """Get the Redfish Thermal for a given UUID.
 

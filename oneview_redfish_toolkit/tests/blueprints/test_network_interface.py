@@ -102,7 +102,7 @@ class TestNetworkInterface(unittest.TestCase):
         # Get NetworkInterfaceCollection
         response = self.app.get(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
-            "NetworkInterfaces/3"
+            "NetworkInterfaces/3/"
         )
 
         # Gets json from response
@@ -130,7 +130,7 @@ class TestNetworkInterface(unittest.TestCase):
         # Get NetworkInterfaceCollection
         response = self.app.get(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
-            "NetworkInterfaces/invalid_id"
+            "NetworkInterfaces/invalid_id/"
         )
 
         # Tests response
@@ -152,7 +152,7 @@ class TestNetworkInterface(unittest.TestCase):
         # Get NetworkInterfaceCollection
         response = self.app.get(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
-            "NetworkInterfaces/3"
+            "NetworkInterfaces/3/"
         )
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
@@ -173,7 +173,7 @@ class TestNetworkInterface(unittest.TestCase):
         # Get NetworkInterfaceCollection
         response = self.app.get(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
-            "NetworkInterfaces/3"
+            "NetworkInterfaces/3/"
         )
 
         self.assertEqual(

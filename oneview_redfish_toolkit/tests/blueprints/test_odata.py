@@ -78,7 +78,7 @@ class TestOdata(unittest.TestCase):
     def test_get_odata(self):
         """Tests Odata blueprint result against know value """
 
-        response = self.app.get("/redfish/v1/odata")
+        response = self.app.get("/redfish/v1/odata/")
 
         json_str = response.data.decode("utf-8")
 

@@ -31,7 +31,8 @@ storage_collection = Blueprint("storage_collection", __name__)
 
 
 @storage_collection.route(
-    "/redfish/v1/Systems/<uuid>/Storage", methods=["GET"])
+    "/redfish/v1/Systems/<uuid>/Storage/", methods=["GET"],
+    strict_slashes=False)
 def get_storage_collection(uuid):
     """Get the Redfish Storage Collection.
 

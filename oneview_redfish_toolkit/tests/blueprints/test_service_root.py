@@ -42,7 +42,7 @@ class TestServiceRoot(unittest.TestCase):
 
         # creates a test client
         self.app = Flask(__name__)
-        self.app.register_blueprint(service_root, url_prefix='/redfish/v1/')
+        self.app.register_blueprint(service_root)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):

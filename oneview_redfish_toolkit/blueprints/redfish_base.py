@@ -21,7 +21,7 @@ from flask_api import status
 redfish_base = Blueprint("redfish_base", __name__)
 
 
-@redfish_base.route("/", methods=["GET"])
+@redfish_base.route("/redfish/", methods=["GET"], strict_slashes=False)
 def get_redfish_base():
     """Get JSON with Redfish version.
 
