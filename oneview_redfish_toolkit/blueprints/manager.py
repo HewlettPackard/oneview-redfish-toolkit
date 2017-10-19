@@ -33,8 +33,7 @@ from oneview_redfish_toolkit import util
 manager = Blueprint("manager", __name__)
 
 
-@manager.route("/redfish/v1/Managers/<uuid>/", methods=["GET"],
-               strict_slashes=False)
+@manager.route("/redfish/v1/Managers/<uuid>/", methods=["GET"])
 def get_managers(uuid):
     """Get the Redfish Managers.
 

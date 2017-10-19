@@ -61,6 +61,7 @@ except Exception as e:
 
 # Flask application
 app = Flask(__name__)
+app.url_map.strict_slashes = False
 
 # Register blueprints
 app.register_blueprint(redfish_base)

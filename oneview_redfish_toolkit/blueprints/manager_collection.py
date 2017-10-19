@@ -32,8 +32,7 @@ from oneview_redfish_toolkit import util
 manager_collection = Blueprint("manager_collection", __name__)
 
 
-@manager_collection.route("/redfish/v1/Managers/", methods=["GET"],
-                          strict_slashes=False)
+@manager_collection.route("/redfish/v1/Managers/", methods=["GET"])
 def get_manager_collection():
     """Get the Redfish Manager Collection.
 

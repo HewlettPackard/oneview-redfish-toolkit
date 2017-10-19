@@ -29,7 +29,7 @@ from oneview_redfish_toolkit.api.odata import Odata
 odata = Blueprint('odata', __name__)
 
 
-@odata.route('/redfish/v1/odata/', methods=["GET"], strict_slashes=False)
+@odata.route('/redfish/v1/odata/', methods=["GET"])
 def get_odata():
     """Gets Odata
 

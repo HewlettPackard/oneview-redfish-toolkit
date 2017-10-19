@@ -34,8 +34,7 @@ from oneview_redfish_toolkit import util
 chassis = Blueprint("chassis", __name__)
 
 
-@chassis.route("/redfish/v1/Chassis/<uuid>/", methods=["GET"],
-               strict_slashes=False)
+@chassis.route("/redfish/v1/Chassis/<uuid>/", methods=["GET"])
 def get_chassis(uuid):
     """Get the Redfish Chassis.
 

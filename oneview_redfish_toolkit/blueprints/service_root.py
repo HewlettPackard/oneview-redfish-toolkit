@@ -31,7 +31,7 @@ from oneview_redfish_toolkit import util
 service_root = Blueprint('service_root', __name__)
 
 
-@service_root.route("/redfish/v1/", methods=["GET"], strict_slashes=False)
+@service_root.route("/redfish/v1/", methods=["GET"])
 def get_service_root():
     """Gets ServiceRoot
 

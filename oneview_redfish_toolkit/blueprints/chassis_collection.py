@@ -33,8 +33,7 @@ from oneview_redfish_toolkit import util
 chassis_collection = Blueprint("chassis_collection", __name__)
 
 
-@chassis_collection.route("/redfish/v1/Chassis/", methods=["GET"],
-                          strict_slashes=False)
+@chassis_collection.route("/redfish/v1/Chassis/", methods=["GET"])
 def get_chassis_collection():
     """Get the Redfish Chassis Collection.
 
