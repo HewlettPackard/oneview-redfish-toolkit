@@ -63,7 +63,7 @@ def get_network_interface(uuid, device_id):
 
         server_hardware = oneview_client.server_hardware.get(uuid)
 
-        if device_id_validation < 1 or (device_id_validation - 1) >= \
+        if (device_id_validation - 1) < 0 or (device_id_validation - 1) >= \
                 len(server_hardware["portMap"]["deviceSlots"]):
             raise OneViewRedfishResourceNotFoundError(
                 device_id, "Network interface")
