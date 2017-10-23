@@ -40,6 +40,8 @@ from oneview_redfish_toolkit.blueprints.network_interface \
     import network_interface
 from oneview_redfish_toolkit.blueprints.network_interface_collection \
     import network_interface_collection
+from oneview_redfish_toolkit.blueprints.network_port_collection \
+    import network_port_collection
 from oneview_redfish_toolkit.blueprints.odata import odata
 from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
@@ -77,6 +79,7 @@ app.register_blueprint(storage)
 app.register_blueprint(thermal)
 app.register_blueprint(storage_collection)
 app.register_blueprint(network_interface_collection)
+app.register_blueprint(network_port_collection)
 app.register_blueprint(network_device_function_collection)
 app.register_blueprint(network_interface)
 
