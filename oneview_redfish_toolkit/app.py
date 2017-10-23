@@ -43,6 +43,7 @@ from oneview_redfish_toolkit.blueprints.network_interface_collection \
 from oneview_redfish_toolkit.blueprints.odata import odata
 from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
+from oneview_redfish_toolkit.blueprints.storage import storage
 from oneview_redfish_toolkit.blueprints.storage_collection \
     import storage_collection
 from oneview_redfish_toolkit.blueprints.thermal import thermal
@@ -72,6 +73,7 @@ app.register_blueprint(chassis)
 app.register_blueprint(manager_collection)
 app.register_blueprint(manager)
 app.register_blueprint(odata)
+app.register_blueprint(storage)
 app.register_blueprint(thermal)
 app.register_blueprint(storage_collection)
 app.register_blueprint(network_interface_collection)
