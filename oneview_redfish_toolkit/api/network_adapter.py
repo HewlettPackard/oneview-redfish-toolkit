@@ -80,8 +80,10 @@ class NetworkAdapter(RedfishJsonValidator):
                 append(new_port)
             # Adding NetworkDeviceFunction
             for virtual_port in port["virtualPorts"]:
-                network_device_function_id = "_".join(
-                    (str(port["portNumber"]), virtual_port["portFunction"]))
+                network_device_function_id = "_".join((
+                    str(port["portNumber"]),
+                    str(virtual_port["portNumber"]),
+                    virtual_port["portFunction"]))
                 network_device_funcion = {
                     "@odata:id": "/redfish/v1/Chassis/" +
                     server_hardware["uuid"] + "/NetworkAdapters/" +
