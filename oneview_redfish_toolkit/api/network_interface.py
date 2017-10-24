@@ -47,17 +47,17 @@ class NetworkInterface(RedfishJsonValidator):
         self.redfish["Links"]["NetworkAdapter"] = dict()
         self.redfish["Links"]["NetworkAdapter"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + server_hardware["uuid"] + \
-            "/NetworkAdapter/" + device_id
+            "/NetworkAdapters/" + device_id
 
         self.redfish["NetworkPorts"] = dict()
         self.redfish["NetworkPorts"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + server_hardware["uuid"] + \
-            "/NetworkAdapter/" + device_id + "/NetworkPorts/"
+            "/NetworkAdapters/" + device_id + "/NetworkPorts/"
 
         self.redfish["NetworkDeviceFunctions"] = dict()
         self.redfish["NetworkDeviceFunctions"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + server_hardware["uuid"] + \
-            "/NetworkAdapter/" + device_id + "/NetworkDeviceFunctions/"
+            "/NetworkAdapters/" + device_id + "/NetworkDeviceFunctions/"
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#NetworkInterface.NetworkInterface"
