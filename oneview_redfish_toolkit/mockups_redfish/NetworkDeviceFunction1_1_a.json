@@ -1,0 +1,11 @@
+{
+    "@odata.type": "#NetworkDeviceFunction.v1_1_0.NetworkDeviceFunction",
+    "Id": "1_1_a",
+    "Name": "Physical port 1, virtual port 1, device function a",
+    "Ethernet": {
+        "MACAddress": "02:23:13:25:23:0B"
+    },
+    "NetDevFuncType": "Ethernet",
+    "@odata.context": "/redfish/v1/$metadata#NetworkDeviceFunction.NetworkDeviceFunction",
+    "@odata.id": "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752/NetworkAdapters/3/NetworkDeviceFunctions/1_1_a"
+}
