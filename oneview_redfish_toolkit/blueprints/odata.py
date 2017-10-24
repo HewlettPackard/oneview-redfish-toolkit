@@ -46,13 +46,3 @@ def get_odata():
     except Exception as e:
         logging.error('Odata error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@odata.errorhandler(
-    status.HTTP_500_INTERNAL_SERVER_ERROR)
-def internal_server_error(error):
-    """Creates an Internal Server Error response"""
-    return Response(
-        response='{"error": "Internal Server Error"}',
-        status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        mimetype='application/json')
