@@ -34,13 +34,13 @@ from oneview_redfish_toolkit.blueprints.computer_system_collection \
 from oneview_redfish_toolkit.blueprints.manager import manager
 from oneview_redfish_toolkit.blueprints.manager_collection \
     import manager_collection
+from oneview_redfish_toolkit.blueprints.metadata import metadata
 from oneview_redfish_toolkit.blueprints.network_adapter \
     import network_adapter
 from oneview_redfish_toolkit.blueprints.network_adapter_collection \
     import network_adapter_collection
 from oneview_redfish_toolkit.blueprints.network_device_function \
     import network_device_function
-from oneview_redfish_toolkit.blueprints.metadata import metadata
 from oneview_redfish_toolkit.blueprints.network_device_function_collection \
     import network_device_function_collection
 from oneview_redfish_toolkit.blueprints.network_interface \
