@@ -1,7 +1,7 @@
 {
-    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
+    "$schema": "redfish-schema.v1_2_0.json",
     "title": "#NetworkDeviceFunction.v1_1_0.NetworkDeviceFunction",
-    "$ref": "#/definitions/NetworkDeviceFunction",
+    "$ref": "NetworkDeviceFunction.v1_1_0.json#/definitions/NetworkDeviceFunction",
     "definitions": {
         "AuthenticationMethod": {
             "type": "string",
@@ -262,7 +262,7 @@
             "additionalProperties": true,
             "properties": {
                 "PCIeFunction": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeFunction.json#/definitions/PCIeFunction",
+                    "$ref": "PCIeFunction.json#/definitions/PCIeFunction",
                     "readonly": true,
                     "description": "Contains the members of this collection."
                 }
@@ -580,37 +580,37 @@
             "additionalProperties": false,
             "properties": {
                 "@odata.context": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/context"
+                    "$ref": "odata.4.0.0.json#/definitions/context"
                 },
                 "@odata.id": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/id"
+                    "$ref": "odata.4.0.0.json#/definitions/id"
                 },
                 "@odata.type": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/type"
+                    "$ref": "odata.4.0.0.json#/definitions/type"
                 },
                 "Oem": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "$ref": "Resource.json#/definitions/Oem",
                     "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections.",
                     "longDescription": "The value of this string shall be of the format for the reserved word *Oem*."
                 },
                 "Id": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "$ref": "Resource.json#/definitions/Id",
                     "readonly": true
                 },
                 "Description": {
                     "anyOf": [
-                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"},
+                        {"$ref": "Resource.json#/definitions/Description"},
                         {"type": "null"}
                     ],
                     "readonly": true
                 },
                 "Name": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "$ref": "Resource.json#/definitions/Name",
                     "readonly": true
                 },
                 "Status": {
                     "anyOf": [
-                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status"},
+                        {"$ref": "Resource.json#/definitions/Status"},
                         {"type": "null"}
                     ]
                 },
@@ -701,7 +701,7 @@
                     "longDescription": "Links for this NetworkDeviceFunction."
                 },
                 "AssignablePhysicalPorts@odata.count": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                    "$ref": "odata.4.0.0.json#/definitions/count"
                 },
                 "AssignablePhysicalPorts@odata.navigationLink": {
                     "type": "string",
@@ -710,13 +710,13 @@
                 "AssignablePhysicalPorts": {
                     "type": "array",
                     "items": {
-                        "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkPort.json#/definitions/NetworkPort"
+                        "$ref": "NetworkPort.json#/definitions/NetworkPort"
                     },
                     "readonly": true,
                     "description": "Contains the members of this collection."
                 },
                 "PhysicalPortAssignment": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkPort.json#/definitions/NetworkPort",
+                    "$ref": "NetworkPort.json#/definitions/NetworkPort",
                     "readonly": true,
                     "description": "Contains the members of this collection."
                 },

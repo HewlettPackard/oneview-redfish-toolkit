@@ -14,6 +14,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import os
 
 import collections
 import json
@@ -43,7 +44,7 @@ class RedfishJsonValidator(object):
             the redfish json
 
             Args:
-                schema_obj: An object containing the redfish schema to be used
+                schema_name: The redfish schema name to be used
                             to validate the redfish json created
         """
 
@@ -65,12 +66,16 @@ class RedfishJsonValidator(object):
             Exception:
                 raises an exception on validation failure
         """
+        resolver = jsonschema.RefResolver(
+            'file://%s/' % os.path.abspath(os.path.dirname(
+                '/home/lucas/HP/oneview-redfish-toolkit/oneview_redfish_toolkit/schemas/')), None)
+
         if self.schema_obj is None:
             raise OneViewRedfishError(
                 "Can't serialize without a schema object. Schema name was"
-                " set to None at object instanciation.")
+                " set to None at object instantiation.")
         try:
-            jsonschema.validate(self.redfish, self.schema_obj)
+            jsonschema.validate(self.redfish, self.schema_obj, resolver=resolver)
         except Exception:
             raise
 

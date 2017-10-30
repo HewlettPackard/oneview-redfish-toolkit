@@ -1,12 +1,12 @@
 {
-    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
+    "$schema": "redfish-schema.v1_2_0.json",
     "title": "#NetworkDeviceFunctionCollection.NetworkDeviceFunctionCollection",
-    "$ref": "#/definitions/NetworkDeviceFunctionCollection",
+    "$ref": "NetworkDeviceFunctionCollection.json#/definitions/NetworkDeviceFunctionCollection",
     "definitions": {
         "NetworkDeviceFunctionCollection": {
             "anyOf": [
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "odata.4.0.0.json#/definitions/idRef"
                 },
                 {
                     "type": "object",
@@ -26,32 +26,32 @@
                     "additionalProperties": false,
                     "properties": {
                         "@odata.context": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/context"
+                            "$ref": "odata.4.0.0.json#/definitions/context"
                         },
                         "@odata.id": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/id"
+                            "$ref": "odata.4.0.0.json#/definitions/id"
                         },
                         "@odata.type": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/type"
+                            "$ref": "odata.4.0.0.json#/definitions/type"
                         },
                         "Description": {
                             "anyOf": [
-                                {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"},
+                                {"$ref": "Resource.json#/definitions/Description"},
                                 {"type": "null"}
                             ],
                             "readonly": true
                         },
                         "Name": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                            "$ref": "Resource.json#/definitions/Name",
                             "readonly": true
                         },
                         "Oem": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                            "$ref": "Resource.json#/definitions/Oem",
                             "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections.",
                             "longDescription": "The value of this string shall be of the format for the reserved word *Oem*."
                         },
                         "Members@odata.count": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                            "$ref": "odata.4.0.0.json#/definitions/count"
                         },
                         "Members@odata.navigationLink": {
                             "type": "string",
@@ -60,7 +60,7 @@
                         "Members": {
                             "type": "array",
                             "items": {
-                                "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.json#/definitions/NetworkDeviceFunction"
+                                "$ref": "NetworkDeviceFunction.json#/definitions/NetworkDeviceFunction"
                             },
                             "readonly": true,
                             "description": "Contains the members of this collection."

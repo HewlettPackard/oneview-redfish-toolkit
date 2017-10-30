@@ -1,7 +1,7 @@
 {
-    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
+    "$schema": "redfish-schema.v1_2_0.json",
     "title": "#NetworkAdapter.v1_0_1.NetworkAdapter",
-    "$ref": "#/definitions/NetworkAdapter",
+    "$ref": "NetworkAdapter.v1_0_1.json#/definitions/NetworkAdapter",
     "definitions": {
         "ResetSettingsToDefault": {
             "patternProperties": {
@@ -140,12 +140,12 @@
                     "additionalProperties": false,
                     "properties": {
                         "Oem": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                            "$ref": "Resource.json#/definitions/Oem",
                             "description": "Oem extension object.",
                             "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification."
                         },
                         "PCIeDevices@odata.count": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                            "$ref": "odata.4.0.0.json#/definitions/count"
                         },
                         "PCIeDevices@odata.navigationLink": {
                             "type": "string",
@@ -154,13 +154,13 @@
                         "PCIeDevices": {
                             "type": "array",
                             "items": {
-                                "$ref": "http://redfish.dmtf.org/schemas/v1/PCIeDevice.json#/definitions/PCIeDevice"
+                                "$ref": "PCIeDevice.json#/definitions/PCIeDevice"
                             },
                             "readonly": true,
                             "description": "Contains the members of this collection."
                         },
                         "NetworkPorts@odata.count": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                            "$ref": "odata.4.0.0.json#/definitions/count"
                         },
                         "NetworkPorts@odata.navigationLink": {
                             "type": "string",
@@ -169,13 +169,13 @@
                         "NetworkPorts": {
                             "type": "array",
                             "items": {
-                                "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkPort.json#/definitions/NetworkPort"
+                                "$ref": "NetworkPort.json#/definitions/NetworkPort"
                             },
                             "readonly": true,
                             "description": "Contains the members of this collection."
                         },
                         "NetworkDeviceFunctions@odata.count": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                            "$ref": "odata.4.0.0.json#/definitions/count"
                         },
                         "NetworkDeviceFunctions@odata.navigationLink": {
                             "type": "string",
@@ -184,7 +184,7 @@
                         "NetworkDeviceFunctions": {
                             "type": "array",
                             "items": {
-                                "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunction.json#/definitions/NetworkDeviceFunction"
+                                "$ref": "NetworkDeviceFunction.json#/definitions/NetworkDeviceFunction"
                             },
                             "readonly": true,
                             "description": "Contains the members of this collection."
@@ -405,37 +405,37 @@
             "additionalProperties": false,
             "properties": {
                 "@odata.context": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/context"
+                    "$ref": "odata.4.0.0.json#/definitions/context"
                 },
                 "@odata.id": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/id"
+                    "$ref": "odata.4.0.0.json#/definitions/id"
                 },
                 "@odata.type": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/type"
+                    "$ref": "odata.4.0.0.json#/definitions/type"
                 },
                 "Oem": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "$ref": "Resource.json#/definitions/Oem",
                     "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections.",
                     "longDescription": "The value of this string shall be of the format for the reserved word *Oem*."
                 },
                 "Id": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "$ref": "Resource.json#/definitions/Id",
                     "readonly": true
                 },
                 "Description": {
                     "anyOf": [
-                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"},
+                        {"$ref": "Resource.json#/definitions/Description"},
                         {"type": "null"}
                     ],
                     "readonly": true
                 },
                 "Name": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "$ref": "Resource.json#/definitions/Name",
                     "readonly": true
                 },
                 "Status": {
                     "anyOf": [
-                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status"},
+                        {"$ref": "Resource.json#/definitions/Status"},
                         {"type": "null"}
                     ]
                 },
@@ -540,12 +540,12 @@
                     "longDescription": "The Actions property shall contain the available actions for this resource."
                 },
                 "NetworkPorts": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkPortCollection.json#/definitions/NetworkPortCollection",
+                    "$ref": "NetworkPortCollection.json#/definitions/NetworkPortCollection",
                     "readonly": true,
                     "description": "Contains the members of this collection."
                 },
                 "NetworkDeviceFunctions": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkDeviceFunctionCollection.json#/definitions/NetworkDeviceFunctionCollection",
+                    "$ref": "NetworkDeviceFunctionCollection.json#/definitions/NetworkDeviceFunctionCollection",
                     "readonly": true,
                     "description": "Contains the members of this collection."
                 }

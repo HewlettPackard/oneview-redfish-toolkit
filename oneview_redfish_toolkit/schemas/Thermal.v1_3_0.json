@@ -1,7 +1,7 @@
 {
-    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
+    "$schema": "redfish-schema.v1_2_0.json",
     "title": "#Thermal.v1_3_0.Thermal",
-    "$ref": "#/definitions/Thermal",
+    "$ref": "Thermal.v1_3_0.json#/definitions/Thermal",
     "definitions": {
         "ReadingUnits": {
             "type": "string",
@@ -32,7 +32,7 @@
             "additionalProperties": false,
             "properties": {
                 "Oem": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "$ref": "Resource.json#/definitions/Oem",
                     "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections.",
                     "longDescription": "The value of this string shall be of the format for the reserved word *Oem*."
                 },
@@ -53,13 +53,13 @@
                     "longDescription": "The value of this property shall be the name of the fan."
                 },
                 "PhysicalContext": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PhysicalContext.v1_0_0.json#/definitions/PhysicalContext",
+                    "$ref": "PhysicalContext.v1_0_0.json#/definitions/PhysicalContext",
                     "readonly": true,
                     "description": "Describes the area or device associated with this fan.",
                     "longDescription": "The value of this property shall be a description of the affected device or region within the chassis to which this fan is associated."
                 },
                 "Status": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status"
+                    "$ref": "Resource.json#/definitions/Status"
                 },
                 "Reading": {
                     "type": [
@@ -143,7 +143,7 @@
                     "longDescription": "The value of this property shall indicate the highest possible value for Reading. The units shall be the same units as the related Reading property."
                 },
                 "RelatedItem@odata.count": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                    "$ref": "odata.4.0.0.json#/definitions/count"
                 },
                 "RelatedItem@odata.navigationLink": {
                     "type": "string",
@@ -152,14 +152,14 @@
                 "RelatedItem": {
                     "type": "array",
                     "items": {
-                        "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
+                        "$ref": "odata.4.0.0.json#/definitions/idRef"
                     },
                     "readonly": true,
                     "description": "The ID(s) of the resources serviced with this fan.",
                     "longDescription": "The value of this property shall be an array of IDs containing pointers consistent with JSON pointer syntax to the resource that are being serviced by this fan."
                 },
                 "Redundancy@odata.count": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                    "$ref": "odata.4.0.0.json#/definitions/count"
                 },
                 "Redundancy@odata.navigationLink": {
                     "type": "string",
@@ -168,7 +168,7 @@
                 "Redundancy": {
                     "type": "array",
                     "items": {
-                        "$ref": "http://redfish.dmtf.org/schemas/v1/Redundancy.json#/definitions/Redundancy"
+                        "$ref": "Redundancy.json#/definitions/Redundancy"
                     },
                     "description": "This structure is used to show redundancy for fans.  The Component ids will reference the members of the redundancy groups.",
                     "longDescription": "The values of the properties in this array shall be used to show redundancy for fans and other elements in this resource.  The use of IDs within these arrays shall reference the members of the redundancy groups."
@@ -238,7 +238,7 @@
                 },
                 "IndicatorLED": {
                     "anyOf": [
-                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_1_0.json#/definitions/IndicatorLED"},
+                        {"$ref": "Resource.v1_1_0.json#/definitions/IndicatorLED"},
                         {"type": "null"}
                     ],
                     "readonly": false,
@@ -316,7 +316,7 @@
             "additionalProperties": false,
             "properties": {
                 "Oem": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "$ref": "Resource.json#/definitions/Oem",
                     "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections.",
                     "longDescription": "The value of this string shall be of the format for the reserved word *Oem*."
                 },
@@ -345,7 +345,7 @@
                     "longDescription": "The value of this property shall be a numerical identifier for this temperature sensor that is unique within this resource."
                 },
                 "Status": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status"
+                    "$ref": "Resource.json#/definitions/Status"
                 },
                 "ReadingCelsius": {
                     "type": [
@@ -438,13 +438,13 @@
                     "longDescription": "The value of this property shall indicate the highest possible value for ReadingCelsius. The units shall be the same units as the related ReadingCelsius property."
                 },
                 "PhysicalContext": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/PhysicalContext.v1_0_0.json#/definitions/PhysicalContext",
+                    "$ref": "PhysicalContext.v1_0_0.json#/definitions/PhysicalContext",
                     "readonly": true,
                     "description": "Describes the area or device to which this temperature measurement applies.",
                     "longDescription": "The value of this property shall be a description of the affected device or region within the chassis to which this temperature measurement applies."
                 },
                 "RelatedItem@odata.count": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                    "$ref": "odata.4.0.0.json#/definitions/count"
                 },
                 "RelatedItem@odata.navigationLink": {
                     "type": "string",
@@ -453,7 +453,7 @@
                 "RelatedItem": {
                     "type": "array",
                     "items": {
-                        "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
+                        "$ref": "odata.4.0.0.json#/definitions/idRef"
                     },
                     "readonly": true,
                     "description": "Describes the areas or devices to which this temperature measurement applies.",
@@ -530,39 +530,39 @@
             "additionalProperties": false,
             "properties": {
                 "@odata.context": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/context"
+                    "$ref": "odata.4.0.0.json#/definitions/context"
                 },
                 "@odata.id": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/id"
+                    "$ref": "odata.4.0.0.json#/definitions/id"
                 },
                 "@odata.type": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/type"
+                    "$ref": "odata.4.0.0.json#/definitions/type"
                 },
                 "Oem": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "$ref": "Resource.json#/definitions/Oem",
                     "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections.",
                     "longDescription": "The value of this string shall be of the format for the reserved word *Oem*."
                 },
                 "Id": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "$ref": "Resource.json#/definitions/Id",
                     "readonly": true
                 },
                 "Description": {
                     "anyOf": [
-                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"},
+                        {"$ref": "Resource.json#/definitions/Description"},
                         {"type": "null"}
                     ],
                     "readonly": true
                 },
                 "Name": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "$ref": "Resource.json#/definitions/Name",
                     "readonly": true
                 },
                 "Status": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status"
+                    "$ref": "Resource.json#/definitions/Status"
                 },
                 "Temperatures@odata.count": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                    "$ref": "odata.4.0.0.json#/definitions/count"
                 },
                 "Temperatures@odata.navigationLink": {
                     "type": "string",
@@ -578,7 +578,7 @@
                     "longDescription": "These properties shall be the definition for temperature sensors for a Redfish implementation."
                 },
                 "Fans@odata.count": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                    "$ref": "odata.4.0.0.json#/definitions/count"
                 },
                 "Fans@odata.navigationLink": {
                     "type": "string",
@@ -594,7 +594,7 @@
                     "longDescription": "These properties shall be the definition for fans for a Redfish implementation."
                 },
                 "Redundancy@odata.count": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                    "$ref": "odata.4.0.0.json#/definitions/count"
                 },
                 "Redundancy@odata.navigationLink": {
                     "type": "string",
@@ -603,7 +603,7 @@
                 "Redundancy": {
                     "type": "array",
                     "items": {
-                        "$ref": "http://redfish.dmtf.org/schemas/v1/Redundancy.json#/definitions/Redundancy"
+                        "$ref": "Redundancy.json#/definitions/Redundancy"
                     },
                     "description": "This structure is used to show redundancy for fans.  The Component ids will reference the members of the redundancy groups.",
                     "longDescription": "The values of the properties in this array shall be used to show redundancy for fans and other elements in this resource.  The use of IDs within these arrays shall reference the members of the redundancy groups."

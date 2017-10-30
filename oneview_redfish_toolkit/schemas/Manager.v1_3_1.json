@@ -1,7 +1,7 @@
 {
-    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
+    "$schema": "redfish-schema.v1_2_0.json",
     "title": "#Manager.v1_3_1.Manager",
-    "$ref": "#/definitions/Manager",
+    "$ref": "Manager.v1_3_1.json#/definitions/Manager",
     "definitions": {
         "ForceFailover": {
             "patternProperties": {
@@ -301,32 +301,32 @@
             "additionalProperties": false,
             "properties": {
                 "@odata.context": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/context"
+                    "$ref": "odata.4.0.0.json#/definitions/context"
                 },
                 "@odata.id": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/id"
+                    "$ref": "odata.4.0.0.json#/definitions/id"
                 },
                 "@odata.type": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/type"
+                    "$ref": "odata.4.0.0.json#/definitions/type"
                 },
                 "Oem": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "$ref": "Resource.json#/definitions/Oem",
                     "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections.",
                     "longDescription": "The value of this string shall be of the format for the reserved word *Oem*."
                 },
                 "Id": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
+                    "$ref": "Resource.json#/definitions/Id",
                     "readonly": true
                 },
                 "Description": {
                     "anyOf": [
-                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"},
+                        {"$ref": "Resource.json#/definitions/Description"},
                         {"type": "null"}
                     ],
                     "readonly": true
                 },
                 "Name": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "$ref": "Resource.json#/definitions/Name",
                     "readonly": true
                 },
                 "ManagerType": {
@@ -353,12 +353,12 @@
                     "additionalProperties": false,
                     "properties": {
                         "Oem": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                            "$ref": "Resource.json#/definitions/Oem",
                             "description": "Oem extension object.",
                             "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification."
                         },
                         "ManagerForServers@odata.count": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                            "$ref": "odata.4.0.0.json#/definitions/count"
                         },
                         "ManagerForServers@odata.navigationLink": {
                             "type": "string",
@@ -367,14 +367,14 @@
                         "ManagerForServers": {
                             "type": "array",
                             "items": {
-                                "$ref": "http://redfish.dmtf.org/schemas/v1/ComputerSystem.json#/definitions/ComputerSystem"
+                                "$ref": "ComputerSystem.json#/definitions/ComputerSystem"
                             },
                             "readonly": true,
                             "description": "This property is an array of references to the systems that this manager has control over.",
                             "longDescription": "This property shall contain an array of references to ComputerSystem resources of which this Manager instance has control."
                         },
                         "ManagerForChassis@odata.count": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                            "$ref": "odata.4.0.0.json#/definitions/count"
                         },
                         "ManagerForChassis@odata.navigationLink": {
                             "type": "string",
@@ -383,14 +383,14 @@
                         "ManagerForChassis": {
                             "type": "array",
                             "items": {
-                                "$ref": "http://redfish.dmtf.org/schemas/v1/Chassis.json#/definitions/Chassis"
+                                "$ref": "Chassis.json#/definitions/Chassis"
                             },
                             "readonly": true,
                             "description": "This property is an array of references to the chassis that this manager has control over.",
                             "longDescription": "This property shall contain an array of references to Chassis resources of which this Manager instance has control."
                         },
                         "ManagerInChassis": {
-                            "$ref": "http://redfish.dmtf.org/schemas/v1/Chassis.json#/definitions/Chassis",
+                            "$ref": "Chassis.json#/definitions/Chassis",
                             "readonly": true,
                             "description": "This property is a reference to the chassis that this manager is located in.",
                             "longDescription": "This property shall contain a reference to the chassis that this manager is located in."
@@ -400,14 +400,14 @@
                     "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource."
                 },
                 "ServiceEntryPointUUID": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/UUID",
+                    "$ref": "Resource.json#/definitions/UUID",
                     "readonly": true,
                     "description": "The UUID of the Redfish Service provided by this manager.",
                     "longDescription": "This property shall contain the UUID of the Redfish Service provided by this manager.  Each Manager providing an Entry Point to the same Redfish Service shall report the same UUID value (even though the name of the property may imply otherwise).  This property shall not be present if this manager does not provide a Redfish Service Entry Point."
                 },
                 "UUID": {
                     "anyOf": [
-                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/UUID"},
+                        {"$ref": "Resource.json#/definitions/UUID"},
                         {"type": "null"}
                     ],
                     "readonly": true,
@@ -518,40 +518,40 @@
                     "longDescription": "The Actions property shall contain the available actions for this resource."
                 },
                 "Status": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status"
+                    "$ref": "Resource.json#/definitions/Status"
                 },
                 "EthernetInterfaces": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterfaceCollection.json#/definitions/EthernetInterfaceCollection",
+                    "$ref": "EthernetInterfaceCollection.json#/definitions/EthernetInterfaceCollection",
                     "readonly": true,
                     "description": "This is a reference to a collection of NICs that this manager uses for network communication.  It is here that clients will find NIC configuration options and settings.",
                     "longDescription": "The value of this property shall be a link to a collection of type EthernetInterfaceCollection."
                 },
                 "SerialInterfaces": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/SerialInterfaceCollection.json#/definitions/SerialInterfaceCollection",
+                    "$ref": "SerialInterfaceCollection.json#/definitions/SerialInterfaceCollection",
                     "readonly": true,
                     "description": "This is a reference to a collection of serial interfaces that this manager uses for serial and console communication.  It is here that clients will find serial configuration options and settings.",
                     "longDescription": "The value of this property shall be a link to a collection of type SerialInterfaceCollection which are for the use of this manager."
                 },
                 "NetworkProtocol": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/ManagerNetworkProtocol.json#/definitions/ManagerNetworkProtocol",
+                    "$ref": "ManagerNetworkProtocol.json#/definitions/ManagerNetworkProtocol",
                     "readonly": true,
                     "description": "This is a reference to the network services and their settings that the manager controls.  It is here that clients will find network configuration options as well as network services.",
                     "longDescription": "The value of this property shall contain a reference to a resource of type ManagerNetworkProtocol which represents the network services for this manager."
                 },
                 "LogServices": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogServiceCollection.json#/definitions/LogServiceCollection",
+                    "$ref": "LogServiceCollection.json#/definitions/LogServiceCollection",
                     "readonly": true,
                     "description": "This is a reference to a collection of Logs used by the manager.",
                     "longDescription": "The value of this property shall contain a reference to a collection of type LogServiceCollection which are for the use of this manager."
                 },
                 "VirtualMedia": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/VirtualMediaCollection.json#/definitions/VirtualMediaCollection",
+                    "$ref": "VirtualMediaCollection.json#/definitions/VirtualMediaCollection",
                     "readonly": true,
                     "description": "This is a reference to the Virtual Media services for this particular manager.",
                     "longDescription": "The value of this property shall contain a reference to a collection of type VirtualMediaCollection which are for the use of this manager."
                 },
                 "Redundancy@odata.count": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                    "$ref": "odata.4.0.0.json#/definitions/count"
                 },
                 "Redundancy@odata.navigationLink": {
                     "type": "string",
@@ -560,13 +560,13 @@
                 "Redundancy": {
                     "type": "array",
                     "items": {
-                        "$ref": "http://redfish.dmtf.org/schemas/v1/Redundancy.json#/definitions/Redundancy"
+                        "$ref": "Redundancy.json#/definitions/Redundancy"
                     },
                     "description": "Redundancy information for the managers of this system."
                 },
                 "PowerState": {
                     "anyOf": [
-                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.v1_2_0.json#/definitions/PowerState"},
+                        {"$ref": "Resource.v1_2_0.json#/definitions/PowerState"},
                         {"type": "null"}
                     ],
                     "readonly": true,
@@ -574,7 +574,7 @@
                     "longDescription": "The value of this property shall contain the power state of the Manager."
                 },
                 "HostInterfaces": {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/HostInterfaceCollection.json#/definitions/HostInterfaceCollection",
+                    "$ref": "HostInterfaceCollection.json#/definitions/HostInterfaceCollection",
                     "readonly": true,
                     "description": "This is a reference to a collection of Host Interfaces that this manager uses for local host communication.  It is here that clients will find Host Interface configuration options and settings.",
                     "longDescription": "The value of this property shall be a link to a collection of type HostInterfaceCollection."
