@@ -66,9 +66,10 @@ class RedfishJsonValidator(object):
             Exception:
                 raises an exception on validation failure
         """
+        path = util.config['redfish']['schema_dir']
+
         resolver = jsonschema.RefResolver(
-            'file://%s/' % os.path.abspath(os.path.dirname(
-                '/home/lucas/HP/oneview-redfish-toolkit/oneview_redfish_toolkit/schemas/')), None)
+            'file://%s/' % (os.getcwd() + '/' + path), None)
 
         if self.schema_obj is None:
             raise OneViewRedfishError(
