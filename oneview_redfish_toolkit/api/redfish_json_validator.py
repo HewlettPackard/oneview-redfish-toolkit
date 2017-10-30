@@ -76,7 +76,8 @@ class RedfishJsonValidator(object):
                 "Can't serialize without a schema object. Schema name was"
                 " set to None at object instantiation.")
         try:
-            jsonschema.validate(self.redfish, self.schema_obj, resolver=resolver)
+            jsonschema.validate(
+                self.redfish, self.schema_obj, resolver=resolver)
         except Exception:
             raise
 
