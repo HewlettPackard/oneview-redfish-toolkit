@@ -1,103 +1,25 @@
 {
     "$schema": "redfish-schema.v1_2_0.json",
-    "title": "#NetworkInterface.v1_1_0.NetworkInterface",
     "$ref": "NetworkInterface.v1_1_0.json#/definitions/NetworkInterface",
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
     "definitions": {
         "NetworkInterface": {
-            "type": "object",
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
             "additionalProperties": false,
             "properties": {
-                "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections.",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*."
-                },
-                "Id": {
-                    "$ref": "Resource.json#/definitions/Id",
-                    "readonly": true
-                },
-                "Description": {
-                    "anyOf": [
-                        {"$ref": "Resource.json#/definitions/Description"},
-                        {"type": "null"}
-                    ],
-                    "readonly": true
-                },
-                "Name": {
-                    "$ref": "Resource.json#/definitions/Name",
-                    "readonly": true
-                },
-                "Status": {
-                    "anyOf": [
-                        {"$ref": "Resource.json#/definitions/Status"},
-                        {"type": "null"}
-                    ]
-                },
                 "Links": {
-                    "type": "object",
-                    "patternProperties": {
-                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                            "type": [
-                                "array",
-                                "boolean",
-                                "number",
-                                "null",
-                                "object",
-                                "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
-                        }
-                    },
                     "additionalProperties": false,
                     "properties": {
                         "Oem": {
                             "$ref": "Resource.json#/definitions/Oem",
-                            "description": "Oem extension object.",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification."
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                            "description": "Oem extension object."
                         },
                         "NetworkAdapter": {
-                            "$ref": "NetworkAdapter.json#/definitions/NetworkAdapter",
                             "readonly": true,
+                            "$ref": "NetworkAdapter.json#/definitions/NetworkAdapter",
                             "description": "Contains the members of this collection."
                         }
                     },
-                    "description": "Links.",
-                    "longDescription": "Links for this controller."
-                },
-                "NetworkPorts": {
-                    "$ref": "NetworkPortCollection.json#/definitions/NetworkPortCollection",
-                    "readonly": true,
-                    "description": "Contains the members of this collection."
-                },
-                "NetworkDeviceFunctions": {
-                    "$ref": "NetworkDeviceFunctionCollection.json#/definitions/NetworkDeviceFunctionCollection",
-                    "readonly": true,
-                    "description": "Contains the members of this collection."
-                },
-                "Actions": {
-                    "type": "object",
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
                             "type": [
@@ -111,10 +33,45 @@
                             "description": "This property shall specify a valid odata or Redfish property."
                         }
                     },
+                    "type": "object",
+                    "longDescription": "Links for this controller.",
+                    "description": "Links."
+                },
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "Description": {
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "NetworkPorts": {
+                    "readonly": true,
+                    "$ref": "NetworkPortCollection.json#/definitions/NetworkPortCollection",
+                    "description": "Contains the members of this collection."
+                },
+                "Id": {
+                    "readonly": true,
+                    "$ref": "Resource.json#/definitions/Id"
+                },
+                "Actions": {
                     "additionalProperties": false,
                     "properties": {
                         "Oem": {
-                            "type": "object",
+                            "additionalProperties": true,
+                            "properties": {},
                             "patternProperties": {
                                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
                                     "type": [
@@ -128,23 +85,74 @@
                                     "description": "This property shall specify a valid odata or Redfish property."
                                 }
                             },
-                            "additionalProperties": true,
-                            "properties": {},
-                            "description": "The available OEM specific actions for this resource.",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource."
+                            "type": "object",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "description": "The available OEM specific actions for this resource."
                         }
                     },
-                    "description": "The available actions for this resource.",
-                    "longDescription": "The Actions property shall contain the available actions for this resource."
+                    "patternProperties": {
+                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "type": [
+                                "array",
+                                "boolean",
+                                "number",
+                                "null",
+                                "object",
+                                "string"
+                            ],
+                            "description": "This property shall specify a valid odata or Redfish property."
+                        }
+                    },
+                    "type": "object",
+                    "longDescription": "The Actions property shall contain the available actions for this resource.",
+                    "description": "The available actions for this resource."
+                },
+                "NetworkDeviceFunctions": {
+                    "readonly": true,
+                    "$ref": "NetworkDeviceFunctionCollection.json#/definitions/NetworkDeviceFunctionCollection",
+                    "description": "Contains the members of this collection."
+                },
+                "Status": {
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.json#/definitions/Status"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "Name": {
+                    "readonly": true,
+                    "$ref": "Resource.json#/definitions/Name"
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
                 }
             },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ],
+                    "description": "This property shall specify a valid odata or Redfish property."
+                }
+            },
+            "type": "object",
             "required": [
                 "Id",
                 "Name"
             ],
-            "description": "A NetworkInterface contains references linking NetworkAdapter, NetworkPort, and NetworkDeviceFunction resources and represents the functionality available to the containing system.",
-            "longDescription": "A NetworkInterface contains references linking NetworkAdapter, NetworkPort, and NetworkDeviceFunction resources and represents the functionality available to the containing system."
+            "longDescription": "A NetworkInterface contains references linking NetworkAdapter, NetworkPort, and NetworkDeviceFunction resources and represents the functionality available to the containing system.",
+            "description": "A NetworkInterface contains references linking NetworkAdapter, NetworkPort, and NetworkDeviceFunction resources and represents the functionality available to the containing system."
         }
     },
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
+    "title": "#NetworkInterface.v1_1_0.NetworkInterface"
 }

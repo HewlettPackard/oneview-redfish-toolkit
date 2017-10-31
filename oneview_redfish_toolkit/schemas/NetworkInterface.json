@@ -1,0 +1,24 @@
+{
+    "$schema": "redfish-schema.v1_2_0.json",
+    "$ref": "NetworkInterface.json#/definitions/NetworkInterface",
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "definitions": {
+        "NetworkInterface": {
+            "anyOf": [
+                {
+                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "NetworkInterface.v1_0_0.json#/definitions/NetworkInterface"
+                },
+                {
+                    "$ref": "NetworkInterface.v1_0_1.json#/definitions/NetworkInterface"
+                },
+                {
+                    "$ref": "NetworkInterface.v1_1_0.json#/definitions/NetworkInterface"
+                }
+            ]
+        }
+    },
+    "title": "#NetworkInterface.NetworkInterface"
+}

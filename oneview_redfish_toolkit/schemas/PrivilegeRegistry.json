@@ -1,0 +1,24 @@
+{
+    "$schema": "redfish-schema.v1_2_0.json",
+    "$ref": "PrivilegeRegistry.json#/definitions/PrivilegeRegistry",
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "definitions": {
+        "PrivilegeRegistry": {
+            "anyOf": [
+                {
+                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                },
+                {
+                    "$ref": "PrivilegeRegistry.v1_0_0.json#/definitions/PrivilegeRegistry"
+                },
+                {
+                    "$ref": "PrivilegeRegistry.v1_0_1.json#/definitions/PrivilegeRegistry"
+                },
+                {
+                    "$ref": "PrivilegeRegistry.v1_1_0.json#/definitions/PrivilegeRegistry"
+                }
+            ]
+        }
+    },
+    "title": "#PrivilegeRegistry.PrivilegeRegistry"
+}

@@ -1,0 +1,217 @@
+{
+    "$schema": "redfish-schema.v1_2_0.json",
+    "$ref": "UpdateService.v1_1_1.json#/definitions/UpdateService",
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "definitions": {
+        "TransferProtocolType": {
+            "type": "string",
+            "enum": [
+                "CIFS",
+                "FTP",
+                "SFTP",
+                "HTTP",
+                "HTTPS",
+                "NSF",
+                "SCP",
+                "TFTP",
+                "OEM"
+            ],
+            "enumDescriptions": {
+                "FTP": "File Transfer Protocol.",
+                "HTTP": "Hypertext Transfer Protocol.",
+                "CIFS": "Common Internet File System protocol.",
+                "SCP": "Secure File Copy protocol.",
+                "NSF": "Network File System protocol.",
+                "OEM": "A protocol defined by the manufacturer.",
+                "TFTP": "Trivial File Transfer Protocol.",
+                "SFTP": "Secure File Transfer Protocol.",
+                "HTTPS": "HTTP Secure protocol."
+            }
+        },
+        "UpdateService": {
+            "additionalProperties": false,
+            "properties": {
+                "FirmwareInventory": {
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "SoftwareInventoryCollection.json#/definitions/SoftwareInventoryCollection"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "longDescription": "The value of this property shall be a link to a resource of type SoftwareInventoryCollection.",
+                    "description": "An inventory of firmware."
+                },
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "Description": {
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "HttpPushUri": {
+                    "type": "string",
+                    "format": "uri",
+                    "longDescription": "This property shall contain a URI at which the UpdateService supports an HTTP or HTTPS POST of a software image for the purpose of installing software contained within the image.",
+                    "description": "The URI used to perform an HTTP or HTTPS push update to the Update Service.",
+                    "readonly": true
+                },
+                "ServiceEnabled": {
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "readonly": false,
+                    "longDescription": "The value of this property shall be a boolean indicating whether this service is enabled.",
+                    "description": "This indicates whether this service is enabled."
+                },
+                "Actions": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "properties": {},
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ],
+                                    "description": "This property shall specify a valid odata or Redfish property."
+                                }
+                            },
+                            "type": "object",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "description": "The available OEM specific actions for this resource."
+                        },
+                        "#UpdateService.SimpleUpdate": {
+                            "$ref": "#/definitions/SimpleUpdate"
+                        }
+                    },
+                    "patternProperties": {
+                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "type": [
+                                "array",
+                                "boolean",
+                                "number",
+                                "null",
+                                "object",
+                                "string"
+                            ],
+                            "description": "This property shall specify a valid odata or Redfish property."
+                        }
+                    },
+                    "type": "object",
+                    "longDescription": "This type shall contain the available actions for this resource.",
+                    "description": "The Actions object contains the available custom actions on this resource."
+                },
+                "Id": {
+                    "readonly": true,
+                    "$ref": "Resource.json#/definitions/Id"
+                },
+                "Status": {
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.json#/definitions/Status"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "Name": {
+                    "readonly": true,
+                    "$ref": "Resource.json#/definitions/Name"
+                },
+                "SoftwareInventory": {
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "SoftwareInventoryCollection.json#/definitions/SoftwareInventoryCollection"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "longDescription": "The value of this property shall be a link to a resource of type SoftwareInventoryCollection.",
+                    "description": "An inventory of software."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ],
+                    "description": "This property shall specify a valid odata or Redfish property."
+                }
+            },
+            "type": "object",
+            "required": [
+                "Id",
+                "Name"
+            ],
+            "longDescription": "This resource shall be used to represent an Update Service for a Redfish implementation. It represents the properties that affect the service itself.",
+            "description": "This is the schema definition for the Update Service. It represents the properties for the service itself and has links to collections of firmware and software inventory."
+        },
+        "SimpleUpdate": {
+            "additionalProperties": false,
+            "properties": {
+                "target": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "Link to invoke action"
+                },
+                "title": {
+                    "type": "string",
+                    "description": "Friendly action name"
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ],
+                    "description": "This property shall specify a valid odata or Redfish property."
+                }
+            },
+            "type": "object",
+            "longDescription": "This action shall perform an update of installed software component(s) as contained within a software image file located at a URI referenced by the ImageURI parameter.",
+            "description": "This action is used to update software components."
+        }
+    },
+    "title": "#UpdateService.v1_1_1.UpdateService"
+}

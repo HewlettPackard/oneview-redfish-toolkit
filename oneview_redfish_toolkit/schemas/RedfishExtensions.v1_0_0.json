@@ -1,0 +1,85 @@
+{
+    "$schema": "redfish-schema.v1_2_0.json",
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "definitions": {
+        "ReleaseStatusType": {
+            "type": "string",
+            "enum": [
+                "Standard",
+                "Informational",
+                "WorkInProgress",
+                "InDevelopment"
+            ],
+            "enumDescriptions": {
+                "Informational": "Released as an informational, non-normative document.",
+                "InDevelopment": "Un-released work product currently under development or review.",
+                "WorkInProgress": "Released as Work In Progress, subject to change perhaps profoundly and without notice.",
+                "Standard": "Released as normative standard or specification."
+            }
+        },
+        "EnumerationMember": {
+            "additionalProperties": true,
+            "properties": {
+                "Member": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "An allowable string member."
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ],
+                    "description": "This property shall specify a valid odata or Redfish property."
+                }
+            },
+            "type": "object",
+            "longDescription": "This type shall describe a member of an enumeration which contains spaces, starts with a number, or otherwise does not comply with OData EnumMember naming rules.",
+            "description": "This type describes a member of an enumeration used for compatability purposes for enumerations which do not comply with OData rules."
+        },
+        "PropertyPattern": {
+            "additionalProperties": true,
+            "properties": {
+                "Type": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The type that the name shall have."
+                },
+                "Pattern": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The pattern that the property name shall match."
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ],
+                    "description": "This property shall specify a valid odata or Redfish property."
+                }
+            },
+            "type": "object",
+            "longDescription": "This type shall describe the pattern to which a dynamic property name must adhere.",
+            "description": "The pattern by which property names must adhere."
+        }
+    },
+    "title": "#RedfishExtensions.v1_0_0"
+}

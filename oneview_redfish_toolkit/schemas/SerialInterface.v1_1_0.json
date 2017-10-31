@@ -1,0 +1,253 @@
+{
+    "$schema": "redfish-schema.v1_2_0.json",
+    "$ref": "SerialInterface.v1_1_0.json#/definitions/SerialInterface",
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "definitions": {
+        "BitRate": {
+            "type": "string",
+            "enum": [
+                "1200",
+                "2400",
+                "4800",
+                "9600",
+                "19200",
+                "38400",
+                "57600",
+                "115200",
+                "230400"
+            ]
+        },
+        "Parity": {
+            "type": "string",
+            "enum": [
+                "None",
+                "Even",
+                "Odd",
+                "Mark",
+                "Space"
+            ]
+        },
+        "SerialInterface": {
+            "additionalProperties": false,
+            "properties": {
+                "InterfaceEnabled": {
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "readonly": false,
+                    "longDescription": "The value of this property shall be a boolean indicating whether this interface is enabled.",
+                    "description": "This indicates whether this interface is enabled."
+                },
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "PinOut": {
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/PinOut"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "longDescription": "This property shall indicate the physical pin out for the serial connection.",
+                    "description": "The physical pin configuration needed for a serial connector."
+                },
+                "Description": {
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "DataBits": {
+                    "readonly": false,
+                    "$ref": "#/definitions/DataBits",
+                    "longDescription": "This property shall indicate number of data bits for the serial connection.",
+                    "description": "The number of data bits that will follow the start bit over the serial connection."
+                },
+                "SignalType": {
+                    "readonly": true,
+                    "$ref": "#/definitions/SignalType",
+                    "longDescription": "This property shall indicate the type of serial signalling that will be utilized for the serial connection.",
+                    "description": "The type of signal used for the communication connection - RS232 or RS485."
+                },
+                "BitRate": {
+                    "readonly": false,
+                    "$ref": "#/definitions/BitRate",
+                    "longDescription": "This property shall indicate the transmit and receive speed of the serial connection.",
+                    "description": "The receive and transmit rate of data flow, typically in bits-per-second (bps), over the serial connection."
+                },
+                "Parity": {
+                    "readonly": false,
+                    "$ref": "#/definitions/Parity",
+                    "longDescription": "This property shall indicate parity information for a serial connection.",
+                    "description": "The type of parity used by the sender and receiver in order to detect errors over the serial connection."
+                },
+                "Actions": {
+                    "additionalProperties": false,
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "properties": {},
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ],
+                                    "description": "This property shall specify a valid odata or Redfish property."
+                                }
+                            },
+                            "type": "object",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "description": "The available OEM specific actions for this resource."
+                        }
+                    },
+                    "patternProperties": {
+                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "type": [
+                                "array",
+                                "boolean",
+                                "number",
+                                "null",
+                                "object",
+                                "string"
+                            ],
+                            "description": "This property shall specify a valid odata or Redfish property."
+                        }
+                    },
+                    "type": "object",
+                    "longDescription": "The Actions property shall contain the available actions for this resource.",
+                    "description": "The available actions for this resource."
+                },
+                "Id": {
+                    "readonly": true,
+                    "$ref": "Resource.json#/definitions/Id"
+                },
+                "FlowControl": {
+                    "readonly": false,
+                    "$ref": "#/definitions/FlowControl",
+                    "longDescription": "This property shall indicate the flow control mechanism for the serial connection.",
+                    "description": "The type of flow control, if any, that will be imposed on the serial connection."
+                },
+                "Name": {
+                    "readonly": true,
+                    "$ref": "Resource.json#/definitions/Name"
+                },
+                "StopBits": {
+                    "readonly": false,
+                    "$ref": "#/definitions/StopBits",
+                    "longDescription": "This property shall indicate the stop bits for the serial connection.",
+                    "description": "The period of time before the next start bit is transmitted."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "ConnectorType": {
+                    "readonly": true,
+                    "$ref": "#/definitions/ConnectorType",
+                    "longDescription": "This property shall indicate the type of phyiscal connector used for this serial connection.",
+                    "description": "The type of connector used for this interface."
+                }
+            },
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ],
+                    "description": "This property shall specify a valid odata or Redfish property."
+                }
+            },
+            "type": "object",
+            "required": [
+                "Id",
+                "Name"
+            ],
+            "longDescription": "This resource shall be used to represent serial resources as part of the Redfish specification.",
+            "description": "This schema defines an asynchronous serial interface resource."
+        },
+        "FlowControl": {
+            "type": "string",
+            "enum": [
+                "None",
+                "Software",
+                "Hardware"
+            ],
+            "enumDescriptions": {
+                "Software": "XON/XOFF in-band flow control imposed.",
+                "None": "No flow control imposed.",
+                "Hardware": "Out of band flow control imposed."
+            }
+        },
+        "PinOut": {
+            "type": "string",
+            "enum": [
+                "Cisco",
+                "Cyclades",
+                "Digi"
+            ]
+        },
+        "StopBits": {
+            "type": "string",
+            "enum": [
+                "1",
+                "2"
+            ]
+        },
+        "DataBits": {
+            "type": "string",
+            "enum": [
+                "5",
+                "6",
+                "7",
+                "8"
+            ]
+        },
+        "SignalType": {
+            "type": "string",
+            "enum": [
+                "Rs232",
+                "Rs485"
+            ]
+        },
+        "ConnectorType": {
+            "type": "string",
+            "enum": [
+                "RJ45.",
+                "RJ11.",
+                "DB9 Female.",
+                "DB9 Male.",
+                "DB25 Female.",
+                "DB25 Male.",
+                "USB.",
+                "mUSB.",
+                "uUSB."
+            ]
+        }
+    },
+    "title": "#SerialInterface.v1_1_0.SerialInterface"
+}
