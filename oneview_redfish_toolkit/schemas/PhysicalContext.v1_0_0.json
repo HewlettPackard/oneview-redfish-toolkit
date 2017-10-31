@@ -1,5 +1,5 @@
 {
-    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_1_0.json",
+    "$schema": "redfish-schema.v1_1_0.json",
     "title": "#PhysicalContext.v1_0_0",
     "definitions": {
         "PhysicalContext": {
