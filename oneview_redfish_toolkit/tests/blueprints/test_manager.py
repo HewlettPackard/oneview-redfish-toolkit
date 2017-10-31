@@ -115,7 +115,7 @@ class TestManager(unittest.TestCase):
 
         # Get EnclosureManager
         response = self.app.get(
-            "/redfish/v1/Managers/0000000000A66101"
+            "/redfish/v1/Managers/0000000000A66101/"
         )
 
         json_str = response.data.decode("utf-8")
@@ -143,7 +143,7 @@ class TestManager(unittest.TestCase):
         oneview_client.enclosures.get.side_effect = e
 
         response = self.app.get(
-            "/redfish/v1/Managers/0000000000A66101"
+            "/redfish/v1/Managers/0000000000A66101/"
         )
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
@@ -160,7 +160,7 @@ class TestManager(unittest.TestCase):
         oneview_client.enclosures.get.side_effect = Exception()
 
         response = self.app.get(
-            "/redfish/v1/Managers/0000000000A66101"
+            "/redfish/v1/Managers/0000000000A66101/"
         )
 
         self.assertEqual(
@@ -198,7 +198,7 @@ class TestManager(unittest.TestCase):
 
         # Get BladeManager
         response = self.app.get(
-            "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"
+            "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752/"
         )
 
         json_str = response.data.decode("utf-8")
@@ -226,7 +226,7 @@ class TestManager(unittest.TestCase):
         oneview_client.server_hardware.get.side_effect = e
 
         response = self.app.get(
-            "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"
+            "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752/"
         )
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
@@ -243,7 +243,7 @@ class TestManager(unittest.TestCase):
         oneview_client.server_hardware.get.side_effect = Exception()
 
         response = self.app.get(
-            "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"
+            "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752/"
         )
 
         self.assertEqual(

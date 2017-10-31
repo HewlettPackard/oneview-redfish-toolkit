@@ -114,7 +114,7 @@ class TestChassis(unittest.TestCase):
 
         # Get BladeThermal
         response = self.app.get(
-            "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
+            "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal/"
         )
 
         json_str = response.data.decode("utf-8")
@@ -142,7 +142,7 @@ class TestChassis(unittest.TestCase):
         oneview_client.server_hardware.get_utilization.side_effect = e
 
         response = self.app.get(
-            "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
+            "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal/"
         )
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
@@ -160,7 +160,7 @@ class TestChassis(unittest.TestCase):
             Exception()
 
         response = self.app.get(
-            "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
+            "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal/"
         )
 
         self.assertEqual(
@@ -198,7 +198,7 @@ class TestChassis(unittest.TestCase):
 
         # Get EnclosureThermal
         response = self.app.get(
-            "/redfish/v1/Chassis/0000000000A66101/Thermal"
+            "/redfish/v1/Chassis/0000000000A66101/Thermal/"
         )
 
         json_str = response.data.decode("utf-8")
@@ -236,7 +236,7 @@ class TestChassis(unittest.TestCase):
 
         # Get RackThermal
         response = self.app.get(
-            "/redfish/v1/Chassis/2AB100LMNB/Thermal"
+            "/redfish/v1/Chassis/2AB100LMNB/Thermal/"
         )
 
         json_str = response.data.decode("utf-8")

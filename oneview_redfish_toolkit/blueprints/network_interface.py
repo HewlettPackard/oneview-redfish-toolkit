@@ -36,7 +36,7 @@ network_interface = Blueprint("network_interface", __name__)
 
 
 @network_interface.route(
-    "/redfish/v1/Systems/<uuid>/NetworkInterfaces/<device_id>",
+    "/redfish/v1/Systems/<uuid>/NetworkInterfaces/<device_id>/",
     methods=["GET"])
 def get_network_interface(uuid, device_id):
     """Get the Redfish NetworkInterface for a given UUID and device_id.

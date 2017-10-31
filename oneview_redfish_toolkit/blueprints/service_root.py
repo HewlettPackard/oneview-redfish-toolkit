@@ -31,7 +31,7 @@ from oneview_redfish_toolkit import util
 service_root = Blueprint('service_root', __name__)
 
 
-@service_root.route('/', methods=["GET"])
+@service_root.route("/redfish/v1/", methods=["GET"])
 def get_service_root():
     """Gets ServiceRoot
 
@@ -43,7 +43,7 @@ def get_service_root():
         # Recover OV connection
         oneview_client = util.get_oneview_client()
 
-        # Gets serverhardware for given UUID
+        # Gets server hardware for given UUID
         appliance_node_information = \
             oneview_client.appliance_node_information.get_version()
         uuid = appliance_node_information['uuid']
