@@ -66,21 +66,20 @@ class Storage(RedfishJsonValidator):
         self.redfish["StorageControllers"] = list()
 
         # adapter storage capabilities (if any)
-        for adapter, idx in zip(server_hardware_type['adapters'],
-                                range(len(server_hardware_type['adapters']))):
+        for adapter in server_hardware_type['adapters']:
             if adapter['storageCapabilities']:
-                self.redfish["StorageControllers"].\
-                    append(collections.OrderedDict())
-                self.redfish["StorageControllers"][idx]["SupportedDeviceProtocols"] = \
-                    sorted(self.
-                           map_supported_device_protos(drive_technologies))
+                new_capability = collections.OrderedDict()
+                new_capability["SupportedDeviceProtocols"] = sorted(
+                    self.map_supported_device_protos(drive_technologies))
+                self.redfish["StorageControllers"].append(new_capability)
 
         # internal storage capabilities
         storage_controller_count = len(self.redfish["StorageControllers"])
         self.redfish["StorageControllers"].append(collections.OrderedDict())
-        self.redfish["StorageControllers"][storage_controller_count]["Manufacturer"] =  \
-            "HPE"
-        self.redfish["StorageControllers"][storage_controller_count]["SupportedDeviceProtocols"] = \
+        self.redfish["StorageControllers"][storage_controller_count][
+            "Manufacturer"] = "HPE"
+        self.redfish["StorageControllers"][storage_controller_count][
+            "SupportedDeviceProtocols"] = \
             sorted(self.map_supported_device_protos(drive_technologies))
 
         self._validate()
