@@ -1,0 +1,329 @@
+{
+    "processorType": "Intel(R) Xeon(R) CPU E5620 @ 2.40GHz",
+    "assetTag": "",
+    "supportDataCollectionsUri": "/rest/support/data-collections?deviceID=30373737-3237-4D32-3230-313530314752&category=server-hardware",
+    "modified": "2017-11-02T18:39:07.480Z",
+    "serverProfileUri": null,
+    "serverHardwareTypeUri": "/rest/server-hardware-types/614484FE-D19B-4B40-B958-5059EDF59C6F",
+    "uidState": "Off",
+    "serverFirmwareInventoryUri": "/rest/server-hardware/30373737-3237-4D32-3230-313530314752/firmware",
+    "powerState": "On",
+    "supportDataCollectionState": null,
+    "remoteSupportSettings": {
+        "destination": null,
+        "remoteSupportCurrentState": "Unregistered"
+    },
+    "supportState": "NotSupported",
+    "locationUri": "/rest/enclosures/0000000000A66101",
+    "status": "OK",
+    "mpModel": "iLO4",
+    "licensingIntent": "NotApplicable",
+    "state": "Monitored",
+    "uuid": "30373737-3237-4D32-3230-313530314752",
+    "mpState": "OK",
+    "virtualUuid": null,
+    "scopeUris": [],
+    "supportDataCollectionType": null,
+    "position": 3,
+    "description": null,
+    "created": "2017-10-19T07:43:35.144Z",
+    "processorCount": 4,
+    "name": "0000A66101, bay 3",
+    "virtualSerialNumber": "",
+    "partNumber": "777072-001",
+    "eTag": "1509647947480",
+    "portMap": {
+        "deviceSlots": [
+            {
+                "physicalPorts": [
+                    {
+                        "type": "SAS",
+                        "wwn": null,
+                        "interconnectPort": 3,
+                        "interconnectUri": "/rest/sas-interconnects/2M220100SL",
+                        "portNumber": 1,
+                        "physicalInterconnectUri": "/rest/sas-interconnects/2M220100SL",
+                        "mac": null,
+                        "virtualPorts": [],
+                        "physicalInterconnectPort": 3
+                    },
+                    {
+                        "type": "SAS",
+                        "wwn": null,
+                        "interconnectPort": 3,
+                        "interconnectUri": "/rest/sas-interconnects/2M220101SL",
+                        "portNumber": 2,
+                        "physicalInterconnectUri": "/rest/sas-interconnects/2M220101SL",
+                        "mac": null,
+                        "virtualPorts": [],
+                        "physicalInterconnectPort": 3
+                    }
+                ],
+                "deviceNumber": 1,
+                "deviceName": "Smart Array P542D Controller",
+                "location": "Mezz",
+                "slotNumber": 1
+            },
+            {
+                "physicalPorts": [
+                    {
+                        "type": "FibreChannel",
+                        "wwn": "29:00:7A:2B:21:E0:00:69",
+                        "interconnectPort": 3,
+                        "interconnectUri": "/rest/interconnects/6541703d-ad75-4ac1-b6ab-3890e2e8fecd",
+                        "portNumber": 1,
+                        "physicalInterconnectUri": "/rest/interconnects/6541703d-ad75-4ac1-b6ab-3890e2e8fecd",
+                        "mac": null,
+                        "virtualPorts": [],
+                        "physicalInterconnectPort": 3
+                    },
+                    {
+                        "type": "FibreChannel",
+                        "wwn": "29:00:7A:2B:21:E0:00:6B",
+                        "interconnectPort": 3,
+                        "interconnectUri": "/rest/interconnects/43907ad4-d16a-41db-8028-7fdfc8b6850f",
+                        "portNumber": 2,
+                        "physicalInterconnectUri": "/rest/interconnects/43907ad4-d16a-41db-8028-7fdfc8b6850f",
+                        "mac": null,
+                        "virtualPorts": [],
+                        "physicalInterconnectPort": 3
+                    }
+                ],
+                "deviceNumber": 2,
+                "deviceName": "HPE Synergy 3530C 16G Host Bus Adapter",
+                "location": "Mezz",
+                "slotNumber": 2
+            },
+            {
+                "physicalPorts": [
+                    {
+                        "type": "Ethernet",
+                        "wwn": null,
+                        "interconnectPort": 3,
+                        "interconnectUri": "/rest/interconnects/63b2b95b-5459-4b91-b663-63d10d825eb0",
+                        "portNumber": 1,
+                        "physicalInterconnectUri": "/rest/interconnects/63b2b95b-5459-4b91-b663-63d10d825eb0",
+                        "mac": "02:23:13:25:24:C1",
+                        "virtualPorts": [
+                            {
+                                "portFunction": "a",
+                                "wwnn": null,
+                                "portNumber": 1,
+                                "mac": "02:23:13:25:24:C2",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "b",
+                                "wwnn": "20:00:02:23:13:25:24:C3",
+                                "portNumber": 2,
+                                "mac": "02:23:13:25:24:C3",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": "10:00:02:23:13:25:24:C3"
+                            },
+                            {
+                                "portFunction": "c",
+                                "wwnn": null,
+                                "portNumber": 3,
+                                "mac": "02:23:13:25:24:C4",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "d",
+                                "wwnn": null,
+                                "portNumber": 4,
+                                "mac": "02:23:13:25:24:C5",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "e",
+                                "wwnn": null,
+                                "portNumber": 5,
+                                "mac": "02:23:13:25:24:C6",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "f",
+                                "wwnn": null,
+                                "portNumber": 6,
+                                "mac": "02:23:13:25:24:C7",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "g",
+                                "wwnn": null,
+                                "portNumber": 7,
+                                "mac": "02:23:13:25:24:C8",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "h",
+                                "wwnn": null,
+                                "portNumber": 8,
+                                "mac": "02:23:13:25:24:C9",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            }
+                        ],
+                        "physicalInterconnectPort": 3
+                    },
+                    {
+                        "type": "Ethernet",
+                        "wwn": null,
+                        "interconnectPort": 15,
+                        "interconnectUri": "/rest/interconnects/815237e5-69fd-4766-b139-24a831f13cda",
+                        "portNumber": 2,
+                        "physicalInterconnectUri": "/rest/interconnects/bb47418d-afbb-4456-9136-b483d6fcb462",
+                        "mac": "02:23:13:25:24:CA",
+                        "virtualPorts": [
+                            {
+                                "portFunction": "a",
+                                "wwnn": null,
+                                "portNumber": 1,
+                                "mac": "02:23:13:25:24:CB",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "b",
+                                "wwnn": "20:00:02:23:13:25:24:CC",
+                                "portNumber": 2,
+                                "mac": "02:23:13:25:24:CC",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": "10:00:02:23:13:25:24:CC"
+                            },
+                            {
+                                "portFunction": "c",
+                                "wwnn": null,
+                                "portNumber": 3,
+                                "mac": "02:23:13:25:24:CD",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "d",
+                                "wwnn": null,
+                                "portNumber": 4,
+                                "mac": "02:23:13:25:24:CE",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "e",
+                                "wwnn": null,
+                                "portNumber": 5,
+                                "mac": "02:23:13:25:24:CF",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "f",
+                                "wwnn": null,
+                                "portNumber": 6,
+                                "mac": "02:23:13:25:24:D0",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "g",
+                                "wwnn": null,
+                                "portNumber": 7,
+                                "mac": "02:23:13:25:24:D1",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            },
+                            {
+                                "portFunction": "h",
+                                "wwnn": null,
+                                "portNumber": 8,
+                                "mac": "02:23:13:25:24:D2",
+                                "currentAllocatedVirtualFunctionCount": 16,
+                                "wwpn": null
+                            }
+                        ],
+                        "physicalInterconnectPort": 3
+                    }
+                ],
+                "deviceNumber": 3,
+                "deviceName": "HPE Synergy 3820C 10/20Gb Converged Network Adapter",
+                "location": "Mezz",
+                "slotNumber": 3
+            },
+            {
+                "physicalPorts": [],
+                "deviceNumber": 4,
+                "deviceName": "",
+                "location": "Mezz",
+                "slotNumber": 4
+            },
+            {
+                "physicalPorts": [],
+                "deviceNumber": 5,
+                "deviceName": "",
+                "location": "Mezz",
+                "slotNumber": 5
+            },
+            {
+                "physicalPorts": [],
+                "deviceNumber": 6,
+                "deviceName": "",
+                "location": "Mezz",
+                "slotNumber": 6
+            }
+        ]
+    },
+    "refreshState": "NotRefreshing",
+    "memoryMb": 4096,
+    "intelligentProvisioningVersion": "2.30",
+    "mpHostInfo": {
+        "mpHostName": "172.18.6.6",
+        "mpIpAddresses": [
+            {
+                "address": "fe80:0:0:0:2:0:3:6",
+                "type": "LinkLocal"
+            },
+            {
+                "address": "172.18.6.6",
+                "type": "Static"
+            }
+        ]
+    },
+    "serverGroupUri": null,
+    "stateReason": "NotApplicable",
+    "mpFirmwareVersion": "2.30 Jul 23 2015",
+    "uri": "/rest/server-hardware/30373737-3237-4D32-3230-313530314752",
+    "category": "server-hardware",
+    "remoteSupportUri": "/rest/support/server-hardware/30373737-3237-4D32-3230-313530314752",
+    "model": "HPE Synergy 660 Gen9 Compute Module",
+    "serialNumber": "2M201501GR",
+    "processorCoreCount": 4,
+    "serverSettings": {
+        "firmwareAndDriversInstallState": {
+            "installState": null,
+            "installedStateTimestamp": null
+        },
+        "hpSmartUpdateToolStatus": {
+            "serviceState": null,
+            "mode": null,
+            "installState": null,
+            "lastOperationTime": null,
+            "version": null
+        }
+    },
+    "migrationState": "NotApplicable",
+    "shortModel": "SY 660 Gen9",
+    "type": "server-hardware-5",
+    "romVersion": "I39 v1.30 08/26/2014",
+    "processorSpeedMhz": 2400,
+    "formFactor": "FullHeight",
+    "powerLock": false,
+    "signature": {
+        "personalityChecksum": 0,
+        "serverHwChecksum": 1805351517
+    }
+}
