@@ -77,9 +77,15 @@ class NetworkDeviceFunction(RedfishJsonValidator):
                 virtual_port_index]
             self.redfish["Ethernet"] = dict()
             self.redfish["Ethernet"]["MACAddress"] = virtual_port["mac"]
+            self.redfish["NetDevFuncType"] = "Ethernet"
         elif port["type"] == "FibreChannel":
+            virtual_port = server_hardware["portMap"]["deviceSlots"][index][
+                "physicalPorts"][port_index]["virtualPorts"][
+                virtual_port_index]
             self.redfish["NetDevFuncType"] = "FibreChannel"
-            self.redfish["FibreChannel"] = 
+            self.redfish["FibreChannel"] = dict()
+            self.redfish["FibreChannel"]["WWPN"] = virtual_port["wwpn"]
+            self.redfish["FibreChannel"]["WWNN"] = virtual_port["wwnn"]
         else:
             raise OneViewRedfishError("Type not supported")
 
