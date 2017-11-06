@@ -34,6 +34,7 @@ from oneview_redfish_toolkit.blueprints.computer_system_collection \
 from oneview_redfish_toolkit.blueprints.manager import manager
 from oneview_redfish_toolkit.blueprints.manager_collection \
     import manager_collection
+from oneview_redfish_toolkit.blueprints.metadata import metadata
 from oneview_redfish_toolkit.blueprints.network_adapter \
     import network_adapter
 from oneview_redfish_toolkit.blueprints.network_adapter_collection \
@@ -80,6 +81,7 @@ app.register_blueprint(computer_system)
 app.register_blueprint(chassis)
 app.register_blueprint(manager_collection)
 app.register_blueprint(manager)
+app.register_blueprint(metadata)
 app.register_blueprint(odata)
 app.register_blueprint(storage)
 app.register_blueprint(thermal)
