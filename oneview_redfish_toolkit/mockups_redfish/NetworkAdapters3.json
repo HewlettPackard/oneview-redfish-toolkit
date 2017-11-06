@@ -6,7 +6,7 @@
         {
             "ControllerCapabilities": {
                 "NetworkPortCount": 2,
-                "NetworkDeviceFunctionCount": 8
+                "NetworkDeviceFunctionCount": 16
             },
             "Links": {
                 "NetworkPorts": [
