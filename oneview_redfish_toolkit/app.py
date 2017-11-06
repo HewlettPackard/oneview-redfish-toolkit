@@ -47,6 +47,7 @@ from oneview_redfish_toolkit.blueprints.network_interface \
     import network_interface
 from oneview_redfish_toolkit.blueprints.network_interface_collection \
     import network_interface_collection
+from oneview_redfish_toolkit.blueprints.network_port import network_port
 from oneview_redfish_toolkit.blueprints.network_port_collection \
     import network_port_collection
 from oneview_redfish_toolkit.blueprints.odata import odata
@@ -93,6 +94,7 @@ app.register_blueprint(network_device_function_collection)
 app.register_blueprint(network_device_function)
 app.register_blueprint(network_interface)
 app.register_blueprint(network_adapter)
+app.register_blueprint(network_port)
 
 
 @app.errorhandler(status.HTTP_400_BAD_REQUEST)

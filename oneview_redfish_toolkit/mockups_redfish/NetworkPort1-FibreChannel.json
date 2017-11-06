@@ -1,0 +1,12 @@
+{
+    "@odata.type": "#NetworkPort.v1_1_0.NetworkPort",
+    "Id": "1",
+    "Name": "Physical port 1",
+    "PhysicalPortNumber": "1",
+    "ActiveLinkTechnology": "FibreChannel",
+    "AssociatedNetworkAddresses": [
+        "29:00:7A:2B:21:E0:00:69"
+    ],
+    "@odata.context": "/redfish/v1/$metadata#NetworkPort.NetworkPort",
+    "@odata.id": "/redfish/v1/Chassis/30373737-3237-4D32-3230-313530314752/NetworkAdapters/2/NetworkPorts/1"
+}
