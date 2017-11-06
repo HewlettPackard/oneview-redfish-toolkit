@@ -1,69 +1,13 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#Message.v1_0_5",
     "definitions": {
         "Message": {
             "additionalProperties": false,
-            "properties": {
-                "Message": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain an optional human readable message.",
-                    "description": "This is the human readable message, if provided."
-                },
-                "MessageId": {
-                    "type": "string",
-                    "readonly": true,
-                    "longDescription": "This property shall be a key into message registry as described in the Redfish specification.",
-                    "description": "This is the key for this message which can be used to look up the message in a message registry."
-                },
-                "RelatedProperties": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "This property shall contain an array of JSON Pointers indicating the properties described by the message, if appropriate for the message.",
-                    "items": {
-                        "type": "string"
-                    },
-                    "description": "This is an array of properties described by the message."
-                },
-                "Resolution": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain an override of the Resolution of the message in message registry, if present.",
-                    "description": "Used to provide suggestions on how to resolve the situation that caused the error."
-                },
-                "Severity": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the severity of the error, as defined in the Status section of the Redfish specificaiton.",
-                    "description": "This is the severity of the errors."
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                    "description": "Oem extension object."
-                },
-                "MessageArgs": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "This property shall contain the message substitution arguments for the specific message referenced by the MessageId and shall only be included if the MessageId is present.",
-                    "items": {
-                        "type": "string"
-                    },
-                    "description": "This array of message arguments are substituted for the arguments in the message when looked up in the message registry."
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -71,17 +15,73 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "MessageArgs": {
+                    "description": "This array of message arguments are substituted for the arguments in the message when looked up in the message registry.",
+                    "longDescription": "This property shall contain the message substitution arguments for the specific message referenced by the MessageId and shall only be included if the MessageId is present.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "MessageId": {
+                    "longDescription": "This property shall be a key into message registry as described in the Redfish specification.",
+                    "readonly": true,
+                    "type": "string",
+                    "description": "This is the key for this message which can be used to look up the message in a message registry."
+                },
+                "Message": {
+                    "longDescription": "This property shall contain an optional human readable message.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the human readable message, if provided."
+                },
+                "RelatedProperties": {
+                    "description": "This is an array of properties described by the message.",
+                    "longDescription": "This property shall contain an array of JSON Pointers indicating the properties described by the message, if appropriate for the message.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                    "description": "Oem extension object."
+                },
+                "Severity": {
+                    "longDescription": "The value of this property shall be the severity of the error, as defined in the Status section of the Redfish specificaiton.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the severity of the errors."
+                },
+                "Resolution": {
+                    "longDescription": "This property shall contain an override of the Resolution of the message in message registry, if present.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Used to provide suggestions on how to resolve the situation that caused the error."
+                }
+            },
+            "description": "This type describes a Message returned by the Redfish service.",
+            "longDescription": "This type shall define a Message as described in the Redfish specification.",
             "required": [
                 "MessageId"
             ],
-            "longDescription": "This type shall define a Message as described in the Redfish specification.",
-            "description": "This type describes a Message returned by the Redfish service."
+            "type": "object"
         }
-    },
-    "title": "#Message.v1_0_5"
+    }
 }

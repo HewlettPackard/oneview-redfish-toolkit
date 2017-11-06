@@ -1,10 +1,41 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#Resource.v1_1_3",
     "definitions": {
-        "Resource": {
+        "IndicatorLED": {
+            "enum": [
+                "Lit",
+                "Blinking",
+                "Off"
+            ],
+            "enumDescriptions": {
+                "Lit": "The Indicator LED is lit.",
+                "Blinking": "The Indicator LED is blinking.",
+                "Off": "The Indicator LED is off."
+            },
+            "type": "string"
+        },
+        "ResourceCollection": {
             "additionalProperties": false,
+            "type": "object",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                },
                 "Description": {
                     "readonly": true,
                     "anyOf": [
@@ -16,31 +47,28 @@
                         }
                     ]
                 },
-                "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
                 },
                 "@odata.type": {
                     "$ref": "odata.4.0.0.json#/definitions/type"
                 },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 },
                 "Oem": {
                     "$ref": "Resource.json#/definitions/Oem",
                     "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
                     "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
                 }
-            },
+            }
+        },
+        "ReferenceableMember": {
+            "additionalProperties": false,
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -48,53 +76,97 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "MemberId": {
+                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
+                    "readonly": true,
+                    "type": "string",
+                    "description": "This is the identifier for the member within the collection."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                }
+            },
+            "description": "This is the base type for addressable members of an array.",
+            "longDescription": "Array members can be referenced using the value returned in the @odata.id property which may or may not be a dereferenceable URL. The @odata.id of this entity shall be the location of this element within an Item.",
+            "type": "object"
+        },
+        "Resource": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Description": {
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                }
+            },
+            "description": "This is the base type for resources and referenceable members.",
             "required": [
                 "Id",
                 "Name"
             ],
-            "description": "This is the base type for resources and referenceable members."
+            "type": "object"
         },
-        "ResourceCollection": {
-            "type": "object",
+        "Identifier": {
             "additionalProperties": false,
-            "properties": {
-                "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
-                },
-                "Description": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "Resource.json#/definitions/Description"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ]
-                },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -102,16 +174,12 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
-            }
-        },
-        "Identifier": {
-            "additionalProperties": false,
-            "readonly": true,
+            },
             "properties": {
                 "DurableNameFormat": {
+                    "longDescription": "This property shall represent the format of the DurableName property.",
                     "readonly": true,
                     "anyOf": [
                         {
@@ -121,44 +189,30 @@
                             "type": "null"
                         }
                     ],
-                    "longDescription": "This property shall represent the format of the DurableName property.",
                     "description": "This represents the format of the DurableName property."
                 },
                 "DurableName": {
+                    "longDescription": "This property shall contain the world wide unique identifier for the resource. The string shall be in the format described by the value of the Identifier.DurableNameFormat property.",
+                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain the world wide unique identifier for the resource. The string shall be in the format described by the value of the Identifier.DurableNameFormat property.",
                     "description": "This indicates the world wide, persistent name of the resource."
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "This type describes any additional identifiers for a resource.",
             "longDescription": "This type shall contain any additional identifiers of a resource.",
-            "description": "This type describes any additional identifiers for a resource."
+            "readonly": true,
+            "type": "object"
         },
         "DurableNameFormat": {
-            "type": "string",
-            "enumLongDescriptions": {
-                "FC_WWN": "This durable name shall be a hexadecimal representation of the World Wide Name format as defined in the T11 Fibre Channel Physical and Signaling Interface Specification.",
-                "iQN": "This durable name shall be in the iSCSI Qualified Name format as defined in RFC 3720 and RFC 3721.",
-                "UUID": "This durable name shall be the hexadecimal representation of the Universal Unique Identifier as defined in the Internation Telecom Union's OSI networking and system aspects - Naming, Addressing and Registration Specification.",
-                "EUI": "This durable name shall be the hexadecimal representation of the IEEE-defined 64-bit Extended Unique Identifier as defined in the IEEE's Guidelines for 64-bit Global Identifier (EUI-64) Specification.",
-                "NAA": "This durable name shall be a hexadecimal representation of the Name Address Authority structure as defined in the T11 Fibre Channel - Framing and Signaling - 3 (FC-FS-3) specification."
+            "enumDescriptions": {
+                "iQN": "iSCSI Qualified Name.",
+                "NAA": "Name Address Authority Format.",
+                "FC_WWN": "Fibre Channel World Wide Name.",
+                "UUID": "Universally Unique Identifier.",
+                "EUI": "IEEE-defined 64-bit Extended Unique Identifier."
             },
             "enum": [
                 "NAA",
@@ -167,40 +221,20 @@
                 "UUID",
                 "EUI"
             ],
-            "enumDescriptions": {
-                "FC_WWN": "Fibre Channel World Wide Name.",
-                "iQN": "iSCSI Qualified Name.",
-                "UUID": "Universally Unique Identifier.",
-                "EUI": "IEEE-defined 64-bit Extended Unique Identifier.",
-                "NAA": "Name Address Authority Format."
-            }
-        },
-        "ReferenceableMember": {
-            "additionalProperties": false,
-            "properties": {
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "MemberId": {
-                    "type": "string",
-                    "readonly": true,
-                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
-                    "description": "This is the identifier for the member within the collection."
-                }
+            "enumLongDescriptions": {
+                "iQN": "This durable name shall be in the iSCSI Qualified Name format as defined in RFC 3720 and RFC 3721.",
+                "NAA": "This durable name shall be a hexadecimal representation of the Name Address Authority structure as defined in the T11 Fibre Channel - Framing and Signaling - 3 (FC-FS-3) specification.",
+                "FC_WWN": "This durable name shall be a hexadecimal representation of the World Wide Name format as defined in the T11 Fibre Channel Physical and Signaling Interface Specification.",
+                "UUID": "This durable name shall be the hexadecimal representation of the Universal Unique Identifier as defined in the Internation Telecom Union's OSI networking and system aspects - Naming, Addressing and Registration Specification.",
+                "EUI": "This durable name shall be the hexadecimal representation of the IEEE-defined 64-bit Extended Unique Identifier as defined in the IEEE's Guidelines for 64-bit Global Identifier (EUI-64) Specification."
             },
+            "type": "string"
+        },
+        "Location": {
+            "additionalProperties": false,
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -208,70 +242,36 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "longDescription": "Array members can be referenced using the value returned in the @odata.id property which may or may not be a dereferenceable URL. The @odata.id of this entity shall be the location of this element within an Item.",
-            "description": "This is the base type for addressable members of an array."
-        },
-        "Location": {
-            "additionalProperties": false,
-            "readonly": true,
             "properties": {
                 "Info": {
+                    "longDescription": "This property shall represent the location of the resource.",
+                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "This property shall represent the location of the resource.",
                     "description": "This indicates the location of the resource."
                 },
                 "Oem": {
                     "$ref": "Resource.json#/definitions/Oem"
                 },
                 "InfoFormat": {
+                    "longDescription": "This property shall represent the format of the Info property.",
+                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "This property shall represent the format of the Info property.",
                     "description": "This represents the format of the Info property."
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "This type describes the location of a resource.",
             "longDescription": "This type shall describe the location of a resource.",
-            "description": "This type describes the location of a resource."
-        },
-        "IndicatorLED": {
-            "type": "string",
-            "enum": [
-                "Lit",
-                "Blinking",
-                "Off"
-            ],
-            "enumDescriptions": {
-                "Off": "The Indicator LED is off.",
-                "Blinking": "The Indicator LED is blinking.",
-                "Lit": "The Indicator LED is lit."
-            }
+            "readonly": true,
+            "type": "object"
         }
-    },
-    "title": "#Resource.v1_1_3"
+    }
 }

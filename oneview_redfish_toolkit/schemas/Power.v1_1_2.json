@@ -1,533 +1,219 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "Power.v1_1_2.json#/definitions/Power",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#Power.v1_1_2.Power",
     "definitions": {
+        "PowerSupply": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "Redundancy": {
+                    "description": "This structure is used to show redundancy for power supplies.  The Component ids will reference the members of the redundancy groups.",
+                    "longDescription": "The values of the properties in this array shall be used to show redundancy for power supplies and other elements in this resource.  The use of IDs within these arrays shall reference the members of the redundancy groups.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Redundancy.json#/definitions/Redundancy"
+                    }
+                },
+                "PowerSupplyType": {
+                    "longDescription": "This property shall contain the input power type (AC or DC) of the associated power supply.",
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/PowerSupplyType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The Power Supply type (AC or DC)."
+                },
+                "Redundancy@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "Redundancy@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "RelatedItem@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "Model": {
+                    "longDescription": "This property shall contain the model information as defined by the manufacturer for the associated power supply.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The model number for this Power Supply."
+                },
+                "SparePartNumber": {
+                    "longDescription": "This property shall contain the spare or replacement part number as defined by the manufacturer for the associated power supply.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The spare part number for this Power Supply."
+                },
+                "RelatedItem": {
+                    "description": "The ID(s) of the resources associated with this Power Limit.",
+                    "longDescription": "The value of this property shall be an array of IDs containing pointers consistent with JSON pointer syntax to the resource that is being limited.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    }
+                },
+                "LineInputVoltage": {
+                    "description": "The line input voltage at which the Power Supply is operating.",
+                    "units": "V",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "This property shall contain the value in Volts of the line input voltage (measured or configured for) that the power supply has been configured to operate with or is currently receiving."
+                },
+                "LastPowerOutputWatts": {
+                    "minimum": 0,
+                    "longDescription": "This property shall contain the average power output, measured in Watts, of the associated power supply.",
+                    "description": "The average power output of this Power Supply.",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "PowerCapacityWatts": {
+                    "minimum": 0,
+                    "longDescription": "This property shall contiain the maximum amount of power, in Watts, that the associated power supply is rated to deliver.",
+                    "description": "The maximum capacity of this Power Supply.",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "InputRanges": {
+                    "description": "This is the input ranges that the power supply can use.",
+                    "longDescription": "The value of this property shall be a collection of ranges usable by the power supply unit.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/InputRange"
+                    }
+                },
+                "MemberId": {
+                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
+                    "readonly": true,
+                    "type": "string",
+                    "description": "This is the identifier for the member within the collection."
+                },
+                "SerialNumber": {
+                    "longDescription": "This property shall contain the serial number as defined by the manufacturer for the associated power supply.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The serial number for this Power Supply."
+                },
+                "FirmwareVersion": {
+                    "longDescription": "This property shall contain the firwmare version as defined by the manufacturer for the associated power supply.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The firmware version for this Power Supply."
+                },
+                "Name": {
+                    "longDescription": "This property shall contain a descriptive name for the associated power supply.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The name of the Power Supply."
+                },
+                "Manufacturer": {
+                    "longDescription": "The value of this property shall be the name of the organization responsible for producing the power supply. This organization might be the entity from whom the power supply is purchased, but this is not necessarily true.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the manufacturer of this power supply."
+                },
+                "LineInputVoltageType": {
+                    "longDescription": "This property shall contain the type of input line voltage supported by the associated power supply.",
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/LineInputVoltageType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The line voltage type supported as an input to this Power Supply."
+                },
+                "PartNumber": {
+                    "longDescription": "This property shall contain the part number as defined by the manufacturer for the associated power supply.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The part number for this Power Supply."
+                },
+                "RelatedItem@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                }
+            },
+            "description": "Details of a power supplies associated with this system or device.",
+            "longDescription": "Array members can be referenced using the value returned in the @odata.id property which may or may not be a dereferenceable URL. The @odata.id of this entity shall be the location of this element within an Item.",
+            "type": "object"
+        },
         "InputType": {
-            "type": "string",
             "enum": [
                 "AC",
                 "DC"
             ],
             "enumDescriptions": {
-                "AC": "Alternating Current (AC) input range.",
-                "DC": "Direct Current (DC) input range."
-            }
-        },
-        "PowerControl": {
-            "additionalProperties": false,
-            "properties": {
-                "RelatedItem@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "PowerConsumedWatts": {
-                    "readonly": true,
-                    "units": "W",
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the actual power being consumed (in Watts) by the chassis.",
-                    "description": "The actual power being consumed by the chassis."
-                },
-                "PowerAllocatedWatts": {
-                    "readonly": true,
-                    "units": "W",
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the total power currently allocated to chassis resources.",
-                    "description": "The total amount of power that has been allocated (or budegeted)to  chassis resources."
-                },
-                "PowerLimit": {
-                    "$ref": "#/definitions/PowerLimit",
-                    "longDescription": "This object shall contain power limit status and configuration information for this chassis.",
-                    "description": "Power limit status and configuration information for this chassis."
-                },
-                "PowerCapacityWatts": {
-                    "readonly": true,
-                    "units": "W",
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the total power capacity that is available for allocation to the chassis resources.",
-                    "description": "The total amount of power available to the chassis for allocation. This may the power supply capacity, or power budget assigned to the chassis from an up-stream chassis."
-                },
-                "PowerAvailableWatts": {
-                    "readonly": true,
-                    "units": "W",
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the amount of power capacity (in Watts) not already allocated and shall equal PowerCapacityWatts - PowerAllocatedWatts.",
-                    "description": "The amount of power not already budgeted and therefore available for additional allocation. (powerCapacity - powerAllocated).  This indicates how much reserve power capacity is left."
-                },
-                "RelatedItem@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "PowerRequestedWatts": {
-                    "readonly": true,
-                    "units": "W",
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the amount of power (in Watts) that the chassis resource is currently requesting be budgeted to it for future use.",
-                    "description": "The potential power that the chassis resources are requesting which may be higher than the current level being consumed since requested power includes budget that the chassis resource wants for future use."
-                },
-                "MemberId": {
-                    "type": "string",
-                    "readonly": true,
-                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
-                    "description": "This is the identifier for the member within the collection."
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "Name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the name of the Voltage sensor.",
-                    "description": "Power Control Function name."
-                },
-                "PowerMetrics": {
-                    "$ref": "#/definitions/PowerMetric",
-                    "longDescription": "This object shall contain power metrics for power readings (interval, min/max/ave power consumption) for the chassis.",
-                    "description": "Power readings for this chassis."
-                },
-                "RelatedItem": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be an array of IDs containing pointers consistent with JSON pointer syntax to the resource that is being limited.",
-                    "items": {
-                        "$ref": "odata.4.0.0.json#/definitions/idRef"
-                    },
-                    "description": "The ID(s) of the resources associated with this Power Limit."
-                }
+                "DC": "Direct Current (DC) input range.",
+                "AC": "Alternating Current (AC) input range."
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
-            "longDescription": "Array members can be referenced using the value returned in the @odata.id property which may or may not be a dereferenceable URL. The @odata.id of this entity shall be the location of this element within an Item.",
-            "description": "This is the base type for addressable members of an array."
-        },
-        "Voltage": {
-            "additionalProperties": false,
-            "properties": {
-                "UpperThresholdFatal": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "The value of this property shall indicate the present reading is above the normal range and is fatal. Units shall use the same units as the related ReadingVolts propoerty.",
-                    "description": "Above normal range and is fatal.",
-                    "readonly": true
-                },
-                "LowerThresholdNonCritical": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "The value of this property shall indicate the present reading is below the normal range but is not critical. Units shall use the same units as the related ReadingVolts propoerty.",
-                    "description": "Below normal range.",
-                    "readonly": true
-                },
-                "RelatedItem": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be an array of IDs containing pointers consistent with JSON pointer syntax to the areas or devices to which this voltage measurement applies.",
-                    "items": {
-                        "$ref": "odata.4.0.0.json#/definitions/idRef"
-                    },
-                    "description": "Describes the areas or devices to which this voltage measurement applies."
-                },
-                "UpperThresholdCritical": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "The value of this property shall indicate the present reading is above the normal range but is not yet fatal. Units shall use the same units as the related ReadingVolts propoerty.",
-                    "description": "Above normal range but not yet fatal.",
-                    "readonly": true
-                },
-                "UpperThresholdNonCritical": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "The value of this property shall indicate the present reading is above the normal range but is not critical. Units shall use the same units as the related ReadingVolts propoerty.",
-                    "description": "Above normal range.",
-                    "readonly": true
-                },
-                "RelatedItem@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "MaxReadingRange": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "The value of this property shall indicate the highest possible value for ReadingVolts. Units shall use the same units as the related ReadingVolts propoerty.",
-                    "description": "Maximum value for this Voltage sensor.",
-                    "readonly": true
-                },
-                "RelatedItem@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "SensorNumber": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be a numerical identifier for this voltage sensor that is unique within this resource.",
-                    "description": "A numerical identifier to represent the voltage sensor."
-                },
-                "LowerThresholdFatal": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "The value of this property shall indicate the present reading is below the normal range and is fatal. Units shall use the same units as the related ReadingVolts propoerty.",
-                    "description": "Below normal range and is fatal.",
-                    "readonly": true
-                },
-                "MemberId": {
-                    "type": "string",
-                    "readonly": true,
-                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
-                    "description": "This is the identifier for the member within the collection."
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
-                },
-                "PhysicalContext": {
-                    "readonly": true,
-                    "$ref": "PhysicalContext.v1_0_0.json#/definitions/PhysicalContext",
-                    "longDescription": "The value of this property shall be a description of the affected device or region within the chassis to which this voltage measurement applies.",
-                    "description": "Describes the area or device to which this voltage measurement applies."
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "ReadingVolts": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "The value of this property shall be the present reading of the voltage sensor's reading.",
-                    "description": "The present reading of the voltage sensor.",
-                    "readonly": true
-                },
-                "LowerThresholdCritical": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "The value of this property shall indicate the present reading is below the normal range but is not yet fatal. Units shall use the same units as the related ReadingVolts propoerty.",
-                    "description": "Below normal range but not yet fatal.",
-                    "readonly": true
-                },
-                "Name": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the name of the Voltage sensor.",
-                    "description": "Voltage sensor name."
-                },
-                "MinReadingRange": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "The value of this property shall indicate the lowest possible value for ReadingVolts. Units shall use the same units as the related ReadingVolts propoerty.",
-                    "description": "Minimum value for this Voltage sensor.",
-                    "readonly": true
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
-            "longDescription": "Array members can be referenced using the value returned in the @odata.id property which may or may not be a dereferenceable URL. The @odata.id of this entity shall be the location of this element within an Item.",
-            "description": "This is the base type for addressable members of an array."
-        },
-        "Power": {
-            "additionalProperties": false,
-            "properties": {
-                "PowerSupplies": {
-                    "type": "array",
-                    "longDescription": "This object shall contain details of the power supplies associated with this system or device.",
-                    "items": {
-                        "$ref": "#/definitions/PowerSupply"
-                    },
-                    "description": "Details of the power supplies associated with this system or device."
-                },
-                "PowerSupplies@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
-                },
-                "Voltages@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "Description": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "Resource.json#/definitions/Description"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ]
-                },
-                "PowerControl@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "PowerSupplies@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "Redundancy@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
-                "Redundancy@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "Voltages@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "PowerControl@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "Voltages": {
-                    "type": "array",
-                    "longDescription": "These properties shall be the definition for voltage sensors for a Redfish implementation.",
-                    "items": {
-                        "$ref": "#/definitions/Voltage"
-                    },
-                    "description": "This is the definition for voltage sensors."
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "PowerControl": {
-                    "type": "array",
-                    "longDescription": "These properties shall be the definition for power control (power reading and limiting) for a Redfish implementation.",
-                    "items": {
-                        "$ref": "#/definitions/PowerControl"
-                    },
-                    "description": "This is the definition for power control function (power reading/limiting)."
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "Redundancy": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "Redundancy.json#/definitions/Redundancy"
-                    },
-                    "description": "Redundancy information for the power subsystem of this system or device."
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
-            "required": [
-                "Id",
-                "Name"
-            ],
-            "longDescription": "This resource shall be used to represent a power metrics resource for a Redfish implementation.",
-            "description": "This is the schema definition for the Power Metrics.  It represents the properties for Power Consumption and Power Limiting."
-        },
-        "PowerSupplyType": {
-            "type": "string",
-            "enum": [
-                "Unknown",
-                "AC",
-                "DC",
-                "ACorDC"
-            ],
-            "enumDescriptions": {
-                "Unknown": "The power supply type cannot be determined.",
-                "ACorDC": "Power Supply supports both DC or AC.",
-                "AC": "Alternating Current (AC) power supply.",
-                "DC": "Direct Current (DC) power supply."
-            }
-        },
-        "InputRange": {
-            "additionalProperties": false,
-            "properties": {
-                "InputType": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/InputType"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This property shall contain the input type (AC or DC) of the associated range.",
-                    "description": "The Input type (AC or DC)."
-                },
-                "MinimumVoltage": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "This property shall contain the value in Volts of the minimum line input voltage which the power supply is capable of consuming for this range.",
-                    "description": "The minimum line input voltage at which this power supply input range is effective.",
-                    "readonly": true
-                },
-                "MaximumVoltage": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "V",
-                    "longDescription": "This property shall contain the value in Volts of the maximum line input voltage which the power supply is capable of consuming for this range.",
-                    "description": "The maximum line input voltage at which this power supply input range is effective.",
-                    "readonly": true
-                },
-                "MaximumFrequencyHz": {
-                    "units": "Hz",
-                    "readonly": true,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "This property shall contain the value in Hertz of the maximum line input frequency which the power supply is capable of consuming for this range.",
-                    "description": "The maximum line input frequency at which this power supply input range is effective."
-                },
-                "MinimumFrequencyHz": {
-                    "units": "Hz",
-                    "readonly": true,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "This property shall contain the value in Hertz of the minimum line input frequency which the power supply is capable of consuming for this range.",
-                    "description": "The minimum line input frequency at which this power supply input range is effective."
-                },
-                "OutputWattage": {
-                    "units": "W",
-                    "readonly": true,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "This property shall contiain the maximum amount of power, in Watts, that the associated power supply is rated to deliver while operating in this input range.",
-                    "description": "The maximum capacity of this Power Supply when operating in this input range."
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem"
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
-            "longDescription": "This type shall describe an input range that the associated power supply is able to utilize.",
-            "description": "This type describes an input range for a power supply."
+            "type": "string"
         },
         "LineInputVoltageType": {
-            "type": "string",
+            "enumDeprecated": {
+                "ACHighLine": "This value has been Deprecated in favor of AC277V.",
+                "ACMidLine": "This value has been Deprecated in favor of AC240V.",
+                "ACLowLine": "This value has been Deprecated in favor of AC120V."
+            },
             "enum": [
                 "Unknown",
                 "ACLowLine",
@@ -543,65 +229,26 @@
                 "DC240V"
             ],
             "enumDescriptions": {
-                "DC240V": "DC 240V nominal input.",
-                "AC120V": "AC 120V nominal input.",
-                "ACWideRange": "Wide range AC input.",
+                "Unknown": "The power supply line input voltage type cannot be determined.",
                 "AC277V": "AC 277V nominal input.",
+                "AC240V": "AC 240V nominal input.",
+                "DC240V": "DC 240V nominal input.",
+                "ACLowLine": "100-127V AC input.",
                 "ACMidLine": "200-240V AC input.",
+                "ACHighLine": "277V AC input.",
                 "DC380V": "High Voltage DC input (380V).",
                 "ACandDCWideRange": "Wide range AC or DC input.",
-                "ACLowLine": "100-127V AC input.",
-                "Unknown": "The power supply line input voltage type cannot be determined.",
-                "AC240V": "AC 240V nominal input.",
+                "ACWideRange": "Wide range AC input.",
                 "DCNeg48V": "-48V DC input.",
-                "ACHighLine": "277V AC input."
+                "AC120V": "AC 120V nominal input."
             },
-            "enumDeprecated": {
-                "ACMidLine": "This value has been Deprecated in favor of AC240V.",
-                "ACHighLine": "This value has been Deprecated in favor of AC277V.",
-                "ACLowLine": "This value has been Deprecated in favor of AC120V."
-            }
+            "type": "string"
         },
-        "PowerLimit": {
+        "Voltage": {
             "additionalProperties": false,
-            "properties": {
-                "LimitException": {
-                    "readonly": false,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/PowerLimitException"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "The value of this property shall represent the action to be taken if the resource power consumption can not be limited below the specified limit after several correction time periods.",
-                    "description": "The action that is taken if the power cannot be maintained below the LimitInWatts."
-                },
-                "LimitInWatts": {
-                    "units": "W",
-                    "readonly": false,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the power cap limit in watts for the resource.  If set to null, power capping shall be disabled.",
-                    "description": "The Power limit in watts. Set to null to disable power capping."
-                },
-                "CorrectionInMs": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "ms",
-                    "longDescription": "The value of this property shall represent the time interval in ms required for the limiting process to react and reduce the power consumption below the limit.",
-                    "description": "The time required for the limiting process to reduce power consumption to below the limit.",
-                    "readonly": false
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -609,81 +256,28 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "longDescription": "This type shall contain power limit status and configuration information for this chassis.",
-            "description": "This object contains power limit status and configuration information for the chassis."
-        },
-        "PowerSupply": {
-            "additionalProperties": false,
             "properties": {
-                "Name": {
+                "RelatedItem": {
+                    "description": "Describes the areas or devices to which this voltage measurement applies.",
+                    "longDescription": "The value of this property shall be an array of IDs containing pointers consistent with JSON pointer syntax to the areas or devices to which this voltage measurement applies.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    }
+                },
+                "LowerThresholdFatal": {
+                    "description": "Below normal range and is fatal.",
+                    "units": "V",
+                    "readonly": true,
                     "type": [
-                        "string",
+                        "number",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain a descriptive name for the associated power supply.",
-                    "description": "The name of the Power Supply."
-                },
-                "FirmwareVersion": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain the firwmare version as defined by the manufacturer for the associated power supply.",
-                    "description": "The firmware version for this Power Supply."
-                },
-                "Model": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain the model information as defined by the manufacturer for the associated power supply.",
-                    "description": "The model number for this Power Supply."
-                },
-                "LineInputVoltageType": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/LineInputVoltageType"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This property shall contain the type of input line voltage supported by the associated power supply.",
-                    "description": "The line voltage type supported as an input to this Power Supply."
-                },
-                "RelatedItem@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "SparePartNumber": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain the spare or replacement part number as defined by the manufacturer for the associated power supply.",
-                    "description": "The spare part number for this Power Supply."
-                },
-                "SerialNumber": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain the serial number as defined by the manufacturer for the associated power supply.",
-                    "description": "The serial number for this Power Supply."
-                },
-                "Redundancy@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
+                    "longDescription": "The value of this property shall indicate the present reading is below the normal range and is fatal. Units shall use the same units as the related ReadingVolts propoerty."
                 },
                 "Oem": {
                     "$ref": "Resource.json#/definitions/Oem",
@@ -693,126 +287,129 @@
                 "Status": {
                     "$ref": "Resource.json#/definitions/Status"
                 },
-                "LineInputVoltage": {
+                "LowerThresholdNonCritical": {
+                    "description": "Below normal range.",
+                    "units": "V",
+                    "readonly": true,
                     "type": [
                         "number",
                         "null"
                     ],
+                    "longDescription": "The value of this property shall indicate the present reading is below the normal range but is not critical. Units shall use the same units as the related ReadingVolts propoerty."
+                },
+                "MemberId": {
+                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
+                    "readonly": true,
+                    "type": "string",
+                    "description": "This is the identifier for the member within the collection."
+                },
+                "MaxReadingRange": {
+                    "description": "Maximum value for this Voltage sensor.",
                     "units": "V",
-                    "longDescription": "This property shall contain the value in Volts of the line input voltage (measured or configured for) that the power supply has been configured to operate with or is currently receiving.",
-                    "description": "The line input voltage at which the Power Supply is operating.",
-                    "readonly": true
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall indicate the highest possible value for ReadingVolts. Units shall use the same units as the related ReadingVolts propoerty."
+                },
+                "ReadingVolts": {
+                    "description": "The present reading of the voltage sensor.",
+                    "units": "V",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall be the present reading of the voltage sensor's reading."
+                },
+                "SensorNumber": {
+                    "longDescription": "The value of this property shall be a numerical identifier for this voltage sensor that is unique within this resource.",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "A numerical identifier to represent the voltage sensor."
+                },
+                "LowerThresholdCritical": {
+                    "description": "Below normal range but not yet fatal.",
+                    "units": "V",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall indicate the present reading is below the normal range but is not yet fatal. Units shall use the same units as the related ReadingVolts propoerty."
+                },
+                "UpperThresholdFatal": {
+                    "description": "Above normal range and is fatal.",
+                    "units": "V",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall indicate the present reading is above the normal range and is fatal. Units shall use the same units as the related ReadingVolts propoerty."
+                },
+                "UpperThresholdCritical": {
+                    "description": "Above normal range but not yet fatal.",
+                    "units": "V",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall indicate the present reading is above the normal range but is not yet fatal. Units shall use the same units as the related ReadingVolts propoerty."
+                },
+                "PhysicalContext": {
+                    "$ref": "PhysicalContext.v1_0_0.json#/definitions/PhysicalContext",
+                    "longDescription": "The value of this property shall be a description of the affected device or region within the chassis to which this voltage measurement applies.",
+                    "readonly": true,
+                    "description": "Describes the area or device to which this voltage measurement applies."
+                },
+                "UpperThresholdNonCritical": {
+                    "description": "Above normal range.",
+                    "units": "V",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall indicate the present reading is above the normal range but is not critical. Units shall use the same units as the related ReadingVolts propoerty."
+                },
+                "MinReadingRange": {
+                    "description": "Minimum value for this Voltage sensor.",
+                    "units": "V",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall indicate the lowest possible value for ReadingVolts. Units shall use the same units as the related ReadingVolts propoerty."
+                },
+                "Name": {
+                    "longDescription": "The value of this property shall be the name of the Voltage sensor.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Voltage sensor name."
                 },
                 "RelatedItem@odata.count": {
                     "$ref": "odata.4.0.0.json#/definitions/count"
                 },
-                "PowerCapacityWatts": {
-                    "units": "W",
-                    "readonly": true,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "This property shall contiain the maximum amount of power, in Watts, that the associated power supply is rated to deliver.",
-                    "description": "The maximum capacity of this Power Supply."
-                },
-                "Manufacturer": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the name of the organization responsible for producing the power supply. This organization might be the entity from whom the power supply is purchased, but this is not necessarily true.",
-                    "description": "This is the manufacturer of this power supply."
-                },
-                "PartNumber": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain the part number as defined by the manufacturer for the associated power supply.",
-                    "description": "The part number for this Power Supply."
-                },
-                "PowerSupplyType": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/PowerSupplyType"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This property shall contain the input power type (AC or DC) of the associated power supply.",
-                    "description": "The Power Supply type (AC or DC)."
-                },
-                "LastPowerOutputWatts": {
-                    "units": "W",
-                    "readonly": true,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "This property shall contain the average power output, measured in Watts, of the associated power supply.",
-                    "description": "The average power output of this Power Supply."
-                },
-                "Redundancy@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "MemberId": {
-                    "type": "string",
-                    "readonly": true,
-                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
-                    "description": "This is the identifier for the member within the collection."
-                },
-                "InputRanges": {
-                    "type": "array",
-                    "longDescription": "The value of this property shall be a collection of ranges usable by the power supply unit.",
-                    "items": {
-                        "$ref": "#/definitions/InputRange"
-                    },
-                    "description": "This is the input ranges that the power supply can use."
-                },
-                "RelatedItem": {
-                    "type": "array",
-                    "longDescription": "The value of this property shall be an array of IDs containing pointers consistent with JSON pointer syntax to the resource that is being limited.",
-                    "items": {
-                        "$ref": "odata.4.0.0.json#/definitions/idRef"
-                    },
-                    "description": "The ID(s) of the resources associated with this Power Limit."
-                },
-                "Redundancy": {
-                    "type": "array",
-                    "longDescription": "The values of the properties in this array shall be used to show redundancy for power supplies and other elements in this resource.  The use of IDs within these arrays shall reference the members of the redundancy groups.",
-                    "items": {
-                        "$ref": "Redundancy.json#/definitions/Redundancy"
-                    },
-                    "description": "This structure is used to show redundancy for power supplies.  The Component ids will reference the members of the redundancy groups."
+                "RelatedItem@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "This is the base type for addressable members of an array.",
             "longDescription": "Array members can be referenced using the value returned in the @odata.id property which may or may not be a dereferenceable URL. The @odata.id of this entity shall be the location of this element within an Item.",
-            "description": "Details of a power supplies associated with this system or device."
+            "type": "object"
         },
         "PowerLimitException": {
-            "type": "string",
             "enum": [
                 "NoAction",
                 "HardPowerOff",
@@ -821,61 +418,17 @@
             ],
             "enumDescriptions": {
                 "Oem": "Take an OEM-defined action.",
-                "LogEventOnly": "Log an event when the limit is exceeded, but take no further action.",
                 "NoAction": "Take no action when the limit is exceeded.",
-                "HardPowerOff": "Turn the power off immediately when the limit is exceeded."
-            }
-        },
-        "PowerMetric": {
-            "additionalProperties": false,
-            "properties": {
-                "IntervalInMin": {
-                    "units": "min",
-                    "readonly": true,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the time interval (or window), in minutes, in which the PowerMetrics properties are measured over.",
-                    "description": "The time interval (or window) in which the PowerMetrics are measured over."
-                },
-                "MinConsumedWatts": {
-                    "units": "W",
-                    "readonly": true,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the minimum power level in watts that occured within the last IntervalInMin minutes.",
-                    "description": "The lowest power consumption level over the measurement window (the last IntervalInMin minutes)."
-                },
-                "MaxConsumedWatts": {
-                    "units": "W",
-                    "readonly": true,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the maximum power level in watts that occured within the last IntervalInMin minutes.",
-                    "description": "The highest power consumption level that has occured over the measurement window (the last IntervalInMin minutes)."
-                },
-                "AverageConsumedWatts": {
-                    "units": "W",
-                    "readonly": true,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the average power level that occured averaged over the last IntervalInMin minutes.",
-                    "description": "The average power level over the measurement window (the last IntervalInMin minutes)."
-                }
+                "HardPowerOff": "Turn the power off immediately when the limit is exceeded.",
+                "LogEventOnly": "Log an event when the limit is exceeded, but take no further action."
             },
+            "type": "string"
+        },
+        "InputRange": {
+            "additionalProperties": false,
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -883,14 +436,461 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "MaximumVoltage": {
+                    "description": "The maximum line input voltage at which this power supply input range is effective.",
+                    "units": "V",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "This property shall contain the value in Volts of the maximum line input voltage which the power supply is capable of consuming for this range."
+                },
+                "InputType": {
+                    "longDescription": "This property shall contain the input type (AC or DC) of the associated range.",
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/InputType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The Input type (AC or DC)."
+                },
+                "MaximumFrequencyHz": {
+                    "minimum": 0,
+                    "longDescription": "This property shall contain the value in Hertz of the maximum line input frequency which the power supply is capable of consuming for this range.",
+                    "description": "The maximum line input frequency at which this power supply input range is effective.",
+                    "units": "Hz",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "OutputWattage": {
+                    "minimum": 0,
+                    "longDescription": "This property shall contiain the maximum amount of power, in Watts, that the associated power supply is rated to deliver while operating in this input range.",
+                    "description": "The maximum capacity of this Power Supply when operating in this input range.",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem"
+                },
+                "MinimumVoltage": {
+                    "description": "The minimum line input voltage at which this power supply input range is effective.",
+                    "units": "V",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "This property shall contain the value in Volts of the minimum line input voltage which the power supply is capable of consuming for this range."
+                },
+                "MinimumFrequencyHz": {
+                    "minimum": 0,
+                    "longDescription": "This property shall contain the value in Hertz of the minimum line input frequency which the power supply is capable of consuming for this range.",
+                    "description": "The minimum line input frequency at which this power supply input range is effective.",
+                    "units": "Hz",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                }
+            },
+            "description": "This type describes an input range for a power supply.",
+            "longDescription": "This type shall describe an input range that the associated power supply is able to utilize.",
+            "type": "object"
+        },
+        "Power": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "PowerControl": {
+                    "description": "This is the definition for power control function (power reading/limiting).",
+                    "longDescription": "These properties shall be the definition for power control (power reading and limiting) for a Redfish implementation.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PowerControl"
+                    }
+                },
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "Voltages": {
+                    "description": "This is the definition for voltage sensors.",
+                    "longDescription": "These properties shall be the definition for voltage sensors for a Redfish implementation.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Voltage"
+                    }
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Voltages@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "PowerSupplies@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "PowerControl@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "Redundancy": {
+                    "description": "Redundancy information for the power subsystem of this system or device.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Redundancy.json#/definitions/Redundancy"
+                    }
+                },
+                "Redundancy@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "Voltages@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "Description": {
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.json#/definitions/Description"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "PowerControl@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "PowerSupplies@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "Redundancy@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "PowerSupplies": {
+                    "description": "Details of the power supplies associated with this system or device.",
+                    "longDescription": "This object shall contain details of the power supplies associated with this system or device.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PowerSupply"
+                    }
+                }
+            },
+            "description": "This is the schema definition for the Power Metrics.  It represents the properties for Power Consumption and Power Limiting.",
+            "longDescription": "This resource shall be used to represent a power metrics resource for a Redfish implementation.",
+            "required": [
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "PowerLimit": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "LimitException": {
+                    "longDescription": "The value of this property shall represent the action to be taken if the resource power consumption can not be limited below the specified limit after several correction time periods.",
+                    "readonly": false,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/PowerLimitException"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The action that is taken if the power cannot be maintained below the LimitInWatts."
+                },
+                "LimitInWatts": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the power cap limit in watts for the resource.  If set to null, power capping shall be disabled.",
+                    "description": "The Power limit in watts. Set to null to disable power capping.",
+                    "units": "W",
+                    "readonly": false,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "CorrectionInMs": {
+                    "description": "The time required for the limiting process to reduce power consumption to below the limit.",
+                    "units": "ms",
+                    "readonly": false,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall represent the time interval in ms required for the limiting process to react and reduce the power consumption below the limit."
+                }
+            },
+            "description": "This object contains power limit status and configuration information for the chassis.",
+            "longDescription": "This type shall contain power limit status and configuration information for this chassis.",
+            "type": "object"
+        },
+        "PowerControl": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "PowerConsumedWatts": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the actual power being consumed (in Watts) by the chassis.",
+                    "description": "The actual power being consumed by the chassis.",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "RelatedItem": {
+                    "description": "The ID(s) of the resources associated with this Power Limit.",
+                    "longDescription": "The value of this property shall be an array of IDs containing pointers consistent with JSON pointer syntax to the resource that is being limited.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    }
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "PowerAvailableWatts": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the amount of power capacity (in Watts) not already allocated and shall equal PowerCapacityWatts - PowerAllocatedWatts.",
+                    "description": "The amount of power not already budgeted and therefore available for additional allocation. (powerCapacity - powerAllocated).  This indicates how much reserve power capacity is left.",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "PowerCapacityWatts": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the total power capacity that is available for allocation to the chassis resources.",
+                    "description": "The total amount of power available to the chassis for allocation. This may the power supply capacity, or power budget assigned to the chassis from an up-stream chassis.",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "MemberId": {
+                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
+                    "readonly": true,
+                    "type": "string",
+                    "description": "This is the identifier for the member within the collection."
+                },
+                "PowerMetrics": {
+                    "$ref": "#/definitions/PowerMetric",
+                    "longDescription": "This object shall contain power metrics for power readings (interval, min/max/ave power consumption) for the chassis.",
+                    "description": "Power readings for this chassis."
+                },
+                "Name": {
+                    "longDescription": "The value of this property shall be the name of the Voltage sensor.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Power Control Function name."
+                },
+                "PowerLimit": {
+                    "$ref": "#/definitions/PowerLimit",
+                    "longDescription": "This object shall contain power limit status and configuration information for this chassis.",
+                    "description": "Power limit status and configuration information for this chassis."
+                },
+                "PowerRequestedWatts": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the amount of power (in Watts) that the chassis resource is currently requesting be budgeted to it for future use.",
+                    "description": "The potential power that the chassis resources are requesting which may be higher than the current level being consumed since requested power includes budget that the chassis resource wants for future use.",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "RelatedItem@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "PowerAllocatedWatts": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the total power currently allocated to chassis resources.",
+                    "description": "The total amount of power that has been allocated (or budegeted)to  chassis resources.",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "RelatedItem@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                }
+            },
+            "description": "This is the base type for addressable members of an array.",
+            "longDescription": "Array members can be referenced using the value returned in the @odata.id property which may or may not be a dereferenceable URL. The @odata.id of this entity shall be the location of this element within an Item.",
+            "type": "object"
+        },
+        "PowerSupplyType": {
+            "enum": [
+                "Unknown",
+                "AC",
+                "DC",
+                "ACorDC"
+            ],
+            "enumDescriptions": {
+                "Unknown": "The power supply type cannot be determined.",
+                "AC": "Alternating Current (AC) power supply.",
+                "DC": "Direct Current (DC) power supply.",
+                "ACorDC": "Power Supply supports both DC or AC."
+            },
+            "type": "string"
+        },
+        "PowerMetric": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "AverageConsumedWatts": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the average power level that occured averaged over the last IntervalInMin minutes.",
+                    "description": "The average power level over the measurement window (the last IntervalInMin minutes).",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "MaxConsumedWatts": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the maximum power level in watts that occured within the last IntervalInMin minutes.",
+                    "description": "The highest power consumption level that has occured over the measurement window (the last IntervalInMin minutes).",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "IntervalInMin": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the time interval (or window), in minutes, in which the PowerMetrics properties are measured over.",
+                    "description": "The time interval (or window) in which the PowerMetrics are measured over.",
+                    "units": "min",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "MinConsumedWatts": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the minimum power level in watts that occured within the last IntervalInMin minutes.",
+                    "description": "The lowest power consumption level over the measurement window (the last IntervalInMin minutes).",
+                    "units": "W",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                }
+            },
+            "description": "This type describe the power metrics for a resource.",
             "longDescription": "This type shall contain power metrics for power readings (interval, min/max/ave power consumption) for a resource.",
-            "description": "This type describe the power metrics for a resource."
+            "type": "object"
         }
     },
-    "title": "#Power.v1_1_2.Power"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

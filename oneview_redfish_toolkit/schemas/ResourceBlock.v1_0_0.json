@@ -1,70 +1,172 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "ResourceBlock.v1_0_0.json#/definitions/ResourceBlock",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#ResourceBlock.v1_0_0.ResourceBlock",
     "definitions": {
+        "CompositionStatus": {
+            "additionalProperties": true,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "CompositionState": {
+                    "longDescription": "The value of this property shall be an enumerated value describing composition state of the Resource Block.",
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/CompositionState"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "This property represents the current state of the Resource Block from a composition perspective."
+                },
+                "Reserved": {
+                    "longDescription": "This property shall be a boolean that is set by client once the Resource Block is identified to be composed.  It shall provide multiple clients a way to negotiate its ownership.  This will help clients to know if a Resource Block is reserved by other client.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "This represents if the Resource Block is reserved by any client."
+                }
+            },
+            "description": "Composition status of the Resource Block.",
+            "longDescription": "This type shall contain properties that describe the high level composition status of the Resource Block.",
+            "required": [
+                "CompositionState"
+            ],
+            "type": "object"
+        },
+        "CompositionState": {
+            "enum": [
+                "Composing",
+                "Composed",
+                "Unused",
+                "Failed"
+            ],
+            "enumDescriptions": {
+                "Unused": "Indicates the Resource Block is free and can participate in composition.",
+                "Composed": "Final successful state of a Resource Block which has participated in composition.",
+                "Composing": "Intermediate state indicating composition is in progress.",
+                "Failed": "The final composition resulted in failure and manual intervention is required to fix it."
+            },
+            "type": "string"
+        },
+        "ResourceBlockType": {
+            "enum": [
+                "Compute",
+                "Processor",
+                "Memory",
+                "Network",
+                "Storage",
+                "ComputerSystem"
+            ],
+            "enumDescriptions": {
+                "Compute": "This Resource Block contains both Processor and Memory resources in a manner that creates a compute complex.",
+                "Storage": "This Resource Block contains Storage resources, such as Storage and Simple Storage.",
+                "Network": "This Resource Block contains Network resources, such as Ethernet Interfaces.",
+                "Processor": "This Resource Block contains Processor resources.",
+                "Memory": "This Resource Block contains Memory resources.",
+                "ComputerSystem": "This Resource Block contains ComputerSystem resources."
+            },
+            "type": "string"
+        },
         "ResourceBlock": {
             "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
-                "Links": {
+                "ComputerSystems": {
+                    "description": "An array of references to the Computer Systems available in this Resource Block.",
+                    "longDescription": "The value of this property shall be an array of references of type ComputerSystem that are in this Resource Block.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "ComputerSystem.json#/definitions/ComputerSystem"
+                    }
+                },
+                "Memory@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "SimpleStorage": {
+                    "description": "An array of references to the Simple Storage available in this Resource Block.",
+                    "longDescription": "The value of this property shall be an array of references of type SimpleStorage that are in this Resource Block.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "SimpleStorage.json#/definitions/SimpleStorage"
+                    }
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "NetworkInterfaces": {
+                    "description": "An array of references to the Network Interfaces available in this Resource Block.",
+                    "longDescription": "The value of this property shall be an array of references of type NetworkInterface that are in this Resource Block.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "NetworkInterface.json#/definitions/NetworkInterface"
+                    }
+                },
+                "NetworkInterfaces@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "Storage": {
+                    "description": "An array of references to the Storage available in this Resource Block.",
+                    "longDescription": "The value of this property shall be an array of references of type Storage that are in this Resource Block.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "Storage.json#/definitions/Storage"
+                    }
+                },
+                "ComputerSystems@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "EthernetInterfaces": {
+                    "description": "An array of references to the Ethernet Interfaces available in this Resource Block.",
+                    "longDescription": "The value of this property shall be an array of references of type EthernetInterface that are in this Resource Block.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "EthernetInterface.json#/definitions/EthernetInterface"
+                    }
+                },
+                "Actions": {
                     "additionalProperties": false,
-                    "properties": {
-                        "Chassis@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "Chassis@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "Chassis": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be an array of references of type Chassis that represent the physical container associated with this Resource Block.",
-                            "items": {
-                                "$ref": "Chassis.json#/definitions/Chassis"
-                            },
-                            "description": "An array of references to the Chassis in which this Resource Block is contained."
-                        },
-                        "ComputerSystems@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "ComputerSystems": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be an array of references of type ComputerSystem that represent the Computer Systems composed from this Resource Block.",
-                            "items": {
-                                "$ref": "ComputerSystem.json#/definitions/ComputerSystem"
-                            },
-                            "description": "An array of references to the Computer Systems that are composed from this Resource Block."
-                        },
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                            "description": "Oem extension object."
-                        },
-                        "Zones@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "Zones@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "ComputerSystems@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "Zones": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be an array of references of type Zone that represent the binding constraints associated with this Resource Block.",
-                            "items": {
-                                "$ref": "Zone.json#/definitions/Zone"
-                            },
-                            "description": "An array of references to the Zones in which this Resource Block is bound."
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -72,34 +174,171 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "description": "This property shall specify a valid odata or Redfish property.",
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ]
+                                }
+                            },
+                            "properties": {},
+                            "description": "The available OEM specific actions for this resource.",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "type": "object"
+                        }
+                    },
+                    "description": "The available actions for this resource.",
+                    "longDescription": "The Actions property shall contain the available actions for this resource.",
+                    "type": "object"
+                },
+                "Processors@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "Storage@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "EthernetInterfaces@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "SimpleStorage@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "Links": {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
+                            "type": [
+                                "array",
+                                "boolean",
+                                "number",
+                                "null",
+                                "object",
+                                "string"
+                            ]
+                        }
+                    },
+                    "properties": {
+                        "ComputerSystems": {
+                            "description": "An array of references to the Computer Systems that are composed from this Resource Block.",
+                            "longDescription": "The value of this property shall be an array of references of type ComputerSystem that represent the Computer Systems composed from this Resource Block.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "ComputerSystem.json#/definitions/ComputerSystem"
+                            }
+                        },
+                        "Zones@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "Chassis@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "ComputerSystems@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "Oem": {
+                            "$ref": "Resource.json#/definitions/Oem",
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                            "description": "Oem extension object."
+                        },
+                        "ComputerSystems@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "Zones@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "Chassis": {
+                            "description": "An array of references to the Chassis in which this Resource Block is contained.",
+                            "longDescription": "The value of this property shall be an array of references of type Chassis that represent the physical container associated with this Resource Block.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Chassis.json#/definitions/Chassis"
+                            }
+                        },
+                        "Chassis@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "Zones": {
+                            "description": "An array of references to the Zones in which this Resource Block is bound.",
+                            "longDescription": "The value of this property shall be an array of references of type Zone that represent the binding constraints associated with this Resource Block.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Zone.json#/definitions/Zone"
+                            }
+                        }
+                    },
+                    "description": "Contains references to other resources that are related to this resource.",
                     "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-                    "description": "Contains references to other resources that are related to this resource."
+                    "type": "object"
                 },
                 "@odata.context": {
                     "$ref": "odata.4.0.0.json#/definitions/context"
                 },
-                "Processors": {
-                    "type": "array",
+                "SimpleStorage@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "ComputerSystems@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "Memory": {
+                    "description": "An array of references to the Memory available in this Resource Block.",
+                    "longDescription": "The value of this property shall be an array of references of type Memory that are in this Resource Block.",
                     "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "Memory.json#/definitions/Memory"
+                    }
+                },
+                "Memory@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "Processors": {
+                    "description": "An array of references to the Processors available in this Resource Block.",
                     "longDescription": "The value of this property shall be an array of references of type Processor that are in this Resource Block.",
+                    "readonly": true,
+                    "type": "array",
                     "items": {
                         "$ref": "Processor.json#/definitions/Processor"
-                    },
-                    "description": "An array of references to the Processors available in this Resource Block."
+                    }
                 },
-                "ResourceBlockType": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be an array of enumerated values describing type of resources available.",
-                    "items": {
-                        "$ref": "#/definitions/ResourceBlockType"
-                    },
-                    "description": "This property represents the types of resources available on this Resource Block."
+                "Storage@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "Processors@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "Description": {
                     "readonly": true,
@@ -112,281 +351,42 @@
                         }
                     ]
                 },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "EthernetInterfaces@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "ComputerSystems@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "Storage@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "Actions": {
-                    "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "additionalProperties": true,
-                            "properties": {},
-                            "patternProperties": {
-                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "type": [
-                                        "array",
-                                        "boolean",
-                                        "number",
-                                        "null",
-                                        "object",
-                                        "string"
-                                    ],
-                                    "description": "This property shall specify a valid odata or Redfish property."
-                                }
-                            },
-                            "type": "object",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "description": "The available OEM specific actions for this resource."
-                        }
-                    },
-                    "patternProperties": {
-                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                            "type": [
-                                "array",
-                                "boolean",
-                                "number",
-                                "null",
-                                "object",
-                                "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
-                        }
-                    },
-                    "type": "object",
-                    "longDescription": "The Actions property shall contain the available actions for this resource.",
-                    "description": "The available actions for this resource."
-                },
-                "Memory": {
-                    "type": "array",
+                "ResourceBlockType": {
+                    "description": "This property represents the types of resources available on this Resource Block.",
+                    "longDescription": "The value of this property shall be an array of enumerated values describing type of resources available.",
                     "readonly": true,
-                    "longDescription": "The value of this property shall be an array of references of type Memory that are in this Resource Block.",
+                    "type": "array",
                     "items": {
-                        "$ref": "Memory.json#/definitions/Memory"
-                    },
-                    "description": "An array of references to the Memory available in this Resource Block."
-                },
-                "NetworkInterfaces@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
-                },
-                "SimpleStorage@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
+                        "$ref": "#/definitions/ResourceBlockType"
+                    }
                 },
                 "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "Memory@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "NetworkInterfaces@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "Storage@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "SimpleStorage@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "ComputerSystems@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
-                "ComputerSystems": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be an array of references of type ComputerSystem that are in this Resource Block.",
-                    "items": {
-                        "$ref": "ComputerSystem.json#/definitions/ComputerSystem"
-                    },
-                    "description": "An array of references to the Computer Systems available in this Resource Block."
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "Processors@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "Storage": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be an array of references of type Storage that are in this Resource Block.",
-                    "items": {
-                        "$ref": "Storage.json#/definitions/Storage"
-                    },
-                    "description": "An array of references to the Storage available in this Resource Block."
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 },
                 "CompositionStatus": {
                     "$ref": "#/definitions/CompositionStatus",
                     "longDescription": "The value of this property shall contain composition status information about this Resource Block.",
                     "description": "This property describes the composition status details for this Resource Block."
                 },
-                "Memory@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "NetworkInterfaces": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be an array of references of type NetworkInterface that are in this Resource Block.",
-                    "items": {
-                        "$ref": "NetworkInterface.json#/definitions/NetworkInterface"
-                    },
-                    "description": "An array of references to the Network Interfaces available in this Resource Block."
-                },
-                "Processors@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "EthernetInterfaces@odata.count": {
+                "NetworkInterfaces@odata.count": {
                     "$ref": "odata.4.0.0.json#/definitions/count"
                 },
-                "SimpleStorage": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be an array of references of type SimpleStorage that are in this Resource Block.",
-                    "items": {
-                        "$ref": "SimpleStorage.json#/definitions/SimpleStorage"
-                    },
-                    "description": "An array of references to the Simple Storage available in this Resource Block."
-                },
-                "EthernetInterfaces": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be an array of references of type EthernetInterface that are in this Resource Block.",
-                    "items": {
-                        "$ref": "EthernetInterface.json#/definitions/EthernetInterface"
-                    },
-                    "description": "An array of references to the Ethernet Interfaces available in this Resource Block."
+                "EthernetInterfaces@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "This schema defines a Resource Block resource.",
+            "longDescription": "This resource shall be used to represent a Resource Block for a Redfish implementation.",
             "required": [
                 "Id",
                 "Name",
                 "CompositionStatus",
                 "ResourceBlockType"
             ],
-            "longDescription": "This resource shall be used to represent a Resource Block for a Redfish implementation.",
-            "description": "This schema defines a Resource Block resource."
-        },
-        "CompositionState": {
-            "type": "string",
-            "enum": [
-                "Composing",
-                "Composed",
-                "Unused",
-                "Failed"
-            ],
-            "enumDescriptions": {
-                "Failed": "The final composition resulted in failure and manual intervention is required to fix it.",
-                "Composed": "Final successful state of a Resource Block which has participated in composition.",
-                "Composing": "Intermediate state indicating composition is in progress.",
-                "Unused": "Indicates the Resource Block is free and can participate in composition."
-            }
-        },
-        "ResourceBlockType": {
-            "type": "string",
-            "enum": [
-                "Compute",
-                "Processor",
-                "Memory",
-                "Network",
-                "Storage",
-                "ComputerSystem"
-            ],
-            "enumDescriptions": {
-                "Processor": "This Resource Block contains Processor resources.",
-                "Storage": "This Resource Block contains Storage resources, such as Storage and Simple Storage.",
-                "Memory": "This Resource Block contains Memory resources.",
-                "Network": "This Resource Block contains Network resources, such as Ethernet Interfaces.",
-                "Compute": "This Resource Block contains both Processor and Memory resources in a manner that creates a compute complex.",
-                "ComputerSystem": "This Resource Block contains ComputerSystem resources."
-            }
-        },
-        "CompositionStatus": {
-            "additionalProperties": true,
-            "properties": {
-                "Reserved": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "This property shall be a boolean that is set by client once the Resource Block is identified to be composed.  It shall provide multiple clients a way to negotiate its ownership.  This will help clients to know if a Resource Block is reserved by other client.",
-                    "description": "This represents if the Resource Block is reserved by any client."
-                },
-                "CompositionState": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/CompositionState"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "The value of this property shall be an enumerated value describing composition state of the Resource Block.",
-                    "description": "This property represents the current state of the Resource Block from a composition perspective."
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
-            "required": [
-                "CompositionState"
-            ],
-            "longDescription": "This type shall contain properties that describe the high level composition status of the Resource Block.",
-            "description": "Composition status of the Resource Block."
+            "type": "object"
         }
     },
-    "title": "#ResourceBlock.v1_0_0.ResourceBlock"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

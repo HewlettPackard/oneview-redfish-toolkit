@@ -1,21 +1,13 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#CollectionCapabilities.v1_0_0",
     "definitions": {
         "CollectionCapabilities": {
             "additionalProperties": false,
-            "properties": {
-                "Capabilities": {
-                    "type": "array",
-                    "longDescription": "The value of this property shall be an array of Capability structures.",
-                    "items": {
-                        "$ref": "#/definitions/Capability"
-                    },
-                    "description": "This property contains the list of capabilities supported by this resource."
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -23,61 +15,44 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "Capabilities": {
+                    "description": "This property contains the list of capabilities supported by this resource.",
+                    "longDescription": "The value of this property shall be an array of Capability structures.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Capability"
+                    }
+                }
+            },
+            "description": "This type describes the capabilities of a collection.",
             "longDescription": "This type shall describe any capabilities of a collection in terms of how a client is able to create new resources within the collection.",
-            "description": "This type describes the capabilities of a collection."
-        },
-        "UseCase": {
-            "type": "string",
-            "enum": [
-                "ComputerSystemComposition",
-                "VolumeCreation"
-            ],
-            "enumDescriptions": {
-                "VolumeCreation": "This capability describes a client creating a new Volume instance as part of an existing storage subsystem.",
-                "ComputerSystemComposition": "This capability describes a client creating a new ComputerSystem instance from a set of disaggregated hardware."
-            }
+            "type": "object"
         },
         "Capability": {
             "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
                 "Links": {
                     "additionalProperties": false,
-                    "properties": {
-                        "RelatedItem@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                            "description": "Oem extension object."
-                        },
-                        "TargetCollection": {
-                            "readonly": true,
-                            "$ref": "Resource.json#/definitions/ResourceCollection",
-                            "longDescription": "The value of this property shall be a reference to a Resource Collection that this structure is describing.  This structure may be used by a client in order to understand how to form the POST request for the given collection.",
-                            "description": "Reference to the collection that this capabilities structure is describing."
-                        },
-                        "RelatedItem@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "RelatedItem": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be an array of IDs containing pointers consistent with JSON pointer syntax to the resource that is related to this capability.",
-                            "items": {
-                                "$ref": "odata.4.0.0.json#/definitions/idRef"
-                            },
-                            "description": "The ID(s) of the resources associated with this capability."
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -85,52 +60,77 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Oem": {
+                            "$ref": "Resource.json#/definitions/Oem",
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                            "description": "Oem extension object."
+                        },
+                        "TargetCollection": {
+                            "$ref": "Resource.json#/definitions/ResourceCollection",
+                            "longDescription": "The value of this property shall be a reference to a Resource Collection that this structure is describing.  This structure may be used by a client in order to understand how to form the POST request for the given collection.",
+                            "readonly": true,
+                            "description": "Reference to the collection that this capabilities structure is describing."
+                        },
+                        "RelatedItem@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "RelatedItem": {
+                            "description": "The ID(s) of the resources associated with this capability.",
+                            "longDescription": "The value of this property shall be an array of IDs containing pointers consistent with JSON pointer syntax to the resource that is related to this capability.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "odata.4.0.0.json#/definitions/idRef"
+                            }
+                        },
+                        "RelatedItem@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        }
+                    },
+                    "description": "Contains references to other resources that are related to this resource.",
+                    "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
                     "required": [
                         "TargetCollection"
                     ],
-                    "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-                    "description": "Contains references to other resources that are related to this resource."
-                },
-                "UseCase": {
-                    "readonly": true,
-                    "$ref": "#/definitions/UseCase",
-                    "longDescription": "The value of this property shall be an enumerated value describing the use case for this capability instance.",
-                    "description": "This property represents the use case in which a client may issue a POST request to the collection."
+                    "type": "object"
                 },
                 "CapabilitiesObject": {
-                    "readonly": true,
                     "$ref": "odata.4.0.0.json#/definitions/idRef",
                     "longDescription": "The value of this property shall be a reference to a Resource that matches the type for the given collection and shall contain annotations that describe the properties allowed in the POST request.",
+                    "readonly": true,
                     "description": "Reference to the resource the client may GET to in order to understand how to form a POST request for a given collection."
+                },
+                "UseCase": {
+                    "$ref": "#/definitions/UseCase",
+                    "longDescription": "The value of this property shall be an enumerated value describing the use case for this capability instance.",
+                    "readonly": true,
+                    "description": "This property represents the use case in which a client may issue a POST request to the collection."
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "This type describes a specific capability of a collection for a given use case.",
+            "longDescription": "This type shall describe a specific capability of a collection in terms of how a client is able to create new resources within the collection for the specified use case.",
             "required": [
                 "UseCase",
                 "Links",
                 "CapabilitiesObject"
             ],
-            "longDescription": "This type shall describe a specific capability of a collection in terms of how a client is able to create new resources within the collection for the specified use case.",
-            "description": "This type describes a specific capability of a collection for a given use case."
+            "type": "object"
+        },
+        "UseCase": {
+            "enum": [
+                "ComputerSystemComposition",
+                "VolumeCreation"
+            ],
+            "enumDescriptions": {
+                "VolumeCreation": "This capability describes a client creating a new Volume instance as part of an existing storage subsystem.",
+                "ComputerSystemComposition": "This capability describes a client creating a new ComputerSystem instance from a set of disaggregated hardware."
+            },
+            "type": "string"
         }
-    },
-    "title": "#CollectionCapabilities.v1_0_0"
+    }
 }

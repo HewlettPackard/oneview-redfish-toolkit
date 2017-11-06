@@ -1,23 +1,13 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "Port.v1_0_2.json#/definitions/Port",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#Port.v1_0_2.Port",
     "definitions": {
-        "Reset": {
+        "Port": {
             "additionalProperties": false,
-            "properties": {
-                "target": {
-                    "type": "string",
-                    "format": "uri",
-                    "description": "Link to invoke action"
-                },
-                "title": {
-                    "type": "string",
-                    "description": "Friendly action name"
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -25,76 +15,15 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "longDescription": "This defines the name of the custom action supported on this resource.",
-            "description": "This action is used to reset this switch."
-        },
-        "Port": {
-            "additionalProperties": false,
             "properties": {
                 "Links": {
                     "additionalProperties": false,
-                    "properties": {
-                        "ConnectedSwitchPorts": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be a reference to the resources that this port is associated with and shall reference a resource of type Port.",
-                            "items": {
-                                "$ref": "Port.json#/definitions/Port"
-                            },
-                            "description": "An array of references to the ports that connect to the switch through this port."
-                        },
-                        "ConnectedSwitchPorts@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "AssociatedEndpoints@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "AssociatedEndpoints": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be a reference to the resources that this port is associated with and shall reference a resource of type Endpoint.",
-                            "items": {
-                                "$ref": "Endpoint.json#/definitions/Endpoint"
-                            },
-                            "description": "An array of references to the endpoints that connect to the switch through this port."
-                        },
-                        "ConnectedSwitches@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                            "description": "Oem extension object."
-                        },
-                        "ConnectedSwitches": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be a reference to the resources that this port is associated with and shall reference a resource of type Switch.",
-                            "items": {
-                                "$ref": "Switch.json#/definitions/Switch"
-                            },
-                            "description": "An array of references to the switches that connect to the switch through this port."
-                        },
-                        "ConnectedSwitchPorts@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "AssociatedEndpoints@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "ConnectedSwitches@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -102,16 +31,127 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "ConnectedSwitches": {
+                            "description": "An array of references to the switches that connect to the switch through this port.",
+                            "longDescription": "The value of this property shall be a reference to the resources that this port is associated with and shall reference a resource of type Switch.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Switch.json#/definitions/Switch"
+                            }
+                        },
+                        "ConnectedSwitchPorts@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "ConnectedSwitches@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "AssociatedEndpoints": {
+                            "description": "An array of references to the endpoints that connect to the switch through this port.",
+                            "longDescription": "The value of this property shall be a reference to the resources that this port is associated with and shall reference a resource of type Endpoint.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Endpoint.json#/definitions/Endpoint"
+                            }
+                        },
+                        "AssociatedEndpoints@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "AssociatedEndpoints@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "Oem": {
+                            "$ref": "Resource.json#/definitions/Oem",
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                            "description": "Oem extension object."
+                        },
+                        "ConnectedSwitchPorts": {
+                            "description": "An array of references to the ports that connect to the switch through this port.",
+                            "longDescription": "The value of this property shall be a reference to the resources that this port is associated with and shall reference a resource of type Port.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Port.json#/definitions/Port"
+                            }
+                        },
+                        "ConnectedSwitches@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "ConnectedSwitchPorts@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        }
+                    },
+                    "description": "Contains references to other resources that are related to this resource.",
                     "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-                    "description": "Contains references to other resources that are related to this resource."
+                    "type": "object"
                 },
                 "@odata.context": {
                     "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "CurrentSpeedGbps": {
+                    "description": "The current speed of this port.",
+                    "units": "Gbit/s",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall be the speed of this port currently negotiated and running."
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "PortType": {
+                    "longDescription": "The value of this property shall be the port type for this port.",
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/PortType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "This is the type of this port."
+                },
+                "PortId": {
+                    "longDescription": "The value of this property shall be the name of the switch port as indicated on the outside of the switch.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the label of this port on the physical switch package."
+                },
+                "MaxSpeedGbps": {
+                    "description": "The maximum speed of this port as currently configured.",
+                    "units": "Gbit/s",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall be the maximum speed of which this port is capable of being configured.  If capable of auto-negotiation, the system shall attempt to negotiate at the maximum speed set."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "Description": {
                     "readonly": true,
@@ -124,13 +164,68 @@
                         }
                     ]
                 },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
+                "Actions": {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
+                            "type": [
+                                "array",
+                                "boolean",
+                                "number",
+                                "null",
+                                "object",
+                                "string"
+                            ]
+                        }
+                    },
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "description": "This property shall specify a valid odata or Redfish property.",
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ]
+                                }
+                            },
+                            "properties": {},
+                            "description": "The available OEM specific actions for this resource.",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "type": "object"
+                        },
+                        "#Port.Reset": {
+                            "$ref": "#/definitions/Reset"
+                        }
+                    },
+                    "description": "The available actions for this resource.",
+                    "longDescription": "The Actions property shall contain the available actions for this resource.",
+                    "type": "object"
+                },
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 },
                 "@odata.id": {
                     "$ref": "odata.4.0.0.json#/definitions/id"
                 },
+                "Width": {
+                    "longDescription": "The value of this property shall be the number of physical transport links that this port contains.",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The number of lanes, phys, or other physical transport links that this port contains."
+                },
                 "PortProtocol": {
+                    "longDescription": "The value of this property shall contain the protocol being sent over this port.",
                     "readonly": true,
                     "anyOf": [
                         {
@@ -140,123 +235,22 @@
                             "type": "null"
                         }
                     ],
-                    "longDescription": "The value of this property shall contain the protocol being sent over this port.",
                     "description": "The protocol being sent over this port."
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "MaxSpeedGbps": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "Gbit/s",
-                    "longDescription": "The value of this property shall be the maximum speed of which this port is capable of being configured.  If capable of auto-negotiation, the system shall attempt to negotiate at the maximum speed set.",
-                    "description": "The maximum speed of this port as currently configured.",
-                    "readonly": true
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
-                "Actions": {
-                    "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "additionalProperties": true,
-                            "properties": {},
-                            "patternProperties": {
-                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "type": [
-                                        "array",
-                                        "boolean",
-                                        "number",
-                                        "null",
-                                        "object",
-                                        "string"
-                                    ],
-                                    "description": "This property shall specify a valid odata or Redfish property."
-                                }
-                            },
-                            "type": "object",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "description": "The available OEM specific actions for this resource."
-                        },
-                        "#Port.Reset": {
-                            "$ref": "#/definitions/Reset"
-                        }
-                    },
-                    "patternProperties": {
-                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                            "type": [
-                                "array",
-                                "boolean",
-                                "number",
-                                "null",
-                                "object",
-                                "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
-                        }
-                    },
-                    "type": "object",
-                    "longDescription": "The Actions property shall contain the available actions for this resource.",
-                    "description": "The available actions for this resource."
-                },
-                "CurrentSpeedGbps": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "Gbit/s",
-                    "longDescription": "The value of this property shall be the speed of this port currently negotiated and running.",
-                    "description": "The current speed of this port.",
-                    "readonly": true
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
-                },
-                "Width": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the number of physical transport links that this port contains.",
-                    "description": "The number of lanes, phys, or other physical transport links that this port contains."
-                },
-                "PortId": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the name of the switch port as indicated on the outside of the switch.",
-                    "description": "This is the label of this port on the physical switch package."
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "PortType": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/PortType"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "The value of this property shall be the port type for this port.",
-                    "description": "This is the type of this port."
                 }
             },
+            "description": "Port contains properties describing a port of a switch.",
+            "longDescription": "This resource shall be used to represent a simple switch port for a Redfish implementation.",
+            "required": [
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "Reset": {
+            "additionalProperties": false,
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -264,20 +258,25 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "required": [
-                "Id",
-                "Name"
-            ],
-            "longDescription": "This resource shall be used to represent a simple switch port for a Redfish implementation.",
-            "description": "Port contains properties describing a port of a switch."
+            "properties": {
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                },
+                "target": {
+                    "format": "uri",
+                    "type": "string",
+                    "description": "Link to invoke action"
+                }
+            },
+            "description": "This action is used to reset this switch.",
+            "longDescription": "This defines the name of the custom action supported on this resource.",
+            "type": "object"
         },
         "PortType": {
-            "type": "string",
             "enum": [
                 "UpstreamPort",
                 "DownstreamPort",
@@ -287,14 +286,15 @@
                 "UnconfiguredPort"
             ],
             "enumDescriptions": {
-                "InterswitchPort": "This port connects to another switch.",
-                "BidirectionalPort": "This port connects to any type of device.",
-                "UnconfiguredPort": "This port has not yet been configured.",
-                "UpstreamPort": "This port connects to a host device.",
                 "DownstreamPort": "This port connects to a target device.",
-                "ManagementPort": "This port connects to a switch manager."
-            }
+                "ManagementPort": "This port connects to a switch manager.",
+                "InterswitchPort": "This port connects to another switch.",
+                "UnconfiguredPort": "This port has not yet been configured.",
+                "BidirectionalPort": "This port connects to any type of device.",
+                "UpstreamPort": "This port connects to a host device."
+            },
+            "type": "string"
         }
     },
-    "title": "#Port.v1_0_2.Port"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

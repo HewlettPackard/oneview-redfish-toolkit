@@ -1,46 +1,13 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#Settings.v1_0_4",
     "definitions": {
         "Settings": {
             "additionalProperties": false,
-            "properties": {
-                "ETag": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the ETag of the resource to which the settings were applied, after the application.  This is here so that the client can check it against the ETag of the current resource to see if any other changes have also happened to the resource.",
-                    "description": "The ETag of the resource to which the settings were applied, after the application."
-                },
-                "Messages": {
-                    "type": "array",
-                    "longDescription": "The value of this property shall be an array of messages associated with the task.",
-                    "items": {
-                        "$ref": "Message.json#/definitions/Message"
-                    },
-                    "description": "This is an array of messages associated with the task."
-                },
-                "Time": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "format": "date-time",
-                    "longDescription": "The value of this property shall indicate the time that the settings object was applied to the resource.",
-                    "description": "Indicates the time the settings were applied.",
-                    "readonly": true
-                },
-                "SettingsObject": {
-                    "readonly": true,
-                    "$ref": "odata.4.0.0.json#/definitions/idRef",
-                    "longDescription": "The value of this property shall be the URI of the resource to which a client must do a PUT or PATCh in order to modify this resource.",
-                    "description": "Reference to the resource the client may PUT/PATCH to in order to change this resource."
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -48,14 +15,47 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "SettingsObject": {
+                    "$ref": "odata.4.0.0.json#/definitions/idRef",
+                    "longDescription": "The value of this property shall be the URI of the resource to which a client must do a PUT or PATCh in order to modify this resource.",
+                    "readonly": true,
+                    "description": "Reference to the resource the client may PUT/PATCH to in order to change this resource."
+                },
+                "Time": {
+                    "description": "Indicates the time the settings were applied.",
+                    "format": "date-time",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall indicate the time that the settings object was applied to the resource."
+                },
+                "ETag": {
+                    "longDescription": "The value of this property shall be the ETag of the resource to which the settings were applied, after the application.  This is here so that the client can check it against the ETag of the current resource to see if any other changes have also happened to the resource.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The ETag of the resource to which the settings were applied, after the application."
+                },
+                "Messages": {
+                    "description": "This is an array of messages associated with the task.",
+                    "longDescription": "The value of this property shall be an array of messages associated with the task.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Message.json#/definitions/Message"
+                    }
+                }
+            },
+            "description": "This type describes the settings of a resouce.",
             "longDescription": "This type shall describe any attributes of a resouce.",
-            "description": "This type describes the settings of a resouce."
+            "type": "object"
         }
-    },
-    "title": "#Settings.v1_0_4"
+    }
 }

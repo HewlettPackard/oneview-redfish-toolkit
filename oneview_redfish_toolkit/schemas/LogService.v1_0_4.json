@@ -1,29 +1,108 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "LogService.v1_0_4.json#/definitions/LogService",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#LogService.v1_0_4.LogService",
     "definitions": {
+        "ClearLog": {
+            "additionalProperties": false,
+            "type": "object",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                },
+                "target": {
+                    "format": "uri",
+                    "type": "string",
+                    "description": "Link to invoke action"
+                }
+            }
+        },
+        "OverWritePolicy": {
+            "enum": [
+                "Unknown",
+                "WrapsWhenFull",
+                "NeverOverWrites"
+            ],
+            "enumDescriptions": {
+                "Unknown": "The overwrite policy is not known or is undefined.",
+                "NeverOverWrites": "When full, new entries to the Log will be discarded.",
+                "WrapsWhenFull": "When full, new entries to the Log will overwrite previous entries."
+            },
+            "type": "string"
+        },
         "LogService": {
             "additionalProperties": false,
-            "properties": {
-                "DateTimeLocalOffset": {
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "pattern": "([-+][0-1][0-9]:[0-5][0-9])",
-                    "longDescription": "The value is property shall represent the offset from UTC time that the current value of DataTime property contains.",
-                    "description": "The time offset from UTC that the DateTime property is set to in format: +06:00 ."
-                },
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
                 "OverWritePolicy": {
-                    "readonly": true,
                     "$ref": "#/definitions/OverWritePolicy",
                     "longDescription": "The value of this property shall indicate the policy of the log service when the MaxNumberOfRecords has been reached. Unknown indicates the log overwrite policy is unknown. WrapsWhenFull indicates that the log overwrites its entries with new entries when the log has reached its maximum capacity. NeverOverwrites indicates that the log never overwrites its entries by the new entries and ceases logging when the limit has been reached.",
+                    "readonly": true,
                     "description": "The overwrite policy for this service that takes place when the log is full."
+                },
+                "Entries": {
+                    "$ref": "LogEntryCollection.json#/definitions/LogEntryCollection",
+                    "longDescription": "The value of this property shall reference a collection of resources of type LogEntry.",
+                    "readonly": true,
+                    "description": "References to the log entry collection."
+                },
+                "MaxNumberOfRecords": {
+                    "longDescription": "The value of this property shall be the maximum numbers of LogEntry resources in the Entries collection for this service.",
+                    "minimum": 0,
+                    "type": "number",
+                    "readonly": true,
+                    "description": "The maximum number of log entries this service can have."
                 },
                 "@odata.context": {
                     "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "Status": {
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.json#/definitions/Status"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "Description": {
                     "readonly": true,
@@ -36,61 +115,11 @@
                         }
                     ]
                 },
-                "Entries": {
-                    "readonly": true,
-                    "$ref": "LogEntryCollection.json#/definitions/LogEntryCollection",
-                    "longDescription": "The value of this property shall reference a collection of resources of type LogEntry.",
-                    "description": "References to the log entry collection."
-                },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "ServiceEnabled": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be a boolean indicating whether this service is enabled.",
-                    "description": "This indicates whether this service is enabled."
-                },
                 "Actions": {
                     "additionalProperties": false,
-                    "properties": {
-                        "#LogService.ClearLog": {
-                            "$ref": "#/definitions/ClearLog"
-                        },
-                        "Oem": {
-                            "additionalProperties": true,
-                            "properties": {},
-                            "patternProperties": {
-                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "type": [
-                                        "array",
-                                        "boolean",
-                                        "number",
-                                        "null",
-                                        "object",
-                                        "string"
-                                    ],
-                                    "description": "This property shall specify a valid odata or Redfish property."
-                                }
-                            },
-                            "type": "object",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "description": "The available OEM specific actions for this resource."
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -98,112 +127,83 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
-                    "longDescription": "The Actions property shall contain the available actions for this resource.",
-                    "description": "The available actions for this resource."
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
-                "Status": {
-                    "anyOf": [
-                        {
-                            "$ref": "Resource.json#/definitions/Status"
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "description": "This property shall specify a valid odata or Redfish property.",
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ]
+                                }
+                            },
+                            "properties": {},
+                            "description": "The available OEM specific actions for this resource.",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "type": "object"
                         },
-                        {
-                            "type": "null"
+                        "#LogService.ClearLog": {
+                            "$ref": "#/definitions/ClearLog"
                         }
-                    ]
+                    },
+                    "description": "The available actions for this resource.",
+                    "longDescription": "The Actions property shall contain the available actions for this resource.",
+                    "type": "object"
                 },
                 "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "ServiceEnabled": {
+                    "longDescription": "The value of this property shall be a boolean indicating whether this service is enabled.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "This indicates whether this service is enabled."
                 },
                 "DateTime": {
+                    "description": "The current DateTime (with offset) for the log service, used to set or read time.",
+                    "format": "date-time",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "format": "date-time",
-                    "longDescription": "The value of this property shall represent the current DateTime value that the log service is using, with offset from UTC, in Redfish Timestamp format.",
-                    "description": "The current DateTime (with offset) for the log service, used to set or read time.",
-                    "readonly": false
+                    "longDescription": "The value of this property shall represent the current DateTime value that the log service is using, with offset from UTC, in Redfish Timestamp format."
                 },
-                "MaxNumberOfRecords": {
-                    "type": "number",
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall be the maximum numbers of LogEntry resources in the Entries collection for this service.",
-                    "description": "The maximum number of log entries this service can have.",
-                    "readonly": true
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                "DateTimeLocalOffset": {
+                    "description": "The time offset from UTC that the DateTime property is set to in format: +06:00 .",
+                    "longDescription": "The value is property shall represent the offset from UTC time that the current value of DataTime property contains.",
+                    "readonly": false,
                     "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
+                        "string",
+                        "null"
                     ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    "pattern": "([-+][0-1][0-9]:[0-5][0-9])"
                 }
             },
-            "type": "object",
+            "description": "This resource represents the log service for the resource or service to which it is associated.",
+            "longDescription": "This resource shall be used to represent a log service for a Redfish implementation.",
             "required": [
                 "Id",
                 "Name"
             ],
-            "longDescription": "This resource shall be used to represent a log service for a Redfish implementation.",
-            "description": "This resource represents the log service for the resource or service to which it is associated."
-        },
-        "ClearLog": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "target": {
-                    "type": "string",
-                    "format": "uri",
-                    "description": "Link to invoke action"
-                },
-                "title": {
-                    "type": "string",
-                    "description": "Friendly action name"
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            }
-        },
-        "OverWritePolicy": {
-            "type": "string",
-            "enum": [
-                "Unknown",
-                "WrapsWhenFull",
-                "NeverOverWrites"
-            ],
-            "enumDescriptions": {
-                "Unknown": "The overwrite policy is not known or is undefined.",
-                "WrapsWhenFull": "When full, new entries to the Log will overwrite previous entries.",
-                "NeverOverWrites": "When full, new entries to the Log will be discarded."
-            }
+            "type": "object"
         }
     },
-    "title": "#LogService.v1_0_4.LogService"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

@@ -1,7 +1,7 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "MessageRegistryFile.json#/definitions/MessageRegistryFile",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#MessageRegistryFile.MessageRegistryFile",
     "definitions": {
         "MessageRegistryFile": {
             "anyOf": [
@@ -26,5 +26,5 @@
             ]
         }
     },
-    "title": "#MessageRegistryFile.MessageRegistryFile"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

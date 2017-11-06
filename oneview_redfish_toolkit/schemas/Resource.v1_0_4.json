@@ -1,10 +1,72 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#Resource.v1_0_4",
     "definitions": {
+        "ReferenceableMember": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "MemberId": {
+                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
+                    "readonly": true,
+                    "type": "string",
+                    "description": "This is the identifier for the member within the collection."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                }
+            },
+            "description": "This is the base type for addressable members of an array.",
+            "longDescription": "Array members can be referenced using the value returned in the @odata.id property which may or may not be a dereferenceable URL. The @odata.id of this entity shall be the location of this element within an Item.",
+            "type": "object"
+        },
         "Resource": {
             "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
+                },
                 "Description": {
                     "readonly": true,
                     "anyOf": [
@@ -16,22 +78,15 @@
                         }
                     ]
                 },
-                "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
                 },
                 "@odata.type": {
                     "$ref": "odata.4.0.0.json#/definitions/type"
                 },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 },
                 "Oem": {
                     "$ref": "Resource.json#/definitions/Oem",
@@ -39,52 +94,19 @@
                     "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "This is the base type for resources and referenceable members.",
             "required": [
                 "Id",
                 "Name"
             ],
-            "description": "This is the base type for resources and referenceable members."
+            "type": "object"
         },
-        "ReferenceableMember": {
+        "ResourceCollection": {
             "additionalProperties": false,
-            "properties": {
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "MemberId": {
-                    "type": "string",
-                    "readonly": true,
-                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
-                    "description": "This is the identifier for the member within the collection."
-                }
-            },
+            "type": "object",
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -92,17 +114,9 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "longDescription": "Array members can be referenced using the value returned in the @odata.id property which may or may not be a dereferenceable URL. The @odata.id of this entity shall be the location of this element within an Item.",
-            "description": "This is the base type for addressable members of an array."
-        },
-        "ResourceCollection": {
-            "type": "object",
-            "additionalProperties": false,
             "properties": {
                 "@odata.context": {
                     "$ref": "odata.4.0.0.json#/definitions/context"
@@ -118,36 +132,22 @@
                         }
                     ]
                 },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
                 "@odata.id": {
                     "$ref": "odata.4.0.0.json#/definitions/id"
                 },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
                 "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 },
                 "Oem": {
                     "$ref": "Resource.json#/definitions/Oem",
                     "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
                     "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
                 }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
             }
         }
-    },
-    "title": "#Resource.v1_0_4"
+    }
 }

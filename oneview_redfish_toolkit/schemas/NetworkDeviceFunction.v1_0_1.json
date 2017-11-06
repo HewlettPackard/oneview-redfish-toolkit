@@ -1,36 +1,13 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "NetworkDeviceFunction.v1_0_1.json#/definitions/NetworkDeviceFunction",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#NetworkDeviceFunction.v1_0_1.NetworkDeviceFunction",
     "definitions": {
-        "NetworkDeviceTechology": {
-            "type": "string",
-            "enum": [
-                "Disabled",
-                "Ethernet",
-                "FibreChannel",
-                "iSCSI",
-                "FibreChannelOverEthernet"
-            ],
-            "enumDescriptions": {
-                "Disabled": "Neither enumerated nor visible to the operating system.",
-                "FibreChannelOverEthernet": "Appears to the operating system as an FCoE device.",
-                "FibreChannel": "Appears to the operating system as a Fibre Channel device.",
-                "Ethernet": "Appears to the operating system as an Ethernet device.",
-                "iSCSI": "Appears to the operating system as an iSCSI device."
-            }
-        },
         "Links": {
             "additionalProperties": true,
-            "properties": {
-                "PCIeFunction": {
-                    "readonly": true,
-                    "$ref": "PCIeFunction.json#/definitions/PCIeFunction",
-                    "description": "Contains the members of this collection."
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -38,67 +15,40 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "PCIeFunction": {
+                    "$ref": "PCIeFunction.json#/definitions/PCIeFunction",
+                    "description": "Contains the members of this collection.",
+                    "readonly": true
+                }
+            },
+            "description": "Contains references to other resources that are related to this resource.",
             "longDescription": "This type, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-            "description": "Contains references to other resources that are related to this resource."
-        },
-        "IPAddressType": {
-            "type": "string",
-            "enum": [
-                "IPv4",
-                "IPv6"
-            ],
-            "enumDescriptions": {
-                "IPv4": "IPv4 addressing is used for all IP-fields in this object.",
-                "IPv6": "IPv6 addressing is used for all IP-fields in this object."
-            }
+            "type": "object"
         },
         "FibreChannel": {
             "additionalProperties": true,
-            "properties": {
-                "FCoEActiveVLANId": {
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "For FCoE connections, the value of this property shall be null or a VLAN ID currently being used for FCoE traffic.  When the FCoE link is down this value shall be null.  When the FCoE link is up this value shall be either the FCoELocalVLANId property or a VLAN discovered via the FIP protocol.",
-                    "description": "The active FCoE VLAN ID."
-                },
-                "PermanentWWNN": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the permanent World-Wide Node Name (WWNN) of this network device function (physical function). This value is typically programmed during the manufacturing time. This address is not assignable.",
-                    "description": "This is the permanent WWNN address assigned to this network device function (physical function)."
-                },
-                "AllowFIPVLANDiscovery": {
-                    "type": [
+                        "array",
                         "boolean",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "For FCoE connections, the value of this property shall be a boolean indicating whether the FIP VLAN Discovery Protocol is used to determine the FCoE VLAN ID selected by the network device function for the FCoE connection.  If true, and the FIP VLAN Discovery succeeds, the FCoEActiveVLANId property shall reflect the FCoE VLAN ID to be used for all FCoE traffic.  If false, or if the FIP VLAN Discovery protocol fails, the FCoELocalVLANId shall be used for all FCoE traffic and the FCoEActiveVLANId shall reflect the FCoELocalVLANId.",
-                    "description": "Whether the FCoE Initialization Protocol (FIP) is used for populating the FCoE VLAN Id."
-                },
-                "WWPN": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the effective current World-Wide Port Name (WWPN) of this network device function (physical function). If an assignable WWPN is not supported, this is a read only alias of the PermanentWWPN.",
-                    "description": "This is the currently configured WWPN address of the network device function (physical function)."
-                },
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
                 "BootTargets": {
-                    "type": "array",
+                    "description": "An array of Fibre Channel boot targets configured for this network device function.",
                     "longDescription": "The value of this property shall be an array of Fibre Channel boot targets configured for this network device function.",
+                    "type": "array",
                     "items": {
                         "anyOf": [
                             {
@@ -108,37 +58,37 @@
                                 "type": "null"
                             }
                         ]
-                    },
-                    "description": "An array of Fibre Channel boot targets configured for this network device function."
+                    }
                 },
                 "WWNN": {
+                    "longDescription": "The value of this property shall be the effective current World-Wide Node Name (WWNN) of this network device function (physical function). If an assignable WWNN is not supported, this is a read only alias of the PermanentWWNN.",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the effective current World-Wide Node Name (WWNN) of this network device function (physical function). If an assignable WWNN is not supported, this is a read only alias of the PermanentWWNN.",
                     "description": "This is the currently configured WWNN address of the network device function (physical function)."
                 },
-                "PermanentWWPN": {
+                "WWPN": {
+                    "longDescription": "The value of this property shall be the effective current World-Wide Port Name (WWPN) of this network device function (physical function). If an assignable WWPN is not supported, this is a read only alias of the PermanentWWPN.",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the permanent World-Wide Port Name (WWPN) of this network device function (physical function). This value is typically programmed during the manufacturing time. This address is not assignable.",
-                    "description": "This is the permanent WWPN address assigned to this network device function (physical function)."
+                    "description": "This is the currently configured WWPN address of the network device function (physical function)."
                 },
-                "FCoELocalVLANId": {
+                "FCoEActiveVLANId": {
+                    "longDescription": "For FCoE connections, the value of this property shall be null or a VLAN ID currently being used for FCoE traffic.  When the FCoE link is down this value shall be null.  When the FCoE link is up this value shall be either the FCoELocalVLANId property or a VLAN discovered via the FIP protocol.",
+                    "readonly": true,
                     "type": [
                         "number",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "For FCoE connections, the value of this property shall be the VLAN ID configured locally by setting this property.  This value shall be used for FCoE traffic to this network device function during boot unless AllowFIPVLANDiscovery is true and a valid FCoE VLAN ID is found via the FIP VLAN Discovery Protocol.",
-                    "description": "The locally configured FCoE VLAN ID."
+                    "description": "The active FCoE VLAN ID."
                 },
                 "WWNSource": {
+                    "longDescription": "The value of this property shall be the configuration source of the World-Wide Names (WWNs) for this connection (WWPN and WWNN).",
                     "readonly": false,
                     "anyOf": [
                         {
@@ -148,78 +98,160 @@
                             "type": "null"
                         }
                     ],
-                    "longDescription": "The value of this property shall be the configuration source of the World-Wide Names (WWNs) for this connection (WWPN and WWNN).",
                     "description": "The configuration source of the WWNs for this connection (WWPN and WWNN)."
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
-            "longDescription": "This object shall describe the Fibre Channel capabilities, status, and configuration values for a network device function.",
-            "description": "This type describes Fibre Channel capabilities, status, and configuration of a network device function."
-        },
-        "Ethernet": {
-            "additionalProperties": true,
-            "properties": {
-                "PermanentMACAddress": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
+                },
+                "PermanentWWPN": {
+                    "longDescription": "The value of this property shall be the permanent World-Wide Port Name (WWPN) of this network device function (physical function). This value is typically programmed during the manufacturing time. This address is not assignable.",
                     "readonly": true,
-                    "longDescription": "The value of this property shall be the Permanent MAC Address of this network device function (physical function). This value is typically programmed during the manufacturing time. This address is not assignable.",
-                    "description": "This is the permanent MAC address assigned to this network device function (physical function)."
-                },
-                "MTUSize": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The Maximum Transmission Unit (MTU) configured for this Network Device Function.  This value serves as a default for the OS driver when booting.  The value only takes-effect on boot.",
-                    "description": "The Maximum Transmission Unit (MTU) configured for this network device function."
-                },
-                "MACAddress": {
                     "type": [
                         "string",
                         "null"
                     ],
+                    "description": "This is the permanent WWPN address assigned to this network device function (physical function)."
+                },
+                "FCoELocalVLANId": {
+                    "longDescription": "For FCoE connections, the value of this property shall be the VLAN ID configured locally by setting this property.  This value shall be used for FCoE traffic to this network device function during boot unless AllowFIPVLANDiscovery is true and a valid FCoE VLAN ID is found via the FIP VLAN Discovery Protocol.",
                     "readonly": false,
-                    "longDescription": "The value of this property shall be the effective current MAC Address of this network device function. If an assignable MAC address is not supported, this is a read only alias of the PermanentMACAddress.",
-                    "description": "This is the currently configured MAC address of the (logical port) network device function."
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
                     "type": [
-                        "array",
-                        "boolean",
                         "number",
-                        "null",
-                        "object",
-                        "string"
+                        "null"
                     ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    "description": "The locally configured FCoE VLAN ID."
+                },
+                "PermanentWWNN": {
+                    "longDescription": "The value of this property shall be the permanent World-Wide Node Name (WWNN) of this network device function (physical function). This value is typically programmed during the manufacturing time. This address is not assignable.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the permanent WWNN address assigned to this network device function (physical function)."
+                },
+                "AllowFIPVLANDiscovery": {
+                    "longDescription": "For FCoE connections, the value of this property shall be a boolean indicating whether the FIP VLAN Discovery Protocol is used to determine the FCoE VLAN ID selected by the network device function for the FCoE connection.  If true, and the FIP VLAN Discovery succeeds, the FCoEActiveVLANId property shall reflect the FCoE VLAN ID to be used for all FCoE traffic.  If false, or if the FIP VLAN Discovery protocol fails, the FCoELocalVLANId shall be used for all FCoE traffic and the FCoEActiveVLANId shall reflect the FCoELocalVLANId.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Whether the FCoE Initialization Protocol (FIP) is used for populating the FCoE VLAN Id."
                 }
             },
-            "type": "object",
-            "longDescription": "This type shall describe the Ethernet capabilities, status, and configuration values for a network device function.",
-            "description": "This type describes Ethernet capabilities, status, and configuration of a network device function."
+            "description": "This type describes Fibre Channel capabilities, status, and configuration of a network device function.",
+            "longDescription": "This object shall describe the Fibre Channel capabilities, status, and configuration values for a network device function.",
+            "type": "object"
+        },
+        "IPAddressType": {
+            "enum": [
+                "IPv4",
+                "IPv6"
+            ],
+            "enumDescriptions": {
+                "IPv4": "IPv4 addressing is used for all IP-fields in this object.",
+                "IPv6": "IPv6 addressing is used for all IP-fields in this object."
+            },
+            "type": "string"
         },
         "NetworkDeviceFunction": {
             "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
+                "Ethernet": {
+                    "longDescription": "This object shall contain Ethernet capabilities, status, and configuration values for this network device function.",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/Ethernet"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Ethernet."
+                },
+                "NetDevFuncCapabilities": {
+                    "description": "Capabilities of this network device function.",
+                    "longDescription": "This object shall contain an array of capabilities of this network device function.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/definitions/NetworkDeviceTechology"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ]
+                    }
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Status": {
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.json#/definitions/Status"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "VirtualFunctionsEnabled": {
+                    "longDescription": "The value of this property shall be a boolean indicating whether Single Root I/O Virtualization (SR-IOV) Virual Functions (VFs) are enabled for this Network Device Function.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Whether Single Root I/O Virtualization (SR-IOV) Virual Functions (VFs) are enabled for this Network Device Function."
+                },
+                "AssignablePhysicalPorts@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "iSCSIBoot": {
+                    "longDescription": "This object shall contain iSCSI boot capabilities, status, and configuration values for this network device function.",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/iSCSIBoot"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "iSCSI Boot."
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "BootMode": {
+                    "longDescription": "The value of this property shall be the boot mode configured for this network device function.  If the value is not quot;Disabled\", this network device function shall be configured for boot using the specified technology.",
+                    "readonly": false,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/BootMode"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The boot mode configured for this network device function."
+                },
                 "Links": {
                     "$ref": "#/definitions/Links",
                     "longDescription": "Links for this NetworkDeviceFunction.",
@@ -228,14 +260,58 @@
                 "@odata.context": {
                     "$ref": "odata.4.0.0.json#/definitions/context"
                 },
-                "VirtualFunctionsEnabled": {
+                "DeviceEnabled": {
+                    "longDescription": "The value of this property shall be a boolean indicating whether the network device function is enabled.  Disabled network device functions shall not be enumerated or seen by the operating system.",
+                    "readonly": false,
                     "type": [
                         "boolean",
                         "null"
                     ],
+                    "description": "Whether the network device function is enabled."
+                },
+                "MaxVirtualFunctions": {
+                    "longDescription": "The value of this property shall be the number of virtual functions (VFs) that are available for this Network Device Function.",
                     "readonly": true,
-                    "longDescription": "The value of this property shall be a boolean indicating whether Single Root I/O Virtualization (SR-IOV) Virual Functions (VFs) are enabled for this Network Device Function.",
-                    "description": "Whether Single Root I/O Virtualization (SR-IOV) Virual Functions (VFs) are enabled for this Network Device Function."
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The number of virtual functions (VFs) that are available for this Network Device Function."
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "AssignablePhysicalPorts@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "NetDevFuncType": {
+                    "longDescription": "The value of this property shall be the configured capability of this network device function.",
+                    "readonly": false,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/NetworkDeviceTechology"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The configured capability of this network device function."
+                },
+                "FibreChannel": {
+                    "longDescription": "This object shall contain Fibre Channel capabilities, status, and configuration values for this network device function.",
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/FibreChannel"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Fibre Channel."
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "Description": {
                     "readonly": true,
@@ -248,154 +324,37 @@
                         }
                     ]
                 },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "NetDevFuncCapabilities": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "This object shall contain an array of capabilities of this network device function.",
-                    "items": {
-                        "anyOf": [
-                            {
-                                "$ref": "#/definitions/NetworkDeviceTechology"
-                            },
-                            {
-                                "type": "null"
-                            }
-                        ]
-                    },
-                    "description": "Capabilities of this network device function."
-                },
-                "FibreChannel": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/FibreChannel"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This object shall contain Fibre Channel capabilities, status, and configuration values for this network device function.",
-                    "description": "Fibre Channel."
-                },
-                "NetDevFuncType": {
-                    "readonly": false,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/NetworkDeviceTechology"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "The value of this property shall be the configured capability of this network device function.",
-                    "description": "The configured capability of this network device function."
-                },
-                "Status": {
-                    "anyOf": [
-                        {
-                            "$ref": "Resource.json#/definitions/Status"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ]
-                },
                 "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 },
                 "PhysicalPortAssignment": {
-                    "readonly": true,
                     "$ref": "NetworkPort.json#/definitions/NetworkPort",
-                    "description": "Contains the members of this collection."
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "Ethernet": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/Ethernet"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This object shall contain Ethernet capabilities, status, and configuration values for this network device function.",
-                    "description": "Ethernet."
-                },
-                "MaxVirtualFunctions": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the number of virtual functions (VFs) that are available for this Network Device Function.",
-                    "description": "The number of virtual functions (VFs) that are available for this Network Device Function."
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
-                "AssignablePhysicalPorts@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "DeviceEnabled": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be a boolean indicating whether the network device function is enabled.  Disabled network device functions shall not be enumerated or seen by the operating system.",
-                    "description": "Whether the network device function is enabled."
-                },
-                "AssignablePhysicalPorts@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
+                    "description": "Contains the members of this collection.",
+                    "readonly": true
                 },
                 "AssignablePhysicalPorts": {
-                    "type": "array",
+                    "description": "Contains the members of this collection.",
                     "readonly": true,
+                    "type": "array",
                     "items": {
                         "$ref": "NetworkPort.json#/definitions/NetworkPort"
-                    },
-                    "description": "Contains the members of this collection."
-                },
-                "BootMode": {
-                    "readonly": false,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/BootMode"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "The value of this property shall be the boot mode configured for this network device function.  If the value is not quot;Disabled\", this network device function shall be configured for boot using the specified technology.",
-                    "description": "The boot mode configured for this network device function."
-                },
-                "iSCSIBoot": {
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/iSCSIBoot"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This object shall contain iSCSI boot capabilities, status, and configuration values for this network device function.",
-                    "description": "iSCSI Boot."
+                    }
                 }
             },
+            "description": "A Network Device Function represents a logical interface exposed by the network adapter.",
+            "longDescription": "A Network Device Function represents a logical interface exposed by the network adapter.",
+            "required": [
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "Ethernet": {
+            "additionalProperties": true,
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -403,20 +362,43 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "required": [
-                "Id",
-                "Name"
-            ],
-            "longDescription": "A Network Device Function represents a logical interface exposed by the network adapter.",
-            "description": "A Network Device Function represents a logical interface exposed by the network adapter."
+            "properties": {
+                "MACAddress": {
+                    "longDescription": "The value of this property shall be the effective current MAC Address of this network device function. If an assignable MAC address is not supported, this is a read only alias of the PermanentMACAddress.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the currently configured MAC address of the (logical port) network device function."
+                },
+                "PermanentMACAddress": {
+                    "longDescription": "The value of this property shall be the Permanent MAC Address of this network device function (physical function). This value is typically programmed during the manufacturing time. This address is not assignable.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the permanent MAC address assigned to this network device function (physical function)."
+                },
+                "MTUSize": {
+                    "longDescription": "The Maximum Transmission Unit (MTU) configured for this Network Device Function.  This value serves as a default for the OS driver when booting.  The value only takes-effect on boot.",
+                    "readonly": false,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The Maximum Transmission Unit (MTU) configured for this network device function."
+                }
+            },
+            "description": "This type describes Ethernet capabilities, status, and configuration of a network device function.",
+            "longDescription": "This type shall describe the Ethernet capabilities, status, and configuration values for a network device function.",
+            "type": "object"
         },
         "BootMode": {
-            "type": "string",
             "enum": [
                 "Disabled",
                 "PXE",
@@ -425,46 +407,30 @@
                 "FibreChannelOverEthernet"
             ],
             "enumDescriptions": {
-                "PXE": "Boot this device using the embedded PXE support.  Only applicable if the NetworkDeviceFunctionType is set to Ethernet.",
                 "Disabled": "Do not indicate to UEFI/BIOS that this device is bootable.",
                 "FibreChannelOverEthernet": "Boot this device using the embedded Fibre Channel over Ethernet (FCoE) boot support and configuration.  Only applicable if the NetworkDeviceFunctionType is set to FibreChannelOverEthernet.",
                 "iSCSI": "Boot this device using the embedded iSCSI boot support and configuration.  Only applicable if the NetworkDeviceFunctionType is set to iSCSI.",
+                "PXE": "Boot this device using the embedded PXE support.  Only applicable if the NetworkDeviceFunctionType is set to Ethernet.",
                 "FibreChannel": "Boot this device using the embedded Fibre Channel support and configuration.  Only applicable if the NetworkDeviceFunctionType is set to FibreChannel."
-            }
-        },
-        "BootTargets": {
-            "additionalProperties": true,
-            "properties": {
-                "BootPriority": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the relative priority for this entry in the boot targets array.  Lower numbers shall represent higher priority, with zero being the highest priority.  The BootPriority shall be unique for all entries of the BootTargets array.",
-                    "description": "The relative priority for this entry in the boot targets array."
-                },
-                "LUNID": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the Logical Unit Number (LUN) ID to boot from on the device referred to by the corresponding WWPN.",
-                    "description": "The Logical Unit Number (LUN) ID to boot from on the device referred to by the corresponding WWPN."
-                },
-                "WWPN": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be World-Wide Port Name (WWPN) to boot from.",
-                    "description": "The World-Wide Port Name to boot from."
-                }
             },
+            "type": "string"
+        },
+        "WWNSource": {
+            "enum": [
+                "ConfiguredLocally",
+                "ProvidedByFabric"
+            ],
+            "enumDescriptions": {
+                "ConfiguredLocally": "The set of FC/FCoE boot targets was applied locally through API or UI.",
+                "ProvidedByFabric": "The set of FC/FCoE boot targets was applied by the Fibre Channel fabric."
+            },
+            "type": "string"
+        },
+        "iSCSIBoot": {
+            "additionalProperties": true,
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -472,202 +438,111 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "longDescription": "This type shall describe a Fibre Channel boot target configured for a network device function.",
-            "description": "A Fibre Channel boot target configured for a network device function."
-        },
-        "iSCSIBoot": {
-            "additionalProperties": true,
             "properties": {
-                "TargetInfoViaDHCP": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be a boolean indicating whether the iSCSI boot target name, LUN, IP address, and netmask should be obtained from DHCP.",
-                    "description": "Whether the iSCSI boot target name, LUN, IP address, and netmask should be obtained from DHCP."
-                },
-                "PrimaryDNS": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the IPv6 or IPv4 address of the primary DNS server for the iSCSI boot initiator.",
-                    "description": "The IPv6 or IPv4 address of the primary DNS server for the iSCSI boot initiator."
-                },
-                "MutualCHAPUsername": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the CHAP Username for 2-way CHAP authentication.",
-                    "description": "The CHAP Username for 2-way CHAP authentication."
-                },
-                "SecondaryTargetIPAddress": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the IP address (IPv6 or IPv4) for the secondary iSCSI boot target.",
-                    "description": "The IP address (IPv6 or IPv4) for the secondary iSCSI boot target."
-                },
-                "PrimaryTargetTCPPort": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the TCP port for the primary iSCSI boot target.",
-                    "description": "The TCP port for the primary iSCSI boot target."
-                },
-                "SecondaryVLANId": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the 802.1q VLAN ID to use for iSCSI boot from the secondary target.  This VLAN ID is only used if SecondaryVLANEnable is true.",
-                    "description": "The 802.1q VLAN ID to use for iSCSI boot from the secondary target."
-                },
-                "InitiatorNetmask": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the IPv6 or IPv4 netmask of the iSCSI boot initiator.",
-                    "description": "The IPv6 or IPv4 netmask of the iSCSI boot initiator."
-                },
-                "InitiatorIPAddress": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the IPv6 or IPv4 address of the iSCSI boot initiator.",
-                    "description": "The IPv6 or IPv4 address of the iSCSI initiator."
-                },
-                "AuthenticationMethod": {
-                    "readonly": false,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/AuthenticationMethod"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "The value of this property shall be the iSCSI boot authentication method for this network device function.",
-                    "description": "The iSCSI boot authentication method for this network device function."
-                },
-                "PrimaryTargetIPAddress": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the IP address (IPv6 or IPv4) for the primary iSCSI boot target.",
-                    "description": "The IP address (IPv6 or IPv4) for the primary iSCSI boot target."
-                },
-                "IPMaskDNSViaDHCP": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be a boolean indicating whether the iSCSI boot initiator uses DHCP to obtain the iniator name, IP address, and netmask.",
-                    "description": "Whether the iSCSI boot initiator uses DHCP to obtain the iniator name, IP address, and netmask."
-                },
-                "PrimaryVLANEnable": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be used to indicate if this VLAN is enabled for the primary iSCSI boot target.",
-                    "description": "This indicates if the primary VLAN is enabled."
-                },
-                "PrimaryLUN": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the logical unit number (LUN) for the primary iSCSI boot target.",
-                    "description": "The logical unit number (LUN) for the primary iSCSI boot target."
-                },
-                "SecondaryTargetTCPPort": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the TCP port for the secondary iSCSI boot target.",
-                    "description": "The TCP port for the secondary iSCSI boot target."
-                },
-                "PrimaryVLANId": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the 802.1q VLAN ID to use for iSCSI boot from the primary target.  This VLAN ID is only used if PrimaryVLANEnable is true.",
-                    "description": "The 802.1q VLAN ID to use for iSCSI boot from the primary target."
-                },
-                "InitiatorName": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the iSCSI boot initiator name.",
-                    "description": "The iSCSI initiator name."
-                },
-                "InitiatorDefaultGateway": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the IPv6 or IPv4 iSCSI boot default gateway.",
-                    "description": "The IPv6 or IPv4 iSCSI boot default gateway."
-                },
                 "RouterAdvertisementEnabled": {
+                    "longDescription": "The value of this property shall be a boolean indicating whether IPv6 router advertisement is enabled for the iSCSI boot target.  This setting shall only apply to IPv6 configurations.",
+                    "readonly": false,
                     "type": [
                         "boolean",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be a boolean indicating whether IPv6 router advertisement is enabled for the iSCSI boot target.  This setting shall only apply to IPv6 configurations.",
                     "description": "Whether IPv6 router advertisement is enabled for the iSCSI boot target."
                 },
-                "SecondaryVLANEnable": {
+                "SecondaryLUN": {
+                    "longDescription": "The value of this property shall be the logical unit number (LUN) for the secondary iSCSI boot target.",
+                    "readonly": false,
                     "type": [
-                        "boolean",
+                        "number",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be used to indicate if this VLAN is enabled for the secondary iSCSI boot target.",
-                    "description": "This indicates if the secondary VLAN is enabled."
+                    "description": "The logical unit number (LUN) for the secondary iSCSI boot target."
                 },
-                "MutualCHAPSecret": {
+                "SecondaryTargetName": {
+                    "longDescription": "The value of this property shall be the name of the secondary iSCSI boot target (iSCSI Qualified Name, IQN).",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
+                    "description": "The name of the iSCSI secondary boot target."
+                },
+                "InitiatorDefaultGateway": {
+                    "longDescription": "The value of this property shall be the IPv6 or IPv4 iSCSI boot default gateway.",
                     "readonly": false,
-                    "longDescription": "The value of this property shall be the CHAP Secret for 2-way CHAP authentication.",
-                    "description": "The CHAP Secret for 2-way CHAP authentication."
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The IPv6 or IPv4 iSCSI boot default gateway."
+                },
+                "SecondaryDNS": {
+                    "longDescription": "The value of this property shall be the IPv6 or IPv4 address of the secondary DNS server for the iSCSI boot initiator.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The IPv6 or IPv4 address of the secondary DNS server for the iSCSI boot initiator."
+                },
+                "InitiatorName": {
+                    "longDescription": "The value of this property shall be the iSCSI boot initiator name.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The iSCSI initiator name."
+                },
+                "PrimaryTargetName": {
+                    "longDescription": "The value of this property shall be the name of the primary iSCSI boot target (iSCSI Qualified Name, IQN).",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The name of the iSCSI primary boot target."
+                },
+                "CHAPSecret": {
+                    "longDescription": "The value of this property shall be the shared secret for CHAP authentication.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The shared secret for CHAP authentication."
+                },
+                "SecondaryTargetTCPPort": {
+                    "longDescription": "The value of this property shall be the TCP port for the secondary iSCSI boot target.",
+                    "readonly": false,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The TCP port for the secondary iSCSI boot target."
+                },
+                "PrimaryDNS": {
+                    "longDescription": "The value of this property shall be the IPv6 or IPv4 address of the primary DNS server for the iSCSI boot initiator.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The IPv6 or IPv4 address of the primary DNS server for the iSCSI boot initiator."
+                },
+                "SecondaryVLANId": {
+                    "longDescription": "The value of this property shall be the 802.1q VLAN ID to use for iSCSI boot from the secondary target.  This VLAN ID is only used if SecondaryVLANEnable is true.",
+                    "readonly": false,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The 802.1q VLAN ID to use for iSCSI boot from the secondary target."
                 },
                 "IPAddressType": {
+                    "longDescription": "The value of this property shall behe type of IP address (IPv6 or IPv4) being populated in the iSCSIBoot IP address fields.  Mixing of IPv6 and IPv4 addresses on the same network device function shall not be permissible.",
                     "readonly": false,
                     "anyOf": [
                         {
@@ -677,66 +552,157 @@
                             "type": "null"
                         }
                     ],
-                    "longDescription": "The value of this property shall behe type of IP address (IPv6 or IPv4) being populated in the iSCSIBoot IP address fields.  Mixing of IPv6 and IPv4 addresses on the same network device function shall not be permissible.",
                     "description": "The type of IP address (IPv6 or IPv4) being populated in the iSCSIBoot IP address fields."
                 },
-                "SecondaryDNS": {
+                "InitiatorNetmask": {
+                    "longDescription": "The value of this property shall be the IPv6 or IPv4 netmask of the iSCSI boot initiator.",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the IPv6 or IPv4 address of the secondary DNS server for the iSCSI boot initiator.",
-                    "description": "The IPv6 or IPv4 address of the secondary DNS server for the iSCSI boot initiator."
+                    "description": "The IPv6 or IPv4 netmask of the iSCSI boot initiator."
                 },
-                "SecondaryLUN": {
+                "AuthenticationMethod": {
+                    "longDescription": "The value of this property shall be the iSCSI boot authentication method for this network device function.",
+                    "readonly": false,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/AuthenticationMethod"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The iSCSI boot authentication method for this network device function."
+                },
+                "CHAPUsername": {
+                    "longDescription": "The value of this property shall behe username for CHAP authentication.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The username for CHAP authentication."
+                },
+                "PrimaryLUN": {
+                    "longDescription": "The value of this property shall be the logical unit number (LUN) for the primary iSCSI boot target.",
+                    "readonly": false,
                     "type": [
                         "number",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the logical unit number (LUN) for the secondary iSCSI boot target.",
-                    "description": "The logical unit number (LUN) for the secondary iSCSI boot target."
+                    "description": "The logical unit number (LUN) for the primary iSCSI boot target."
                 },
-                "SecondaryTargetName": {
+                "PrimaryTargetTCPPort": {
+                    "longDescription": "The value of this property shall be the TCP port for the primary iSCSI boot target.",
+                    "readonly": false,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The TCP port for the primary iSCSI boot target."
+                },
+                "InitiatorIPAddress": {
+                    "longDescription": "The value of this property shall be the IPv6 or IPv4 address of the iSCSI boot initiator.",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the name of the secondary iSCSI boot target (iSCSI Qualified Name, IQN).",
-                    "description": "The name of the iSCSI secondary boot target."
+                    "description": "The IPv6 or IPv4 address of the iSCSI initiator."
                 },
-                "CHAPSecret": {
+                "TargetInfoViaDHCP": {
+                    "longDescription": "The value of this property shall be a boolean indicating whether the iSCSI boot target name, LUN, IP address, and netmask should be obtained from DHCP.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Whether the iSCSI boot target name, LUN, IP address, and netmask should be obtained from DHCP."
+                },
+                "PrimaryTargetIPAddress": {
+                    "longDescription": "The value of this property shall be the IP address (IPv6 or IPv4) for the primary iSCSI boot target.",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be the shared secret for CHAP authentication.",
-                    "description": "The shared secret for CHAP authentication."
+                    "description": "The IP address (IPv6 or IPv4) for the primary iSCSI boot target."
                 },
-                "CHAPUsername": {
+                "PrimaryVLANId": {
+                    "longDescription": "The value of this property shall be the 802.1q VLAN ID to use for iSCSI boot from the primary target.  This VLAN ID is only used if PrimaryVLANEnable is true.",
+                    "readonly": false,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The 802.1q VLAN ID to use for iSCSI boot from the primary target."
+                },
+                "MutualCHAPSecret": {
+                    "longDescription": "The value of this property shall be the CHAP Secret for 2-way CHAP authentication.",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall behe username for CHAP authentication.",
-                    "description": "The username for CHAP authentication."
+                    "description": "The CHAP Secret for 2-way CHAP authentication."
                 },
-                "PrimaryTargetName": {
+                "SecondaryTargetIPAddress": {
+                    "longDescription": "The value of this property shall be the IP address (IPv6 or IPv4) for the secondary iSCSI boot target.",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
+                    "description": "The IP address (IPv6 or IPv4) for the secondary iSCSI boot target."
+                },
+                "MutualCHAPUsername": {
+                    "longDescription": "The value of this property shall be the CHAP Username for 2-way CHAP authentication.",
                     "readonly": false,
-                    "longDescription": "The value of this property shall be the name of the primary iSCSI boot target (iSCSI Qualified Name, IQN).",
-                    "description": "The name of the iSCSI primary boot target."
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The CHAP Username for 2-way CHAP authentication."
+                },
+                "IPMaskDNSViaDHCP": {
+                    "longDescription": "The value of this property shall be a boolean indicating whether the iSCSI boot initiator uses DHCP to obtain the iniator name, IP address, and netmask.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Whether the iSCSI boot initiator uses DHCP to obtain the iniator name, IP address, and netmask."
+                },
+                "PrimaryVLANEnable": {
+                    "longDescription": "The value of this property shall be used to indicate if this VLAN is enabled for the primary iSCSI boot target.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "This indicates if the primary VLAN is enabled."
+                },
+                "SecondaryVLANEnable": {
+                    "longDescription": "The value of this property shall be used to indicate if this VLAN is enabled for the secondary iSCSI boot target.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "This indicates if the secondary VLAN is enabled."
                 }
             },
+            "description": "This type describes iSCSI boot capabilities, status, and configuration of a network device function.",
+            "longDescription": "This type shall describe the iSCSI boot capabilities, status, and configuration values for a network device function.",
+            "type": "object"
+        },
+        "BootTargets": {
+            "additionalProperties": true,
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -744,38 +710,72 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "longDescription": "This type shall describe the iSCSI boot capabilities, status, and configuration values for a network device function.",
-            "description": "This type describes iSCSI boot capabilities, status, and configuration of a network device function."
-        },
-        "WWNSource": {
-            "type": "string",
-            "enum": [
-                "ConfiguredLocally",
-                "ProvidedByFabric"
-            ],
-            "enumDescriptions": {
-                "ConfiguredLocally": "The set of FC/FCoE boot targets was applied locally through API or UI.",
-                "ProvidedByFabric": "The set of FC/FCoE boot targets was applied by the Fibre Channel fabric."
-            }
+            "properties": {
+                "WWPN": {
+                    "longDescription": "The value of this property shall be World-Wide Port Name (WWPN) to boot from.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The World-Wide Port Name to boot from."
+                },
+                "LUNID": {
+                    "longDescription": "The value of this property shall be the Logical Unit Number (LUN) ID to boot from on the device referred to by the corresponding WWPN.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The Logical Unit Number (LUN) ID to boot from on the device referred to by the corresponding WWPN."
+                },
+                "BootPriority": {
+                    "longDescription": "The value of this property shall be the relative priority for this entry in the boot targets array.  Lower numbers shall represent higher priority, with zero being the highest priority.  The BootPriority shall be unique for all entries of the BootTargets array.",
+                    "readonly": false,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The relative priority for this entry in the boot targets array."
+                }
+            },
+            "description": "A Fibre Channel boot target configured for a network device function.",
+            "longDescription": "This type shall describe a Fibre Channel boot target configured for a network device function.",
+            "type": "object"
         },
         "AuthenticationMethod": {
-            "type": "string",
             "enum": [
                 "None",
                 "CHAP",
                 "MutualCHAP"
             ],
             "enumDescriptions": {
-                "CHAP": "iSCSI Challenge Handshake Authentication Protocol (CHAP) authentication is used.",
                 "None": "No iSCSI authentication is used.",
+                "CHAP": "iSCSI Challenge Handshake Authentication Protocol (CHAP) authentication is used.",
                 "MutualCHAP": "iSCSI Mutual Challenge Handshake Authentication Protocol (CHAP) authentication is used."
-            }
+            },
+            "type": "string"
+        },
+        "NetworkDeviceTechology": {
+            "enum": [
+                "Disabled",
+                "Ethernet",
+                "FibreChannel",
+                "iSCSI",
+                "FibreChannelOverEthernet"
+            ],
+            "enumDescriptions": {
+                "Disabled": "Neither enumerated nor visible to the operating system.",
+                "FibreChannelOverEthernet": "Appears to the operating system as an FCoE device.",
+                "iSCSI": "Appears to the operating system as an iSCSI device.",
+                "Ethernet": "Appears to the operating system as an Ethernet device.",
+                "FibreChannel": "Appears to the operating system as a Fibre Channel device."
+            },
+            "type": "string"
         }
     },
-    "title": "#NetworkDeviceFunction.v1_0_1.NetworkDeviceFunction"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

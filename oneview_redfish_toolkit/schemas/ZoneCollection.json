@@ -1,31 +1,33 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "ZoneCollection.json#/definitions/ZoneCollection",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#ZoneCollection.ZoneCollection",
     "definitions": {
         "ZoneCollection": {
+            "description": "A Collection of Zone resource instances.",
             "anyOf": [
                 {
                     "$ref": "odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "type": "object",
                     "additionalProperties": false,
+                    "type": "object",
+                    "patternProperties": {
+                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
+                            "type": [
+                                "array",
+                                "boolean",
+                                "number",
+                                "null",
+                                "object",
+                                "string"
+                            ]
+                        }
+                    },
                     "properties": {
-                        "Members": {
-                            "type": "array",
-                            "readonly": true,
-                            "items": {
-                                "$ref": "Zone.json#/definitions/Zone"
-                            },
-                            "description": "Contains the members of this collection."
-                        },
                         "@odata.context": {
                             "$ref": "odata.4.0.0.json#/definitions/context"
-                        },
-                        "Members@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
                         },
                         "Description": {
                             "readonly": true,
@@ -38,42 +40,40 @@
                                 }
                             ]
                         },
+                        "Oem": {
+                            "$ref": "Resource.json#/definitions/Oem",
+                            "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                            "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                        },
+                        "Name": {
+                            "$ref": "Resource.json#/definitions/Name",
+                            "readonly": true
+                        },
                         "@odata.type": {
                             "$ref": "odata.4.0.0.json#/definitions/type"
                         },
                         "@odata.id": {
                             "$ref": "odata.4.0.0.json#/definitions/id"
                         },
-                        "Name": {
-                            "readonly": true,
-                            "$ref": "Resource.json#/definitions/Name"
-                        },
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                            "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                        },
                         "Members@odata.count": {
                             "$ref": "odata.4.0.0.json#/definitions/count"
-                        }
-                    },
-                    "patternProperties": {
-                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                            "type": [
-                                "array",
-                                "boolean",
-                                "number",
-                                "null",
-                                "object",
-                                "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                        },
+                        "Members": {
+                            "description": "Contains the members of this collection.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Zone.json#/definitions/Zone"
+                            }
+                        },
+                        "Members@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
                         }
                     }
                 }
-            ],
-            "description": "A Collection of Zone resource instances."
+            ]
         }
     },
-    "title": "#ZoneCollection.ZoneCollection"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

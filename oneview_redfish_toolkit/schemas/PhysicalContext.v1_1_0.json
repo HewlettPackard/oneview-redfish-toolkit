@@ -1,9 +1,9 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#PhysicalContext.v1_1_0",
     "definitions": {
         "PhysicalContext": {
-            "type": "string",
             "enum": [
                 "Room",
                 "Intake",
@@ -28,29 +28,29 @@
                 "Memory"
             ],
             "enumDescriptions": {
-                "CPU": "A Processor (CPU).",
-                "Memory": "A memory device.",
-                "Lower": "The lower portion of the chassis.",
-                "PowerSupplyBay": "Within a power supply bay.",
-                "GPU": "A Graphics Processor (GPU).",
-                "Backplane": "A backplane within the chassis.",
-                "StorageBay": "Within a storage bay.",
-                "Front": "The front of the chassis.",
-                "Exhaust": "The exhaust point of the chassis.",
-                "ExpansionBay": "Within an expansion bay.",
-                "VoltageRegulator": "A voltage regulator device.",
-                "NetworkBay": "Within a networking bay.",
-                "StorageDevice": "A storage device.",
                 "Intake": "The intake point of the chassis.",
-                "SystemBoard": "The system board (PCB).",
+                "NetworkBay": "Within a networking bay.",
+                "GPU": "A Graphics Processor (GPU).",
+                "Front": "The front of the chassis.",
+                "VoltageRegulator": "A voltage regulator device.",
                 "PowerSupply": "A power supply.",
-                "NetworkingDevice": "A networking device.",
+                "StorageBay": "Within a storage bay.",
+                "Memory": "A memory device.",
+                "PowerSupplyBay": "Within a power supply bay.",
+                "Room": "The room.",
+                "ExpansionBay": "Within an expansion bay.",
+                "Exhaust": "The exhaust point of the chassis.",
+                "Backplane": "A backplane within the chassis.",
                 "ComputeBay": "Within a compute bay.",
+                "StorageDevice": "A storage device.",
                 "Upper": "The upper portion of the chassis.",
                 "Back": "The back of the chassis.",
-                "Room": "The room."
-            }
+                "CPU": "A Processor (CPU).",
+                "SystemBoard": "The system board (PCB).",
+                "NetworkingDevice": "A networking device.",
+                "Lower": "The lower portion of the chassis."
+            },
+            "type": "string"
         }
-    },
-    "title": "#PhysicalContext.v1_1_0"
+    }
 }

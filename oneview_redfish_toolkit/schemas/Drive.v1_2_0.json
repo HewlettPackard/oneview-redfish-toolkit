@@ -1,10 +1,24 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "Drive.v1_2_0.json#/definitions/Drive",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#Drive.v1_2_0.Drive",
     "definitions": {
+        "HotspareType": {
+            "enum": [
+                "None",
+                "Global",
+                "Chassis",
+                "Dedicated"
+            ],
+            "enumDescriptions": {
+                "None": "The drive is not currently a hotspare.",
+                "Dedicated": "The drive is currently serving as a hotspare for a user defined set of drives.",
+                "Global": "The drive is currently serving as a hotspare for all other drives in the storage system.",
+                "Chassis": "The drive is currently serving as a hotspare for all other drives in the chassis."
+            },
+            "type": "string"
+        },
         "EncryptionAbility": {
-            "type": "string",
             "enum": [
                 "None",
                 "SelfEncryptingDrive",
@@ -12,22 +26,124 @@
             ],
             "enumDescriptions": {
                 "None": "The drive is not capable of self encryption.",
-                "SelfEncryptingDrive": "The drive is capable of self encryption per the Trusted Computing Group's Self Encrypting Drive Standard.",
-                "Other": "The drive is capable of self encryption through some other means."
-            }
+                "Other": "The drive is capable of self encryption through some other means.",
+                "SelfEncryptingDrive": "The drive is capable of self encryption per the Trusted Computing Group's Self Encrypting Drive Standard."
+            },
+            "type": "string"
+        },
+        "MediaType": {
+            "enum": [
+                "HDD",
+                "SSD",
+                "SMR"
+            ],
+            "enumDescriptions": {
+                "HDD": "The drive media type is traditional magnetic platters.",
+                "SMR": "The drive media type is shingled magnetic recording.",
+                "SSD": "The drive media type is solid state or flash memory."
+            },
+            "type": "string"
         },
         "Drive": {
             "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
-                "Identifiers": {
-                    "type": "array",
-                    "longDescription": "This property shall contain a list of all known durable names for the associated drive.",
-                    "items": {
-                        "$ref": "Resource.v1_1_0.json#/definitions/Identifier"
-                    },
-                    "description": "The Durable names for the drive."
+                "NegotiatedSpeedGbs": {
+                    "description": "The speed which this drive is currently communicating to the storage controller in Gigabits per second.",
+                    "units": "Gbit/s",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "This property shall contain current bus speed of the associated drive."
+                },
+                "SKU": {
+                    "longDescription": "The value of this property shall be the stock-keeping unit number for this drive.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the SKU for this drive."
+                },
+                "StatusIndicator": {
+                    "longDescription": "The value of this property shall contain the status indicator state for the status indicator associated with this drive. The valid values for this property are specified through the Redfish.AllowableValues annotation.",
+                    "readonly": false,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/StatusIndicator"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The state of the status indicator, used to communicate status information about this drive."
+                },
+                "BlockSizeBytes": {
+                    "description": "The size of the smallest addressible unit (Block) of this drive in bytes.",
+                    "units": "By",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "This property shall contain size of the smallest addressible unit of the associated drive."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "MediaType": {
+                    "longDescription": "This property shall contain the type of media contained in the associated drive.",
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/MediaType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The type of media contained in this drive."
+                },
+                "Revision": {
+                    "longDescription": "This property shall contain the revision as defined by the manufacturer for the associated drive.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The revision of this Drive. This is typically the firmware/hardware version of the drive."
+                },
+                "CapableSpeedGbs": {
+                    "description": "The speed which this drive can communicate to a storage controller in ideal conditions in Gigabits per second.",
+                    "units": "Gbit/s",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "This property shall contain fastest capable bus speed of the associated drive."
                 },
                 "EncryptionAbility": {
+                    "longDescription": "This property shall contain the encryption ability for the associated drive.",
                     "readonly": true,
                     "anyOf": [
                         {
@@ -37,30 +153,202 @@
                             "type": "null"
                         }
                     ],
-                    "longDescription": "This property shall contain the encryption ability for the associated drive.",
                     "description": "The encryption abilities of this drive."
                 },
-                "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
-                },
-                "SKU": {
+                "AssetTag": {
+                    "longDescription": "The value of this property shall be an identifying string used to track the drive for inventory purposes.",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the stock-keeping unit number for this drive.",
-                    "description": "This is the SKU for this drive."
+                    "description": "The user assigned asset tag for this drive."
                 },
-                "CapableSpeedGbs": {
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "CapacityBytes": {
+                    "description": "The size in bytes of this Drive.",
+                    "units": "By",
+                    "readonly": true,
                     "type": [
                         "number",
                         "null"
                     ],
-                    "units": "Gbit/s",
-                    "longDescription": "This property shall contain fastest capable bus speed of the associated drive.",
-                    "description": "The speed which this drive can communicate to a storage controller in ideal conditions in Gigabits per second.",
-                    "readonly": true
+                    "longDescription": "This property shall contain the raw size in bytes of the associated drive."
+                },
+                "Model": {
+                    "longDescription": "The value of this property shall be the name by which the manufacturer generally refers to the drive.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the model number for the drive."
+                },
+                "Links": {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
+                            "type": [
+                                "array",
+                                "boolean",
+                                "number",
+                                "null",
+                                "object",
+                                "string"
+                            ]
+                        }
+                    },
+                    "properties": {
+                        "Endpoints": {
+                            "description": "An array of references to the endpoints that connect to this drive.",
+                            "longDescription": "The value of this property shall be a reference to the resources that this drive is associated with and shall reference a resource of type Endpoint.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Endpoint.json#/definitions/Endpoint"
+                            }
+                        },
+                        "Volumes@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "Endpoints@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "Endpoints@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "Oem": {
+                            "$ref": "Resource.json#/definitions/Oem",
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                            "description": "Oem extension object."
+                        },
+                        "Volumes": {
+                            "description": "An array of references to the volumes contained in this drive. This will reference Volumes that are either wholly or only partly contained by this drive.",
+                            "longDescription": "The value of this property shall be a reference to the resources that this drive is associated with and shall reference a resource of type Volume. This shall include all Volume resources of which this Drive is a member and all Volumes for which this Drive is acting as a spare if the HotspareType is Dedicated.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Volume.json#/definitions/Volume"
+                            }
+                        },
+                        "Volumes@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "Chassis": {
+                            "$ref": "Chassis.json#/definitions/Chassis",
+                            "longDescription": "The value of this property shall be a reference to a resource of type Chassis that represent the physical container associated with this Drive.",
+                            "readonly": true,
+                            "description": "A reference to the Chassis which contains this Drive."
+                        }
+                    },
+                    "description": "Contains references to other resources that are related to this resource.",
+                    "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
+                    "type": "object"
+                },
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "Identifiers": {
+                    "description": "The Durable names for the drive.",
+                    "longDescription": "This property shall contain a list of all known durable names for the associated drive.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Resource.v1_1_0.json#/definitions/Identifier"
+                    }
+                },
+                "FailurePredicted": {
+                    "longDescription": "This property shall contain failure information as defined by the manufacturer for the associated drive.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Is this drive currently predicting a failure in the near future."
+                },
+                "HotspareType": {
+                    "longDescription": "This property shall contain the hot spare type for the associated drive. If the drive is currently serving as a hot spare its Status.State field shall be 'StandbySpare' and 'Enabled' when it is being used as part of a Volume.",
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/HotspareType"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The type of hotspare this drive is currently serving as."
+                },
+                "PredictedMediaLifeLeftPercent": {
+                    "longDescription": "This property shall contain an indicator of the percentage of life remaining in the Drive's media.",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The percentage of reads and writes that are predicted to still be available for the media."
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "Operations": {
+                    "description": "The operations currently running on the Drive.",
+                    "longDescription": "This property shall contain a list of all operations currently running on the Drive.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Volume.v1_0_0.json#/definitions/Operations"
+                    }
+                },
+                "EncryptionStatus": {
+                    "longDescription": "This property shall contain the encrytion status for the associated drive.",
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/EncryptionStatus"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The status of the encrytion of this drive."
+                },
+                "Location": {
+                    "description": "The Location of the drive.",
+                    "longDescription": "This property shall contain location information of the associated drive.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Resource.v1_1_0.json#/definitions/Location"
+                    }
+                },
+                "IndicatorLED": {
+                    "longDescription": "This value of this property shall contain the indicator light state for the indicator light associated with this drive.",
+                    "readonly": false,
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.v1_1_0.json#/definitions/IndicatorLED"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The state of the indicator LED, used to identify the drive."
+                },
+                "SerialNumber": {
+                    "longDescription": "The value of this property shall be a manufacturer-allocated number used to identify the drive.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The serial number for this drive."
                 },
                 "Description": {
                     "readonly": true,
@@ -73,208 +361,31 @@
                         }
                     ]
                 },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "StatusIndicator": {
-                    "readonly": false,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/StatusIndicator"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "The value of this property shall contain the status indicator state for the status indicator associated with this drive. The valid values for this property are specified through the Redfish.AllowableValues annotation.",
-                    "description": "The state of the status indicator, used to communicate status information about this drive."
-                },
-                "MediaType": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/MediaType"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This property shall contain the type of media contained in the associated drive.",
-                    "description": "The type of media contained in this drive."
-                },
-                "IndicatorLED": {
-                    "readonly": false,
-                    "anyOf": [
-                        {
-                            "$ref": "Resource.v1_1_0.json#/definitions/IndicatorLED"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This value of this property shall contain the indicator light state for the indicator light associated with this drive.",
-                    "description": "The state of the indicator LED, used to identify the drive."
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
-                },
-                "CapacityBytes": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "By",
-                    "longDescription": "This property shall contain the raw size in bytes of the associated drive.",
-                    "description": "The size in bytes of this Drive.",
-                    "readonly": true
-                },
-                "Links": {
-                    "additionalProperties": false,
-                    "properties": {
-                        "Volumes": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be a reference to the resources that this drive is associated with and shall reference a resource of type Volume. This shall include all Volume resources of which this Drive is a member and all Volumes for which this Drive is acting as a spare if the HotspareType is Dedicated.",
-                            "items": {
-                                "$ref": "Volume.json#/definitions/Volume"
-                            },
-                            "description": "An array of references to the volumes contained in this drive. This will reference Volumes that are either wholly or only partly contained by this drive."
-                        },
-                        "Volumes@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "Chassis": {
-                            "readonly": true,
-                            "$ref": "Chassis.json#/definitions/Chassis",
-                            "longDescription": "The value of this property shall be a reference to a resource of type Chassis that represent the physical container associated with this Drive.",
-                            "description": "A reference to the Chassis which contains this Drive."
-                        },
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                            "description": "Oem extension object."
-                        },
-                        "Endpoints": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be a reference to the resources that this drive is associated with and shall reference a resource of type Endpoint.",
-                            "items": {
-                                "$ref": "Endpoint.json#/definitions/Endpoint"
-                            },
-                            "description": "An array of references to the endpoints that connect to this drive."
-                        },
-                        "Endpoints@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "Volumes@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "Endpoints@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        }
-                    },
-                    "patternProperties": {
-                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                            "type": [
-                                "array",
-                                "boolean",
-                                "number",
-                                "null",
-                                "object",
-                                "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
-                        }
-                    },
-                    "type": "object",
-                    "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-                    "description": "Contains references to other resources that are related to this resource."
-                },
-                "BlockSizeBytes": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "By",
-                    "longDescription": "This property shall contain size of the smallest addressible unit of the associated drive.",
-                    "description": "The size of the smallest addressible unit (Block) of this drive in bytes.",
-                    "readonly": true
-                },
-                "SerialNumber": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be a manufacturer-allocated number used to identify the drive.",
-                    "description": "The serial number for this drive."
-                },
                 "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "AssetTag": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be an identifying string used to track the drive for inventory purposes.",
-                    "description": "The user assigned asset tag for this drive."
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 },
                 "Manufacturer": {
+                    "longDescription": "The value of this property shall be the name of the organization responsible for producing the drive. This organization might be the entity from whom the drive is purchased, but this is not necessarily true.",
+                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the name of the organization responsible for producing the drive. This organization might be the entity from whom the drive is purchased, but this is not necessarily true.",
                     "description": "This is the manufacturer of this drive."
                 },
-                "Operations": {
-                    "type": "array",
-                    "longDescription": "This property shall contain a list of all operations currently running on the Drive.",
-                    "items": {
-                        "$ref": "Volume.v1_0_0.json#/definitions/Operations"
-                    },
-                    "description": "The operations currently running on the Drive."
-                },
                 "RotationSpeedRPM": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "RPM",
-                    "longDescription": "This property shall contain rotation speed of the associated drive.",
                     "description": "The rotation speed of this Drive in Revolutions per Minute (RPM).",
-                    "readonly": true
-                },
-                "PredictedMediaLifeLeftPercent": {
+                    "units": "RPM",
+                    "readonly": true,
                     "type": [
                         "number",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain an indicator of the percentage of life remaining in the Drive's media.",
-                    "description": "The percentage of reads and writes that are predicted to still be available for the media."
-                },
-                "PartNumber": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be a part number assigned by the organization that is responsible for producing or manufacturing the drive.",
-                    "description": "The part number for this drive."
+                    "longDescription": "This property shall contain rotation speed of the associated drive."
                 },
                 "Protocol": {
+                    "longDescription": "This property shall contain the protocol the associated drive is using to communicate to the storage controller for this system.",
                     "readonly": true,
                     "anyOf": [
                         {
@@ -284,45 +395,22 @@
                             "type": "null"
                         }
                     ],
-                    "longDescription": "This property shall contain the protocol the associated drive is using to communicate to the storage controller for this system.",
                     "description": "The protocol this drive is using to communicate to the storage controller."
                 },
-                "Id": {
+                "PartNumber": {
+                    "longDescription": "The value of this property shall be a part number assigned by the organization that is responsible for producing or manufacturing the drive.",
                     "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The part number for this drive."
                 },
                 "Actions": {
                     "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "additionalProperties": true,
-                            "properties": {},
-                            "patternProperties": {
-                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "type": [
-                                        "array",
-                                        "boolean",
-                                        "number",
-                                        "null",
-                                        "object",
-                                        "string"
-                                    ],
-                                    "description": "This property shall specify a valid odata or Redfish property."
-                                }
-                            },
-                            "type": "object",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "description": "The available OEM specific actions for this resource."
-                        },
-                        "#Drive.SecureErase": {
-                            "$ref": "#/definitions/SecureErase"
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -330,122 +418,52 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "description": "This property shall specify a valid odata or Redfish property.",
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ]
+                                }
+                            },
+                            "properties": {},
+                            "description": "The available OEM specific actions for this resource.",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "type": "object"
+                        },
+                        "#Drive.SecureErase": {
+                            "$ref": "#/definitions/SecureErase"
+                        }
+                    },
+                    "description": "The available actions for this resource.",
                     "longDescription": "The Actions property shall contain the available actions for this resource.",
-                    "description": "The available actions for this resource."
-                },
-                "Revision": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain the revision as defined by the manufacturer for the associated drive.",
-                    "description": "The revision of this Drive. This is typically the firmware/hardware version of the drive."
-                },
-                "NegotiatedSpeedGbs": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "Gbit/s",
-                    "longDescription": "This property shall contain current bus speed of the associated drive.",
-                    "description": "The speed which this drive is currently communicating to the storage controller in Gigabits per second.",
-                    "readonly": true
-                },
-                "FailurePredicted": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain failure information as defined by the manufacturer for the associated drive.",
-                    "description": "Is this drive currently predicting a failure in the near future."
-                },
-                "Model": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the name by which the manufacturer generally refers to the drive.",
-                    "description": "This is the model number for the drive."
-                },
-                "EncryptionStatus": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/EncryptionStatus"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This property shall contain the encrytion status for the associated drive.",
-                    "description": "The status of the encrytion of this drive."
-                },
-                "Location": {
-                    "type": "array",
-                    "longDescription": "This property shall contain location information of the associated drive.",
-                    "items": {
-                        "$ref": "Resource.v1_1_0.json#/definitions/Location"
-                    },
-                    "description": "The Location of the drive."
-                },
-                "HotspareType": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/HotspareType"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This property shall contain the hot spare type for the associated drive. If the drive is currently serving as a hot spare its Status.State field shall be 'StandbySpare' and 'Enabled' when it is being used as part of a Volume.",
-                    "description": "The type of hotspare this drive is currently serving as."
+                    "type": "object"
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "Drive contains properties describing a single physical disk drive for any system, along with links to associated Volumes.",
+            "longDescription": "This resource shall be used to represent a disk drive or other physical storage medium for a Redfish implementation.",
             "required": [
                 "Id",
                 "Name"
             ],
-            "longDescription": "This resource shall be used to represent a disk drive or other physical storage medium for a Redfish implementation.",
-            "description": "Drive contains properties describing a single physical disk drive for any system, along with links to associated Volumes."
+            "type": "object"
         },
         "SecureErase": {
             "additionalProperties": false,
-            "properties": {
-                "target": {
-                    "type": "string",
-                    "format": "uri",
-                    "description": "Link to invoke action"
-                },
-                "title": {
-                    "type": "string",
-                    "description": "Friendly action name"
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -453,16 +471,25 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                },
+                "target": {
+                    "format": "uri",
+                    "type": "string",
+                    "description": "Link to invoke action"
+                }
+            },
+            "description": "This action is used to securely erase the contents of the drive.",
             "longDescription": "This defines the name of the custom action supported on this resource.",
-            "description": "This action is used to securely erase the contents of the drive."
+            "type": "object"
         },
         "StatusIndicator": {
-            "type": "string",
             "enum": [
                 "OK",
                 "Fail",
@@ -473,17 +500,20 @@
                 "InAFailedArray"
             ],
             "enumDescriptions": {
+                "Rebuild": "The drive is being rebuilt.",
+                "InAFailedArray": "The array that this drive is a part of is failed.",
                 "PredictiveFailureAnalysis": "The drive is still working but predicted to fail soon.",
                 "Fail": "The drive has failed.",
                 "Hotspare": "The drive is marked to be automatically rebuilt and used as a replacement for a failed drive.",
-                "OK": "The drive is OK.",
-                "Rebuild": "The drive is being rebuilt.",
                 "InACriticalArray": "The array that this drive is a part of is degraded.",
-                "InAFailedArray": "The array that this drive is a part of is failed."
-            }
+                "OK": "The drive is OK."
+            },
+            "type": "string"
         },
         "EncryptionStatus": {
-            "type": "string",
+            "enumDeprecated": {
+                "Unecrypted": "This value has been Deprecated in favor of Unencrypted."
+            },
             "enum": [
                 "Unecrypted",
                 "Unlocked",
@@ -492,44 +522,14 @@
                 "Unencrypted"
             ],
             "enumDescriptions": {
+                "Locked": "The drive is currently encrypted and the data is not accessible to the user, however the system has the ability to unlock the drive automatically.",
                 "Unencrypted": "The drive is not currently encrypted.",
                 "Unlocked": "The drive is currently encrypted but the data is accessible to the user unencrypted.",
-                "Foreign": "The drive is currently encrypted, the data is not accessible to the user, and the system requires user intervention to expose the data.",
                 "Unecrypted": "The drive is not currently encrypted.",
-                "Locked": "The drive is currently encrypted and the data is not accessible to the user, however the system has the ability to unlock the drive automatically."
+                "Foreign": "The drive is currently encrypted, the data is not accessible to the user, and the system requires user intervention to expose the data."
             },
-            "enumDeprecated": {
-                "Unecrypted": "This value has been Deprecated in favor of Unencrypted."
-            }
-        },
-        "MediaType": {
-            "type": "string",
-            "enum": [
-                "HDD",
-                "SSD",
-                "SMR"
-            ],
-            "enumDescriptions": {
-                "SSD": "The drive media type is solid state or flash memory.",
-                "SMR": "The drive media type is shingled magnetic recording.",
-                "HDD": "The drive media type is traditional magnetic platters."
-            }
-        },
-        "HotspareType": {
-            "type": "string",
-            "enum": [
-                "None",
-                "Global",
-                "Chassis",
-                "Dedicated"
-            ],
-            "enumDescriptions": {
-                "Dedicated": "The drive is currently serving as a hotspare for a user defined set of drives.",
-                "None": "The drive is not currently a hotspare.",
-                "Global": "The drive is currently serving as a hotspare for all other drives in the storage system.",
-                "Chassis": "The drive is currently serving as a hotspare for all other drives in the chassis."
-            }
+            "type": "string"
         }
     },
-    "title": "#Drive.v1_2_0.Drive"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

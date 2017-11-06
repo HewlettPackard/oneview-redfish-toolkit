@@ -1,63 +1,42 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "PCIeDevice.v1_0_2.json#/definitions/PCIeDevice",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#PCIeDevice.v1_0_2.PCIeDevice",
     "definitions": {
+        "DeviceType": {
+            "enum": [
+                "SingleFunction",
+                "MultiFunction",
+                "Simulated"
+            ],
+            "enumDescriptions": {
+                "MultiFunction": "A multi-function PCIe device.",
+                "Simulated": "A PCIe device which is not currently physically present, but is being simulated by the PCIe infrastructure.",
+                "SingleFunction": "A single-function PCIe device."
+            },
+            "type": "string"
+        },
         "PCIeDevice": {
             "additionalProperties": false,
-            "properties": {
-                "FirmwareVersion": {
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the firmware version of the PCIe device.",
-                    "description": "The version of firmware for this PCIe device."
-                },
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
                 "Links": {
                     "additionalProperties": false,
-                    "properties": {
-                        "Chassis@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "PCIeFunctions@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "Chassis@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "Chassis": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall reference a resource of type Chassis that represents the physical container associated with this resource.",
-                            "items": {
-                                "$ref": "Chassis.json#/definitions/Chassis"
-                            },
-                            "description": "An array of references to the chassis in which the PCIe device is contained."
-                        },
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                            "description": "Oem extension object."
-                        },
-                        "PCIeFunctions@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "PCIeFunctions": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be a reference to the resources that this device exposes and shall reference a resource of type PCIeFunction.",
-                            "items": {
-                                "$ref": "PCIeFunction.json#/definitions/PCIeFunction"
-                            },
-                            "description": "An array of references to PCIeFunctions exposed by this device."
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -65,25 +44,109 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Chassis@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "PCIeFunctions@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "PCIeFunctions@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "Oem": {
+                            "$ref": "Resource.json#/definitions/Oem",
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                            "description": "Oem extension object."
+                        },
+                        "PCIeFunctions": {
+                            "description": "An array of references to PCIeFunctions exposed by this device.",
+                            "longDescription": "The value of this property shall be a reference to the resources that this device exposes and shall reference a resource of type PCIeFunction.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "PCIeFunction.json#/definitions/PCIeFunction"
+                            }
+                        },
+                        "Chassis": {
+                            "description": "An array of references to the chassis in which the PCIe device is contained.",
+                            "longDescription": "The value of this property shall reference a resource of type Chassis that represents the physical container associated with this resource.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Chassis.json#/definitions/Chassis"
+                            }
+                        },
+                        "Chassis@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        }
+                    },
+                    "description": "The links object contains the links to other resources that are related to this resource.",
                     "longDescription": "This type, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-                    "description": "The links object contains the links to other resources that are related to this resource."
+                    "type": "object"
                 },
                 "@odata.context": {
                     "$ref": "odata.4.0.0.json#/definitions/context"
                 },
+                "DeviceType": {
+                    "$ref": "#/definitions/DeviceType",
+                    "longDescription": "The value of this property shall be the device type of the PCIe device such as SingleFunction or MultiFunction.",
+                    "readonly": true,
+                    "description": "The device type for this PCIe device."
+                },
                 "SKU": {
+                    "longDescription": "The value of this property shall be the stock-keeping unit number for this PCIe device.",
+                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the stock-keeping unit number for this PCIe device.",
                     "description": "This is the SKU for this PCIe device."
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "Status": {
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.json#/definitions/Status"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                },
+                "SerialNumber": {
+                    "longDescription": "The value of this property shall be a manufacturer-allocated number used to identify the PCIe device.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The serial number for this PCIe device."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "AssetTag": {
+                    "longDescription": "The value of this property shall be an identifying string used to track the PCIe device for inventory purposes.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The user assigned asset tag for this PCIe device."
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "Description": {
                     "readonly": true,
@@ -96,120 +159,57 @@
                         }
                     ]
                 },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
+                "FirmwareVersion": {
+                    "longDescription": "The value of this property shall be the firmware version of the PCIe device.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The version of firmware for this PCIe device."
+                },
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Manufacturer": {
+                    "longDescription": "The value of this property shall be the name of the organization responsible for producing the PCIe device. This organization might be the entity from whom the PCIe device is purchased, but this is not necessarily true.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the manufacturer of this PCIe device."
                 },
                 "@odata.id": {
                     "$ref": "odata.4.0.0.json#/definitions/id"
                 },
-                "Id": {
+                "PartNumber": {
+                    "longDescription": "The value of this property shall be a part number assigned by the organization that is responsible for producing or manufacturing the PCIe device.",
                     "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
-                "Status": {
-                    "anyOf": [
-                        {
-                            "$ref": "Resource.json#/definitions/Status"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ]
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The part number for this PCIe device."
                 },
                 "Model": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
                     "longDescription": "The value of this property shall be the name by which the manufacturer generally refers to the PCIe device.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "description": "This is the model number for the PCIe device."
-                },
-                "DeviceType": {
-                    "readonly": true,
-                    "$ref": "#/definitions/DeviceType",
-                    "longDescription": "The value of this property shall be the device type of the PCIe device such as SingleFunction or MultiFunction.",
-                    "description": "The device type for this PCIe device."
-                },
-                "SerialNumber": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be a manufacturer-allocated number used to identify the PCIe device.",
-                    "description": "The serial number for this PCIe device."
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "AssetTag": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be an identifying string used to track the PCIe device for inventory purposes.",
-                    "description": "The user assigned asset tag for this PCIe device."
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "Manufacturer": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the name of the organization responsible for producing the PCIe device. This organization might be the entity from whom the PCIe device is purchased, but this is not necessarily true.",
-                    "description": "This is the manufacturer of this PCIe device."
-                },
-                "PartNumber": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be a part number assigned by the organization that is responsible for producing or manufacturing the PCIe device.",
-                    "description": "The part number for this PCIe device."
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "This is the schema definition for the PCIeDevice resource.  It represents the properties of a PCIeDevice attached to a System.",
             "required": [
                 "Id",
                 "Name"
             ],
-            "description": "This is the schema definition for the PCIeDevice resource.  It represents the properties of a PCIeDevice attached to a System."
-        },
-        "DeviceType": {
-            "type": "string",
-            "enum": [
-                "SingleFunction",
-                "MultiFunction",
-                "Simulated"
-            ],
-            "enumDescriptions": {
-                "MultiFunction": "A multi-function PCIe device.",
-                "SingleFunction": "A single-function PCIe device.",
-                "Simulated": "A PCIe device which is not currently physically present, but is being simulated by the PCIe infrastructure."
-            }
+            "type": "object"
         }
     },
-    "title": "#PCIeDevice.v1_0_2.PCIeDevice"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

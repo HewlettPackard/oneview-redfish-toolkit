@@ -1,13 +1,154 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "MemoryMetrics.v1_1_2.json#/definitions/MemoryMetrics",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#MemoryMetrics.v1_1_2.MemoryMetrics",
     "definitions": {
+        "ClearCurrentPeriod": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                },
+                "target": {
+                    "format": "uri",
+                    "type": "string",
+                    "description": "Link to invoke action"
+                }
+            },
+            "description": "This sets the CurrentPeriod object values to zero.",
+            "longDescription": "This action shall set the CurrentPeriod object property values to zero.",
+            "type": "object"
+        },
+        "AlarmTrips": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "UncorrectableECCError": {
+                    "longDescription": "The value of this property shall be true if the uncorrectable error threshold alarm trip was detected.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Uncorrectable data error threshold crossing alarm trip detected status."
+                },
+                "AddressParityError": {
+                    "longDescription": "The value of this property shall be true if an Address Parity Error was detected which could not be corrected by retry.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Address parity error detected status."
+                },
+                "SpareBlock": {
+                    "longDescription": "The value of this property shall be true if the spare block capacity crossing alarm trip was detected.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Spare block capacity crossing alarm trip detected status."
+                },
+                "Temperature": {
+                    "longDescription": "The value of this property shall be true if a temperature threshold alarm trip was detected.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Temperature threshold crossing alarm trip detected status."
+                },
+                "CorrectableECCError": {
+                    "longDescription": "The value of this property shall be true if the correctable error threshold crossing alarm trip was detected.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Correctable data error threshold crossing alarm trip detected status."
+                }
+            },
+            "description": "Alarm trip information about the memory.",
+            "longDescription": "This type shall contain properties describing the types of alarms that have been raised by the memory.",
+            "type": "object"
+        },
         "MemoryMetrics": {
             "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
                 "@odata.context": {
                     "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "LifeTime": {
+                    "$ref": "#/definitions/LifeTime",
+                    "longDescription": "This object shall contain properties which describe the LifeTime metrics for the current resource.",
+                    "description": "This object contains the Memory metrics for the lifetime of the Memory."
+                },
+                "CurrentPeriod": {
+                    "$ref": "#/definitions/CurrentPeriod",
+                    "longDescription": "This object shall contain properties which describe the CurrentPeriod metrics for the current resource.",
+                    "description": "This object contains the Memory metrics since last reset or ClearCurrentPeriod action."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "BlockSizeBytes": {
+                    "description": "Block size in bytes.",
+                    "units": "By",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "longDescription": "The value of this property shall be the block size in bytes of all stucture elements."
                 },
                 "Description": {
                     "readonly": true,
@@ -20,34 +161,12 @@
                         }
                     ]
                 },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "@odata.id": {
                     "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "BlockSizeBytes": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "units": "By",
-                    "longDescription": "The value of this property shall be the block size in bytes of all stucture elements.",
-                    "description": "Block size in bytes.",
-                    "readonly": true
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
-                "LifeTime": {
-                    "$ref": "#/definitions/LifeTime",
-                    "longDescription": "This object shall contain properties which describe the LifeTime metrics for the current resource.",
-                    "description": "This object contains the Memory metrics for the lifetime of the Memory."
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
                 },
                 "HealthData": {
                     "$ref": "#/definitions/HealthData",
@@ -56,33 +175,9 @@
                 },
                 "Actions": {
                     "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "additionalProperties": true,
-                            "properties": {},
-                            "patternProperties": {
-                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "type": [
-                                        "array",
-                                        "boolean",
-                                        "number",
-                                        "null",
-                                        "object",
-                                        "string"
-                                    ],
-                                    "description": "This property shall specify a valid odata or Redfish property."
-                                }
-                            },
-                            "type": "object",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "description": "The available OEM specific actions for this resource."
-                        },
-                        "#MemoryMetrics.ClearCurrentPeriod": {
-                            "$ref": "#/definitions/ClearCurrentPeriod"
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -90,276 +185,123 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "description": "This property shall specify a valid odata or Redfish property.",
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ]
+                                }
+                            },
+                            "properties": {},
+                            "description": "The available OEM specific actions for this resource.",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "type": "object"
+                        },
+                        "#MemoryMetrics.ClearCurrentPeriod": {
+                            "$ref": "#/definitions/ClearCurrentPeriod"
+                        }
+                    },
+                    "description": "The available actions for this resource.",
                     "longDescription": "The Actions property shall contain the available actions for this resource.",
-                    "description": "The available actions for this resource."
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "CurrentPeriod": {
-                    "$ref": "#/definitions/CurrentPeriod",
-                    "longDescription": "This object shall contain properties which describe the CurrentPeriod metrics for the current resource.",
-                    "description": "This object contains the Memory metrics since last reset or ClearCurrentPeriod action."
+                    "type": "object"
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "MemoryMetrics contains usage and health statistics for a single Memory module or device instance.",
+            "longDescription": "This resource shall be used to represent the Memory Metrics for a single Memory device in a Redfish implementation.",
             "required": [
                 "Id",
                 "Name"
             ],
-            "longDescription": "This resource shall be used to represent the Memory Metrics for a single Memory device in a Redfish implementation.",
-            "description": "MemoryMetrics contains usage and health statistics for a single Memory module or device instance."
-        },
-        "LifeTime": {
-            "additionalProperties": false,
-            "properties": {
-                "BlocksRead": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be number of blocks read for the lifetime of the Memory.",
-                    "description": "Number of blocks read for the lifetime of the Memory."
-                },
-                "BlocksWritten": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be number of blocks written for the lifetime of the Memory.",
-                    "description": "Number of blocks written for the lifetime of the Memory."
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
-            "longDescription": "This type shall describe the metrics of the memory since manufacturing.",
-            "description": "This object contains the Memory metrics for the lifetime of the Memory."
-        },
-        "AlarmTrips": {
-            "additionalProperties": false,
-            "properties": {
-                "SpareBlock": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be true if the spare block capacity crossing alarm trip was detected.",
-                    "description": "Spare block capacity crossing alarm trip detected status."
-                },
-                "CorrectableECCError": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be true if the correctable error threshold crossing alarm trip was detected.",
-                    "description": "Correctable data error threshold crossing alarm trip detected status."
-                },
-                "UncorrectableECCError": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be true if the uncorrectable error threshold alarm trip was detected.",
-                    "description": "Uncorrectable data error threshold crossing alarm trip detected status."
-                },
-                "Temperature": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be true if a temperature threshold alarm trip was detected.",
-                    "description": "Temperature threshold crossing alarm trip detected status."
-                },
-                "AddressParityError": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be true if an Address Parity Error was detected which could not be corrected by retry.",
-                    "description": "Address parity error detected status."
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
-            "longDescription": "This type shall contain properties describing the types of alarms that have been raised by the memory.",
-            "description": "Alarm trip information about the memory."
-        },
-        "ClearCurrentPeriod": {
-            "additionalProperties": false,
-            "properties": {
-                "target": {
-                    "type": "string",
-                    "format": "uri",
-                    "description": "Link to invoke action"
-                },
-                "title": {
-                    "type": "string",
-                    "description": "Friendly action name"
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
-            "longDescription": "This action shall set the CurrentPeriod object property values to zero.",
-            "description": "This sets the CurrentPeriod object values to zero."
+            "type": "object"
         },
         "HealthData": {
             "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
-                "PredictedMediaLifeLeftPercent": {
+                "RemainingSpareBlockPercentage": {
+                    "longDescription": "The value of this property shall be the remaining spare blocks in percentage.",
+                    "readonly": true,
                     "type": [
                         "number",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain an indicator of the percentage of life remaining in the media.",
-                    "description": "The percentage of reads and writes that are predicted to still be available for the media."
-                },
-                "LastShutdownSuccess": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the status ofthe  last shutdown, with true indicating success.",
-                    "description": "Status of last shutdown."
+                    "description": "Remaining spare blocks in percentage."
                 },
                 "AlarmTrips": {
                     "$ref": "#/definitions/AlarmTrips",
                     "longDescription": "This object shall contain properties describe the types of alarms that have been raised by the memory.",
                     "description": "Alarm trip information about the memory."
                 },
-                "RemainingSpareBlockPercentage": {
+                "PerformanceDegraded": {
+                    "longDescription": "The value of this property shall be performance degraded mode status, with true indicating perfomance degraded.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Performance degraded mode status."
+                },
+                "LastShutdownSuccess": {
+                    "longDescription": "The value of this property shall be the status ofthe  last shutdown, with true indicating success.",
+                    "readonly": true,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Status of last shutdown."
+                },
+                "PredictedMediaLifeLeftPercent": {
+                    "longDescription": "This property shall contain an indicator of the percentage of life remaining in the media.",
+                    "readonly": true,
                     "type": [
                         "number",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the remaining spare blocks in percentage.",
-                    "description": "Remaining spare blocks in percentage."
+                    "description": "The percentage of reads and writes that are predicted to still be available for the media."
                 },
                 "DataLossDetected": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": true,
                     "longDescription": "The value of this property shall be data loss detection status, with true indicating data loss detected.",
-                    "description": "Data loss detection status."
-                },
-                "PerformanceDegraded": {
+                    "readonly": true,
                     "type": [
                         "boolean",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be performance degraded mode status, with true indicating perfomance degraded.",
-                    "description": "Performance degraded mode status."
+                    "description": "Data loss detection status."
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "This type describes the health information of the memory.",
             "longDescription": "This type shall contain properties which describe the HealthData metrics for the current resource.",
-            "description": "This type describes the health information of the memory."
+            "type": "object"
         },
         "CurrentPeriod": {
             "additionalProperties": false,
-            "properties": {
-                "BlocksRead": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be number of blocks read since reset.",
-                    "description": "Number of blocks read since reset."
-                },
-                "BlocksWritten": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be mumber of blocks written since reset.",
-                    "description": "Number of blocks written since reset."
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -367,14 +309,72 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "BlocksWritten": {
+                    "longDescription": "The value of this property shall be mumber of blocks written since reset.",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "Number of blocks written since reset."
+                },
+                "BlocksRead": {
+                    "longDescription": "The value of this property shall be number of blocks read since reset.",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "Number of blocks read since reset."
+                }
+            },
+            "description": "This object contains the Memory metrics since last reset or ClearCurrentPeriod action.",
             "longDescription": "This type shall describe the metrics of the memory since last time the ClearCurrentPeriod Action was performed or the system reset.",
-            "description": "This object contains the Memory metrics since last reset or ClearCurrentPeriod action."
+            "type": "object"
+        },
+        "LifeTime": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "BlocksWritten": {
+                    "longDescription": "The value of this property shall be number of blocks written for the lifetime of the Memory.",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "Number of blocks written for the lifetime of the Memory."
+                },
+                "BlocksRead": {
+                    "longDescription": "The value of this property shall be number of blocks read for the lifetime of the Memory.",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "Number of blocks read for the lifetime of the Memory."
+                }
+            },
+            "description": "This object contains the Memory metrics for the lifetime of the Memory.",
+            "longDescription": "This type shall describe the metrics of the memory since manufacturing.",
+            "type": "object"
         }
     },
-    "title": "#MemoryMetrics.v1_1_2.MemoryMetrics"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

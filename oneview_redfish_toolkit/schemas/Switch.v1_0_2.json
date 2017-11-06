@@ -1,23 +1,13 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "Switch.v1_0_2.json#/definitions/Switch",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#Switch.v1_0_2.Switch",
     "definitions": {
-        "Reset": {
+        "Switch": {
             "additionalProperties": false,
-            "properties": {
-                "target": {
-                    "type": "string",
-                    "format": "uri",
-                    "description": "Link to invoke action"
-                },
-                "title": {
-                    "type": "string",
-                    "description": "Friendly action name"
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -25,59 +15,66 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "longDescription": "This defines the name of the custom action supported on this resource.",
-            "description": "This action is used to reset this switch."
-        },
-        "Switch": {
-            "additionalProperties": false,
             "properties": {
-                "IsManaged": {
+                "SKU": {
+                    "longDescription": "The value of this property shall be the stock-keeping unit number for this switch.",
+                    "readonly": true,
                     "type": [
-                        "boolean",
+                        "string",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be a boolean indicating whether this switch is in a managed or unmanaged state.",
-                    "description": "This indicates whether the switch is in a managed or unmanaged state."
+                    "description": "This is the SKU for this switch."
                 },
-                "Links": {
-                    "additionalProperties": false,
-                    "properties": {
-                        "ManagedBy@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
+                "TotalSwitchWidth": {
+                    "longDescription": "The value of this property shall be the number of physical transport lanes, phys, or other physical transport links that this switch contains. For PCIe, this shall be lane count.",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The total number of lanes, phys, or other physical transport links that this switch contains."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "LogServices": {
+                    "longDescription": "The value of this property shall be a link to a collection of type LogServiceCollection.",
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "LogServiceCollection.json#/definitions/LogServiceCollection"
                         },
-                        "ManagedBy": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall be a reference to the resources that this switch is associated with and shall reference a resource of type Manager.",
-                            "items": {
-                                "$ref": "Manager.json#/definitions/Manager"
-                            },
-                            "description": "An array of references to the managers that manage this switch."
-                        },
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                            "description": "Oem extension object."
-                        },
-                        "ManagedBy@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "Chassis": {
-                            "readonly": true,
-                            "$ref": "Chassis.json#/definitions/Chassis",
-                            "longDescription": "The value of this property shall be a reference to the resources that this switch is associated with and shall reference a resource of type Chassis.",
-                            "description": "A reference to the chassis which contains this switch."
+                        {
+                            "type": "null"
                         }
-                    },
+                    ],
+                    "description": "A reference to the collection of Log Services associated with this system."
+                },
+                "Redundancy@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "AssetTag": {
+                    "longDescription": "The value of this property shall be an identifying string used to track the drive for inventory purposes.",
+                    "readonly": false,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The user assigned asset tag for this switch."
+                },
+                "Actions": {
+                    "additionalProperties": false,
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -85,25 +82,177 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
-                    "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-                    "description": "Contains references to other resources that are related to this resource."
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "description": "This property shall specify a valid odata or Redfish property.",
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ]
+                                }
+                            },
+                            "properties": {},
+                            "description": "The available OEM specific actions for this resource.",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "type": "object"
+                        },
+                        "#Switch.Reset": {
+                            "$ref": "#/definitions/Reset"
+                        }
+                    },
+                    "description": "The available actions for this resource.",
+                    "longDescription": "The Actions property shall contain the available actions for this resource.",
+                    "type": "object"
                 },
-                "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
                 },
-                "SKU": {
+                "Redundancy@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "Ports": {
+                    "$ref": "PortCollection.json#/definitions/PortCollection",
+                    "longDescription": "The value of this property shall be a reference to the resources that this switch contains and shall reference a resource of type Port.",
+                    "readonly": true,
+                    "description": "A collection of references to the ports for this switch."
+                },
+                "Model": {
+                    "longDescription": "This property shall indicate the model information as provided by the manufacturer of this switch.",
+                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
+                    "description": "The product model number of this switch."
+                },
+                "Links": {
+                    "additionalProperties": false,
+                    "patternProperties": {
+                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
+                            "type": [
+                                "array",
+                                "boolean",
+                                "number",
+                                "null",
+                                "object",
+                                "string"
+                            ]
+                        }
+                    },
+                    "properties": {
+                        "Oem": {
+                            "$ref": "Resource.json#/definitions/Oem",
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                            "description": "Oem extension object."
+                        },
+                        "ManagedBy": {
+                            "description": "An array of references to the managers that manage this switch.",
+                            "longDescription": "The value of this property shall be a reference to the resources that this switch is associated with and shall reference a resource of type Manager.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Manager.json#/definitions/Manager"
+                            }
+                        },
+                        "ManagedBy@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "ManagedBy@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "Chassis": {
+                            "$ref": "Chassis.json#/definitions/Chassis",
+                            "longDescription": "The value of this property shall be a reference to the resources that this switch is associated with and shall reference a resource of type Chassis.",
+                            "readonly": true,
+                            "description": "A reference to the chassis which contains this switch."
+                        }
+                    },
+                    "description": "Contains references to other resources that are related to this resource.",
+                    "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
+                    "type": "object"
+                },
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "DomainID": {
+                    "longDescription": "The value of this property shall have a scope of uniqueness within the fabric of which the switch is a member.",
                     "readonly": true,
-                    "longDescription": "The value of this property shall be the stock-keeping unit number for this switch.",
-                    "description": "This is the SKU for this switch."
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "description": "The Domain ID for this switch."
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "SwitchType": {
+                    "longDescription": "The value of this property shall contain the type of switch being represented by this simple switch.",
+                    "readonly": true,
+                    "anyOf": [
+                        {
+                            "$ref": "Storage.v1_0_0.json#/definitions/Protocol"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The protocol being sent over this switch."
+                },
+                "SerialNumber": {
+                    "longDescription": "The value of this property shall be a manufacturer-allocated number used to identify the switch.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The serial number for this switch."
+                },
+                "Redundancy": {
+                    "description": "Redundancy information for the switches.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Redundancy.json#/definitions/Redundancy"
+                    }
+                },
+                "IsManaged": {
+                    "longDescription": "The value of this property shall be a boolean indicating whether this switch is in a managed or unmanaged state.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "This indicates whether the switch is in a managed or unmanaged state."
+                },
+                "IndicatorLED": {
+                    "longDescription": "This value of this property shall contain the indicator light state for the indicator light associated with this switch.",
+                    "readonly": false,
+                    "anyOf": [
+                        {
+                            "$ref": "Resource.v1_1_0.json#/definitions/IndicatorLED"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "The state of the indicator LED, used to identify the switch."
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "Description": {
                     "readonly": true,
@@ -116,105 +265,21 @@
                         }
                     ]
                 },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 },
-                "IndicatorLED": {
-                    "readonly": false,
-                    "anyOf": [
-                        {
-                            "$ref": "Resource.v1_1_0.json#/definitions/IndicatorLED"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "This value of this property shall contain the indicator light state for the indicator light associated with this switch.",
-                    "description": "The state of the indicator LED, used to identify the switch."
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
-                },
-                "Actions": {
-                    "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "additionalProperties": true,
-                            "properties": {},
-                            "patternProperties": {
-                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "type": [
-                                        "array",
-                                        "boolean",
-                                        "number",
-                                        "null",
-                                        "object",
-                                        "string"
-                                    ],
-                                    "description": "This property shall specify a valid odata or Redfish property."
-                                }
-                            },
-                            "type": "object",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "description": "The available OEM specific actions for this resource."
-                        },
-                        "#Switch.Reset": {
-                            "$ref": "#/definitions/Reset"
-                        }
-                    },
-                    "patternProperties": {
-                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                            "type": [
-                                "array",
-                                "boolean",
-                                "number",
-                                "null",
-                                "object",
-                                "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
-                        }
-                    },
-                    "type": "object",
-                    "longDescription": "The Actions property shall contain the available actions for this resource.",
-                    "description": "The available actions for this resource."
-                },
-                "SwitchType": {
+                "Manufacturer": {
+                    "longDescription": "The value of this property shall be the name of the organization responsible for producing the switch. This organization might be the entity from whom the switch is purchased, but this is not necessarily true.",
                     "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "Storage.v1_0_0.json#/definitions/Protocol"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "The value of this property shall contain the type of switch being represented by this simple switch.",
-                    "description": "The protocol being sent over this switch."
-                },
-                "SerialNumber": {
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be a manufacturer-allocated number used to identify the switch.",
-                    "description": "The serial number for this switch."
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "TotalSwitchWidth": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the number of physical transport lanes, phys, or other physical transport links that this switch contains. For PCIe, this shall be lane count.",
-                    "description": "The total number of lanes, phys, or other physical transport links that this switch contains."
+                    "description": "This is the manufacturer of this switch."
                 },
                 "PowerState": {
+                    "longDescription": "The value of this property shall contain the power state of the switch.",
                     "readonly": true,
                     "anyOf": [
                         {
@@ -224,102 +289,31 @@
                             "type": "null"
                         }
                     ],
-                    "longDescription": "The value of this property shall contain the power state of the switch.",
                     "description": "This is the current power state of the switch."
                 },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "Manufacturer": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the name of the organization responsible for producing the switch. This organization might be the entity from whom the switch is purchased, but this is not necessarily true.",
-                    "description": "This is the manufacturer of this switch."
-                },
-                "AssetTag": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be an identifying string used to track the drive for inventory purposes.",
-                    "description": "The user assigned asset tag for this switch."
-                },
                 "PartNumber": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
                     "longDescription": "The value of this property shall be a part number assigned by the organization that is responsible for producing or manufacturing the switch.",
-                    "description": "The part number for this switch."
-                },
-                "Id": {
                     "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
-                "Ports": {
-                    "readonly": true,
-                    "$ref": "PortCollection.json#/definitions/PortCollection",
-                    "longDescription": "The value of this property shall be a reference to the resources that this switch contains and shall reference a resource of type Port.",
-                    "description": "A collection of references to the ports for this switch."
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "Redundancy@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "Redundancy@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "LogServices": {
-                    "readonly": true,
-                    "anyOf": [
-                        {
-                            "$ref": "LogServiceCollection.json#/definitions/LogServiceCollection"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "The value of this property shall be a link to a collection of type LogServiceCollection.",
-                    "description": "A reference to the collection of Log Services associated with this system."
-                },
-                "Model": {
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "This property shall indicate the model information as provided by the manufacturer of this switch.",
-                    "description": "The product model number of this switch."
-                },
-                "Redundancy": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "Redundancy.json#/definitions/Redundancy"
-                    },
-                    "description": "Redundancy information for the switches."
-                },
-                "DomainID": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall have a scope of uniqueness within the fabric of which the switch is a member.",
-                    "description": "The Domain ID for this switch."
+                    "description": "The part number for this switch."
                 }
             },
+            "description": "Switch contains properties describing a simple fabric switch.",
+            "longDescription": "This resource shall be used to represent a simple switch for a Redfish implementation.",
+            "required": [
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "Reset": {
+            "additionalProperties": false,
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -327,18 +321,24 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "required": [
-                "Id",
-                "Name"
-            ],
-            "longDescription": "This resource shall be used to represent a simple switch for a Redfish implementation.",
-            "description": "Switch contains properties describing a simple fabric switch."
+            "properties": {
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                },
+                "target": {
+                    "format": "uri",
+                    "type": "string",
+                    "description": "Link to invoke action"
+                }
+            },
+            "description": "This action is used to reset this switch.",
+            "longDescription": "This defines the name of the custom action supported on this resource.",
+            "type": "object"
         }
     },
-    "title": "#Switch.v1_0_2.Switch"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

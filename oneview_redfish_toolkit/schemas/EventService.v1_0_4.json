@@ -1,19 +1,53 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "EventService.v1_0_4.json#/definitions/EventService",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#EventService.v1_0_4.EventService",
     "definitions": {
         "EventService": {
             "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
                 "@odata.context": {
                     "$ref": "odata.4.0.0.json#/definitions/context"
                 },
-                "DeliveryRetryAttempts": {
-                    "type": "number",
+                "Subscriptions": {
+                    "$ref": "EventDestinationCollection.json#/definitions/EventDestinationCollection",
+                    "longDescription": "The value of this property shall contain the link to a collection of type EventDestinationCollection.",
                     "readonly": true,
+                    "description": "This is a reference to a collection of Event Destination resources."
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "DeliveryRetryAttempts": {
                     "longDescription": "The value of this property shall be the number of retrys attempted for any given event to the subscription destination before the subscription is terminated.",
+                    "readonly": true,
+                    "type": "number",
                     "description": "This is the number of attempts an event posting is retried before the subscription is terminated."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "Description": {
                     "readonly": true,
@@ -26,57 +60,11 @@
                         }
                     ]
                 },
-                "DeliveryRetryIntervalSeconds": {
-                    "type": "number",
-                    "units": "s",
-                    "longDescription": "The value of this property shall be the interval in seconds between the retry attempts for any given event to the subscription destination.",
-                    "description": "This represents the number of seconds between retry attempts for sending any given Event.",
-                    "readonly": true
-                },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "ServiceEnabled": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be a boolean indicating whether this service is enabled.",
-                    "description": "This indicates whether this service is enabled."
-                },
                 "Actions": {
                     "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "additionalProperties": true,
-                            "properties": {},
-                            "patternProperties": {
-                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "type": [
-                                        "array",
-                                        "boolean",
-                                        "number",
-                                        "null",
-                                        "object",
-                                        "string"
-                                    ],
-                                    "description": "This property shall specify a valid odata or Redfish property."
-                                }
-                            },
-                            "type": "object",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "description": "The available OEM specific actions for this resource."
-                        },
-                        "#EventService.SubmitTestEvent": {
-                            "$ref": "#/definitions/SubmitTestEvent"
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -84,81 +72,83 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "description": "This property shall specify a valid odata or Redfish property.",
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ]
+                                }
+                            },
+                            "properties": {},
+                            "description": "The available OEM specific actions for this resource.",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "type": "object"
+                        },
+                        "#EventService.SubmitTestEvent": {
+                            "$ref": "#/definitions/SubmitTestEvent"
+                        }
+                    },
+                    "description": "The available actions for this resource.",
                     "longDescription": "The Actions property shall contain the available actions for this resource.",
-                    "description": "The available actions for this resource."
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                    "type": "object"
                 },
                 "EventTypesForSubscription": {
-                    "type": "array",
-                    "readonly": true,
+                    "description": "This is the types of Events that can be subscribed to.",
                     "longDescription": "The value of this property shall be the types of events that subscriptions can subscribe to.  The semantics associated with the enumerations values are defined in the Redfish specification.",
+                    "readonly": true,
+                    "type": "array",
                     "items": {
                         "$ref": "Event.v1_0_0.json#/definitions/EventType"
-                    },
-                    "description": "This is the types of Events that can be subscribed to."
+                    }
                 },
-                "Subscriptions": {
+                "DeliveryRetryIntervalSeconds": {
+                    "description": "This represents the number of seconds between retry attempts for sending any given Event.",
+                    "units": "s",
                     "readonly": true,
-                    "$ref": "EventDestinationCollection.json#/definitions/EventDestinationCollection",
-                    "longDescription": "The value of this property shall contain the link to a collection of type EventDestinationCollection.",
-                    "description": "This is a reference to a collection of Event Destination resources."
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "type": "number",
+                    "longDescription": "The value of this property shall be the interval in seconds between the retry attempts for any given event to the subscription destination."
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "ServiceEnabled": {
+                    "longDescription": "The value of this property shall be a boolean indicating whether this service is enabled.",
+                    "readonly": false,
                     "type": [
-                        "array",
                         "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
+                        "null"
                     ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    "description": "This indicates whether this service is enabled."
+                },
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 }
             },
-            "type": "object",
+            "description": "The Event Service resource contains properties for managing event subcriptions and generates the events sent to subscribers.  The resource has links to the actual collection of subscriptions (called Event Destinations).",
             "required": [
                 "Id",
                 "Name"
             ],
-            "description": "The Event Service resource contains properties for managing event subcriptions and generates the events sent to subscribers.  The resource has links to the actual collection of subscriptions (called Event Destinations)."
+            "type": "object"
         },
         "SubmitTestEvent": {
             "additionalProperties": false,
-            "properties": {
-                "target": {
-                    "type": "string",
-                    "format": "uri",
-                    "description": "Link to invoke action"
-                },
-                "title": {
-                    "type": "string",
-                    "description": "Friendly action name"
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -166,14 +156,24 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                },
+                "target": {
+                    "format": "uri",
+                    "type": "string",
+                    "description": "Link to invoke action"
+                }
+            },
+            "description": "This action is used to generate a test event.",
             "longDescription": "This action shall add a test event to the event service with the event data specified in the action parameters. This message should then be sent to any appropriate ListenerDestination targets.",
-            "description": "This action is used to generate a test event."
+            "type": "object"
         }
     },
-    "title": "#EventService.v1_0_4.EventService"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

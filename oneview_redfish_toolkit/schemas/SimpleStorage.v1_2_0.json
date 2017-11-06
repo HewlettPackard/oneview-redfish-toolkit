@@ -1,55 +1,13 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "SimpleStorage.v1_2_0.json#/definitions/SimpleStorage",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#SimpleStorage.v1_2_0.SimpleStorage",
     "definitions": {
-        "Device": {
+        "SimpleStorage": {
             "additionalProperties": false,
-            "properties": {
-                "CapacityBytes": {
-                    "readonly": true,
-                    "units": "By",
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the size (in bytes) of the Storage Device.",
-                    "description": "The size of the storage device."
-                },
-                "Model": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall indicate the model information as provided by the manufacturer of this storage device.",
-                    "description": "The product model number of this device."
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem"
-                },
-                "Name": {
-                    "type": "string",
-                    "readonly": true,
-                    "longDescription": "This object represents the Name property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification. The value of this string shall be of the format for the reserved word *Name*.",
-                    "description": "The name of the resource or array element."
-                },
-                "Manufacturer": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall indicate the name of the manufacturer of this storage device.",
-                    "description": "The name of the manufacturer of this device."
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -57,37 +15,15 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
-            "required": [
-                "Name"
-            ],
-            "longDescription": "This type shall describe a storage device visible to SimpleStorage.",
-            "description": "A storage device such as a disk drive or optical media device."
-        },
-        "SimpleStorage": {
-            "additionalProperties": false,
             "properties": {
                 "Links": {
                     "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                            "description": "Oem extension object."
-                        },
-                        "Chassis": {
-                            "readonly": true,
-                            "$ref": "Chassis.json#/definitions/Chassis",
-                            "longDescription": "The value of this property shall be a reference to a resource of type Chassis that represent the physical container associated with this Simple Storage.",
-                            "description": "A reference to the Chassis which contains this Simple Storage."
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -95,16 +31,52 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Oem": {
+                            "$ref": "Resource.json#/definitions/Oem",
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                            "description": "Oem extension object."
+                        },
+                        "Chassis": {
+                            "$ref": "Chassis.json#/definitions/Chassis",
+                            "longDescription": "The value of this property shall be a reference to a resource of type Chassis that represent the physical container associated with this Simple Storage.",
+                            "readonly": true,
+                            "description": "A reference to the Chassis which contains this Simple Storage."
+                        }
+                    },
+                    "description": "Contains references to other resources that are related to this resource.",
                     "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-                    "description": "Contains references to other resources that are related to this resource."
+                    "type": "object"
                 },
                 "@odata.context": {
                     "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "UefiDevicePath": {
+                    "longDescription": "This property shall contain the UEFI device path used to identify and locate the specific storage controller.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The UEFI device path used to access this storage controller."
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "Description": {
                     "readonly": true,
@@ -117,51 +89,11 @@
                         }
                     ]
                 },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "UefiDevicePath": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain the UEFI device path used to identify and locate the specific storage controller.",
-                    "description": "The UEFI device path used to access this storage controller."
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
                 "Actions": {
                     "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "additionalProperties": true,
-                            "properties": {},
-                            "patternProperties": {
-                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "type": [
-                                        "array",
-                                        "boolean",
-                                        "number",
-                                        "null",
-                                        "object",
-                                        "string"
-                                    ],
-                                    "description": "This property shall specify a valid odata or Redfish property."
-                                }
-                            },
-                            "type": "object",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "description": "The available OEM specific actions for this resource."
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -169,37 +101,63 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "description": "This property shall specify a valid odata or Redfish property.",
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ]
+                                }
+                            },
+                            "properties": {},
+                            "description": "The available OEM specific actions for this resource.",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "type": "object"
+                        }
+                    },
+                    "description": "The available actions for this resource.",
                     "longDescription": "The Actions property shall contain the available actions for this resource.",
-                    "description": "The available actions for this resource."
+                    "type": "object"
                 },
                 "Devices": {
-                    "type": "array",
+                    "description": "The storage devices associated with this resource.",
                     "longDescription": "This property shall contain a list of storage devices associated with this resource.",
+                    "type": "array",
                     "items": {
                         "$ref": "#/definitions/Device"
-                    },
-                    "description": "The storage devices associated with this resource."
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
+                    }
                 },
                 "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
                 }
             },
+            "description": "This is the schema definition for the Simple Storage resource.  It represents the properties of a storage controller and its directly-attached devices.",
+            "required": [
+                "Id",
+                "Name"
+            ],
+            "type": "object"
+        },
+        "Device": {
+            "additionalProperties": false,
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -207,17 +165,59 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "Manufacturer": {
+                    "longDescription": "This property shall indicate the name of the manufacturer of this storage device.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The name of the manufacturer of this device."
+                },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "Name": {
+                    "longDescription": "This object represents the Name property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification. The value of this string shall be of the format for the reserved word *Name*.",
+                    "readonly": true,
+                    "type": "string",
+                    "description": "The name of the resource or array element."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem"
+                },
+                "CapacityBytes": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the size (in bytes) of the Storage Device.",
+                    "description": "The size of the storage device.",
+                    "units": "By",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "Model": {
+                    "longDescription": "This property shall indicate the model information as provided by the manufacturer of this storage device.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "The product model number of this device."
+                }
+            },
+            "description": "A storage device such as a disk drive or optical media device.",
+            "longDescription": "This type shall describe a storage device visible to SimpleStorage.",
             "required": [
-                "Id",
                 "Name"
             ],
-            "description": "This is the schema definition for the Simple Storage resource.  It represents the properties of a storage controller and its directly-attached devices."
+            "type": "object"
         }
     },
-    "title": "#SimpleStorage.v1_2_0.SimpleStorage"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

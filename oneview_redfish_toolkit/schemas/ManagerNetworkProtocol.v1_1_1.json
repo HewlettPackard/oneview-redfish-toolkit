@@ -1,46 +1,13 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "ManagerNetworkProtocol.v1_1_1.json#/definitions/ManagerNetworkProtocol",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#ManagerNetworkProtocol.v1_1_1.ManagerNetworkProtocol",
     "definitions": {
-        "NotifyIPv6Scope": {
-            "type": "string",
-            "enum": [
-                "Link",
-                "Site",
-                "Organization"
-            ],
-            "enumDescriptions": {
-                "Organization": "SSDP Notify messages are sent to addresses in the IPv6 Local Organization scope.",
-                "Site": "SSDP Notify messages are sent to addresses in the IPv6 Local Site scope.",
-                "Link": "SSDP Notify messages are sent to addresses in the IPv6 Local Link scope."
-            }
-        },
-        "Protocol": {
+        "SSDProtocol": {
             "additionalProperties": false,
-            "properties": {
-                "Port": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall contain the port assigned for the protocol.",
-                    "description": "Indicates the protocol port.",
-                    "readonly": false
-                },
-                "ProtocolEnabled": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall contain the enabled status of the protocol.  The value shall be true if enabled and false if disabled.",
-                    "description": "Indicates if the protocol is enabled or disabled."
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -48,43 +15,156 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "NotifyIPv6Scope": {
+                    "longDescription": "The value of this property shall contain the IPv6 scope used for multicast NOTIFY messages.  The valid enumerations are a subset of the available IPv6 Scope types.",
+                    "readonly": false,
+                    "anyOf": [
+                        {
+                            "$ref": "#/definitions/NotifyIPv6Scope"
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ],
+                    "description": "Indicates the scope for the IPv6 Notify messages for SSDP."
+                },
+                "Port": {
+                    "longDescription": "The value of this property shall contain the port assigned for the protocol.",
+                    "minimum": 0,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "readonly": false,
+                    "description": "Indicates the protocol port."
+                },
+                "NotifyMulticastIntervalSeconds": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall contain the time interval, in seconds, between transmissions of the multicast NOTIFY ALIVE message.  A setting of 0 seconds shall disable this functionality.  The recommended value is 600 seconds.",
+                    "description": "Indicates how often the Multicast is done from this service for SSDP.",
+                    "units": "s",
+                    "readonly": false,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
+                "NotifyTTL": {
+                    "longDescription": "The value of this property shall contain the Time-To-Live hop count used for multicast NOTIFY messages.  The recommended value is 2.",
+                    "minimum": 1,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "readonly": false,
+                    "description": "Indicates the time to live hop count for SSDPs Notify messages."
+                },
+                "ProtocolEnabled": {
+                    "longDescription": "The value of this property shall contain the enabled status of the protocol.  The value shall be true if enabled and false if disabled.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Indicates if the protocol is enabled or disabled."
+                }
+            },
+            "description": "Settings for a network protocol associated with a manager.",
             "longDescription": "This type shall describe information about a protocol setting for a manager.",
-            "description": "Settings for a network protocol associated with a manager."
+            "type": "object"
+        },
+        "NotifyIPv6Scope": {
+            "enum": [
+                "Link",
+                "Site",
+                "Organization"
+            ],
+            "enumDescriptions": {
+                "Link": "SSDP Notify messages are sent to addresses in the IPv6 Local Link scope.",
+                "Organization": "SSDP Notify messages are sent to addresses in the IPv6 Local Organization scope.",
+                "Site": "SSDP Notify messages are sent to addresses in the IPv6 Local Site scope."
+            },
+            "type": "string"
         },
         "ManagerNetworkProtocol": {
             "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
+                "SSDP": {
+                    "$ref": "#/definitions/SSDProtocol",
+                    "longDescription": "This object shall contain information for the SSDP protocol settings for this manager.  Simple Service Discovery Protocol (SSDP) is for network discovery of devices supporting the Redfish service. The default value of the Port property should be 1900 for compatibility with established client implementations.",
+                    "description": "Settings for this Manager's SSDP support."
+                },
+                "@odata.context": {
+                    "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "IPMI": {
+                    "$ref": "#/definitions/Protocol",
+                    "longDescription": "This object shall contain information for the IPMI over LAN protocol settings for the manager. The default value of the Port property should be 623 for compatibility with established client implementations.",
+                    "description": "Settings for this Manager's IPMI-over-LAN protocol support."
+                },
+                "KVMIP": {
+                    "$ref": "#/definitions/Protocol",
+                    "longDescription": "This object shall contain information for the KVM-IP (Keyboard, Video, Mouse) protocol settings for the manager.",
+                    "description": "Settings for this Manager's KVM-IP protocol support."
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
                 "SSH": {
                     "$ref": "#/definitions/Protocol",
                     "longDescription": "This object shall contain information for the SSH protocol settings for the manager. The default value of the Port property should be 22 for compatibility with established client implementations.",
                     "description": "Settings for this Manager's SSH (Secure Shell) protocol support."
                 },
-                "HTTP": {
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "SNMP": {
                     "$ref": "#/definitions/Protocol",
-                    "longDescription": "This object shall contain information for the HTTP protocol settings for the manager. The default value of the Port property should be 80 for compatibility with established client implementations.",
-                    "description": "Settings for this Manager's HTTP protocol support."
+                    "longDescription": "This object shall contain information for the SNMP protocol settings for this manager. The default value of the Port property should be 161 for compatibility with established client implementations.",
+                    "description": "Settings for this Manager's SNMP support."
                 },
                 "Telnet": {
                     "$ref": "#/definitions/Protocol",
                     "longDescription": "This object shall contain information for the Telnet protocol settings for this manager. The default value of the Port property should be 23 for compatibility with established client implementations.",
                     "description": "Settings for this Manager's Telnet protocol support."
                 },
-                "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
-                },
                 "HostName": {
+                    "longDescription": "The value of this property shall contain the host name without any domain information.",
+                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall contain the host name without any domain information.",
                     "description": "The DNS Host Name of this manager, without any domain information."
+                },
+                "HTTPS": {
+                    "$ref": "#/definitions/Protocol",
+                    "longDescription": "This object shall contain information for the HTTPS/SSL protocol settings for this manager. The default value of the Port property should be 443 for compatibility with established client implementations.",
+                    "description": "Settings for this Manager's HTTPS protocol support."
+                },
+                "HTTP": {
+                    "$ref": "#/definitions/Protocol",
+                    "longDescription": "This object shall contain information for the HTTP protocol settings for the manager. The default value of the Port property should be 80 for compatibility with established client implementations.",
+                    "description": "Settings for this Manager's HTTP protocol support."
                 },
                 "Description": {
                     "readonly": true,
@@ -97,153 +177,53 @@
                         }
                     ]
                 },
-                "DHCP": {
-                    "$ref": "#/definitions/Protocol",
-                    "longDescription": "This object shall contain information for the DHCP protocol settings for the manager.",
-                    "description": "Settings for this Manager's DHCP protocol support."
-                },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "IPMI": {
-                    "$ref": "#/definitions/Protocol",
-                    "longDescription": "This object shall contain information for the IPMI over LAN protocol settings for the manager. The default value of the Port property should be 623 for compatibility with established client implementations.",
-                    "description": "Settings for this Manager's IPMI-over-LAN protocol support."
-                },
-                "KVMIP": {
-                    "$ref": "#/definitions/Protocol",
-                    "longDescription": "This object shall contain information for the KVM-IP (Keyboard, Video, Mouse) protocol settings for the manager.",
-                    "description": "Settings for this Manager's KVM-IP protocol support."
-                },
-                "SNMP": {
-                    "$ref": "#/definitions/Protocol",
-                    "longDescription": "This object shall contain information for the SNMP protocol settings for this manager. The default value of the Port property should be 161 for compatibility with established client implementations.",
-                    "description": "Settings for this Manager's SNMP support."
-                },
-                "FQDN": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall contain the fully qualified domain name for the manager.",
-                    "description": "This is the fully qualified domain name for the manager obtained by DNS including the host name and top-level domain name."
-                },
-                "HTTPS": {
-                    "$ref": "#/definitions/Protocol",
-                    "longDescription": "This object shall contain information for the HTTPS/SSL protocol settings for this manager. The default value of the Port property should be 443 for compatibility with established client implementations.",
-                    "description": "Settings for this Manager's HTTPS protocol support."
-                },
                 "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "Status": {
                     "$ref": "Resource.json#/definitions/Status"
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "SSDP": {
-                    "$ref": "#/definitions/SSDProtocol",
-                    "longDescription": "This object shall contain information for the SSDP protocol settings for this manager.  Simple Service Discovery Protocol (SSDP) is for network discovery of devices supporting the Redfish service. The default value of the Port property should be 1900 for compatibility with established client implementations.",
-                    "description": "Settings for this Manager's SSDP support."
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
                 },
                 "VirtualMedia": {
                     "$ref": "#/definitions/Protocol",
                     "longDescription": "This object shall contain information for the Virtual Media protocol settings for this manager. The value of the Port property shall contain the TCP port assigned for Virtual Media usage.",
                     "description": "Settings for this Manager's Virtual Media support."
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "FQDN": {
+                    "longDescription": "The value of this property shall contain the fully qualified domain name for the manager.",
+                    "readonly": true,
                     "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
+                        "string",
+                        "null"
                     ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    "description": "This is the fully qualified domain name for the manager obtained by DNS including the host name and top-level domain name."
+                },
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "DHCP": {
+                    "$ref": "#/definitions/Protocol",
+                    "longDescription": "This object shall contain information for the DHCP protocol settings for the manager.",
+                    "description": "Settings for this Manager's DHCP protocol support."
                 }
             },
-            "type": "object",
+            "description": "This resource is used to obtain or modify the network services managed by a given manager.",
+            "longDescription": "This object shall be used to represent the network service settings for the manager.",
             "required": [
                 "Id",
                 "Name"
             ],
-            "longDescription": "This object shall be used to represent the network service settings for the manager.",
-            "description": "This resource is used to obtain or modify the network services managed by a given manager."
+            "type": "object"
         },
-        "SSDProtocol": {
+        "Protocol": {
             "additionalProperties": false,
-            "properties": {
-                "NotifyMulticastIntervalSeconds": {
-                    "units": "s",
-                    "readonly": false,
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall contain the time interval, in seconds, between transmissions of the multicast NOTIFY ALIVE message.  A setting of 0 seconds shall disable this functionality.  The recommended value is 600 seconds.",
-                    "description": "Indicates how often the Multicast is done from this service for SSDP."
-                },
-                "NotifyIPv6Scope": {
-                    "readonly": false,
-                    "anyOf": [
-                        {
-                            "$ref": "#/definitions/NotifyIPv6Scope"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ],
-                    "longDescription": "The value of this property shall contain the IPv6 scope used for multicast NOTIFY messages.  The valid enumerations are a subset of the available IPv6 Scope types.",
-                    "description": "Indicates the scope for the IPv6 Notify messages for SSDP."
-                },
-                "Port": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall contain the port assigned for the protocol.",
-                    "description": "Indicates the protocol port.",
-                    "readonly": false
-                },
-                "ProtocolEnabled": {
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall contain the enabled status of the protocol.  The value shall be true if enabled and false if disabled.",
-                    "description": "Indicates if the protocol is enabled or disabled."
-                },
-                "NotifyTTL": {
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 1,
-                    "longDescription": "The value of this property shall contain the Time-To-Live hop count used for multicast NOTIFY messages.  The recommended value is 2.",
-                    "description": "Indicates the time to live hop count for SSDPs Notify messages.",
-                    "readonly": false
-                }
-            },
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -251,14 +231,34 @@
                         "null",
                         "object",
                         "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    ]
                 }
             },
-            "type": "object",
+            "properties": {
+                "Port": {
+                    "longDescription": "The value of this property shall contain the port assigned for the protocol.",
+                    "minimum": 0,
+                    "type": [
+                        "number",
+                        "null"
+                    ],
+                    "readonly": false,
+                    "description": "Indicates the protocol port."
+                },
+                "ProtocolEnabled": {
+                    "longDescription": "The value of this property shall contain the enabled status of the protocol.  The value shall be true if enabled and false if disabled.",
+                    "readonly": false,
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "description": "Indicates if the protocol is enabled or disabled."
+                }
+            },
+            "description": "Settings for a network protocol associated with a manager.",
             "longDescription": "This type shall describe information about a protocol setting for a manager.",
-            "description": "Settings for a network protocol associated with a manager."
+            "type": "object"
         }
     },
-    "title": "#ManagerNetworkProtocol.v1_1_1.ManagerNetworkProtocol"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

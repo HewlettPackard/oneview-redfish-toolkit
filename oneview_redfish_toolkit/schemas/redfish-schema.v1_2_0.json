@@ -1,73 +1,73 @@
 {
-    "id": "redfish-schema.v1_2_0",
     "properties": {
-        "readonly": {
-            "$ref": "#/definitions/readonly"
-        },
-        "units": {
-            "$ref": "#/definitions/units"
-        },
         "copyright": {
             "$ref": "#/definitions/copyright"
         },
-        "enumLongDescriptions": {
-            "$ref": "#/definitions/enumLongDescriptions"
+        "enumDescriptions": {
+            "$ref": "#/definitions/enumDescriptions"
         },
         "longDescription": {
             "$ref": "#/definitions/longDescription"
         },
-        "enumDescriptions": {
-            "$ref": "#/definitions/enumDescriptions"
+        "units": {
+            "$ref": "#/definitions/units"
+        },
+        "readonly": {
+            "$ref": "#/definitions/readonly"
+        },
+        "enumLongDescriptions": {
+            "$ref": "#/definitions/enumLongDescriptions"
         }
     },
     "definitions": {
-        "deprecated": {
-            "type": "string",
-            "description": "The term shall be applied to a property in order to specify that the property is deprecated.  The value of the string should explain the deprecation, including new property or properties to be used. The property can be supported in new and existing implementations, but usage in new implementations is discouraged.  Deprecated properties are likely to be removed in a future major version of the schema."
+        "copyright": {
+            "description": "This attribute shall contain the copyright notice for the schema.",
+            "type": "string"
         },
         "enumDeprecated": {
-            "type": "object",
-            "description": "The term shall be applied to a value in order to specify that the value is deprecated.  The value of the string should explain the deprecation, including new value to be used.  The value can be supported in new and existing implementations, but usage in new implementations is discouraged.  Deprecated values are likely to be removed in a future major version of the schema."
-        },
-        "units": {
-            "type": "string",
-            "description": "This attribute shall contain the units of measure used by the value of the property."
-        },
-        "readonly": {
-            "type": "boolean",
-            "description": "This property shall designate a property to be readonly when set to true."
-        },
-        "copyright": {
-            "type": "string",
-            "description": "This attribute shall contain the copyright notice for the schema."
-        },
-        "longDescription": {
-            "type": "string",
-            "description": "This attribute shall contain normative language relating to the Redfish Specification and documentation."
-        },
-        "enumDescriptions": {
-            "type": "object",
-            "description": "This attribute shall contain informative language related to the enumeration values of the property."
+            "description": "The term shall be applied to a value in order to specify that the value is deprecated.  The value of the string should explain the deprecation, including new value to be used.  The value can be supported in new and existing implementations, but usage in new implementations is discouraged.  Deprecated values are likely to be removed in a future major version of the schema.",
+            "type": "object"
         },
         "enumLongDescriptions": {
-            "type": "object",
-            "description": "This attribute shall contain normative language relating to the enumeration values of the property."
+            "description": "This attribute shall contain normative language relating to the enumeration values of the property.",
+            "type": "object"
+        },
+        "longDescription": {
+            "description": "This attribute shall contain normative language relating to the Redfish Specification and documentation.",
+            "type": "string"
+        },
+        "units": {
+            "description": "This attribute shall contain the units of measure used by the value of the property.",
+            "type": "string"
+        },
+        "readonly": {
+            "description": "This property shall designate a property to be readonly when set to true.",
+            "type": "boolean"
+        },
+        "enumDescriptions": {
+            "description": "This attribute shall contain informative language related to the enumeration values of the property.",
+            "type": "object"
         },
         "requiredOnCreate": {
+            "description": "This property is required to be specified in the body of a POST request to create the resource.",
             "type": "array",
             "items": {
                 "type": "boolean"
-            },
-            "description": "This property is required to be specified in the body of a POST request to create the resource."
+            }
+        },
+        "deprecated": {
+            "description": "The term shall be applied to a property in order to specify that the property is deprecated.  The value of the string should explain the deprecation, including new property or properties to be used. The property can be supported in new and existing implementations, but usage in new implementations is discouraged.  Deprecated properties are likely to be removed in a future major version of the schema.",
+            "type": "string"
         }
     },
+    "id": "redfish-schema.v1_2_0",
+    "description": "The properties defined in this schema shall adhere to the requirements of the Redfish Specification and the semantics of the descriptions in this file.",
+    "$schema": "redfish-schema.v1_2_0",
     "title": "Redfish Schema Extension",
     "type": "object",
-    "$schema": "redfish-schema.v1_2_0",
     "allOf": [
         {
             "$ref": "http://json-schema.org/draft-04/schema"
         }
-    ],
-    "description": "The properties defined in this schema shall adhere to the requirements of the Redfish Specification and the semantics of the descriptions in this file."
+    ]
 }

@@ -1,45 +1,29 @@
 {
-    "$schema": "redfish-schema.v1_2_0.json",
     "$ref": "Storage.v1_1_2.json#/definitions/Storage",
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
+    "$schema": "redfish-schema.v1_2_0.json",
+    "title": "#Storage.v1_1_2.Storage",
     "definitions": {
         "Storage": {
             "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
             "properties": {
-                "Redundancy": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "Redundancy.json#/definitions/Redundancy"
-                    },
-                    "description": "Redundancy information for the storage subsystem."
-                },
                 "Links": {
                     "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                            "description": "Oem extension object."
-                        },
-                        "Enclosures@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "Enclosures": {
-                            "type": "array",
-                            "readonly": true,
-                            "longDescription": "The value of this property shall reference a resource of type Chassis that represents the physical containers attached to this resource.",
-                            "items": {
-                                "$ref": "Chassis.json#/definitions/Chassis"
-                            },
-                            "description": "An array of references to the chassis to which this storage subsystem is attached."
-                        },
-                        "Enclosures@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -47,16 +31,91 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Oem": {
+                            "$ref": "Resource.json#/definitions/Oem",
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                            "description": "Oem extension object."
+                        },
+                        "Enclosures": {
+                            "description": "An array of references to the chassis to which this storage subsystem is attached.",
+                            "longDescription": "The value of this property shall reference a resource of type Chassis that represents the physical containers attached to this resource.",
+                            "readonly": true,
+                            "type": "array",
+                            "items": {
+                                "$ref": "Chassis.json#/definitions/Chassis"
+                            }
+                        },
+                        "Enclosures@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "Enclosures@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        }
+                    },
+                    "description": "Contains references to other resources that are related to this resource.",
                     "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-                    "description": "Contains references to other resources that are related to this resource."
+                    "type": "object"
                 },
                 "@odata.context": {
                     "$ref": "odata.4.0.0.json#/definitions/context"
+                },
+                "StorageControllers@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "@odata.type": {
+                    "$ref": "odata.4.0.0.json#/definitions/type"
+                },
+                "StorageControllers": {
+                    "description": "The set of storage controllers represented by this resource.",
+                    "longDescription": "A collection that indicates all the storage controllers that this resource represents.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/StorageController"
+                    }
+                },
+                "Redundancy": {
+                    "description": "Redundancy information for the storage subsystem.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Redundancy.json#/definitions/Redundancy"
+                    }
+                },
+                "Drives": {
+                    "description": "The set of drives attached to the storage controllers represented by this resource.",
+                    "longDescription": "A collection that indicates all the drives attached to the storage controllers that this resource represents.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "Drive.json#/definitions/Drive"
+                    }
+                },
+                "Drives@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "StorageControllers@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "Redundancy@odata.count": {
+                    "$ref": "odata.4.0.0.json#/definitions/count"
+                },
+                "Oem": {
+                    "$ref": "Resource.json#/definitions/Oem",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "Id": {
+                    "$ref": "Resource.json#/definitions/Id",
+                    "readonly": true
                 },
                 "Description": {
                     "readonly": true,
@@ -69,52 +128,11 @@
                         }
                     ]
                 },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "Redundancy@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "Redundancy@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "Id": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Id"
-                },
                 "Actions": {
                     "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "additionalProperties": true,
-                            "properties": {},
-                            "patternProperties": {
-                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "type": [
-                                        "array",
-                                        "boolean",
-                                        "number",
-                                        "null",
-                                        "object",
-                                        "string"
-                                    ],
-                                    "description": "This property shall specify a valid odata or Redfish property."
-                                }
-                            },
-                            "type": "object",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "description": "The available OEM specific actions for this resource."
-                        },
-                        "#Storage.SetEncryptionKey": {
-                            "$ref": "#/definitions/SetEncryptionKey"
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -122,109 +140,90 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Oem": {
+                            "additionalProperties": true,
+                            "patternProperties": {
+                                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                                    "description": "This property shall specify a valid odata or Redfish property.",
+                                    "type": [
+                                        "array",
+                                        "boolean",
+                                        "number",
+                                        "null",
+                                        "object",
+                                        "string"
+                                    ]
+                                }
+                            },
+                            "properties": {},
+                            "description": "The available OEM specific actions for this resource.",
+                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
+                            "type": "object"
+                        },
+                        "#Storage.SetEncryptionKey": {
+                            "$ref": "#/definitions/SetEncryptionKey"
+                        }
+                    },
+                    "description": "The available actions for this resource.",
                     "longDescription": "The Actions property shall contain the available actions for this resource.",
-                    "description": "The available actions for this resource."
-                },
-                "Drives@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
-                },
-                "Drives": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "A collection that indicates all the drives attached to the storage controllers that this resource represents.",
-                    "items": {
-                        "$ref": "Drive.json#/definitions/Drive"
-                    },
-                    "description": "The set of drives attached to the storage controllers represented by this resource."
-                },
-                "StorageControllers": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "A collection that indicates all the storage controllers that this resource represents.",
-                    "items": {
-                        "$ref": "#/definitions/StorageController"
-                    },
-                    "description": "The set of storage controllers represented by this resource."
+                    "type": "object"
                 },
                 "Drives@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
-                },
-                "StorageControllers@odata.navigationLink": {
-                    "type": "string",
-                    "format": "uri"
-                },
-                "Name": {
-                    "readonly": true,
-                    "$ref": "Resource.json#/definitions/Name"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
-                },
-                "StorageControllers@odata.count": {
-                    "$ref": "odata.4.0.0.json#/definitions/count"
+                    "format": "uri",
+                    "type": "string"
                 },
                 "Volumes": {
-                    "readonly": true,
                     "$ref": "VolumeCollection.json#/definitions/VolumeCollection",
                     "longDescription": "A collection that indicates all the volumes produced by the storage controllers that this resource represents.",
+                    "readonly": true,
                     "description": "The set of volumes produced by the storage controllers represented by this resource."
+                },
+                "@odata.id": {
+                    "$ref": "odata.4.0.0.json#/definitions/id"
+                },
+                "Redundancy@odata.navigationLink": {
+                    "format": "uri",
+                    "type": "string"
+                },
+                "Name": {
+                    "$ref": "Resource.json#/definitions/Name",
+                    "readonly": true
                 }
             },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
+            "description": "This schema defines a storage subsystem and its respective properties.  A storage subsystem represents a set of storage controllers (physical or virtual) and the resources such as volumes that can be accessed from that subsystem.",
+            "longDescription": "This resource shall be used to represent resources that represent a storage subsystem in the Redfish specification.",
             "required": [
                 "Id",
                 "Name"
             ],
-            "longDescription": "This resource shall be used to represent resources that represent a storage subsystem in the Redfish specification.",
-            "description": "This schema defines a storage subsystem and its respective properties.  A storage subsystem represents a set of storage controllers (physical or virtual) and the resources such as volumes that can be accessed from that subsystem."
+            "type": "object"
         },
         "Protocol": {
-            "type": "string",
-            "enumLongDescriptions": {
-                "SATA": "This value shall mean that this device conforms to the Serial ATA International Organization Serial ATA Specification.",
-                "FICON": "This enumeration literal shall indicate the (ANSI FC-SB-3 Single-Byte Command Code Sets-3 Mapping Protocol for the Fibre Channel(FC) protocol.  FICON (FIbre CONnection) is the IBM proprietary name for this protocol. ",
-                "HTTP": "This value shall mean that this device conforms to the Hypertext Transfer protocol as defined by RFC 2068 or RFC 2616.",
-                "FCoE": "This value shall mean that this device conforms to the T11 FC-BB-5 Specification.",
-                "FC": "This value shall mean that this device conforms to the T11 Fibre Channel Physical and Signaling Interface Specification.",
-                "PCIe": "This value shall mean that this device conforms to the PCI-SIG PCI Express Base Specification only beyond that is uses some vendor proprietary mechanism to communicate.",
-                "SAS": "This value shall mean that this device conforms to the T10 SAS Protocol Layer Specification.",
-                "NVMeOverFabrics": "This value shall mean that this device conforms to the NVM Express over Fabrics Specification.",
-                "USB": "This value shall mean that this device conforms to the USB Implementers Forum Universal Serial Bus Specification.",
-                "iSCSI": "This value shall mean that this device conforms to the IETF Internet Small Computer Systems Interface (iSCSI) Specification.",
-                "UHCI": "This value shall mean that this device conforms to the Intel Universal Host Controller Interface Specification, Enhanced Host Controller Interface Specification, or the Extensible Host Controller Interface specification.",
-                "FTP": "This value shall mean that this device conforms to the File Transfer protocol as defined by RFC 114.",
-                "HTTPS": "This value shall mean that this device conforms to the Hypertext Transfer protocol as defined by RFC 2068 or RFC 2616 utilizing Transport Layer Security as specified by RFC 5246 or RFC 6176.",
-                "FCP": "This enumeration literal shall indicate the INCITS 481: Information technology - Fibre Channel Protocol for SCSI.  The Fibre Channel SCSI Protocol.",
-                "NVMe": "This value shall mean that this device conforms to the Non-Volatile Memory Host Controller Interface Specification Specification.",
-                "NFSv4": "This value shall mean that this device conforms to the Network File System protocol as defined by RFC 3010 or RFC 5661.",
-                "NFSv3": "This value shall mean that this device conforms to the Network File System protocol as defined by RFC 1813.",
-                "SFTP": "This value shall mean that this device conforms to the File Transfer protocol as defined by RFC 114 utilizing Transport Layer Security as specified by RFC 5246 or RFC 6176.",
-                "AHCI": "This value shall mean that this device conforms to the Intel Advanced Host Controller Interface Specification.",
-                "SMB": "This value shall mean that this device conforms to the Microsoft Server Message Block Protocol."
+            "enumDescriptions": {
+                "FICON": "FIbre CONnection (FICON).",
+                "iSCSI": "Internet SCSI.",
+                "UHCI": "Universal Host Controller Interface.",
+                "NVMeOverFabrics": "NVMe over Fabrics.",
+                "NVMe": "Non-Volatile Memory Express.",
+                "SATA": "Serial AT Attachment.",
+                "FC": "Fibre Channel.",
+                "NFSv3": "Network File System version 3.",
+                "FCP": "Fibre Channel Protocol for SCSI.",
+                "HTTPS": "Secure Hypertext Transport Protocol.",
+                "FCoE": "Fibre Channel over Ethernet.",
+                "HTTP": "Hypertext Transport Protocol.",
+                "FTP": "File Transfer Protocol.",
+                "PCIe": "PCI Express (Vendor Proprietary).",
+                "SAS": "Serial Attached SCSI.",
+                "AHCI": "Advanced Host Controller Interface.",
+                "USB": "Universal Serial Bus.",
+                "SFTP": "Secure File Transfer Protocol.",
+                "SMB": "Server Message Block (aka CIFS Common Internet File System).",
+                "NFSv4": "Network File System version 4."
             },
             "enum": [
                 "PCIe",
@@ -248,75 +247,81 @@
                 "FTP",
                 "SFTP"
             ],
-            "enumDescriptions": {
-                "SATA": "Serial AT Attachment.",
-                "FICON": "FIbre CONnection (FICON).",
-                "HTTP": "Hypertext Transport Protocol.",
-                "FCoE": "Fibre Channel over Ethernet.",
-                "FC": "Fibre Channel.",
-                "PCIe": "PCI Express (Vendor Proprietary).",
-                "SAS": "Serial Attached SCSI.",
-                "NVMeOverFabrics": "NVMe over Fabrics.",
-                "USB": "Universal Serial Bus.",
-                "iSCSI": "Internet SCSI.",
-                "UHCI": "Universal Host Controller Interface.",
-                "FTP": "File Transfer Protocol.",
-                "HTTPS": "Secure Hypertext Transport Protocol.",
-                "FCP": "Fibre Channel Protocol for SCSI.",
-                "NVMe": "Non-Volatile Memory Express.",
-                "NFSv4": "Network File System version 4.",
-                "NFSv3": "Network File System version 3.",
-                "SFTP": "Secure File Transfer Protocol.",
-                "AHCI": "Advanced Host Controller Interface.",
-                "SMB": "Server Message Block (aka CIFS Common Internet File System)."
-            }
+            "enumLongDescriptions": {
+                "FICON": "This enumeration literal shall indicate the (ANSI FC-SB-3 Single-Byte Command Code Sets-3 Mapping Protocol for the Fibre Channel(FC) protocol.  FICON (FIbre CONnection) is the IBM proprietary name for this protocol. ",
+                "iSCSI": "This value shall mean that this device conforms to the IETF Internet Small Computer Systems Interface (iSCSI) Specification.",
+                "UHCI": "This value shall mean that this device conforms to the Intel Universal Host Controller Interface Specification, Enhanced Host Controller Interface Specification, or the Extensible Host Controller Interface specification.",
+                "NVMeOverFabrics": "This value shall mean that this device conforms to the NVM Express over Fabrics Specification.",
+                "NVMe": "This value shall mean that this device conforms to the Non-Volatile Memory Host Controller Interface Specification Specification.",
+                "SATA": "This value shall mean that this device conforms to the Serial ATA International Organization Serial ATA Specification.",
+                "FC": "This value shall mean that this device conforms to the T11 Fibre Channel Physical and Signaling Interface Specification.",
+                "NFSv3": "This value shall mean that this device conforms to the Network File System protocol as defined by RFC 1813.",
+                "FCP": "This enumeration literal shall indicate the INCITS 481: Information technology - Fibre Channel Protocol for SCSI.  The Fibre Channel SCSI Protocol.",
+                "HTTPS": "This value shall mean that this device conforms to the Hypertext Transfer protocol as defined by RFC 2068 or RFC 2616 utilizing Transport Layer Security as specified by RFC 5246 or RFC 6176.",
+                "FCoE": "This value shall mean that this device conforms to the T11 FC-BB-5 Specification.",
+                "HTTP": "This value shall mean that this device conforms to the Hypertext Transfer protocol as defined by RFC 2068 or RFC 2616.",
+                "FTP": "This value shall mean that this device conforms to the File Transfer protocol as defined by RFC 114.",
+                "PCIe": "This value shall mean that this device conforms to the PCI-SIG PCI Express Base Specification only beyond that is uses some vendor proprietary mechanism to communicate.",
+                "SAS": "This value shall mean that this device conforms to the T10 SAS Protocol Layer Specification.",
+                "AHCI": "This value shall mean that this device conforms to the Intel Advanced Host Controller Interface Specification.",
+                "USB": "This value shall mean that this device conforms to the USB Implementers Forum Universal Serial Bus Specification.",
+                "SFTP": "This value shall mean that this device conforms to the File Transfer protocol as defined by RFC 114 utilizing Transport Layer Security as specified by RFC 5246 or RFC 6176.",
+                "SMB": "This value shall mean that this device conforms to the Microsoft Server Message Block Protocol.",
+                "NFSv4": "This value shall mean that this device conforms to the Network File System protocol as defined by RFC 3010 or RFC 5661."
+            },
+            "type": "string"
+        },
+        "SetEncryptionKey": {
+            "additionalProperties": false,
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
+                    "type": [
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
+                "title": {
+                    "description": "Friendly action name",
+                    "type": "string"
+                },
+                "target": {
+                    "format": "uri",
+                    "type": "string",
+                    "description": "Link to invoke action"
+                }
+            },
+            "description": "This action is used to set the encryption key for the storage subsystem.",
+            "longDescription": "This defines the name of the custom action supported on this resource.",
+            "type": "object"
         },
         "StorageController": {
             "additionalProperties": false,
-            "properties": {
-                "Identifiers": {
-                    "type": "array",
-                    "longDescription": "This property shall contain a list of all known durable names for the associated storage controller.",
-                    "items": {
-                        "$ref": "Resource.v1_1_0.json#/definitions/Identifier"
-                    },
-                    "description": "The Durable names for the storage controller."
-                },
-                "FirmwareVersion": {
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "This property shall contain the firwmare version as defined by the manufacturer for the associated storage controller.",
-                    "description": "The firmware version of this storage Controller."
-                },
+                        "array",
+                        "boolean",
+                        "number",
+                        "null",
+                        "object",
+                        "string"
+                    ]
+                }
+            },
+            "properties": {
                 "Links": {
                     "additionalProperties": false,
-                    "properties": {
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                            "description": "Oem extension object."
-                        },
-                        "Endpoints@odata.navigationLink": {
-                            "type": "string",
-                            "format": "uri"
-                        },
-                        "Endpoints": {
-                            "type": "array",
-                            "longDescription": "The value of this property shall be a reference to the resources that this controller is associated with and shall reference a resource of type Endpoint.",
-                            "items": {
-                                "$ref": "Endpoint.json#/definitions/Endpoint"
-                            },
-                            "description": "An array of references to the endpoints that connect to this controller."
-                        },
-                        "Endpoints@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        }
-                    },
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -324,159 +329,154 @@
                                 "null",
                                 "object",
                                 "string"
-                            ],
-                            "description": "This property shall specify a valid odata or Redfish property."
+                            ]
                         }
                     },
-                    "type": "object",
+                    "properties": {
+                        "Oem": {
+                            "$ref": "Resource.json#/definitions/Oem",
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
+                            "description": "Oem extension object."
+                        },
+                        "Endpoints@odata.navigationLink": {
+                            "format": "uri",
+                            "type": "string"
+                        },
+                        "Endpoints@odata.count": {
+                            "$ref": "odata.4.0.0.json#/definitions/count"
+                        },
+                        "Endpoints": {
+                            "description": "An array of references to the endpoints that connect to this controller.",
+                            "longDescription": "The value of this property shall be a reference to the resources that this controller is associated with and shall reference a resource of type Endpoint.",
+                            "type": "array",
+                            "items": {
+                                "$ref": "Endpoint.json#/definitions/Endpoint"
+                            }
+                        }
+                    },
+                    "description": "Contains references to other resources that are related to this resource.",
                     "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-                    "description": "Contains references to other resources that are related to this resource."
-                },
-                "Model": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the name by which the manufacturer generally refers to the storage controller.",
-                    "description": "This is the model number for the storage controller."
-                },
-                "SupportedControllerProtocols": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the set of protocols this storage controller can be communicated to.",
-                    "items": {
-                        "$ref": "#/definitions/Protocol"
-                    },
-                    "description": "This represents the protocols by which this storage controller can be communicated to."
-                },
-                "SupportedDeviceProtocols": {
-                    "type": "array",
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the set of protocols this storage controller can use to communicate with attached devices.",
-                    "items": {
-                        "$ref": "#/definitions/Protocol"
-                    },
-                    "description": "This represents the protocols which the storage controller can use to communicate with attached devices."
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
+                    "type": "object"
                 },
                 "SKU": {
+                    "longDescription": "The value of this property shall be the stock-keeping unit number for this storage storage controller.",
+                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be the stock-keeping unit number for this storage storage controller.",
                     "description": "This is the SKU for this storage controller."
                 },
-                "SpeedGbps": {
-                    "readonly": true,
-                    "units": "Gbit/s",
-                    "type": [
-                        "number",
-                        "null"
-                    ],
-                    "minimum": 0,
-                    "longDescription": "The value of this property shall represent the speed of the Storage bus interface (in Gigabits per second).",
-                    "description": "The speed of the storage controller interface."
+                "Identifiers": {
+                    "description": "The Durable names for the storage controller.",
+                    "longDescription": "This property shall contain a list of all known durable names for the associated storage controller.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "Resource.v1_1_0.json#/definitions/Identifier"
+                    }
                 },
-                "MemberId": {
-                    "type": "string",
+                "SupportedDeviceProtocols": {
+                    "description": "This represents the protocols which the storage controller can use to communicate with attached devices.",
+                    "longDescription": "The value of this property shall be the set of protocols this storage controller can use to communicate with attached devices.",
                     "readonly": true,
-                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
-                    "description": "This is the identifier for the member within the collection."
-                },
-                "SerialNumber": {
-                    "type": [
-                        "string",
-                        "null"
-                    ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be a manufacturer-allocated number used to identify the storage controller.",
-                    "description": "The serial number for this storage controller."
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Protocol"
+                    }
                 },
                 "Oem": {
                     "$ref": "Resource.json#/definitions/Oem",
                     "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
                     "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
                 },
+                "Status": {
+                    "$ref": "Resource.json#/definitions/Status"
+                },
+                "SpeedGbps": {
+                    "minimum": 0,
+                    "longDescription": "The value of this property shall represent the speed of the Storage bus interface (in Gigabits per second).",
+                    "description": "The speed of the storage controller interface.",
+                    "units": "Gbit/s",
+                    "readonly": true,
+                    "type": [
+                        "number",
+                        "null"
+                    ]
+                },
                 "AssetTag": {
+                    "longDescription": "The value of this property shall be an identifying string used to track the storage controller for inventory purposes.",
+                    "readonly": false,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": false,
-                    "longDescription": "The value of this property shall be an identifying string used to track the storage controller for inventory purposes.",
                     "description": "The user assigned asset tag for this storage controller."
                 },
-                "Manufacturer": {
+                "MemberId": {
+                    "longDescription": "The value of this string shall uniquely identify the member within the collection.",
+                    "readonly": true,
+                    "type": "string",
+                    "description": "This is the identifier for the member within the collection."
+                },
+                "SerialNumber": {
+                    "longDescription": "The value of this property shall be a manufacturer-allocated number used to identify the storage controller.",
+                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
+                    "description": "The serial number for this storage controller."
+                },
+                "Model": {
+                    "longDescription": "The value of this property shall be the name by which the manufacturer generally refers to the storage controller.",
                     "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "This is the model number for the storage controller."
+                },
+                "Manufacturer": {
                     "longDescription": "The value of this property shall be the name of the organization responsible for producing the storage controller. This organization might be the entity from whom the storage controller is purchased, but this is not necessarily true.",
+                    "readonly": true,
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "description": "This is the manufacturer of this storage controller."
                 },
                 "PartNumber": {
+                    "longDescription": "The value of this property shall be a part number assigned by the organization that is responsible for producing or manufacturing the storage controller.",
+                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "readonly": true,
-                    "longDescription": "The value of this property shall be a part number assigned by the organization that is responsible for producing or manufacturing the storage controller.",
                     "description": "The part number for this storage controller."
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
-                    ],
-                    "description": "This property shall specify a valid odata or Redfish property."
-                }
-            },
-            "type": "object",
-            "longDescription": "This resource shall be used to represent a resource that represents a storage controller in the Redfish specification.",
-            "description": "This schema defines a storage controller and its respective properties.  A storage controller represents a storage device (physical or virtual) that produces Volumes."
-        },
-        "SetEncryptionKey": {
-            "additionalProperties": false,
-            "properties": {
-                "target": {
-                    "type": "string",
-                    "format": "uri",
-                    "description": "Link to invoke action"
                 },
-                "title": {
-                    "type": "string",
-                    "description": "Friendly action name"
-                }
-            },
-            "patternProperties": {
-                "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                "FirmwareVersion": {
+                    "longDescription": "This property shall contain the firwmare version as defined by the manufacturer for the associated storage controller.",
+                    "readonly": true,
                     "type": [
-                        "array",
-                        "boolean",
-                        "number",
-                        "null",
-                        "object",
-                        "string"
+                        "string",
+                        "null"
                     ],
-                    "description": "This property shall specify a valid odata or Redfish property."
+                    "description": "The firmware version of this storage Controller."
+                },
+                "SupportedControllerProtocols": {
+                    "description": "This represents the protocols by which this storage controller can be communicated to.",
+                    "longDescription": "The value of this property shall be the set of protocols this storage controller can be communicated to.",
+                    "readonly": true,
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Protocol"
+                    }
                 }
             },
-            "type": "object",
-            "longDescription": "This defines the name of the custom action supported on this resource.",
-            "description": "This action is used to set the encryption key for the storage subsystem."
+            "description": "This schema defines a storage controller and its respective properties.  A storage controller represents a storage device (physical or virtual) that produces Volumes.",
+            "longDescription": "This resource shall be used to represent a resource that represents a storage controller in the Redfish specification.",
+            "type": "object"
         }
     },
-    "title": "#Storage.v1_1_2.Storage"
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }
