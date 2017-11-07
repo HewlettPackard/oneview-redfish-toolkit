@@ -74,13 +74,11 @@ class Storage(RedfishJsonValidator):
                 self.redfish["StorageControllers"].append(new_capability)
 
         # internal storage capabilities
-        storage_controller_count = len(self.redfish["StorageControllers"])
-        self.redfish["StorageControllers"].append(collections.OrderedDict())
-        self.redfish["StorageControllers"][storage_controller_count][
-            "Manufacturer"] = "HPE"
-        self.redfish["StorageControllers"][storage_controller_count][
-            "SupportedDeviceProtocols"] = \
+        storage_controllers = collections.OrderedDict()
+        storage_controllers["Manufacturer"] = "HPE"
+        storage_controllers["SupportedDeviceProtocols"] = \
             sorted(self.map_supported_device_protos(drive_technologies))
+        self.redfish["StorageControllers"].append(storage_controllers)
 
         self._validate()
 
