@@ -20,7 +20,10 @@ import configparser
 import json
 import logging
 import logging.config
+import OpenSSL
 import os
+import socket
+import time
 
 # 3rd party libs
 from hpOneView.oneview_client import OneViewClient
@@ -284,3 +287,66 @@ def get_oneview_client():
         # if faild abort
         except Exception:
             raise
+
+
+def get_ip():
+    """Tries to detect default route IP Address"""
+    s = socket.socket(type=socket.SOCK_DGRAM)
+    try:
+        s.connect(("8.8.8.8",1))
+        IP = s.getsockname()[0]
+    except Exception as e:
+        logging.exception(e)
+        IP = "127.0.0.1"
+    finally:
+        s.close()
+    return IP
+
+
+def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
+    """Create self-signed cert and key files
+
+        Args:
+            dir_name: name of the directory to store the files
+            file_name: name of the files that will be created. It will append
+                .crt to certificate file and .key to key file
+            key_length: key length in bits
+            key_type: cryto type: RSA or DSA; defaults to RSA
+        Returns:
+            Nothing
+        Exceptions:
+            Raise exceptions on error
+    """
+
+    config = globals()['config']
+    private_key = OpenSSL.crypto.PKey()
+    if key_type == "rsa":
+        private_key.generate_key(OpenSSL.crypto.TYPE_RSA, key_length)
+    else:
+        private_key.generate_key(OpenSSL.crypto.TYPE_DSA, key_length)
+
+    if not config.has_option("ssl-cert-defaults", "commonName"):
+        config["ssl-cert-defaults"]["commonName"] = get_ip()
+
+    cert = OpenSSL.crypto.X509()
+    cert_subject = cert.get_subject()
+
+    cert_defaults = dict(config.items("ssl-cert-defaults"))
+
+    for key, value in cert_defaults.items():
+        setattr(cert_subject, key, value)
+
+    cert.set_serial_number(1)
+    cert.gmtime_adj_notBefore(0)
+    cert.gmtime_adj_notAfter(10 * 365 * 24 * 60 * 60)
+    cert.set_issuer(cert.get_subject())
+    cert.set_pubkey(private_key)
+    cert.sign(private_key, "sha1")
+
+    # Save Files
+    open(os.path.join(dir_name, file_name + ".crt"), "wt").write(
+        OpenSSL.crypto.dump_certificate(
+            OpenSSL.crypto.FILETYPE_PEM, cert).decode("UTF-8"))
+    open(os.path.join(dir_name, file_name + ".key"), "wt").write(
+        OpenSSL.crypto.dump_privatekey(
+            OpenSSL.crypto.FILETYPE_PEM, private_key).decode("UTF-8"))

@@ -65,8 +65,7 @@ from oneview_redfish_toolkit import util
 util.configure_logging(os.getenv("LOGGING_FILE", "logging.conf"))
 
 if __name__ == '__main__':
-
-    # Load config file, schemas and creates a OV connection
+# Load config file, schemas and creates a OV connection
     try:
         util.load_config('redfish.conf')
     except Exception as e:
@@ -98,26 +97,7 @@ if __name__ == '__main__':
     app.register_blueprint(network_device_function)
     app.register_blueprint(network_interface)
     app.register_blueprint(network_adapter)
-    app.register_blueprint(network_port)
 
-    @app.before_request
-    def has_odata_version_header():
-        """Deny request that specify a different OData-Version than 4.0"""
-        odata_version_header = request.headers.get("OData-Version")
-
-        if odata_version_header is None:
-            pass
-        elif odata_version_header != "4.0":
-            abort(status.HTTP_412_PRECONDITION_FAILED,
-                  "The request specify a different OData-Version "
-                  "header then 4.0. This server also responds "
-                  "to requests without the OData-Version header")
-
-    @app.after_request
-    def set_odata_version_header(response):
-        """Set OData-Version header for all responses"""
-        response.headers["OData-Version"] = "4.0"
-        return response
 
     @app.errorhandler(status.HTTP_400_BAD_REQUEST)
     def bad_request(error):
@@ -136,6 +116,7 @@ if __name__ == '__main__':
             status=status.HTTP_400_BAD_REQUEST,
             mimetype='application/json')
 
+
     @app.errorhandler(status.HTTP_404_NOT_FOUND)
     def not_found(error):
         """Creates a Not Found Error response"""
@@ -147,16 +128,6 @@ if __name__ == '__main__':
             status=status.HTTP_404_NOT_FOUND,
             mimetype='application/json')
 
-    @app.errorhandler(status.HTTP_412_PRECONDITION_FAILED)
-    def precondition_failed(error):
-        """Creates a Precondition Failed response"""
-        redfish_error = RedfishError(
-            "GeneralError", error.description)
-        error_str = redfish_error.serialize()
-        return Response(
-            response=error_str,
-            status=status.HTTP_412_PRECONDITION_FAILED,
-            mimetype='application/json')
 
     @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
     def internal_server_error(error):
@@ -173,6 +144,7 @@ if __name__ == '__main__':
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             mimetype="application/json")
 
+
     @app.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
     def not_implemented(error):
         """Creates a Not Implemented Error response"""
@@ -188,7 +160,14 @@ if __name__ == '__main__':
             status=status.HTTP_501_NOT_IMPLEMENTED,
             mimetype='application/json')
 
+
     config = util.config
+    if config["ssl"]["SSLType"] in ("self-signed", "adhoc"):
+        logging.warning("Server is starting with a self-signed certificate.")
+    if config["ssl"]["SSLType"] == "disabled":
+        logging.warning(
+            "Server is starting in HTTP mode. This is an insecure mode. "
+            "Running the server with HTTPS enabled is highly recommened.")
 
     try:
         port = int(config["redfish"]["redfish_port"])
@@ -202,11 +181,36 @@ if __name__ == '__main__':
 
     ssl_type = config["ssl"]["SSLType"]
     # Check SSLType:
-    if ssl_type not in ('disabled', 'adhoc', 'certs'):
+    if ssl_type not in ('disabled', 'adhoc', 'certs', 'self-signed'):
         logging.error(
-            "Invalid SSL type: {}. Must be one of: disabled, adhoc or certs".
+            "Invalid SSL type: {}. Must be one of: disabled, adhoc, self-signed "
+            "or certs".
             format(ssl_type))
         exit(1)
+
+    if ssl_type == 'disabled':
+        app.run(host="0.0.0.0", port=port, debug=True)
+    elif ssl_type == 'adhoc':
+        app.run(host="0.0.0.0", port=port, debug=True, ssl_context="adhoc")
+    else:
+        # We should use certs file provided by the user
+        ssl_cert_file = config["ssl"]["SSLCertFile"]
+        ssl_key_file = config["ssl"]["SSLKeyFile"]
+        # Generating cert files if they don't exists
+        if ssl_type == "self-signed":
+            if not os.path.exists(ssl_cert_file) and not \
+                os.path.exists(ssl_key_file):
+                logging.warning("Generating self-signed certs")
+                # Generate certificates
+                util.generate_certificate("certs", "self-signed", 2048)
+            else:
+                logging.warning("Using existing self-signed certs")
+
+        if ssl_cert_file == "" or ssl_key_file == "":
+            logging.error(
+                "Invalid SSL type: {}. Must be one of: disabled, adhoc or certs".
+                format(ssl_type))
+            exit(1)
 
     if ssl_type == 'disabled':
         app.run(host="0.0.0.0", port=port, debug=True)
