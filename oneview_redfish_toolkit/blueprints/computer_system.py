@@ -73,7 +73,7 @@ def get_computer_system(uuid):
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
-        response.headers.add("ETag", "W/"+server_hardware['eTag'])
+        response.headers.add("ETag", "W/" + server_hardware['eTag'])
         return response
     except HPOneViewException as e:
         if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
