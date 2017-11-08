@@ -19,7 +19,9 @@ import logging
 import os
 
 # 3rd party libs
+from flask import abort
 from flask import Flask
+from flask import request
 from flask import Response
 from flask_api import status
 
@@ -96,6 +98,17 @@ if __name__ == '__main__':
     app.register_blueprint(network_interface)
     app.register_blueprint(network_adapter)
 
+
+    @app.before_request
+    def has_odata_version_header():
+        """Deny request that specify a different OData-Version than 4.0"""
+        try:
+            header = request.headers["OData-Version"]
+            if header != "4.0":
+                abort(status.HTTP_412_PRECONDITION_FAILED)
+        except KeyError:
+            pass
+
     @app.after_request
     def set_odata_version_header(response):
         """Set OData-Version header for all responses"""
@@ -128,6 +141,17 @@ if __name__ == '__main__':
         return Response(
             response=error_str,
             status=status.HTTP_404_NOT_FOUND,
+            mimetype='application/json')
+
+    @app.errorhandler(status.HTTP_412_PRECONDITION_FAILED)
+    def precondition_failed(error):
+        """Creates a Precondition Failed response"""
+        redfish_error = RedfishError(
+            "GeneralError", error.description)
+        error_str = redfish_error.serialize()
+        return Response(
+            response=error_str,
+            status=status.HTTP_412_PRECONDITION_FAILED,
             mimetype='application/json')
 
     @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
