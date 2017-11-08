@@ -102,12 +102,14 @@ if __name__ == '__main__':
     @app.before_request
     def has_odata_version_header():
         """Deny request that specify a different OData-Version than 4.0"""
-        try:
-            header = request.headers["OData-Version"]
-            if header != "4.0":
-                abort(status.HTTP_412_PRECONDITION_FAILED)
-        except KeyError:
+    
+        header = request.headers.get("OData-Version")
+    
+        if header is None:
             pass
+        elif header != "4.0":
+            abort(status.HTTP_412_PRECONDITION_FAILED)
+
 
     @app.after_request
     def set_odata_version_header(response):
