@@ -95,6 +95,13 @@ app.register_blueprint(network_interface)
 app.register_blueprint(network_adapter)
 
 
+@app.after_request
+def set_odata_version_header(response):
+    """Set OData-Version header for all responses"""
+    response.headers["OData-Version"] = "4.0"
+    return response
+
+
 @app.errorhandler(status.HTTP_400_BAD_REQUEST)
 def bad_request(error):
     """Creates a Bad Request Error response"""
