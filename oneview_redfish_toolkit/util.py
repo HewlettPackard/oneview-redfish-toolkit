@@ -23,7 +23,6 @@ import logging.config
 import OpenSSL
 import os
 import socket
-import time
 
 # 3rd party libs
 from hpOneView.oneview_client import OneViewClient
@@ -293,7 +292,7 @@ def get_ip():
     """Tries to detect default route IP Address"""
     s = socket.socket(type=socket.SOCK_DGRAM)
     try:
-        s.connect(("8.8.8.8",1))
+        s.connect(("8.8.8.8", 1))
         IP = s.getsockname()[0]
     except Exception as e:
         logging.exception(e)

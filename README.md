@@ -86,6 +86,24 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 
   * **SSLKeyFile**: The user SSL key file. Should not have a password.
 
+* `ssl-cert-default` section: Defines the values used in the self-signed generated certificate
+
+  * **countryName**: The name of the country. **Required!**
+  
+  * **stateOrProvinceName**: The name of the state or province. **Required!**
+
+  * **localityName**: Name of the locality (city for example). **Required!**
+
+  * **organizationName**: Name of the organization (company name for example). **Required!**
+  
+  * **organizationalUnitName**: Name of the organizational unit (department for example). **Required!**
+
+  * **commonName**: FQDN of the server or it's IP address. If not provided will detect de default route IP and use it. **Optional.**
+ 
+  * **emailAddress**: Email address to contact the responsable for this server/certificate. This is an optional information. Will not be added to certificate if not informed. **Optional.**
+
+
+
 * `schemas` section
 
   * **ServiceRoot**: DTMF's Redfish JSON schema for the `Service Root` resource

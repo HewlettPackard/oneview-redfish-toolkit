@@ -76,3 +76,4 @@ oneview_redfish_toolkit/tests/blueprints/__pycache__/
 
 # Certificates
 certs/*
+!*.gitignore
