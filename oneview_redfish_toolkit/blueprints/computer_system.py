@@ -107,7 +107,7 @@ def get_computer_system(uuid):
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         # In case of error print exception and abort
-        logging.error('Unexpected error: '.format(e))
+        logging.error('Unexpected error: {}'.format(e))
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
