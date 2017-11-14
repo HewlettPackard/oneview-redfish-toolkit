@@ -265,47 +265,6 @@ class TestComputerSystem(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(computer_system_mockup, json_str)
-
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_with_etag(self, get_oneview_client_mockup):
-        """Tests ComputerSystem and ETag response header"""
-
-        # Loading server_hardware mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
-        ) as f:
-            server_hardware = json.load(f)
-
-        # Loading ServerHardwareTypes mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups_oneview/ServerHardwareTypes.json'
-        ) as f:
-            server_hardware_types = json.load(f)
-
-        # Loading ComputerSystem mockup result
-        with open(
-            'oneview_redfish_toolkit/mockups_redfish/ComputerSystem.json'
-        ) as f:
-            computer_system_mockup = f.read()
-
-        # Create mock response
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get.return_value = server_hardware
-        oneview_client.server_hardware_types.get.return_value = \
-            server_hardware_types
-
-        # Get ComputerSystem
-        response = self.app.get(
-            "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
-        )
-
-        # Gets json from response
-        json_str = response.data.decode("utf-8")
-
-        # Tests response
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(computer_system_mockup, json_str)
         self.assertEqual(
             "{}{}".format("W/", server_hardware["eTag"]),
             response.headers["ETag"])

@@ -157,31 +157,6 @@ class TestChassis(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(self.enclosure_chassis_mockup, json_str)
-
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_enclosure_chassis_with_etag(
-            self, get_oneview_client_mockup):
-        """"Tests EnclosureChassis and ETag response header"""
-
-        oneview_client = get_oneview_client_mockup()
-
-        oneview_client.index_resources.get_all.return_value = \
-            [{"category": "enclosures"}]
-        oneview_client.enclosures.get.return_value = self.enclosure
-        oneview_client.enclosures.get_environmental_configuration.\
-            return_value = self.enclosure_environment_configuration_mockup
-
-        # Get EnclosureChassis
-        response = self.app.get(
-            "/redfish/v1/Chassis/0000000000A66101"
-        )
-
-        json_str = response.data.decode("utf-8")
-
-        # Tests response
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.enclosure_chassis_mockup, json_str)
         self.assertEqual(
             "{}{}".format("W/", self.enclosure["eTag"]),
             response.headers["ETag"])
@@ -303,29 +278,6 @@ class TestChassis(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(self.blade_chassis_mockup, json_str)
-
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_blade_chassis_with_etag(
-            self, get_oneview_client_mockup):
-        """"Tests BladeChassis and ETag response header"""
-
-        oneview_client = get_oneview_client_mockup()
-
-        oneview_client.index_resources.get_all.return_value = \
-            [{"category": "server-hardware"}]
-        oneview_client.server_hardware.get.return_value = self.server_hardware
-
-        # Get BladeChassis
-        response = self.app.get(
-            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
-        )
-
-        json_str = response.data.decode("utf-8")
-
-        # Tests response
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.blade_chassis_mockup, json_str)
         self.assertEqual(
             "{}{}".format("W/", self.server_hardware["eTag"]),
             response.headers["ETag"])
@@ -380,29 +332,6 @@ class TestChassis(unittest.TestCase):
     def test_get_rack_chassis(
             self, get_oneview_client_mockup):
         """"Tests RackChassis with a known Rack"""
-
-        oneview_client = get_oneview_client_mockup()
-
-        oneview_client.index_resources.get_all.return_value = \
-            [{"category": "racks"}]
-        oneview_client.racks.get.return_value = self.rack
-
-        # Get RackChassis
-        response = self.app.get(
-            "/redfish/v1/Chassis/2AB100LMNB"
-        )
-
-        json_str = response.data.decode("utf-8")
-
-        # Tests response
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.rack_chassis_mockup, json_str)
-
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_rack_chassis_with_etag(
-            self, get_oneview_client_mockup):
-        """"Tests RackChassis and ETag response header"""
 
         oneview_client = get_oneview_client_mockup()
 
