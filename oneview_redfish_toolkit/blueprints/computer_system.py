@@ -69,10 +69,12 @@ def get_computer_system(uuid):
         json_str = cs.serialize()
 
         # Build response and returns
-        return Response(
+        response = Response(
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
+        response.headers.add("ETag", "W/" + server_hardware['eTag'])
+        return response
     except HPOneViewException as e:
         if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
             if e.msg.find("server-hardware-types") >= 0:

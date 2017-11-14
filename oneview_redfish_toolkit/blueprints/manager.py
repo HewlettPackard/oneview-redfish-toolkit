@@ -61,19 +61,23 @@ def get_managers(uuid):
 
         if category == 'server-hardware':
             server_hardware = oneview_client.server_hardware.get(uuid)
+            etag = server_hardware['eTag']
             manager = BladeManager(server_hardware)
         elif category == 'enclosures':
             enclosure = oneview_client.enclosures.get(uuid)
+            etag = enclosure['eTag']
             manager = EnclosureManager(enclosure, oneview_version)
         else:
             raise OneViewRedfishError('Enclosure type not found')
 
         json_str = manager.serialize()
 
-        return Response(
+        response = Response(
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
+        response.headers.add("ETag", "W/" + etag)
+        return response
     except HPOneViewException as e:
         # In case of error log exception and abort
         logging.error(e)

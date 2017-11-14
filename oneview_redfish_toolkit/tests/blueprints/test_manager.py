@@ -124,6 +124,9 @@ class TestManager(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(rf_enclosure_manager, json_str)
+        self.assertEqual(
+            "{}{}".format("W/", ov_enclosure["eTag"]),
+            response.headers["ETag"])
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_enclosure_not_found(self, get_oneview_client_mockup):
@@ -207,6 +210,9 @@ class TestManager(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(blade_manager_mockup, json_str)
+        self.assertEqual(
+            "{}{}".format("W/", server_hardware["eTag"]),
+            response.headers["ETag"])
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_server_hardware_not_found(self, get_oneview_client_mockup):

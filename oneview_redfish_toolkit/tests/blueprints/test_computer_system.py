@@ -265,6 +265,9 @@ class TestComputerSystem(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(computer_system_mockup, json_str)
+        self.assertEqual(
+            "{}{}".format("W/", server_hardware["eTag"]),
+            response.headers["ETag"])
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_change_power_state(self, mock_get_ov_client):
