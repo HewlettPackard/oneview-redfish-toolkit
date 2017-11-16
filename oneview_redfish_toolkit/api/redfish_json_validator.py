@@ -85,13 +85,9 @@ class RedfishJsonValidator(object):
                 string: json string with the contents of self.redfish
         """
 
-        if util.config['redfish']['indent_json']:
-            indent = 4
-        else:
-            indent = None
         return json.dumps(
             self.redfish,
             default=lambda o: o.__dict__,
-            sort_keys=False,
-            indent=indent
+            sort_keys=True,
+            indent=None
         )
