@@ -96,13 +96,11 @@ if __name__ == '__main__':
     app.register_blueprint(network_interface)
     app.register_blueprint(network_adapter)
 
-
     @app.after_request
     def set_odata_version_header(response):
         """Set OData-Version header for all responses"""
         response.headers["OData-Version"] = "4.0"
         return response
-
 
     @app.errorhandler(status.HTTP_400_BAD_REQUEST)
     def bad_request(error):
@@ -121,7 +119,6 @@ if __name__ == '__main__':
             status=status.HTTP_400_BAD_REQUEST,
             mimetype='application/json')
 
-
     @app.errorhandler(status.HTTP_404_NOT_FOUND)
     def not_found(error):
         """Creates a Not Found Error response"""
@@ -132,7 +129,6 @@ if __name__ == '__main__':
             response=error_str,
             status=status.HTTP_404_NOT_FOUND,
             mimetype='application/json')
-
 
     @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
     def internal_server_error(error):
@@ -148,7 +144,6 @@ if __name__ == '__main__':
             response=error_str,
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             mimetype="application/json")
-
 
     @app.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
     def not_implemented(error):
