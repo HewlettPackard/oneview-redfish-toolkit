@@ -1,3 +1,7 @@
+# 0.1.2
+# Bug fixes
+This release fixes problems with service launcher.
+
 # 0.1.1
 #### Bug fixes
 This release fixes problems when launching the service outside a python
