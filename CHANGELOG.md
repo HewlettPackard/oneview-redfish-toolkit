@@ -6,7 +6,7 @@ as pointed in the README.
 
 #### Notes
 Installation requirements and instructions were updated to emphasize the
-usage of Python 3.5 or later.
+usage of Python 3.5 or later with virtual environment setup.
 
 
 # 0.1.0

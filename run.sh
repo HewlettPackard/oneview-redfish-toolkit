@@ -14,5 +14,5 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-export PYTHONPATH=.
+export PYTHONPATH=$PYTHONPATH:.
 python3 oneview_redfish_toolkit/app.py
