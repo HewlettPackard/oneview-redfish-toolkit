@@ -12,7 +12,7 @@ DMTF's Redfish is an open industry standard specification and schema that specif
 
 ### Requirements
 
-HPE OneView Redfish Toolkit service relies on Python 3.5 or newer to run and pip for dependencies management. A full list of dependencies is available at [requirements.txt](requirements.txt) file. For pyOpenSSL module please make sure to have OpenSSL lib installed in your system.
+HPE OneView Redfish Toolkit service relies on Python 3.5 or newer (as long as python3 executable is available) to run and [pip3](https://pip.pypa.io/en/stable/installing/) for dependencies management. A full list of dependencies is available at [requirements.txt](requirements.txt) file. For pyOpenSSL module please make sure to have OpenSSL lib installed in your system.
 
 > There should be not problem in using Python 3.4 if your system does not have Python 3.5 available, but we do not guarantee complete compatibility as the test environment is set up on version 3.5.
 
@@ -20,23 +20,26 @@ In order to run tests and documentation generation `tox` is also needed. General
 
 ### From source
 
-In a developement environment with Python 3.5:
+We recommend to run inside a virtual environment. You can create one running:
 
 ```bash
-$ git clone https://github.com/HewlettPackard/oneview-redfish-toolkit.git
-$ cd oneview-redfish-toolkit
-$ tox -epy35 --notest  # create a Python 3.5 environment with all dependencies
-$ source .tox/py35/bin/activate # load the created environment for Python 3.5
-$ ./run.sh    # to launch the service
+$ virtualenv env_name_you_choose -p python3.5 # to create a Python3.5 environment, for example
+$ source env_name_you_choose/bin/activate # load the environment
 ```
 
-Or in a production environment:
+Once the environment is loaded, download and uncompress the latest version from [releases page](https://github.com/HewlettPackard/oneview-redfish-toolkit/releases), or clone current development version running:
 
 ```bash
 $ git clone https://github.com/HewlettPackard/oneview-redfish-toolkit.git
-$ cd oneview-redfish-toolkit
-$ sudo pip install -r requirements.txt  # install all dependencies
-$ run.sh    # to launch the service
+```
+
+Then, proceed with:
+
+```bash
+$ cd oneview-redfish-toolkit # enter the service folder
+# edit redfish.conf
+$ pip install -r requirements.txt # to install all requirements into the virtual environemnt
+$ ./run.sh    # to launch the service
 ```
 
 ## Redfish API Implementation

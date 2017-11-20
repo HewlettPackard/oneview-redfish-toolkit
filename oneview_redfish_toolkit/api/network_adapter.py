@@ -13,7 +13,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 import collections
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
@@ -52,16 +51,16 @@ class NetworkAdapter(RedfishJsonValidator):
         # ControllerCapabilities property
         self.redfish["Controllers"][0]["ControllerCapabilities"] = \
             collections.OrderedDict()
-        port_cont = len(
+        port_count = len(
             server_hardware["portMap"]["deviceSlots"][index]["physicalPorts"])
-        if port_cont > 0:
-            virtual_port_count = len(
-                server_hardware["portMap"]["deviceSlots"][index]
-                ["physicalPorts"][0]["virtualPorts"])
-        else:
-            virtual_port_count = 0
+        virtual_port_count = 0
+        if port_count > 0:
+            for i in range(0, port_count):
+                virtual_port_count += len(
+                    server_hardware["portMap"]["deviceSlots"][index]
+                    ["physicalPorts"][i]["virtualPorts"])
         self.redfish["Controllers"][0]["ControllerCapabilities"][
-            "NetworkPortCount"] = port_cont
+            "NetworkPortCount"] = port_count
         self.redfish["Controllers"][0]["ControllerCapabilities"][
             "NetworkDeviceFunctionCount"] = virtual_port_count
         # Links property
