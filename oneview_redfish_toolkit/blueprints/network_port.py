@@ -88,10 +88,10 @@ def get_network_port(uuid, device_id, port_id):
         logging.error("Failed to convert device id {} to integer.".
                       format(device_id))
         abort(status.HTTP_404_NOT_FOUND, "Network adapter not found")
-    except OneViewRedfishError as e:
+    except OneViewRedfishResourceNotFoundError as e:
         logging.error(e.msg)
         abort(status.HTTP_404_NOT_FOUND, e.msg)
-    except OneViewRedfishResourceNotFoundError as e:
+    except OneViewRedfishError as e:
         logging.error(e.msg)
         abort(status.HTTP_404_NOT_FOUND, e.msg)
     except HPOneViewException as e:
