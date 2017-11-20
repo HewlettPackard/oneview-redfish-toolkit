@@ -109,7 +109,7 @@ if __name__ == '__main__':
             pass
         elif odata_version_header != "4.0":
             abort(status.HTTP_412_PRECONDITION_FAILED,
-                  "The request specify a different OData-Version header than 4.0."
+                  "The request specify a different OData-Version header then 4.0."
                   " This server also responds to requests without"
                   " the OData-Version header")
 
