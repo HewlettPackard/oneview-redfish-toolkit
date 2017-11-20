@@ -96,6 +96,7 @@ if __name__ == '__main__':
     app.register_blueprint(network_device_function)
     app.register_blueprint(network_interface)
     app.register_blueprint(network_adapter)
+    app.register_blueprint(network_port)
 
     @app.after_request
     def set_odata_version_header(response):
