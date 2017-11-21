@@ -321,8 +321,12 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
     private_key = OpenSSL.crypto.PKey()
     if key_type == "rsa":
         private_key.generate_key(OpenSSL.crypto.TYPE_RSA, key_length)
-    else:
+    elif key_type == "dsa":
         private_key.generate_key(OpenSSL.crypto.TYPE_DSA, key_length)
+    else:
+        message = "Invalid key_type"
+        logging.error(message)
+        raise errors.OneViewRedfishError(message)
 
     if not config.has_option("ssl-cert-defaults", "commonName"):
         config["ssl-cert-defaults"]["commonName"] = get_ip()
@@ -343,9 +347,9 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
     cert.sign(private_key, "sha1")
 
     # Save Files
-    open(os.path.join(dir_name, file_name + ".crt"), "wt").write(
-        OpenSSL.crypto.dump_certificate(
+    with open(os.path.join(dir_name, file_name + ".crt"), "wt") as f:
+        f.write(OpenSSL.crypto.dump_certificate(
             OpenSSL.crypto.FILETYPE_PEM, cert).decode("UTF-8"))
-    open(os.path.join(dir_name, file_name + ".key"), "wt").write(
-        OpenSSL.crypto.dump_privatekey(
+    with open(os.path.join(dir_name, file_name + ".key"), "wt") as f:
+        f.write(OpenSSL.crypto.dump_privatekey(
             OpenSSL.crypto.FILETYPE_PEM, private_key).decode("UTF-8"))
