@@ -157,6 +157,9 @@ class TestChassis(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(self.enclosure_chassis_mockup, json_str)
+        self.assertEqual(
+            "{}{}".format("W/", self.enclosure["eTag"]),
+            response.headers["ETag"])
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_enclosure_not_found(self, get_oneview_client_mockup):
@@ -275,6 +278,9 @@ class TestChassis(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(self.blade_chassis_mockup, json_str)
+        self.assertEqual(
+            "{}{}".format("W/", self.server_hardware["eTag"]),
+            response.headers["ETag"])
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_server_hardware_not_found(self, get_oneview_client_mockup):
@@ -344,6 +350,9 @@ class TestChassis(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(self.rack_chassis_mockup, json_str)
+        self.assertEqual(
+            "{}{}".format("W/", self.rack["eTag"]),
+            response.headers["ETag"])
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_rack_not_found(self, get_oneview_client_mockup):

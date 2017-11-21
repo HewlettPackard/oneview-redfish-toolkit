@@ -58,9 +58,11 @@ def get_chassis(uuid):
 
         if category == 'server-hardware':
             server_hardware = oneview_client.server_hardware.get(uuid)
+            etag = server_hardware['eTag']
             ch = BladeChassis(server_hardware)
         elif category == 'enclosures':
             enclosure = oneview_client.enclosures.get(uuid)
+            etag = enclosure['eTag']
             enclosure_environment_config = oneview_client.enclosures.\
                 get_environmental_configuration(uuid)
             ch = EnclosureChassis(
@@ -69,16 +71,19 @@ def get_chassis(uuid):
             )
         elif category == 'racks':
             racks = oneview_client.racks.get(uuid)
+            etag = racks['eTag']
             ch = RackChassis(racks)
         else:
             raise OneViewRedfishError('Chassis type not found')
 
         json_str = ch.serialize()
 
-        return Response(
+        response = Response(
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
+        response.headers.add("ETag", "W/" + etag)
+        return response
     except HPOneViewException as e:
         # In case of error log exception and abort
         logging.error(e)
