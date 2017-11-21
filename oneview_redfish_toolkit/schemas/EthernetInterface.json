@@ -1,42 +1,42 @@
 {
-    "$ref": "EthernetInterface.json#/definitions/EthernetInterface",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#EthernetInterface.EthernetInterface",
+    "$ref": "#/definitions/EthernetInterface",
     "definitions": {
         "EthernetInterface": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "EthernetInterface.v1_0_0.json#/definitions/EthernetInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterface.v1_0_0.json#/definitions/EthernetInterface"
                 },
                 {
-                    "$ref": "EthernetInterface.v1_0_2.json#/definitions/EthernetInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterface.v1_0_2.json#/definitions/EthernetInterface"
                 },
                 {
-                    "$ref": "EthernetInterface.v1_0_3.json#/definitions/EthernetInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterface.v1_0_3.json#/definitions/EthernetInterface"
                 },
                 {
-                    "$ref": "EthernetInterface.v1_0_4.json#/definitions/EthernetInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterface.v1_0_4.json#/definitions/EthernetInterface"
                 },
                 {
-                    "$ref": "EthernetInterface.v1_1_0.json#/definitions/EthernetInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterface.v1_1_0.json#/definitions/EthernetInterface"
                 },
                 {
-                    "$ref": "EthernetInterface.v1_1_1.json#/definitions/EthernetInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterface.v1_1_1.json#/definitions/EthernetInterface"
                 },
                 {
-                    "$ref": "EthernetInterface.v1_1_2.json#/definitions/EthernetInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterface.v1_1_2.json#/definitions/EthernetInterface"
                 },
                 {
-                    "$ref": "EthernetInterface.v1_2_0.json#/definitions/EthernetInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterface.v1_2_0.json#/definitions/EthernetInterface"
                 },
                 {
-                    "$ref": "EthernetInterface.v1_2_1.json#/definitions/EthernetInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterface.v1_2_1.json#/definitions/EthernetInterface"
                 },
                 {
-                    "$ref": "EthernetInterface.v1_3_0.json#/definitions/EthernetInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/EthernetInterface.v1_3_0.json#/definitions/EthernetInterface"
                 }
             ]
         }

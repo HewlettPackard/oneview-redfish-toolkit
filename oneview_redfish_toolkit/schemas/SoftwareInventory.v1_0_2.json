@@ -1,13 +1,12 @@
 {
-    "$ref": "SoftwareInventory.v1_0_2.json#/definitions/SoftwareInventory",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#SoftwareInventory.v1_0_2.SoftwareInventory",
+    "$ref": "#/definitions/SoftwareInventory",
     "definitions": {
         "SoftwareInventory": {
-            "additionalProperties": false,
+            "type": "object",
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -15,76 +14,69 @@
                         "null",
                         "object",
                         "string"
-                    ]
+                    ],
+                    "description": "This property shall specify a valid odata or Redfish property."
                 }
             },
+            "additionalProperties": false,
             "properties": {
                 "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/context"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/type"
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections.",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*."
                 },
                 "Id": {
-                    "$ref": "Resource.json#/definitions/Id",
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
                     "readonly": true
                 },
                 "Description": {
-                    "readonly": true,
                     "anyOf": [
-                        {
-                            "$ref": "Resource.json#/definitions/Description"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ]
-                },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "Name": {
-                    "$ref": "Resource.json#/definitions/Name",
+                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"},
+                        {"type": "null"}
+                    ],
                     "readonly": true
                 },
-                "Updateable": {
-                    "longDescription": "The value of this property shall be a boolean indicating whether this software can be updated by the update service. If false, this software is for reporting purpose only.",
-                    "readonly": true,
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "description": "Indicates whether this software can be updated by the update service."
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
                 },
                 "Status": {
                     "anyOf": [
-                        {
-                            "$ref": "Resource.json#/definitions/Status"
-                        },
-                        {
-                            "type": "null"
-                        }
+                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status"},
+                        {"type": "null"}
                     ]
                 },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
                 "Version": {
-                    "longDescription": "The value of this property shall be a string representing the version of this software.",
-                    "readonly": true,
                     "type": [
                         "string",
                         "null"
                     ],
-                    "description": "A string representing the version of this software."
+                    "readonly": true,
+                    "description": "A string representing the version of this software.",
+                    "longDescription": "The value of this property shall be a string representing the version of this software."
                 },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                "Updateable": {
+                    "type": [
+                        "boolean",
+                        "null"
+                    ],
+                    "readonly": true,
+                    "description": "Indicates whether this software can be updated by the update service.",
+                    "longDescription": "The value of this property shall be a boolean indicating whether this software can be updated by the update service. If false, this software is for reporting purpose only."
                 },
                 "Actions": {
-                    "additionalProperties": false,
+                    "type": "object",
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -92,15 +84,16 @@
                                 "null",
                                 "object",
                                 "string"
-                            ]
+                            ],
+                            "description": "This property shall specify a valid odata or Redfish property."
                         }
                     },
+                    "additionalProperties": false,
                     "properties": {
                         "Oem": {
-                            "additionalProperties": true,
+                            "type": "object",
                             "patternProperties": {
                                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "description": "This property shall specify a valid odata or Redfish property.",
                                     "type": [
                                         "array",
                                         "boolean",
@@ -108,27 +101,26 @@
                                         "null",
                                         "object",
                                         "string"
-                                    ]
+                                    ],
+                                    "description": "This property shall specify a valid odata or Redfish property."
                                 }
                             },
+                            "additionalProperties": true,
                             "properties": {},
                             "description": "The available OEM specific actions for this resource.",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "type": "object"
+                            "longDescription": "This type shall contain any additional OEM actions for this resource."
                         }
                     },
-                    "description": "The Actions object contains the available custom actions on this resource.",
                     "longDescription": "This type shall contain the available actions for this resource.",
-                    "type": "object"
+                    "description": "The Actions object contains the available custom actions on this resource."
                 }
             },
-            "description": "This schema defines an inventory of software components.",
-            "longDescription": "This resource shall be used to represent a single software component managed by this Redfish Service.",
             "required": [
                 "Id",
                 "Name"
             ],
-            "type": "object"
+            "description": "This schema defines an inventory of software components.",
+            "longDescription": "This resource shall be used to represent a single software component managed by this Redfish Service."
         }
     },
     "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"

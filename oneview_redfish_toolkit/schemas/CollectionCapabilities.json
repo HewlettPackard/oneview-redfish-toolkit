@@ -1,10 +1,10 @@
 {
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#CollectionCapabilities",
     "definitions": {
         "CollectionCapabilities": {
-            "$ref": "CollectionCapabilities.v1_0_0.json#/definitions/CollectionCapabilities"
+                "$ref": "http://redfish.dmtf.org/schemas/v1/CollectionCapabilities.v1_0_0.json#/definitions/CollectionCapabilities"
         }
-    }
+    },
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

@@ -1,9 +1,9 @@
 {
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#PhysicalContext.v1_1_0",
     "definitions": {
         "PhysicalContext": {
+            "type": "string",
             "enum": [
                 "Room",
                 "Intake",
@@ -28,29 +28,29 @@
                 "Memory"
             ],
             "enumDescriptions": {
-                "Intake": "The intake point of the chassis.",
-                "NetworkBay": "Within a networking bay.",
-                "GPU": "A Graphics Processor (GPU).",
-                "Front": "The front of the chassis.",
-                "VoltageRegulator": "A voltage regulator device.",
-                "PowerSupply": "A power supply.",
-                "StorageBay": "Within a storage bay.",
-                "Memory": "A memory device.",
-                "PowerSupplyBay": "Within a power supply bay.",
                 "Room": "The room.",
-                "ExpansionBay": "Within an expansion bay.",
+                "Intake": "The intake point of the chassis.",
                 "Exhaust": "The exhaust point of the chassis.",
-                "Backplane": "A backplane within the chassis.",
-                "ComputeBay": "Within a compute bay.",
-                "StorageDevice": "A storage device.",
-                "Upper": "The upper portion of the chassis.",
+                "Front": "The front of the chassis.",
                 "Back": "The back of the chassis.",
+                "Upper": "The upper portion of the chassis.",
+                "Lower": "The lower portion of the chassis.",
                 "CPU": "A Processor (CPU).",
+                "GPU": "A Graphics Processor (GPU).",
+                "Backplane": "A backplane within the chassis.",
                 "SystemBoard": "The system board (PCB).",
+                "PowerSupply": "A power supply.",
+                "VoltageRegulator": "A voltage regulator device.",
+                "StorageDevice": "A storage device.",
                 "NetworkingDevice": "A networking device.",
-                "Lower": "The lower portion of the chassis."
-            },
-            "type": "string"
+                "ComputeBay": "Within a compute bay.",
+                "StorageBay": "Within a storage bay.",
+                "NetworkBay": "Within a networking bay.",
+                "ExpansionBay": "Within an expansion bay.",
+                "PowerSupplyBay": "Within a power supply bay.",
+                "Memory": "A memory device."
+            }
         }
-    }
+    },
+    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
 }

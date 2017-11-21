@@ -1,45 +1,45 @@
 {
-    "$ref": "Thermal.json#/definitions/Thermal",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#Thermal.Thermal",
+    "$ref": "#/definitions/Thermal",
     "definitions": {
         "Thermal": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "Thermal.v1_0_0.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_0_0.json#/definitions/Thermal"
                 },
                 {
-                    "$ref": "Thermal.v1_0_1.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_0_1.json#/definitions/Thermal"
                 },
                 {
-                    "$ref": "Thermal.v1_0_2.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_0_2.json#/definitions/Thermal"
                 },
                 {
-                    "$ref": "Thermal.v1_0_3.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_0_3.json#/definitions/Thermal"
                 },
                 {
-                    "$ref": "Thermal.v1_0_4.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_0_4.json#/definitions/Thermal"
                 },
                 {
-                    "$ref": "Thermal.v1_1_0.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_1_0.json#/definitions/Thermal"
                 },
                 {
-                    "$ref": "Thermal.v1_1_1.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_1_1.json#/definitions/Thermal"
                 },
                 {
-                    "$ref": "Thermal.v1_1_2.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_1_2.json#/definitions/Thermal"
                 },
                 {
-                    "$ref": "Thermal.v1_2_0.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_2_0.json#/definitions/Thermal"
                 },
                 {
-                    "$ref": "Thermal.v1_2_1.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_2_1.json#/definitions/Thermal"
                 },
                 {
-                    "$ref": "Thermal.v1_3_0.json#/definitions/Thermal"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Thermal.v1_3_0.json#/definitions/Thermal"
                 }
             ]
         }

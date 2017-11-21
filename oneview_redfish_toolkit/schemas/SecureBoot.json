@@ -1,21 +1,21 @@
 {
-    "$ref": "SecureBoot.json#/definitions/SecureBoot",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#SecureBoot.SecureBoot",
+    "$ref": "#/definitions/SecureBoot",
     "definitions": {
         "SecureBoot": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "SecureBoot.v1_0_0.json#/definitions/SecureBoot"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SecureBoot.v1_0_0.json#/definitions/SecureBoot"
                 },
                 {
-                    "$ref": "SecureBoot.v1_0_1.json#/definitions/SecureBoot"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SecureBoot.v1_0_1.json#/definitions/SecureBoot"
                 },
                 {
-                    "$ref": "SecureBoot.v1_0_2.json#/definitions/SecureBoot"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/SecureBoot.v1_0_2.json#/definitions/SecureBoot"
                 }
             ]
         }

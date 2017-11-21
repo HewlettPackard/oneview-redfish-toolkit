@@ -1,24 +1,24 @@
 {
-    "$ref": "Task.json#/definitions/Task",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#Task.Task",
+    "$ref": "#/definitions/Task",
     "definitions": {
         "Task": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "Task.v1_0_0.json#/definitions/Task"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Task.v1_0_0.json#/definitions/Task"
                 },
                 {
-                    "$ref": "Task.v1_0_2.json#/definitions/Task"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Task.v1_0_2.json#/definitions/Task"
                 },
                 {
-                    "$ref": "Task.v1_0_3.json#/definitions/Task"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Task.v1_0_3.json#/definitions/Task"
                 },
                 {
-                    "$ref": "Task.v1_1_0.json#/definitions/Task"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Task.v1_1_0.json#/definitions/Task"
                 }
             ]
         }

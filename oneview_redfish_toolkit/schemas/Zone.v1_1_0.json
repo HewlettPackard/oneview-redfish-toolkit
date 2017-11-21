@@ -1,13 +1,12 @@
 {
-    "$ref": "Zone.v1_1_0.json#/definitions/Zone",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#Zone.v1_1_0.Zone",
+    "$ref": "#/definitions/Zone",
     "definitions": {
         "Zone": {
-            "additionalProperties": false,
+            "type": "object",
             "patternProperties": {
                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                    "description": "This property shall specify a valid odata or Redfish property.",
                     "type": [
                         "array",
                         "boolean",
@@ -15,107 +14,48 @@
                         "null",
                         "object",
                         "string"
-                    ]
+                    ],
+                    "description": "This property shall specify a valid odata or Redfish property."
                 }
             },
+            "additionalProperties": false,
             "properties": {
-                "Links": {
-                    "additionalProperties": false,
-                    "patternProperties": {
-                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                            "description": "This property shall specify a valid odata or Redfish property.",
-                            "type": [
-                                "array",
-                                "boolean",
-                                "number",
-                                "null",
-                                "object",
-                                "string"
-                            ]
-                        }
-                    },
-                    "properties": {
-                        "ResourceBlocks": {
-                            "description": "An array of references to the Resource Blocks that are used in this Zone.",
-                            "longDescription": "The value of this property shall be an array of references of type ResourceBlock that are associated with this Zone.",
-                            "readonly": true,
-                            "type": "array",
-                            "items": {
-                                "$ref": "ResourceBlock.json#/definitions/ResourceBlock"
-                            }
-                        },
-                        "InvolvedSwitches": {
-                            "description": "An array of references to the switchs that are utilized in this zone.",
-                            "longDescription": "The value of this property shall be a reference to the resources that this zone is associated with and shall reference a resource of type Switch.",
-                            "readonly": true,
-                            "type": "array",
-                            "items": {
-                                "$ref": "Switch.json#/definitions/Switch"
-                            }
-                        },
-                        "Endpoints": {
-                            "description": "An array of references to the endpoints that are contained in this zone.",
-                            "longDescription": "The value of this property shall be a reference to the resources that this zone is associated with and shall reference a resource of type Endpoint.",
-                            "readonly": true,
-                            "type": "array",
-                            "items": {
-                                "$ref": "Endpoint.json#/definitions/Endpoint"
-                            }
-                        },
-                        "InvolvedSwitches@odata.navigationLink": {
-                            "format": "uri",
-                            "type": "string"
-                        },
-                        "Endpoints@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "Oem": {
-                            "$ref": "Resource.json#/definitions/Oem",
-                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification.",
-                            "description": "Oem extension object."
-                        },
-                        "InvolvedSwitches@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "ResourceBlocks@odata.navigationLink": {
-                            "format": "uri",
-                            "type": "string"
-                        },
-                        "ResourceBlocks@odata.count": {
-                            "$ref": "odata.4.0.0.json#/definitions/count"
-                        },
-                        "Endpoints@odata.navigationLink": {
-                            "format": "uri",
-                            "type": "string"
-                        }
-                    },
-                    "description": "Contains references to other resources that are related to this resource.",
-                    "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource.",
-                    "type": "object"
-                },
                 "@odata.context": {
-                    "$ref": "odata.4.0.0.json#/definitions/context"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/context"
+                },
+                "@odata.id": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/id"
+                },
+                "@odata.type": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/type"
+                },
+                "Oem": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections.",
+                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*."
                 },
                 "Id": {
-                    "$ref": "Resource.json#/definitions/Id",
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Id",
                     "readonly": true
                 },
                 "Description": {
-                    "readonly": true,
                     "anyOf": [
-                        {
-                            "$ref": "Resource.json#/definitions/Description"
-                        },
-                        {
-                            "type": "null"
-                        }
-                    ]
+                        {"$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Description"},
+                        {"type": "null"}
+                    ],
+                    "readonly": true
                 },
-                "Actions": {
-                    "additionalProperties": false,
+                "Name": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Name",
+                    "readonly": true
+                },
+                "Status": {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Status"
+                },
+                "Links": {
+                    "type": "object",
                     "patternProperties": {
                         "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                            "description": "This property shall specify a valid odata or Redfish property.",
                             "type": [
                                 "array",
                                 "boolean",
@@ -123,15 +63,90 @@
                                 "null",
                                 "object",
                                 "string"
-                            ]
+                            ],
+                            "description": "This property shall specify a valid odata or Redfish property."
                         }
                     },
+                    "additionalProperties": false,
                     "properties": {
                         "Oem": {
-                            "additionalProperties": true,
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/Resource.json#/definitions/Oem",
+                            "description": "Oem extension object.",
+                            "longDescription": "This object represents the Oem property.  All values for resources described by this schema shall comply to the requirements as described in the Redfish specification."
+                        },
+                        "Endpoints@odata.count": {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                        },
+                        "Endpoints@odata.navigationLink": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "Endpoints": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "http://redfish.dmtf.org/schemas/v1/Endpoint.json#/definitions/Endpoint"
+                            },
+                            "readonly": true,
+                            "description": "An array of references to the endpoints that are contained in this zone.",
+                            "longDescription": "The value of this property shall be a reference to the resources that this zone is associated with and shall reference a resource of type Endpoint."
+                        },
+                        "InvolvedSwitches@odata.count": {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                        },
+                        "InvolvedSwitches@odata.navigationLink": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "InvolvedSwitches": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "http://redfish.dmtf.org/schemas/v1/Switch.json#/definitions/Switch"
+                            },
+                            "readonly": true,
+                            "description": "An array of references to the switchs that are utilized in this zone.",
+                            "longDescription": "The value of this property shall be a reference to the resources that this zone is associated with and shall reference a resource of type Switch."
+                        },
+                        "ResourceBlocks@odata.count": {
+                            "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/count"
+                        },
+                        "ResourceBlocks@odata.navigationLink": {
+                            "type": "string",
+                            "format": "uri"
+                        },
+                        "ResourceBlocks": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "http://redfish.dmtf.org/schemas/v1/ResourceBlock.json#/definitions/ResourceBlock"
+                            },
+                            "readonly": true,
+                            "description": "An array of references to the Resource Blocks that are used in this Zone.",
+                            "longDescription": "The value of this property shall be an array of references of type ResourceBlock that are associated with this Zone."
+                        }
+                    },
+                    "description": "Contains references to other resources that are related to this resource.",
+                    "longDescription": "The Links property, as described by the Redfish Specification, shall contain references to resources that are related to, but not contained by (subordinate to), this resource."
+                },
+                "Actions": {
+                    "type": "object",
+                    "patternProperties": {
+                        "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
+                            "type": [
+                                "array",
+                                "boolean",
+                                "number",
+                                "null",
+                                "object",
+                                "string"
+                            ],
+                            "description": "This property shall specify a valid odata or Redfish property."
+                        }
+                    },
+                    "additionalProperties": false,
+                    "properties": {
+                        "Oem": {
+                            "type": "object",
                             "patternProperties": {
                                 "^([a-zA-Z_][a-zA-Z0-9_]*)?@(odata|Redfish|Message|Privileges)\\.[a-zA-Z_][a-zA-Z0-9_.]+$": {
-                                    "description": "This property shall specify a valid odata or Redfish property.",
                                     "type": [
                                         "array",
                                         "boolean",
@@ -139,45 +154,26 @@
                                         "null",
                                         "object",
                                         "string"
-                                    ]
+                                    ],
+                                    "description": "This property shall specify a valid odata or Redfish property."
                                 }
                             },
+                            "additionalProperties": true,
                             "properties": {},
                             "description": "The available OEM specific actions for this resource.",
-                            "longDescription": "This type shall contain any additional OEM actions for this resource.",
-                            "type": "object"
+                            "longDescription": "This type shall contain any additional OEM actions for this resource."
                         }
                     },
                     "description": "The available actions for this resource.",
-                    "longDescription": "The Actions property shall contain the available actions for this resource.",
-                    "type": "object"
-                },
-                "Status": {
-                    "$ref": "Resource.json#/definitions/Status"
-                },
-                "@odata.type": {
-                    "$ref": "odata.4.0.0.json#/definitions/type"
-                },
-                "Name": {
-                    "$ref": "Resource.json#/definitions/Name",
-                    "readonly": true
-                },
-                "@odata.id": {
-                    "$ref": "odata.4.0.0.json#/definitions/id"
-                },
-                "Oem": {
-                    "$ref": "Resource.json#/definitions/Oem",
-                    "longDescription": "The value of this string shall be of the format for the reserved word *Oem*.",
-                    "description": "This is the manufacturer/provider specific extension moniker used to divide the Oem object into sections."
+                    "longDescription": "The Actions property shall contain the available actions for this resource."
                 }
             },
-            "description": "Switch contains properties describing a simple fabric zone.",
-            "longDescription": "This resource shall be used to represent a simple zone for a Redfish implementation.",
             "required": [
                 "Id",
                 "Name"
             ],
-            "type": "object"
+            "description": "Switch contains properties describing a simple fabric zone.",
+            "longDescription": "This resource shall be used to represent a simple zone for a Redfish implementation."
         }
     },
     "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"

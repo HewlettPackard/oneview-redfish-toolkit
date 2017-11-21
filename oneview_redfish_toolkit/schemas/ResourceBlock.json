@@ -1,15 +1,15 @@
 {
-    "$ref": "ResourceBlock.json#/definitions/ResourceBlock",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#ResourceBlock.ResourceBlock",
+    "$ref": "#/definitions/ResourceBlock",
     "definitions": {
         "ResourceBlock": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "ResourceBlock.v1_0_0.json#/definitions/ResourceBlock"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ResourceBlock.v1_0_0.json#/definitions/ResourceBlock"
                 }
             ]
         }

@@ -1,36 +1,36 @@
 {
-    "$ref": "LogEntry.json#/definitions/LogEntry",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#LogEntry.LogEntry",
+    "$ref": "#/definitions/LogEntry",
     "definitions": {
         "LogEntry": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "LogEntry.v1_0_0.json#/definitions/LogEntry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_0_0.json#/definitions/LogEntry"
                 },
                 {
-                    "$ref": "LogEntry.v1_0_2.json#/definitions/LogEntry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_0_2.json#/definitions/LogEntry"
                 },
                 {
-                    "$ref": "LogEntry.v1_0_3.json#/definitions/LogEntry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_0_3.json#/definitions/LogEntry"
                 },
                 {
-                    "$ref": "LogEntry.v1_0_4.json#/definitions/LogEntry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_0_4.json#/definitions/LogEntry"
                 },
                 {
-                    "$ref": "LogEntry.v1_1_0.json#/definitions/LogEntry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_1_0.json#/definitions/LogEntry"
                 },
                 {
-                    "$ref": "LogEntry.v1_1_1.json#/definitions/LogEntry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_1_1.json#/definitions/LogEntry"
                 },
                 {
-                    "$ref": "LogEntry.v1_1_2.json#/definitions/LogEntry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_1_2.json#/definitions/LogEntry"
                 },
                 {
-                    "$ref": "LogEntry.v1_2_0.json#/definitions/LogEntry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogEntry.v1_2_0.json#/definitions/LogEntry"
                 }
             ]
         }

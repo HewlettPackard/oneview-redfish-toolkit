@@ -1,27 +1,27 @@
 {
-    "$ref": "Processor.json#/definitions/Processor",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#Processor.Processor",
+    "$ref": "#/definitions/Processor",
     "definitions": {
         "Processor": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "Processor.v1_0_0.json#/definitions/Processor"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Processor.v1_0_0.json#/definitions/Processor"
                 },
                 {
-                    "$ref": "Processor.v1_0_2.json#/definitions/Processor"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Processor.v1_0_2.json#/definitions/Processor"
                 },
                 {
-                    "$ref": "Processor.v1_0_3.json#/definitions/Processor"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Processor.v1_0_3.json#/definitions/Processor"
                 },
                 {
-                    "$ref": "Processor.v1_0_4.json#/definitions/Processor"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Processor.v1_0_4.json#/definitions/Processor"
                 },
                 {
-                    "$ref": "Processor.v1_1_0.json#/definitions/Processor"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Processor.v1_1_0.json#/definitions/Processor"
                 }
             ]
         }

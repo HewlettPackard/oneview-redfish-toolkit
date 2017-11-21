@@ -1,33 +1,33 @@
 {
-    "$ref": "AccountService.json#/definitions/AccountService",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#AccountService.AccountService",
+    "$ref": "#/definitions/AccountService",
     "definitions": {
         "AccountService": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "AccountService.v1_0_0.json#/definitions/AccountService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_0_0.json#/definitions/AccountService"
                 },
                 {
-                    "$ref": "AccountService.v1_0_2.json#/definitions/AccountService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_0_2.json#/definitions/AccountService"
                 },
                 {
-                    "$ref": "AccountService.v1_0_3.json#/definitions/AccountService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_0_3.json#/definitions/AccountService"
                 },
                 {
-                    "$ref": "AccountService.v1_0_4.json#/definitions/AccountService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_0_4.json#/definitions/AccountService"
                 },
                 {
-                    "$ref": "AccountService.v1_1_0.json#/definitions/AccountService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_1_0.json#/definitions/AccountService"
                 },
                 {
-                    "$ref": "AccountService.v1_1_1.json#/definitions/AccountService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_1_1.json#/definitions/AccountService"
                 },
                 {
-                    "$ref": "AccountService.v1_2_0.json#/definitions/AccountService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AccountService.v1_2_0.json#/definitions/AccountService"
                 }
             ]
         }

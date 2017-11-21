@@ -1,27 +1,27 @@
 {
-    "$ref": "JsonSchemaFile.json#/definitions/JsonSchemaFile",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#JsonSchemaFile.JsonSchemaFile",
+    "$ref": "#/definitions/JsonSchemaFile",
     "definitions": {
         "JsonSchemaFile": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "JsonSchemaFile.v1_0_0.json#/definitions/JsonSchemaFile"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/JsonSchemaFile.v1_0_0.json#/definitions/JsonSchemaFile"
                 },
                 {
-                    "$ref": "JsonSchemaFile.v1_0_2.json#/definitions/JsonSchemaFile"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/JsonSchemaFile.v1_0_2.json#/definitions/JsonSchemaFile"
                 },
                 {
-                    "$ref": "JsonSchemaFile.v1_0_3.json#/definitions/JsonSchemaFile"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/JsonSchemaFile.v1_0_3.json#/definitions/JsonSchemaFile"
                 },
                 {
-                    "$ref": "JsonSchemaFile.v1_0_4.json#/definitions/JsonSchemaFile"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/JsonSchemaFile.v1_0_4.json#/definitions/JsonSchemaFile"
                 },
                 {
-                    "$ref": "JsonSchemaFile.v1_1_0.json#/definitions/JsonSchemaFile"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/JsonSchemaFile.v1_1_0.json#/definitions/JsonSchemaFile"
                 }
             ]
         }

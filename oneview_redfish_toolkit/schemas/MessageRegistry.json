@@ -1,27 +1,27 @@
 {
-    "$ref": "MessageRegistry.json#/definitions/MessageRegistry",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#MessageRegistry.MessageRegistry",
+    "$ref": "#/definitions/MessageRegistry",
     "definitions": {
         "MessageRegistry": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "MessageRegistry.v1_0_0.json#/definitions/MessageRegistry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MessageRegistry.v1_0_0.json#/definitions/MessageRegistry"
                 },
                 {
-                    "$ref": "MessageRegistry.v1_0_2.json#/definitions/MessageRegistry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MessageRegistry.v1_0_2.json#/definitions/MessageRegistry"
                 },
                 {
-                    "$ref": "MessageRegistry.v1_0_3.json#/definitions/MessageRegistry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MessageRegistry.v1_0_3.json#/definitions/MessageRegistry"
                 },
                 {
-                    "$ref": "MessageRegistry.v1_0_4.json#/definitions/MessageRegistry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MessageRegistry.v1_0_4.json#/definitions/MessageRegistry"
                 },
                 {
-                    "$ref": "MessageRegistry.v1_1_0.json#/definitions/MessageRegistry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MessageRegistry.v1_1_0.json#/definitions/MessageRegistry"
                 }
             ]
         }

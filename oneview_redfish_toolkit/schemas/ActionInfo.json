@@ -1,21 +1,21 @@
 {
-    "$ref": "ActionInfo.json#/definitions/ActionInfo",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#ActionInfo.ActionInfo",
+    "$ref": "#/definitions/ActionInfo",
     "definitions": {
         "ActionInfo": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "ActionInfo.v1_0_0.json#/definitions/ActionInfo"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ActionInfo.v1_0_0.json#/definitions/ActionInfo"
                 },
                 {
-                    "$ref": "ActionInfo.v1_0_1.json#/definitions/ActionInfo"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ActionInfo.v1_0_1.json#/definitions/ActionInfo"
                 },
                 {
-                    "$ref": "ActionInfo.v1_0_2.json#/definitions/ActionInfo"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/ActionInfo.v1_0_2.json#/definitions/ActionInfo"
                 }
             ]
         }

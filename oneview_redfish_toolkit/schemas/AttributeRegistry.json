@@ -1,24 +1,24 @@
 {
-    "$ref": "AttributeRegistry.json#/definitions/AttributeRegistry",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#AttributeRegistry.AttributeRegistry",
+    "$ref": "#/definitions/AttributeRegistry",
     "definitions": {
         "AttributeRegistry": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "AttributeRegistry.v1_0_0.json#/definitions/AttributeRegistry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AttributeRegistry.v1_0_0.json#/definitions/AttributeRegistry"
                 },
                 {
-                    "$ref": "AttributeRegistry.v1_0_1.json#/definitions/AttributeRegistry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AttributeRegistry.v1_0_1.json#/definitions/AttributeRegistry"
                 },
                 {
-                    "$ref": "AttributeRegistry.v1_0_2.json#/definitions/AttributeRegistry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AttributeRegistry.v1_0_2.json#/definitions/AttributeRegistry"
                 },
                 {
-                    "$ref": "AttributeRegistry.v1_1_0.json#/definitions/AttributeRegistry"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/AttributeRegistry.v1_1_0.json#/definitions/AttributeRegistry"
                 }
             ]
         }

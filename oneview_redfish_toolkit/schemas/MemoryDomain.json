@@ -1,30 +1,30 @@
 {
-    "$ref": "MemoryDomain.json#/definitions/MemoryDomain",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#MemoryDomain.MemoryDomain",
+    "$ref": "#/definitions/MemoryDomain",
     "definitions": {
         "MemoryDomain": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "MemoryDomain.v1_0_0.json#/definitions/MemoryDomain"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryDomain.v1_0_0.json#/definitions/MemoryDomain"
                 },
                 {
-                    "$ref": "MemoryDomain.v1_0_1.json#/definitions/MemoryDomain"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryDomain.v1_0_1.json#/definitions/MemoryDomain"
                 },
                 {
-                    "$ref": "MemoryDomain.v1_0_2.json#/definitions/MemoryDomain"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryDomain.v1_0_2.json#/definitions/MemoryDomain"
                 },
                 {
-                    "$ref": "MemoryDomain.v1_1_0.json#/definitions/MemoryDomain"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryDomain.v1_1_0.json#/definitions/MemoryDomain"
                 },
                 {
-                    "$ref": "MemoryDomain.v1_1_1.json#/definitions/MemoryDomain"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryDomain.v1_1_1.json#/definitions/MemoryDomain"
                 },
                 {
-                    "$ref": "MemoryDomain.v1_2_0.json#/definitions/MemoryDomain"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryDomain.v1_2_0.json#/definitions/MemoryDomain"
                 }
             ]
         }

@@ -1,21 +1,21 @@
 {
-    "$ref": "NetworkInterface.json#/definitions/NetworkInterface",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#NetworkInterface.NetworkInterface",
+    "$ref": "#/definitions/NetworkInterface",
     "definitions": {
         "NetworkInterface": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "NetworkInterface.v1_0_0.json#/definitions/NetworkInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkInterface.v1_0_0.json#/definitions/NetworkInterface"
                 },
                 {
-                    "$ref": "NetworkInterface.v1_0_1.json#/definitions/NetworkInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkInterface.v1_0_1.json#/definitions/NetworkInterface"
                 },
                 {
-                    "$ref": "NetworkInterface.v1_1_0.json#/definitions/NetworkInterface"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/NetworkInterface.v1_1_0.json#/definitions/NetworkInterface"
                 }
             ]
         }

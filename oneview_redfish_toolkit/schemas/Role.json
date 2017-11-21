@@ -1,21 +1,21 @@
 {
-    "$ref": "Role.json#/definitions/Role",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#Role.Role",
+    "$ref": "#/definitions/Role",
     "definitions": {
         "Role": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "Role.v1_0_0.json#/definitions/Role"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Role.v1_0_0.json#/definitions/Role"
                 },
                 {
-                    "$ref": "Role.v1_0_2.json#/definitions/Role"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Role.v1_0_2.json#/definitions/Role"
                 },
                 {
-                    "$ref": "Role.v1_1_0.json#/definitions/Role"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Role.v1_1_0.json#/definitions/Role"
                 }
             ]
         }

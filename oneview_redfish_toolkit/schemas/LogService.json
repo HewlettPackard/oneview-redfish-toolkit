@@ -1,24 +1,24 @@
 {
-    "$ref": "LogService.json#/definitions/LogService",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#LogService.LogService",
+    "$ref": "#/definitions/LogService",
     "definitions": {
         "LogService": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "LogService.v1_0_0.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_0_0.json#/definitions/LogService"
                 },
                 {
-                    "$ref": "LogService.v1_0_2.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_0_2.json#/definitions/LogService"
                 },
                 {
-                    "$ref": "LogService.v1_0_3.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_0_3.json#/definitions/LogService"
                 },
                 {
-                    "$ref": "LogService.v1_0_4.json#/definitions/LogService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/LogService.v1_0_4.json#/definitions/LogService"
                 }
             ]
         }

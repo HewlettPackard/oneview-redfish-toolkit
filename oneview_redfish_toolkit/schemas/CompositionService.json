@@ -1,15 +1,15 @@
 {
-    "$ref": "CompositionService.json#/definitions/CompositionService",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#CompositionService.CompositionService",
+    "$ref": "#/definitions/CompositionService",
     "definitions": {
         "CompositionService": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "CompositionService.v1_0_0.json#/definitions/CompositionService"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/CompositionService.v1_0_0.json#/definitions/CompositionService"
                 }
             ]
         }

@@ -1,21 +1,21 @@
 {
-    "$ref": "Port.json#/definitions/Port",
-    "$schema": "redfish-schema.v1_2_0.json",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
     "title": "#Port.Port",
+    "$ref": "#/definitions/Port",
     "definitions": {
         "Port": {
             "anyOf": [
                 {
-                    "$ref": "odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
                 },
                 {
-                    "$ref": "Port.v1_0_0.json#/definitions/Port"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Port.v1_0_0.json#/definitions/Port"
                 },
                 {
-                    "$ref": "Port.v1_0_1.json#/definitions/Port"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Port.v1_0_1.json#/definitions/Port"
                 },
                 {
-                    "$ref": "Port.v1_0_2.json#/definitions/Port"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Port.v1_0_2.json#/definitions/Port"
                 }
             ]
         }
