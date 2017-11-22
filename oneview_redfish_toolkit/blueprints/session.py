@@ -41,12 +41,22 @@ def post_session():
 
         The response to the POST request to create a session includes:
 
-        - An X-Auth-Token header that contains a session auth token that
-        the client can use an subsequent requests.
-        - A Location header that contains a link to the newly created
-         session resource.
-        - The JSON response body that contains a full representation of the
-        newly created session object.
+            - An X-Auth-Token header that contains a session auth token that
+            the client can use an subsequent requests.
+            - A Location header that contains a link to the newly created
+            session resource.
+            - The JSON response body that contains a full representation of
+            the newly created session object.
+
+        Exception:
+            HPOneViewException: Invalid username or password.
+            return abort(500)
+
+            OneViewRedfishError: When occur a credential key mapping error.
+            return abort(400)
+
+            Exception: Unexpected error.
+            return abort(500)
     """
 
     try:
@@ -76,27 +86,18 @@ def post_session():
             response=json_str,
             status=200,
             mimetype='application/json')
-        response.headers.add("X-Auth-Token", session_id)
         response.headers.add(
             "Location", "/redfish/v1/SessionService/Sessions/1")
+        response.headers.add("X-Auth-Token", session_id)
 
         return response
 
     except HPOneViewException as e:
-        # In case of error log exception and abort
-        logging.error(e)
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
-        else:
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logging.error('Unexpected error: {}'.format(e))
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except OneViewRedfishError as e:
-        # In case of error log exception and abort
         logging.error('Mapping error: {}'.format(e))
-        if e.msg["errorCode"] == "NOT_IMPLEMENTED":
-            abort(status.HTTP_501_NOT_IMPLEMENTED, e.msg['message'])
-        else:
-            abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
+        abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
     except Exception as e:
-        # In case of error log exception and abort
         logging.error('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
