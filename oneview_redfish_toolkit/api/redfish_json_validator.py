@@ -14,6 +14,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import glob
 import os
 
 import collections
@@ -58,7 +59,7 @@ class RedfishJsonValidator(object):
         """Validates self.redfish against self.schema_obj
 
             Validates a redfish OrderedDict against the schema object passed
-            on the object creation
+            on the object creation.
 
             Returns:
                 None
@@ -66,20 +67,29 @@ class RedfishJsonValidator(object):
             Exception:
                 raises an exception on validation failure
         """
-        path = util.config['redfish']['schema_dir']
+        schema_dir = util.config['redfish']['schema_dir']
+        schema_paths = glob.glob(os.getcwd() + '/' + schema_dir + '/*.json')
+
+        store = {}
+
+        for path in schema_paths:
+            with open(path) as schema_file:
+                json_schema = json.load(schema_file)
+
+            file_name = path.split('/')[-1]
+            store["http://redfish.dmtf.org/schemas/v1/" + file_name] = \
+                json_schema
 
         resolver = jsonschema.RefResolver(
-            'file://%s/' % (os.getcwd() + '/' + path), None)
+            'file://%s/' % (os.getcwd() + '/' + schema_dir),
+            self.schema_obj, store=store)
 
         if self.schema_obj is None:
             raise OneViewRedfishError(
                 "Can't serialize without a schema object. Schema name was"
                 " set to None at object instantiation.")
-        try:
-            jsonschema.validate(
-                self.redfish, self.schema_obj, resolver=resolver)
-        except Exception:
-            raise
+
+        jsonschema.validate(self.redfish, self.schema_obj, resolver=resolver)
 
     def serialize(self):
         """Generates a json string from redfish content
