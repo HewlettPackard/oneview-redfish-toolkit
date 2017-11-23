@@ -55,6 +55,7 @@ from oneview_redfish_toolkit.blueprints.network_port_collection \
 from oneview_redfish_toolkit.blueprints.odata import odata
 from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.service_root import service_root
+from oneview_redfish_toolkit.blueprints.session import session
 from oneview_redfish_toolkit.blueprints.storage import storage
 from oneview_redfish_toolkit.blueprints.storage_collection \
     import storage_collection
@@ -99,6 +100,7 @@ if __name__ == '__main__':
     app.register_blueprint(network_interface)
     app.register_blueprint(network_adapter)
     app.register_blueprint(network_port)
+    app.register_blueprint(session)
 
     @app.before_request
     def has_odata_version_header():
