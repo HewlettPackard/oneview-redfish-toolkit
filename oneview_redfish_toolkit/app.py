@@ -61,11 +61,9 @@ from oneview_redfish_toolkit.blueprints.storage_collection \
 from oneview_redfish_toolkit.blueprints.thermal import thermal
 from oneview_redfish_toolkit import util
 
-
 util.configure_logging(os.getenv("LOGGING_FILE", "logging.conf"))
 
 if __name__ == '__main__':
-
     # Load config file, schemas and creates a OV connection
     try:
         util.load_config('redfish.conf')
@@ -147,17 +145,6 @@ if __name__ == '__main__':
             status=status.HTTP_404_NOT_FOUND,
             mimetype='application/json')
 
-    @app.errorhandler(status.HTTP_412_PRECONDITION_FAILED)
-    def precondition_failed(error):
-        """Creates a Precondition Failed response"""
-        redfish_error = RedfishError(
-            "GeneralError", error.description)
-        error_str = redfish_error.serialize()
-        return Response(
-            response=error_str,
-            status=status.HTTP_412_PRECONDITION_FAILED,
-            mimetype='application/json')
-
     @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
     def internal_server_error(error):
         """Creates an Internal Server Error response"""
@@ -189,6 +176,12 @@ if __name__ == '__main__':
             mimetype='application/json')
 
     config = util.config
+    if config["ssl"]["SSLType"] in ("self-signed", "adhoc"):
+        logging.warning("Server is starting with a self-signed certificate.")
+    if config["ssl"]["SSLType"] == "disabled":
+        logging.warning(
+            "Server is starting in HTTP mode. This is an insecure mode. "
+            "Running the server with HTTPS enabled is highly recommened.")
 
     try:
         port = int(config["redfish"]["redfish_port"])
@@ -202,9 +195,10 @@ if __name__ == '__main__':
 
     ssl_type = config["ssl"]["SSLType"]
     # Check SSLType:
-    if ssl_type not in ('disabled', 'adhoc', 'certs'):
+    if ssl_type not in ('disabled', 'adhoc', 'certs', 'self-signed'):
         logging.error(
-            "Invalid SSL type: {}. Must be one of: disabled, adhoc or certs".
+            "Invalid SSL type: {}. Must be one of: disabled, adhoc, "
+            "self-signed or certs".
             format(ssl_type))
         exit(1)
 
@@ -216,6 +210,16 @@ if __name__ == '__main__':
         # We should use certs file provided by the user
         ssl_cert_file = config["ssl"]["SSLCertFile"]
         ssl_key_file = config["ssl"]["SSLKeyFile"]
+        # Generating cert files if they don't exists
+        if ssl_type == "self-signed":
+            if not os.path.exists(ssl_cert_file) and not \
+                os.path.exists(ssl_key_file):
+                logging.warning("Generating self-signed certs")
+                # Generate certificates
+                util.generate_certificate("certs", "self-signed", 2048)
+            else:
+                logging.warning("Using existing self-signed certs")
+
         if ssl_cert_file == "" or ssl_key_file == "":
             logging.error(
                 "SSL type: is 'cert' but one of the files are missing on"

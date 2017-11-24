@@ -73,3 +73,7 @@ oneview_redfish_toolkit/api/__pycache__/
 oneview_redfish_toolkit/blueprints/__pycache__/
 oneview_redfish_toolkit/tests/api/__pycache__/
 oneview_redfish_toolkit/tests/blueprints/__pycache__/
+
+# Certificates
+certs/*
+!*.gitignore
