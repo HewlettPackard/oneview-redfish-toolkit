@@ -17,6 +17,7 @@
 # Python libs
 import collections
 import configparser
+import glob
 import json
 import logging
 import logging.config
@@ -102,7 +103,7 @@ def load_config(conf_file):
     schemas = dict(config.items('schemas'))
     registries = dict(config.items('registry'))
 
-    # Load schemas and connect to oneview
+    # Load schemas | Store schemas | Connect to OneView
     try:
         schemas_dict = load_schemas(
             config['redfish']['schema_dir'],
@@ -116,6 +117,8 @@ def load_config(conf_file):
             registries
             )
         globals()['registry_dict'] = registry_dict
+
+        store_schemas(config['redfish']['schema_dir'])
     except errors.OneViewRedfishResourceNotFoundError as e:
         raise errors.OneViewRedfishError(
             'Failed to load schemas or registries: {}'.format(e)
@@ -135,7 +138,7 @@ def load_conf(conf_file):
             conf_file: string with the conf file name
 
         Returns:
-            configparser object with conf_file configs
+            ConfigParser object with conf_file configs
 
         Exception:
             OneViewRedfishResourceNotFoundError:
@@ -247,6 +250,33 @@ def load_registry(registry_dir, registries):
             )
 
     return registries_dict
+
+
+def store_schemas(schema_dir):
+    """Stores all DMTF JSON Schemas
+
+        Stores all schemas listed in schemas searching schema_dir directory.
+
+        Args:
+            schema_dir: String with the directory to load schemas from.
+
+        Returns:
+            Dictionary: A dict containing ('http://redfish.dmtf.org/schemas/
+                        v1/<schema_file_name>': schema_obj) pairs
+    """
+    schema_paths = glob.glob(os.getcwd() + '/' + schema_dir + '/*.json')
+
+    stored_schemas = dict()
+
+    for path in schema_paths:
+        with open(path) as schema_file:
+            json_schema = json.load(schema_file)
+
+        file_name = path.split('/')[-1]
+        stored_schemas["http://redfish.dmtf.org/schemas/v1/" + file_name] = \
+            json_schema
+
+    globals()['stored_schemas'] = stored_schemas
 
 
 def get_oneview_client():

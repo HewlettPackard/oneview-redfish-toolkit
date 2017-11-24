@@ -14,7 +14,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import glob
 import os
 
 import collections
@@ -65,24 +64,13 @@ class RedfishJsonValidator(object):
                 None
 
             Exception:
-                raises an exception on validation failure
+                Raises an exception on validation failure
         """
         schema_dir = util.config['redfish']['schema_dir']
-        schema_paths = glob.glob(os.getcwd() + '/' + schema_dir + '/*.json')
-
-        store = {}
-
-        for path in schema_paths:
-            with open(path) as schema_file:
-                json_schema = json.load(schema_file)
-
-            file_name = path.split('/')[-1]
-            store["http://redfish.dmtf.org/schemas/v1/" + file_name] = \
-                json_schema
 
         resolver = jsonschema.RefResolver(
             'file://%s/' % (os.getcwd() + '/' + schema_dir),
-            self.schema_obj, store=store)
+            self.schema_obj, store=util.stored_schemas)
 
         if self.schema_obj is None:
             raise OneViewRedfishError(
