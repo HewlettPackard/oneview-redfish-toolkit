@@ -53,8 +53,8 @@ class TestUtil(unittest.TestCase):
 
     # load_conf() tests
     def setUp(self):
-        self.schema_dir = './oneview_redfish_toolkit/schemas'
-        self.registry_dir = './oneview_redfish_toolkit/registry'
+        self.schema_dir = './schemas'
+        self.registry_dir = './registry'
         self.config_file = './redfish.conf'
 
     def test_load_conf_invalid_config_file(self):

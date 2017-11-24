@@ -264,7 +264,7 @@ def store_schemas(schema_dir):
             Dictionary: A dict containing ('http://redfish.dmtf.org/schemas/
                         v1/<schema_file_name>': schema_obj) pairs
     """
-    schema_paths = glob.glob(os.getcwd() + '/' + schema_dir + '/*.json')
+    schema_paths = glob.glob(schema_dir + '/*.json')
 
     stored_schemas = dict()
 
