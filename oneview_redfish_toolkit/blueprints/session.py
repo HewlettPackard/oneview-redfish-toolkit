@@ -50,7 +50,7 @@ def post_session():
 
         Exception:
             HPOneViewException: Invalid username or password.
-            return abort(500)
+            return abort(400)
 
             OneViewRedfishError: When occur a credential key mapping error.
             return abort(400)
@@ -78,7 +78,7 @@ def post_session():
         oneview_client = OneViewClient(config)
         session_id = oneview_client.connection.get_session_id()
 
-        sess = Session(username, username)
+        sess = Session(username)
 
         json_str = sess.serialize()
 
@@ -94,7 +94,7 @@ def post_session():
 
     except HPOneViewException as e:
         logging.error('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        abort(status.HTTP_400_BAD_REQUEST)
     except OneViewRedfishError as e:
         logging.error('Mapping error: {}'.format(e))
         abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
