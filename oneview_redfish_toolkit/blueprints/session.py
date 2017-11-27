@@ -70,7 +70,7 @@ def post_session():
                  "message": "Invalid JSON key"})
 
         config = dict()
-        config["ip"] = util.ov_config['ip']
+        config["ip"] = util.ov_config["ip"]
         config["credentials"] = dict()
         config["credentials"]["userName"] = username
         config["credentials"]["password"] = password

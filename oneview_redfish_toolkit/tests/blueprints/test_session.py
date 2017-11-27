@@ -36,7 +36,8 @@ class TestSession(unittest.TestCase):
     """Tests for Session blueprint"""
 
     @mock.patch.object(session_file, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
+    @mock.patch.object(util, 'OneViewClient')
+    def setUp(self, oneview_client_mockup, util_mockup):
         """Tests preparation"""
 
         # Load config on util
