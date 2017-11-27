@@ -3,7 +3,7 @@
     "@odata.id": "/redfish/v1/SessionService/Sessions/1",
     "odata.type": "#Session.v1_0_0.Session",
     "Id": "1",
-    "Name": "administrator",
-    "Description": "",
+    "Name": "User Session",
+    "Description": "User Session",
     "UserName": "administrator"
 }

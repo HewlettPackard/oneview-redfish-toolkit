@@ -23,18 +23,19 @@ from unittest import mock
 from flask import Flask
 from flask import Response
 from flask_api import status
-from hpOneView.exceptions import HPOneViewException
-from oneview_redfish_toolkit import util
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.session import session
+from oneview_redfish_toolkit.blueprints import session as session_file
+from oneview_redfish_toolkit.blueprints.session \
+    import session as session_blueprint
+from oneview_redfish_toolkit import util
 
 
 class TestSession(unittest.TestCase):
     """Tests for Session blueprint"""
 
-    @mock.patch.object(util, 'OneViewClient')
+    @mock.patch.object(session_file, 'OneViewClient')
     def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
@@ -44,7 +45,7 @@ class TestSession(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(session)
+        self.app.register_blueprint(session_blueprint)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -83,7 +84,7 @@ class TestSession(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch.object(util, 'OneViewClient')
+    @mock.patch.object(session_file, 'OneViewClient')
     def test_post_session(self, oneview_client_mockup):
         """Tests post Session"""
 
@@ -95,19 +96,22 @@ class TestSession(unittest.TestCase):
 
         # Create mock response
         oneview_client = oneview_client_mockup()
+        oneview_client.connection.get_session_id.return_value = "sessionId"
 
-        # oneview_client.server_hardware.get.return_value = server_hardware
-        # oneview_client.server_hardware_types.get.return_value \
-        #     = server_hardware_types
-        #
+        # POST Session
+        response = self.app.post("/redfish/v1/SessionService/Sessions",
+                                 data=json.dumps(dict(
+                                     UserName="administrator",
+                                     Password="password")),
+                                 content_type='application/json')
 
-        # Get Session
-        response = self.app.get("/redfish/v1/SessionService/Sessions")
-        #
-        # # Gets json from response
-        # json_str = response.data.decode("utf-8")
-        #
-        # # Tests response
-        # self.assertEqual(status.HTTP_200_OK, response.status_code)
-        # self.assertEqual("application/json", response.mimetype)
-        # self.assertEqual(storage_mockup, json_str)
+        # Gets json from response
+        json_str = response.data.decode("utf-8")
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual(session_mockup, json_str)
+        self.assertIn("/redfish/v1/SessionService/Sessions/1",
+                      response.headers["Location"])
+        self.assertEqual("sessionId", response.headers["X-Auth-Token"])
