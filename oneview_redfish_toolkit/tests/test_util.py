@@ -20,6 +20,8 @@
 
 import collections
 import configparser
+import os
+import socket
 
 from oneview_redfish_toolkit.api import errors
 from oneview_redfish_toolkit import util
@@ -265,3 +267,22 @@ class TestUtil(unittest.TestCase):
         except Exception as e:
             self.fail('Failed to connect to OneView: '.format(e))
         self.assertIsNotNone(ov_client)
+
+    def test_get_ip(self):
+        # Tests get_ip function; This test may not work if it returns an IPV6.
+        ip = util.get_ip()
+        try:
+            socket.inet_aton(ip)
+        except Exception:
+            self.fail("Failed to get a valid IP Address")
+
+    @mock.patch.object(util, 'OneViewClient')
+    def test_creat_certs(self, oneview_client_mockup):
+        # Test generate_certificate function
+
+        util.load_config(self.config_file)
+
+        util.generate_certificate("certs", "test", 2048)
+
+        self.assertTrue(os.path.exists(os.path.join("certs", "test" + ".crt")))
+        self.assertTrue(os.path.exists(os.path.join("certs", "test" + ".key")))
