@@ -78,20 +78,20 @@ def get_network_interface(uuid, device_id):
             mimetype="application/json")
     except ValueError:
         # Failed to convert device_id to int
-        logging.error("Failed to convert device id {} to integer.".
-                      format(device_id))
+        logging.exception(
+            "Failed to convert device id {} to integer.".format(device_id))
         abort(status.HTTP_404_NOT_FOUND, "Network interface not found")
     except OneViewRedfishResourceNotFoundError as e:
-        logging.error(e.msg)
+        logging.exception(e.msg)
         abort(status.HTTP_404_NOT_FOUND, e.msg)
     except HPOneViewException as e:
         # In case of error log exception and abort
-        logging.error(e)
+        logging.exception(e)
         if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
             abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
         else:
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         # In case of error log exception and abort
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

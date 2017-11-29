@@ -84,7 +84,7 @@ def get_thermal(uuid):
             mimetype="application/json")
     except HPOneViewException as e:
         # In case of error print exception and abort
-        logging.error(e)
+        logging.exception(e)
 
         if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
             abort(status.HTTP_404_NOT_FOUND, "Resource not found")
@@ -93,11 +93,11 @@ def get_thermal(uuid):
 
     except OneViewRedfishError as e:
         # In case of error print exception and abort
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_404_NOT_FOUND, "Resource not found")
 
     except Exception as e:
         # In case of error print exception and abort
-        logging.error(e)
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception(e)
+        logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

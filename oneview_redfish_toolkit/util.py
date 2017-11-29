@@ -51,7 +51,7 @@ def configure_logging(log_file_path):
         NOTSET:   00
         ---------------------
 
-        How to use: import logging and logging.error('message')
+        How to use: import logging and logging.exception('message')
 
         Args:
             log_file_path: logging.conf path.
@@ -280,7 +280,7 @@ def get_oneview_client():
     # If expired try to make a new connection
     except Exception:
         try:
-            logging.error('Re-authenticated')
+            logging.exception('Re-authenticated')
             ov_client.connection.login(ov_config['credentials'])
             return ov_client
         # if faild abort
@@ -325,7 +325,7 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
         private_key.generate_key(OpenSSL.crypto.TYPE_DSA, key_length)
     else:
         message = "Invalid key_type"
-        logging.error(message)
+        logging.exception(message)
         raise errors.OneViewRedfishError(message)
 
     if not config.has_option("ssl-cert-defaults", "commonName"):

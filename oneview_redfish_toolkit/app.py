@@ -68,8 +68,8 @@ if __name__ == '__main__':
     try:
         util.load_config('redfish.conf')
     except Exception as e:
-        logging.error('Failed to load app configuration')
-        logging.error(e)
+        logging.exception('Failed to load app configuration')
+        logging.exception(e)
         exit(1)
 
     # Flask application
@@ -186,17 +186,17 @@ if __name__ == '__main__':
     try:
         port = int(config["redfish"]["redfish_port"])
     except Exception:
-        logging.error("Port must be an integer number between 1 and 65536")
+        logging.exception("Port must be an integer number between 1 and 65536")
         exit(1)
     # Checking port range
     if port < 1 or port > 65536:
-        logging.error("Port must be an integer number between 1 and 65536")
+        logging.exception("Port must be an integer number between 1 and 65536")
         exit(1)
 
     ssl_type = config["ssl"]["SSLType"]
     # Check SSLType:
     if ssl_type not in ('disabled', 'adhoc', 'certs', 'self-signed'):
-        logging.error(
+        logging.exception(
             "Invalid SSL type: {}. Must be one of: disabled, adhoc, "
             "self-signed or certs".
             format(ssl_type))
@@ -221,7 +221,7 @@ if __name__ == '__main__':
                 logging.warning("Using existing self-signed certs")
 
         if ssl_cert_file == "" or ssl_key_file == "":
-            logging.error(
+            logging.exception(
                 "SSL type: is 'cert' but one of the files are missing on"
                 "the config file. SSLCertFile: {}, SSLKeyFile: {}.".
                 format(ssl_cert_file, ssl_key_file))

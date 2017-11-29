@@ -58,15 +58,15 @@ def get_network_device_function_collection(uuid, device_id):
             logging.warning('Server hardware UUID {} not found'.format(uuid))
             abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
         elif e.msg.find("server-hardware") >= 0:
-            logging.error(
+            logging.exception(
                 'OneView Exception while looking for '
                 'server hardware: {}'.format(e)
             )
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            logging.error('Unexpected OneView Exception: {}'.format(e))
+            logging.exception('Unexpected OneView Exception: {}'.format(e))
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         # In case of error print exception and abort
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception('Unexpected error: {}'.format(e))
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

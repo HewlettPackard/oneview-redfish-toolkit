@@ -64,9 +64,9 @@ def get_computer_system_collection():
             mimetype="application/json")
     except OneViewRedfishResourceNotFoundError as e:
         # In case of error log exception and abort
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_404_NOT_FOUND, e.msg)
     except Exception as e:
         # In case of error print exception and abort
-        logging.error(e)
+        logging.exception(e)
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
