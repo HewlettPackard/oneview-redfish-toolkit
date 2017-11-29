@@ -93,11 +93,11 @@ def post_session():
         return response
 
     except HPOneViewException as e:
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_400_BAD_REQUEST)
     except OneViewRedfishError as e:
-        logging.error('Mapping error: {}'.format(e))
+        logging.exception('Mapping error: {}'.format(e))
         abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
     except Exception as e:
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

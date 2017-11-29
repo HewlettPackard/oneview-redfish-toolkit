@@ -23,6 +23,8 @@ from unittest import mock
 from flask import Flask
 from flask import Response
 from flask_api import status
+from hpOneView import HPOneViewException
+
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
@@ -116,3 +118,81 @@ class TestSession(unittest.TestCase):
         self.assertIn("/redfish/v1/SessionService/Sessions/1",
                       response.headers["Location"])
         self.assertEqual("sessionId", response.headers["X-Auth-Token"])
+
+    @mock.patch.object(session_file, 'OneViewClient')
+    def test_post_session_invalid_key(self, oneview_client_mockup):
+        """Tests post session with an invalid JSON key"""
+
+        # Create mock response
+        oneview_client = oneview_client_mockup()
+        oneview_client.connection.get_session_id.return_value = "sessionId"
+
+        # POST Session
+        response = self.app.post("/redfish/v1/SessionService/Sessions",
+                                 data=json.dumps(dict(
+                                     InvalidKey="administrator",
+                                     Password="password")),
+                                 content_type='application/json')
+
+        # Gets json from response
+        json_str = response.data.decode("utf-8")
+
+        with open(
+                'oneview_redfish_toolkit/mockups_errors/'
+                'InvalidJsonKey.json'
+        ) as f:
+            invalid_json_key = f.read()
+
+        self.assertEqual(
+            status.HTTP_400_BAD_REQUEST,
+            response.status_code
+        )
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual(json_str, invalid_json_key)
+
+    @mock.patch.object(session_file, 'OneViewClient')
+    def test_post_session_oneview_exception(self, oneview_client_mockup):
+        """Tests post session with HPOneViewException"""
+
+        oneview_client = oneview_client_mockup()
+
+        e = HPOneViewException({
+            'errorCode': 'HTTP_400_BAD_REQUEST',
+            'message': 'Invalid user information',
+        })
+
+        oneview_client.connection.get_session_id.side_effect = e
+
+        # POST Session
+        response = self.app.post("/redfish/v1/SessionService/Sessions",
+                                 data=json.dumps(dict(
+                                     UserName="administrator",
+                                     Password="password")),
+                                 content_type='application/json')
+
+        self.assertEqual(
+            status.HTTP_400_BAD_REQUEST,
+            response.status_code
+        )
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(session_file, 'OneViewClient')
+    def test_post_session_unexpected_error(self, oneview_client_mockup):
+        """Tests post session with an unexpected error"""
+
+        oneview_client = oneview_client_mockup()
+
+        oneview_client.connection.get_session_id.side_effect = Exception()
+
+        # POST Session
+        response = self.app.post("/redfish/v1/SessionService/Sessions",
+                                 data=json.dumps(dict(
+                                     UserName="administrator",
+                                     Password="password")),
+                                 content_type='application/json')
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code
+        )
+        self.assertEqual("application/json", response.mimetype)
