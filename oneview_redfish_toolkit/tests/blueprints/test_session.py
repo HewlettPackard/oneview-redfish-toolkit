@@ -65,6 +65,18 @@ class TestSession(unittest.TestCase):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 mimetype="application/json")
 
+        @self.app.errorhandler(status.HTTP_401_UNAUTHORIZED)
+        def unauthorized_error(error):
+            """Creates a Unauthorized Error response"""
+            redfish_error = RedfishError(
+                "GeneralError", error.description)
+
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_401_UNAUTHORIZED,
+                mimetype='application/json')
+
         @self.app.errorhandler(status.HTTP_400_BAD_REQUEST)
         def bad_request(error):
             """Creates a Bad Request Error response"""
@@ -139,7 +151,7 @@ class TestSession(unittest.TestCase):
 
         with open(
                 'oneview_redfish_toolkit/mockups_errors/'
-                'InvalidJsonKey.json'
+                'InvalidCredentialsJsonKey.json'
         ) as f:
             invalid_json_key = f.read()
 
@@ -157,7 +169,7 @@ class TestSession(unittest.TestCase):
         oneview_client = oneview_client_mockup()
 
         e = HPOneViewException({
-            'errorCode': 'HTTP_400_BAD_REQUEST',
+            'errorCode': 'HTTP_401_UNAUTHORIZED',
             'message': 'Invalid user information',
         })
 
@@ -171,7 +183,7 @@ class TestSession(unittest.TestCase):
                                  content_type='application/json')
 
         self.assertEqual(
-            status.HTTP_400_BAD_REQUEST,
+            status.HTTP_401_UNAUTHORIZED,
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)

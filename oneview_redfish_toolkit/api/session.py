@@ -24,7 +24,7 @@ class Session(RedfishJsonValidator):
         Populates self.redfish with Session response.
     """
 
-    SCHEMA_NAME = None
+    SCHEMA_NAME = 'Session'
 
     def __init__(self, username):
         """Session constructor
@@ -37,8 +37,10 @@ class Session(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Session.Session"
         self.redfish["@odata.id"] = "/redfish/v1/SessionService/Sessions/1"
-        self.redfish["odata.type"] = "#Session.v1_0_0.Session"
+        self.redfish["@odata.type"] = "#Session.v1_0_0.Session"
         self.redfish["Id"] = "1"
         self.redfish["Name"] = "User Session"
         self.redfish["Description"] = "User Session"
         self.redfish["UserName"] = username
+
+        self._validate()

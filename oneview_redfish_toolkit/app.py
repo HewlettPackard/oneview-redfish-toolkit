@@ -136,6 +136,18 @@ if __name__ == '__main__':
             status=status.HTTP_400_BAD_REQUEST,
             mimetype='application/json')
 
+    @app.errorhandler(status.HTTP_401_UNAUTHORIZED)
+    def unauthorized_error(error):
+        """Creates a Unauthorized Error response"""
+        redfish_error = RedfishError(
+            "GeneralError", error.description)
+
+        error_str = redfish_error.serialize()
+        return Response(
+            response=error_str,
+            status=status.HTTP_401_UNAUTHORIZED,
+            mimetype='application/json')
+
     @app.errorhandler(status.HTTP_404_NOT_FOUND)
     def not_found(error):
         """Creates a Not Found Error response"""

@@ -50,7 +50,7 @@ def post_session():
 
         Exception:
             HPOneViewException: Invalid username or password.
-            return abort(400)
+            return abort(401)
 
             OneViewRedfishError: When occur a credential key mapping error.
             return abort(400)
@@ -67,7 +67,8 @@ def post_session():
         except Exception:
             raise OneViewRedfishError(
                 {"errorCode": "INVALID_INFORMATION",
-                 "message": "Invalid JSON key"})
+                 "message": "Invalid JSON key. The JSON request body"
+                            " must have the keys UserName and Password"})
 
         config = dict()
         config["ip"] = util.ov_config["ip"]
@@ -93,8 +94,8 @@ def post_session():
         return response
 
     except HPOneViewException as e:
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_400_BAD_REQUEST)
+        logging.exception('Unauthorized error: {}'.format(e))
+        abort(status.HTTP_401_UNAUTHORIZED)
     except OneViewRedfishError as e:
         logging.exception('Mapping error: {}'.format(e))
         abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
