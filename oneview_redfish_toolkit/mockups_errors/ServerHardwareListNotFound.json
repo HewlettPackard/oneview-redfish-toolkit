@@ -1,7 +1,1 @@
-{
-    "error": {
-        "code": "Base.1.1.GeneralError",
-        "message": "Resource server-hardware-list not found",
-        "@Message.ExtendedInfo": []
-    }
-}
+{"error": {"@Message.ExtendedInfo": [], "code": "Base.1.1.GeneralError", "message": "Resource server-hardware-list not found"}}

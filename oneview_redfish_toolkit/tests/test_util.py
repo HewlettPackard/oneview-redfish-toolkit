@@ -103,10 +103,6 @@ class TestUtil(unittest.TestCase):
                         msg='Option {} not found in section {} in ini file {}'
                         .format('schema_dir', 'redfish',
                         self.config_file))
-        self.assertTrue(cfg.has_option('redfish', 'indent_json'),
-                        msg='Option {} not found in section {} in ini file {}'
-                        .format('indent_json', 'redfish',
-                        self.config_file))
         self.assertTrue(cfg.has_option('oneview_config', 'ip'),
                         msg='Option {} not found in section {} in ini file {}'
                         .format('ip', 'oneview_config', self.config_file))
