@@ -86,15 +86,15 @@ def get_chassis(uuid):
         return response
     except HPOneViewException as e:
         # In case of error log exception and abort
-        logging.error(e)
+        logging.exception(e)
         abort(status.HTTP_404_NOT_FOUND)
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_404_NOT_FOUND, "Chassis not found")
 
     except Exception as e:
         # In case of error log exception and abort
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

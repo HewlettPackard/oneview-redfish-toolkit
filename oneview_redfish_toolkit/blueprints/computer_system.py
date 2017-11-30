@@ -93,23 +93,23 @@ def get_computer_system(uuid):
                     "Server hardware not found")
 
         elif e.msg.find("server-hardware-types") >= 0:
-            logging.error(
+            logging.exception(
                 'OneView Exception while looking for server hardware type'
                 ' {}'.format(e)
             )
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
         elif e.msg.find("server-hardware") >= 0:
-            logging.error(
+            logging.exception(
                 'OneView Exception while looking for '
                 'server hardware: {}'.format(e)
             )
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
-            logging.error('Unexpected OneView Exception: {}'.format(e))
+            logging.exception('Unexpected OneView Exception: {}'.format(e))
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         # In case of error print exception and abort
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception('Unexpected error: {}'.format(e))
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
@@ -171,7 +171,7 @@ def change_power_state(uuid):
 
     except HPOneViewException as e:
         # In case of error log exception and abort
-        logging.error(e)
+        logging.exception(e)
 
         if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
             abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
@@ -180,7 +180,7 @@ def change_power_state(uuid):
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
-        logging.error('Mapping error: {}'.format(e))
+        logging.exception('Mapping error: {}'.format(e))
 
         if e.msg["errorCode"] == "NOT_IMPLEMENTED":
             abort(status.HTTP_501_NOT_IMPLEMENTED, e.msg['message'])
@@ -189,5 +189,5 @@ def change_power_state(uuid):
 
     except Exception as e:
         # In case of error log exception and abort
-        logging.error('Unexpected error: {}'.format(e))
+        logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

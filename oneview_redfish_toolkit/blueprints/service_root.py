@@ -56,11 +56,11 @@ def get_service_root():
             mimetype='application/json')
     except HPOneViewException as e:
         if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            logging.error("Resource not found: {}".format(e))
+            logging.exception("Resource not found: {}".format(e))
             abort(status.HTTP_404_NOT_FOUND, "Appliance not found")
         else:
-            logging.error("OneView Exception: {}".format(e))
+            logging.exception("OneView Exception: {}".format(e))
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
-        logging.error('ServiceRoot error: {}'.format(e))
+        logging.exception('ServiceRoot error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

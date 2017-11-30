@@ -44,5 +44,5 @@ def get_odata():
             status=200,
             mimetype='application/json')
     except Exception as e:
-        logging.error('Odata error: {}'.format(e))
+        logging.exception('Odata error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

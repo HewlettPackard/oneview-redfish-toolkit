@@ -47,5 +47,5 @@ def get_metadata():
             status=200,
             mimetype='text/xml')
     except Exception as e:
-        logging.error('metadata error: {}'.format(e))
+        logging.exception('metadata error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

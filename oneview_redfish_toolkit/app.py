@@ -68,8 +68,8 @@ if __name__ == '__main__':
     try:
         util.load_config('redfish.conf')
     except Exception as e:
-        logging.error('Failed to load app configuration')
-        logging.error(e)
+        logging.exception('Failed to load app configuration')
+        logging.exception(e)
         exit(1)
 
     # Flask application
@@ -186,7 +186,7 @@ if __name__ == '__main__':
     try:
         port = int(config["redfish"]["redfish_port"])
     except Exception:
-        logging.error("Port must be an integer number between 1 and 65536")
+        logging.exception("Port must be an integer number between 1 and 65536")
         exit(1)
     # Checking port range
     if port < 1 or port > 65536:
