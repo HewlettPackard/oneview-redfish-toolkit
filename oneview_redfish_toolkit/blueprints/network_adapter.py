@@ -65,7 +65,6 @@ def get_network_adapter(uuid, device_id):
 
         if (device_id_validation - 1) < 0 or (device_id_validation - 1) >= \
             len(server_hardware["portMap"]["deviceSlots"]):
-            logging.exception(server_hardware)
             raise OneViewRedfishResourceNotFoundError(
                 device_id, "Network adapter")
 

@@ -325,7 +325,7 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
         private_key.generate_key(OpenSSL.crypto.TYPE_DSA, key_length)
     else:
         message = "Invalid key_type"
-        logging.exception(message)
+        logging.error(message)
         raise errors.OneViewRedfishError(message)
 
     if not config.has_option("ssl-cert-defaults", "commonName"):

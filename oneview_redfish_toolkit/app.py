@@ -190,13 +190,13 @@ if __name__ == '__main__':
         exit(1)
     # Checking port range
     if port < 1 or port > 65536:
-        logging.exception("Port must be an integer number between 1 and 65536")
+        logging.error("Port must be an integer number between 1 and 65536")
         exit(1)
 
     ssl_type = config["ssl"]["SSLType"]
     # Check SSLType:
     if ssl_type not in ('disabled', 'adhoc', 'certs', 'self-signed'):
-        logging.exception(
+        logging.error(
             "Invalid SSL type: {}. Must be one of: disabled, adhoc, "
             "self-signed or certs".
             format(ssl_type))
@@ -221,7 +221,7 @@ if __name__ == '__main__':
                 logging.warning("Using existing self-signed certs")
 
         if ssl_cert_file == "" or ssl_key_file == "":
-            logging.exception(
+            logging.error(
                 "SSL type: is 'cert' but one of the files are missing on"
                 "the config file. SSLCertFile: {}, SSLKeyFile: {}.".
                 format(ssl_cert_file, ssl_key_file))
