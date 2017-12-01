@@ -50,8 +50,6 @@ class TestRedfishJsonValidator(unittest.TestCase):
         # the constructor
 
         redfish_json_validator = RedfishJsonValidator('ServiceRoot')
-        self.assertIsInstance(redfish_json_validator.schema_obj, dict)
         self.assertIsInstance(
             redfish_json_validator.redfish,
-            collections.OrderedDict
-        )
+            collections.OrderedDict)

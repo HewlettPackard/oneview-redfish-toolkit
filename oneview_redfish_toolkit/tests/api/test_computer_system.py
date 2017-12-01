@@ -15,6 +15,7 @@
 # under the License.
 
 import json
+from jsonschema.exceptions import ValidationError
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
@@ -64,6 +65,14 @@ class TestComputerSystem(unittest.TestCase):
             self.fail("Failed to instantiate ComputerSystem class."
                       " Error: {}".format(e))
         self.assertIsInstance(computer_system, ComputerSystem)
+
+    def test_failing_class_instantiation(self):
+        # Tests if validation fail
+        # The name must be a string
+        self.server_hardware["name"] = 1
+
+        with self.assertRaises(ValidationError):
+            ComputerSystem(self.server_hardware, self.server_hardware_types)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
