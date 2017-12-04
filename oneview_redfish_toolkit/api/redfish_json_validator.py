@@ -14,7 +14,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 import collections
 import json
 import jsonschema
@@ -43,36 +42,39 @@ class RedfishJsonValidator(object):
             the redfish json
 
             Args:
-                schema_obj: An object containing the redfish schema to be used
+                schema_name: The redfish schema name to be used
                             to validate the redfish json created
         """
 
-        if schema_name is None:
-            self.schema_obj = None
-        else:
-            self.schema_obj = util.schemas_dict[schema_name]
+        self.schema_name = schema_name
         self.redfish = collections.OrderedDict()
 
     def _validate(self):
         """Validates self.redfish against self.schema_obj
 
             Validates a redfish OrderedDict against the schema object passed
-            on the object creation
+            on the object creation.
 
             Returns:
                 None
 
             Exception:
-                raises an exception on validation failure
+                ValidationError: Raises this exception on validation failure.
+
+                OneViewRedfishError: Raises this exception if
+                schema is not found.
         """
-        if self.schema_obj is None:
-            raise OneViewRedfishError(
-                "Can't serialize without a schema object. Schema name was"
-                " set to None at object instanciation.")
+        schema_version = util.schemas[self.schema_name]
+        stored_schemas = util.stored_schemas
+
         try:
-            jsonschema.validate(self.redfish, self.schema_obj)
-        except Exception:
-            raise
+            schema_obj = stored_schemas[
+                "http://redfish.dmtf.org/schemas/v1/" + schema_version]
+        except KeyError:
+            raise OneViewRedfishError("{} not found".format(schema_version))
+
+        resolver = jsonschema.RefResolver('', schema_obj, store=stored_schemas)
+        jsonschema.validate(self.redfish, schema_obj, resolver=resolver)
 
     def serialize(self):
         """Generates a json string from redfish content
@@ -93,5 +95,4 @@ class RedfishJsonValidator(object):
             self.redfish,
             default=lambda o: o.__dict__,
             sort_keys=False,
-            indent=indent
-        )
+            indent=indent)

@@ -17,6 +17,7 @@
 # Python libs
 import collections
 import configparser
+import glob
 import json
 import logging
 import logging.config
@@ -102,22 +103,22 @@ def load_config(conf_file):
 
     # Setting schemas_dict
     schemas = dict(config.items('schemas'))
+    globals()['schemas'] = schemas
+
     registries = dict(config.items('registry'))
 
-    # Load schemas and connect to oneview
+    # Load schemas | Store schemas | Connect to OneView
     try:
-        schemas_dict = load_schemas(
-            config['redfish']['schema_dir'],
-            schemas
-        )
         ov_client = OneViewClient(ov_config)
-        globals()['schemas_dict'] = schemas_dict
+
         globals()['ov_client'] = ov_client
+
         registry_dict = load_registry(
             config['redfish']['registry_dir'],
-            registries
-            )
+            registries)
         globals()['registry_dict'] = registry_dict
+
+        store_schemas(config['redfish']['schema_dir'])
     except errors.OneViewRedfishResourceNotFoundError as e:
         raise errors.OneViewRedfishError(
             'Failed to load schemas or registries: {}'.format(e)
@@ -137,7 +138,7 @@ def load_conf(conf_file):
             conf_file: string with the conf file name
 
         Returns:
-            configparser object with conf_file configs
+            ConfigParser object with conf_file configs
 
         Exception:
             OneViewRedfishResourceNotFoundError:
@@ -157,53 +158,6 @@ def load_conf(conf_file):
     return config
 
 
-def load_schemas(schema_dir, schemas):
-    """Loads schemas
-
-        Loads all schemas in listed in schemas searching on schema_dir
-        directory
-
-        Args:
-            schema_dir: string with the directory to load schemas from
-            schemas: dict with schema name as key and schema file_name
-                as value. The key will also be the key in the returning dict
-
-        Returns:
-            OrderedDict: A dict containing ('SchemasName' : schema_obj) pairs
-
-        Exceptions:
-            OneviewRedfishResourceNotFoundError:
-                - if schema_dir is not found
-                - any of json files is not found
-            OneviewRedfishResourceNotAccessible:
-                - if schema_dir is can't be accessed
-    """
-
-    if os.path.isdir(schema_dir) is False:
-        raise errors.OneViewRedfishResourceNotFoundError(
-            schema_dir,
-            'Directory'
-        )
-    if os.access(schema_dir, os.R_OK) is False:
-        raise errors.OneViewRedFishResourceNotAccessibleError(
-            schema_dir,
-            'directory'
-        )
-
-    schema_dict = collections.OrderedDict()
-    for key in schemas:
-        try:
-            with open(schema_dir + '/' + schemas[key]) as f:
-                schema_dict[key] = json.load(f)
-        except Exception:
-            raise errors.OneViewRedfishResourceNotFoundError(
-                schemas[key],
-                'File'
-            )
-
-    return schema_dict
-
-
 def load_registry(registry_dir, registries):
     """Loads Registries
 
@@ -213,7 +167,7 @@ def load_registry(registry_dir, registries):
         Args:
             registry_dir: string with the directory to load registries from
             registries: dict with registry name as key and registry file_name
-                as value. The key will also be the key in the returning dict
+                as value. The key will also be the key in the returning dict.
 
         Returns:
             OrderedDict: A dict containing 'RegistryName': registry_obj
@@ -228,14 +182,10 @@ def load_registry(registry_dir, registries):
 
     if os.path.isdir(registry_dir) is False:
         raise errors.OneViewRedfishResourceNotFoundError(
-            registry_dir,
-            'Directory'
-        )
+            registry_dir, 'Directory')
     if os.access(registry_dir, os.R_OK) is False:
         raise errors.OneViewRedFishResourceNotAccessibleError(
-            registry_dir,
-            'directory'
-        )
+            registry_dir, 'directory')
 
     registries_dict = collections.OrderedDict()
     for key in registries:
@@ -244,11 +194,40 @@ def load_registry(registry_dir, registries):
                 registries_dict[key] = json.load(f)
         except Exception:
             raise errors.OneViewRedfishResourceNotFoundError(
-                registries[key],
-                'File'
-            )
+                registries[key], 'File')
 
     return registries_dict
+
+
+def store_schemas(schema_dir):
+    """Stores all DMTF JSON Schemas
+
+        Stores all schemas listed in schemas searching schema_dir directory.
+
+        Args:
+            schema_dir: String with the directory to load schemas from.
+
+        Returns:
+            Dictionary: A dict containing ('http://redfish.dmtf.org/schemas/
+                        v1/<schema_file_name>': schema_obj) pairs
+    """
+    schema_paths = glob.glob(schema_dir + '/*.json')
+
+    if not schema_paths:
+        raise errors.OneViewRedfishResourceNotFoundError(
+            "JSON Schemas", "File")
+
+    stored_schemas = dict()
+
+    for path in schema_paths:
+        with open(path) as schema_file:
+            json_schema = json.load(schema_file)
+
+        file_name = path.split('/')[-1]
+        stored_schemas["http://redfish.dmtf.org/schemas/v1/" + file_name] = \
+            json_schema
+
+    globals()['stored_schemas'] = stored_schemas
 
 
 def get_oneview_client():

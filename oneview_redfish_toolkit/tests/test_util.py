@@ -15,7 +15,7 @@
 # under the License.
 
 """
-    Tests for load_schemas function from util.py
+    Tests for store_schema and load_registry function from util.py
 """
 
 import collections
@@ -38,7 +38,12 @@ class TestUtil(unittest.TestCase):
                 - valid ini file
                 - have all expected sessions
                 - have all expected options
-            load_schema()
+                - checks if globals vars are not none
+
+            store_schema()
+                - invalid schema dir
+
+            load_registry()
                 - invalid schema dir
                 - valid schema dir invalid schemas dict
                 - valid schema dir and dict
@@ -47,16 +52,12 @@ class TestUtil(unittest.TestCase):
                 - connection recover
                 - connection renew
                 - connection failure
-
-
-            load_config()
-                - checkes if globals vars are not none
     """
 
     # load_conf() tests
     def setUp(self):
-        self.schema_dir = './oneview_redfish_toolkit/schemas'
-        self.registry_dir = './oneview_redfish_toolkit/registry'
+        self.schema_dir = './schemas'
+        self.registry_dir = './registry'
         self.config_file = './redfish.conf'
 
     def test_load_conf_invalid_config_file(self):
@@ -123,14 +124,12 @@ class TestUtil(unittest.TestCase):
                         .format('password', 'credentials',
                         self.config_file))
 
-    # load_schemas() tests
-    def test_load_schemas_invalid_schema_dir(self):
+    # store_schemas() tests
+    def test_store_schemas_invalid_schema_dir(self):
         # Tests if passing a non existing schema dir returns False
 
-        schemas = dict()
-
         try:
-            util.load_schemas('non-exist-schema-dir', schemas)
+            util.store_schemas('non-exist-schema-dir')
         except Exception as e:
             self.assertIsInstance(
                 e,
@@ -138,42 +137,14 @@ class TestUtil(unittest.TestCase):
                 msg="Unexpected exception: {}".format(e.msg)
             )
 
-    def test_load_schemas_valid_schema_dir_invalid_dict(self):
-        # Tests if passing a valid schema dir and an invalid schema dict
-        # returns False
-
-        schemas = dict()
-        schemas['failed'] = 'fail.json'
-
-        try:
-            util.load_schemas(self.schema_dir, schemas)
-        except Exception as e:
-            self.assertIsInstance(
-                e,
-                errors.OneViewRedfishResourceNotFoundError,
-                msg="Unexpected exception: {}".format(e.msg)
-            )
-
-    def test_load_schemas_valid_schema_dir_valid_dict(self):
-        # Tests loading schemas files from redfish.conf
-
-        cfg = util.load_conf(self.config_file)
-        schemas = dict(cfg.items('schemas'))
-
-        try:
-            schemas_dict = util.load_schemas(self.schema_dir, schemas)
-            self.assertIsInstance(schemas_dict, collections.OrderedDict)
-        except Exception as e:
-            self.fail('Failed to load schemas files: {}'.format(e.msg))
-
-    # load_schemas() tests
+    # load_registry() tests
     def test_load_registries_invalid_registry_dir(self):
         # Tests load_registry() passing a non existing registry dir
 
         schemas = dict()
 
         try:
-            util.load_schemas('non-exist-registry-dir', schemas)
+            util.load_registry('non-exist-registry-dir', schemas)
         except Exception as e:
             self.assertIsInstance(
                 e,
@@ -204,7 +175,7 @@ class TestUtil(unittest.TestCase):
         registries = dict(cfg.items('registry'))
 
         try:
-            registry_dict = util.load_schemas(self.registry_dir, registries)
+            registry_dict = util.load_registry(self.registry_dir, registries)
             self.assertIsInstance(registry_dict, collections.OrderedDict)
         except Exception as e:
             self.fail('Failed to load registries files: {}'.format(e.msg))
@@ -218,10 +189,8 @@ class TestUtil(unittest.TestCase):
         # After running loadconfig all variable should be set
         self.assertIsNotNone(util.config, msg='Failed do load ini')
         self.assertIsNotNone(util.ov_config, msg='Failed do create ov_config')
-        self.assertIsNotNone(util.schemas_dict, msg='Failed to load schemas')
         self.assertIsNotNone(
-            util.registry_dict,
-            msg='Failed to load registries')
+            util.registry_dict, msg='Failed to load registries')
         self.assertIsNotNone(util.ov_client, msg='Failed to connect to OV')
 
     @mock.patch.object(util, 'OneViewClient')
