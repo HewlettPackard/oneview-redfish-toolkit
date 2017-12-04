@@ -83,7 +83,7 @@ class TestOdata(unittest.TestCase):
         json_str = response.data.decode("utf-8")
 
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/Odata.json'
+            'oneview_redfish_toolkit/mockups/redfish/Odata.json'
         ) as f:
             odata_mockup = f.read()
 

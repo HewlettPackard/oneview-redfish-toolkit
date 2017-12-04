@@ -35,14 +35,14 @@ class TestNetworkInterfaceCollection(unittest.TestCase):
 
         # Loading ServerHardware mockup
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/'
+            'oneview_redfish_toolkit/mockups/oneview/'
             'ServerHardware.json'
         ) as f:
             self.server_hardware = json.load(f)
 
         # Loading NetworkInterfaceCollection mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/'
+            'oneview_redfish_toolkit/mockups/redfish/'
             'NetworkInterfaceCollection.json'
         ) as f:
             self.network_interface_collection_mockup = f.read()

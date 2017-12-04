@@ -89,44 +89,44 @@ class TestChassis(unittest.TestCase):
 
         # Loading Enclosure mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
+                'oneview_redfish_toolkit/mockups/oneview/Enclosure.json'
         ) as f:
             self.enclosure = json.load(f)
 
         # Loading EnclosureEnvironmentalConfig mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/'
+                'oneview_redfish_toolkit/mockups/oneview/'
                 'EnclosureEnvironmentalConfig.json'
         ) as f:
             self.enclosure_environment_configuration_mockup = json.load(f)
 
         # Loading EnclosureChassis mockup result
         with open(
-                'oneview_redfish_toolkit/mockups_redfish/EnclosureChassis.json'
+                'oneview_redfish_toolkit/mockups/redfish/EnclosureChassis.json'
         ) as f:
             self.enclosure_chassis_mockup = f.read()
 
         # Loading server_hardware mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             self.server_hardware = json.load(f)
 
         # Loading BladeChassis mockup result
         with open(
-                'oneview_redfish_toolkit/mockups_redfish/BladeChassis.json'
+                'oneview_redfish_toolkit/mockups/redfish/BladeChassis.json'
         ) as f:
             self.blade_chassis_mockup = f.read()
 
         # Loading Rack mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/Rack.json'
+                'oneview_redfish_toolkit/mockups/oneview/Rack.json'
         ) as f:
             self.rack = json.load(f)
 
         # Loading RackChassis mockup result
         with open(
-                'oneview_redfish_toolkit/mockups_redfish/RackChassis.json'
+                'oneview_redfish_toolkit/mockups/redfish/RackChassis.json'
         ) as f:
             self.rack_chassis_mockup = f.read()
 

@@ -50,7 +50,7 @@ class TestRedfishError(unittest.TestCase):
         json_str = redfish_error.serialize()
 
         with open(
-            'oneview_redfish_toolkit/mockups_errors/'
+            'oneview_redfish_toolkit/mockups/errors/'
             'RedfishErrorNoExtendedInfo.json'
         ) as f:
             redfish_error_mockup = f.read()
@@ -88,7 +88,7 @@ class TestRedfishError(unittest.TestCase):
         """Tests the add_extended_info with two aditional info"""
 
         with open(
-            'oneview_redfish_toolkit/mockups_errors/'
+            'oneview_redfish_toolkit/mockups/errors/'
             'RedfishErrorExtendedInfo.json'
         ) as f:
             redfish_error_mockup = f.read()

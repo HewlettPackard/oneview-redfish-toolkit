@@ -85,13 +85,13 @@ class TestNetworkDeviceFunctionCollection(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             server_hardware = json.load(f)
 
         # Loading NetworkDeviceFunctionCollection mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/'
+            'oneview_redfish_toolkit/mockups/redfish/'
             'NetworkDeviceFunctionCollection.json'
         ) as f:
             network_device_function_collection_mockup = f.read()

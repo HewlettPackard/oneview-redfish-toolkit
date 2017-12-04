@@ -35,13 +35,13 @@ class TestStorage(unittest.TestCase):
 
         # Loading Storage mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/Storage.json'
+            'oneview_redfish_toolkit/mockups/redfish/Storage.json'
         ) as f:
             self.storage_mockup = f.read()
 
         # Loading ServerHardwareTypes mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/ServerHardwareTypes.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardwareTypes.json'
         ) as f:
             self.server_hardware_types = json.load(f)
 
