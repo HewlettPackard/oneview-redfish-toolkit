@@ -83,13 +83,13 @@ class TestNetworkPort(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             server_hardware = json.load(f)
 
         # Loading NetworkPort mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/'
+            'oneview_redfish_toolkit/mockups/redfish/'
             'NetworkPort1-Ethernet.json'
         ) as f:
             network_port_mockup = f.read()
@@ -118,14 +118,14 @@ class TestNetworkPort(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/'
+            'oneview_redfish_toolkit/mockups/oneview/'
             'ServerHardwareFibreChannel.json'
         ) as f:
             server_hardware = json.load(f)
 
         # Loading NetworkPort mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/'
+            'oneview_redfish_toolkit/mockups/redfish/'
             'NetworkPort1-FibreChannel.json'
         ) as f:
             network_port_mockup = f.read()
@@ -155,7 +155,7 @@ class TestNetworkPort(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             server_hardware = json.load(f)
 

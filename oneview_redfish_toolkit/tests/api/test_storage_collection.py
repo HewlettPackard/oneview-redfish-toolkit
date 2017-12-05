@@ -33,7 +33,7 @@ class TestStorageCollection(unittest.TestCase):
 
         # Loading StorageCollection mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/StorageCollection.json'
+            'oneview_redfish_toolkit/mockups/redfish/StorageCollection.json'
         ) as f:
             self.storage_collection_mockup = f.read()
 

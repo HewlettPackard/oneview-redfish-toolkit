@@ -95,13 +95,13 @@ class TestManager(unittest.TestCase):
 
         # Loading Enclosure mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
+                'oneview_redfish_toolkit/mockups/oneview/Enclosure.json'
         ) as f:
             ov_enclosure = json.load(f)
 
         # Loading EnclosureManager mockup result
         with open(
-                'oneview_redfish_toolkit/mockups_redfish/EnclosureManager.json'
+                'oneview_redfish_toolkit/mockups/redfish/EnclosureManager.json'
         ) as f:
             rf_enclosure_manager = f.read()
 
@@ -181,13 +181,13 @@ class TestManager(unittest.TestCase):
 
         # Loading ServerHardware mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             server_hardware = json.load(f)
 
         # Loading BladeManager mockup result
         with open(
-                'oneview_redfish_toolkit/mockups_redfish/BladeManager.json'
+                'oneview_redfish_toolkit/mockups/redfish/BladeManager.json'
         ) as f:
             blade_manager_mockup = f.read()
 

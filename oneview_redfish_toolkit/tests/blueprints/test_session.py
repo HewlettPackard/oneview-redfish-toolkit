@@ -105,7 +105,7 @@ class TestSession(unittest.TestCase):
 
         # Loading Session mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/Session.json'
+            'oneview_redfish_toolkit/mockups/redfish/Session.json'
         ) as f:
             session_mockup = f.read()
 
@@ -150,7 +150,7 @@ class TestSession(unittest.TestCase):
         json_str = response.data.decode("utf-8")
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'InvalidCredentialsJsonKey.json'
         ) as f:
             invalid_json_key = f.read()

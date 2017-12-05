@@ -94,7 +94,7 @@ class TestChassisCollection(unittest.TestCase):
         client.server_hardware.get_all.side_effect = Exception()
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'Error500.json'
         ) as f:
             error_500 = f.read()
@@ -117,7 +117,7 @@ class TestChassisCollection(unittest.TestCase):
         client.server_hardware.get_all.return_value = []
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'ServerHardwareListNotFound.json'
         ) as f:
             server_hardware_list_not_found = f.read()
@@ -138,7 +138,7 @@ class TestChassisCollection(unittest.TestCase):
         client.enclosures.get_all.return_value = []
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'EnclosuresNotFound.json'
         ) as f:
             enclosures_not_found = f.read()
@@ -159,7 +159,7 @@ class TestChassisCollection(unittest.TestCase):
         client.racks.get_all.return_value = []
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'RacksNotFound.json'
         ) as f:
             racks_not_found = f.read()
@@ -178,27 +178,27 @@ class TestChassisCollection(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/'
+            'oneview_redfish_toolkit/mockups/oneview/'
             'ServerHardwares.json'
         ) as f:
             server_hardware_list = json.load(f)
 
         # Loading enclosures mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/'
+            'oneview_redfish_toolkit/mockups/oneview/'
             'Enclosures.json'
         ) as f:
             enclosures = json.load(f)
 
         # Loading racks mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/'
+            'oneview_redfish_toolkit/mockups/oneview/'
             'Racks.json'
         ) as f:
             racks = json.load(f)
 
         with open(
-                'oneview_redfish_toolkit/mockups_redfish/'
+                'oneview_redfish_toolkit/mockups/redfish/'
                 'ChassisCollection.json'
         ) as f:
             chassis_collection_mockup = f.read()

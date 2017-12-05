@@ -49,7 +49,7 @@ class TestOdata(unittest.TestCase):
         json_str = odata.serialize()
 
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/Odata.json'
+            'oneview_redfish_toolkit/mockups/redfish/Odata.json'
         ) as f:
             odata_mockup = f.read()
         self.assertEqual(odata_mockup, json_str)

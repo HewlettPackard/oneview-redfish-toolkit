@@ -91,7 +91,7 @@ class Metadata(unittest.TestCase):
         json_str = response.data.decode("utf-8")
 
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/Metadata.json'
+            'oneview_redfish_toolkit/mockups/redfish/Metadata.json'
         ) as f:
             metadata_mockup = f.read()
 

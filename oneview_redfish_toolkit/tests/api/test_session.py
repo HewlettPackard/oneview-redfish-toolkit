@@ -49,7 +49,7 @@ class TestSession(unittest.TestCase):
         json_str = session.serialize()
 
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/Session.json'
+            'oneview_redfish_toolkit/mockups/redfish/Session.json'
         ) as f:
             session_mockup = f.read()
         self.assertEqual(session_mockup, json_str)

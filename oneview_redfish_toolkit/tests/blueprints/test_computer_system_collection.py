@@ -85,7 +85,7 @@ class TestComputerSystemCollection(unittest.TestCase):
         oneview_client.server_hardware.get_all.return_value = []
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'ServerHardwareListNotFound.json'
         ) as f:
             server_hardware_list_not_found = f.read()
@@ -109,7 +109,7 @@ class TestComputerSystemCollection(unittest.TestCase):
         oneview_client.server_hardware.get_all.side_effect = Exception()
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'Error500.json'
         ) as f:
             error_500 = f.read()
@@ -133,12 +133,12 @@ class TestComputerSystemCollection(unittest.TestCase):
 
         # Read mock values
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/ServerHardwares.json'
+                'oneview_redfish_toolkit/mockups/oneview/ServerHardwares.json'
         ) as f:
             server_hardware_list = json.loads(f.read())
 
         with open(
-                'oneview_redfish_toolkit/mockups_redfish/'
+                'oneview_redfish_toolkit/mockups/redfish/'
                 'ComputerSystemCollection.json'
         ) as f:
             computer_system_collection_mockup = f.read()

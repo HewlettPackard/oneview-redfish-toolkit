@@ -93,7 +93,7 @@ class TestManagerCollection(unittest.TestCase):
         oneview_client.server_hardware.get_all.side_effect = Exception()
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'Error500.json'
         ) as f:
             error_500 = f.read()
@@ -116,7 +116,7 @@ class TestManagerCollection(unittest.TestCase):
         oneview_client.enclosures.get_all.return_value = []
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'EnclosuresNotFound.json'
         ) as f:
             enclosures_list_not_found = f.read()
@@ -135,13 +135,13 @@ class TestManagerCollection(unittest.TestCase):
 
         # Loading enclosures mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/'
+                'oneview_redfish_toolkit/mockups/oneview/'
                 'Enclosures.json'
         ) as f:
             enclosures = json.load(f)
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'ServerHardwareListNotFound.json'
         ) as f:
             server_hardware_list_not_found = f.read()
@@ -163,20 +163,20 @@ class TestManagerCollection(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/'
+            'oneview_redfish_toolkit/mockups/oneview/'
             'ServerHardwares.json'
         ) as f:
             server_hardware_list = json.load(f)
 
         # Loading enclosures mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/'
+            'oneview_redfish_toolkit/mockups/oneview/'
             'Enclosures.json'
         ) as f:
             enclosures = json.load(f)
 
         with open(
-                'oneview_redfish_toolkit/mockups_redfish/'
+                'oneview_redfish_toolkit/mockups/redfish/'
                 'ManagerCollection.json'
         ) as f:
             manager_collection_mockup = f.read()

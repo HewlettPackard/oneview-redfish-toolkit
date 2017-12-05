@@ -37,19 +37,19 @@ class TestComputerSystem(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             self.server_hardware = json.load(f)
 
         # Loading ServerHardwareTypes mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/ServerHardwareTypes.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardwareTypes.json'
         ) as f:
             self.server_hardware_types = json.load(f)
 
         # Loading ComputerSystem mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/ComputerSystem.json'
+            'oneview_redfish_toolkit/mockups/redfish/ComputerSystem.json'
         ) as f:
             self.computer_system_mockup = f.read()
 

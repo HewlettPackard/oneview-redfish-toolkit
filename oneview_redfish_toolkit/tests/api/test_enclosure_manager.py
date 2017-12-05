@@ -35,13 +35,13 @@ class TestEnclosureManager(unittest.TestCase):
 
         # Loading enclosure mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/Enclosure.json'
+            'oneview_redfish_toolkit/mockups/oneview/Enclosure.json'
         ) as f:
             self.enclosure = json.load(f)
 
         # Loading enclosure_manager_mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/EnclosureManager.json'
+            'oneview_redfish_toolkit/mockups/redfish/EnclosureManager.json'
         ) as f:
             self.enclosure_manager_mockup = f.read()
 

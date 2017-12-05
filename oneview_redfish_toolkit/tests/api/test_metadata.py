@@ -53,7 +53,7 @@ class TestOdata(unittest.TestCase):
         json_str = metadata.serialize()
 
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/Metadata.json'
+            'oneview_redfish_toolkit/mockups/redfish/Metadata.json'
         ) as f:
             metadata_mockup = f.read()
         self.assertEqual(metadata_mockup, json_str)

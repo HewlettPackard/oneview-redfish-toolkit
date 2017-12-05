@@ -231,19 +231,19 @@ class TestComputerSystem(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             server_hardware = json.load(f)
 
         # Loading ServerHardwareTypes mockup value
         with open(
-            'oneview_redfish_toolkit/mockups_oneview/ServerHardwareTypes.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardwareTypes.json'
         ) as f:
             server_hardware_types = json.load(f)
 
         # Loading ComputerSystem mockup result
         with open(
-            'oneview_redfish_toolkit/mockups_redfish/ComputerSystem.json'
+            'oneview_redfish_toolkit/mockups/redfish/ComputerSystem.json'
         ) as f:
             computer_system_mockup = f.read()
 
@@ -284,13 +284,13 @@ class TestComputerSystem(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             sh_dict = json.load(f)
 
         # Loading ServerHardwareTypes mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/'
+                'oneview_redfish_toolkit/mockups/oneview/'
                 'ServerHardwareTypes.json'
         ) as f:
             sht_dict = json.load(f)
@@ -325,13 +325,13 @@ class TestComputerSystem(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             sh_dict = json.load(f)
 
         # Loading ServerHardwareTypes mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/'
+                'oneview_redfish_toolkit/mockups/oneview/'
                 'ServerHardwareTypes.json'
         ) as f:
             sht_dict = json.load(f)
@@ -398,13 +398,13 @@ class TestComputerSystem(unittest.TestCase):
 
         # Loading server_hardware mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/ServerHardware.json'
+                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             sh_dict = json.load(f)
 
         # Loading ServerHardwareTypes mockup value
         with open(
-                'oneview_redfish_toolkit/mockups_oneview/'
+                'oneview_redfish_toolkit/mockups/oneview/'
                 'ServerHardwareTypes.json'
         ) as f:
             sht_dict = json.load(f)
@@ -465,7 +465,7 @@ class TestComputerSystem(unittest.TestCase):
         json_str = response.data.decode("utf-8")
 
         with open(
-                'oneview_redfish_toolkit/mockups_errors/'
+                'oneview_redfish_toolkit/mockups/errors/'
                 'InvalidJsonKey.json'
         ) as f:
             invalide_json_key = f.read()
