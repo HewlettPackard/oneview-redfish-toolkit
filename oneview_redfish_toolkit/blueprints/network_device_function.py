@@ -20,6 +20,7 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
+from flask import request
 from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
@@ -62,7 +63,13 @@ def get_network_device_function(uuid, device_id, device_function_id):
 
     """
     try:
-        oneview_client = util.get_oneview_client()
+        if util.config["redfish"]["authentication_mode"] == "session":
+            # Revocer session id
+            session_id = request.headers.get('x-auth-token')
+            # Recover OV connection
+            oneview_client = util.get_oneview_client(session_id)
+        else:
+            oneview_client = util.get_oneview_client()
 
         # Initial validation of device_id
         device_id_validation = int(device_id)

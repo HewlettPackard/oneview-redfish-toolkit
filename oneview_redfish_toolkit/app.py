@@ -73,6 +73,13 @@ if __name__ == '__main__':
         logging.exception(e)
         exit(1)
 
+    # Check auth mode
+    if util.config["redfish"]["authentication_mode"] not in \
+        ["conf", "session"]:
+        logging.error(
+            "Invalid authentication_mode. Please check your conf"
+            " file. Valid values are 'conf' or 'session'")
+
     # Flask application
     app = Flask(__name__)
 
@@ -99,6 +106,28 @@ if __name__ == '__main__':
     app.register_blueprint(network_adapter)
     app.register_blueprint(network_port)
     app.register_blueprint(session)
+
+    @app.before_request
+    def check_authentication():
+        # If authentication_mode = conf we do nothing
+        auth_mode = util.config["redfish"]["authentication_mode"]
+        if auth_mode == "conf":
+            return
+        else:
+            # ServiceRoot don't need auth
+            if request.path in {
+                "/redfish/v1", "/redfish/v1/", "/redfish", "/redfish/"}:
+                return
+            # If authenticating also we do nothing
+            if request.path == "/redfish/v1/SessionService/Sessions" and \
+                request.method == "POST":
+                return
+            # Any other path we demand auth
+            x_auth_token = request.headers.get('x-auth-token')
+            if not x_auth_token:
+                abort(
+                    status.HTTP_400_BAD_REQUEST,
+                    "x-auth-token header not found")
 
     @app.before_request
     def has_odata_version_header():

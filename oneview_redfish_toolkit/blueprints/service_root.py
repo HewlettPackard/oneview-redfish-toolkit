@@ -41,7 +41,7 @@ def get_service_root():
 
     try:
         # Recover OV connection
-        oneview_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client(None, True)
 
         # Gets serverhardware for given UUID
         appliance_node_information = \

@@ -16,6 +16,7 @@
 
 from flask import abort
 from flask import Blueprint
+from flask import request
 from flask import Response
 from flask_api import status
 
@@ -42,8 +43,14 @@ def get_computer_system_collection():
                 JSON: JSON with ComputerSystemCollection.
     """
     try:
-        # Recover OV connection
-        oneview_client = util.get_oneview_client()
+        if util.config["redfish"]["authentication_mode"] == "session":
+            # Revocer session id
+            session_id = request.headers.get('x-auth-token')
+            # Recover OV connection using token
+            oneview_client = util.get_oneview_client(session_id)
+        else:
+            # Rocver OV connection using credentials from config file
+            oneview_client = util.get_oneview_client()
 
         # Gets all server hardware
         server_hardware_list = oneview_client.server_hardware.get_all()

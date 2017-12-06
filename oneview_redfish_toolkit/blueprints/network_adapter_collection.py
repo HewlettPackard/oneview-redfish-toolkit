@@ -16,6 +16,7 @@
 
 from flask import abort
 from flask import Blueprint
+from flask import request
 from flask import Response
 from flask_api import status
 
@@ -39,7 +40,13 @@ def get_network_adapter_collection(uuid):
     Return NetworkAdapterCollection Redfish JSON.
     """
     try:
-        oneview_client = util.get_oneview_client()
+        if util.config["redfish"]["authentication_mode"] == "session":
+            # Revocer session id
+            session_id = request.headers.get('x-auth-token')
+            # Recover OV connection
+            oneview_client = util.get_oneview_client(session_id)
+        else:
+            oneview_client = util.get_oneview_client()
 
         server_hardware = oneview_client.server_hardware.get(uuid)
 
