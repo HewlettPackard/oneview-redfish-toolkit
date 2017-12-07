@@ -243,7 +243,7 @@ def get_oneview_client(session_id=None, is_service_root=False):
             authentication_mode is session. Defaults to None.
 
             is_service_root: Informs if who is calling this function is the
-            ServiceRoot blueprint. If true, even if authenticatino_mode is
+            ServiceRoot blueprint. If true, even if authentication_mode is
             set to session it will use the information on the conf file to
             return a connection.  This is a workaround to allow ServiceRoot
             to retrieve the appliance UUID before user logs in.

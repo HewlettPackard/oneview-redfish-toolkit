@@ -41,7 +41,7 @@ def get_network_adapter_collection(uuid):
     """
     try:
         if util.config["redfish"]["authentication_mode"] == "session":
-            # Revocer session id
+            # Recover session id
             session_id = request.headers.get('x-auth-token')
             # Recover OV connection
             oneview_client = util.get_oneview_client(session_id)

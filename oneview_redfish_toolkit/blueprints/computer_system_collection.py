@@ -44,7 +44,7 @@ def get_computer_system_collection():
     """
     try:
         if util.config["redfish"]["authentication_mode"] == "session":
-            # Revocer session id
+            # Recover session id
             session_id = request.headers.get('x-auth-token')
             # Recover OV connection using token
             oneview_client = util.get_oneview_client(session_id)
