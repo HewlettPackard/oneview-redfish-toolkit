@@ -47,7 +47,7 @@ class TestNetworkDeviceFunction(unittest.TestCase):
             'oneview_redfish_toolkit/mockups/redfish/'
             'NetworkDeviceFunction1_1_a.json'
         ) as f:
-            self.network_device_function_mockup = f.read()
+            self.network_device_function_mockup = json.load(f)
 
         self.device_id = "3"
         self.device_function_id = "1_1_a"
@@ -82,11 +82,11 @@ class TestNetworkDeviceFunction(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = network_device_function.serialize()
+            result = json.loads(network_device_function.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.network_device_function_mockup, json_str)
+        self.assertEqual(self.network_device_function_mockup, result)
 
     def test_invalid_device_function_id(self):
         # Tests if class with an invalid device_function_id

@@ -51,7 +51,7 @@ class TestRackChassis(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/RackChassis.json'
         ) as f:
-            self.rack_chassis_mockup = f.read()
+            self.rack_chassis_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
@@ -73,8 +73,8 @@ class TestRackChassis(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = rack_chassis.serialize()
+            result = json.loads(rack_chassis.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.rack_chassis_mockup, json_str)
+        self.assertEqual(self.rack_chassis_mockup, result)

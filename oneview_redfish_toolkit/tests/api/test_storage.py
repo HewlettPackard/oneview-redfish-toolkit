@@ -37,7 +37,7 @@ class TestStorage(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Storage.json'
         ) as f:
-            self.storage_mockup = f.read()
+            self.storage_mockup = json.load(f)
 
         # Loading ServerHardwareTypes mockup value
         with open(
@@ -67,8 +67,8 @@ class TestStorage(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = storage.serialize()
+            result = json.loads(storage.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.storage_mockup, json_str)
+        self.assertEqual(self.storage_mockup, result)

@@ -43,7 +43,7 @@ class TestBladeManager(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/BladeManager.json'
         ) as f:
-            self.blade_manager_mockup = f.read()
+            self.blade_manager_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
@@ -65,8 +65,8 @@ class TestBladeManager(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = blade_manager.serialize()
+            result = json.loads(blade_manager.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.blade_manager_mockup, json_str)
+        self.assertEqual(self.blade_manager_mockup, result)

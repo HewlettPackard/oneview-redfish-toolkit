@@ -45,7 +45,7 @@ class TestNetworkInterface(unittest.TestCase):
             'oneview_redfish_toolkit/mockups/redfish/'
             'NetworkInterface3.json'
         ) as f:
-            self.network_interface_mockup = f.read()
+            self.network_interface_mockup = json.load(f)
 
         self.device_id = "3"
 
@@ -73,8 +73,8 @@ class TestNetworkInterface(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = network_interface.serialize()
+            result = json.loads(network_interface.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.network_interface_mockup, json_str)
+        self.assertEqual(self.network_interface_mockup, result)

@@ -50,7 +50,7 @@ class TestComputerSystemCollection(unittest.TestCase):
             'oneview_redfish_toolkit/mockups/redfish/'
             'ComputerSystemCollection.json'
         ) as f:
-            self.computer_system_collection_mockup = f.read()
+            self.computer_system_collection_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
@@ -79,8 +79,8 @@ class TestComputerSystemCollection(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = computer_system_collection.serialize()
+            result = json.loads(computer_system_collection.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.computer_system_collection_mockup, json_str)
+        self.assertEqual(self.computer_system_collection_mockup, result)

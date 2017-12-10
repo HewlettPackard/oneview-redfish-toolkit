@@ -47,7 +47,7 @@ class TestNetworkPort(unittest.TestCase):
             'oneview_redfish_toolkit/mockups/redfish/'
             'NetworkPort1-Ethernet.json'
         ) as f:
-            self.network_port_mockup = f.read()
+            self.network_port_mockup = json.load(f)
 
         self.device_id = "3"
         self.port_id = "1"
@@ -82,11 +82,11 @@ class TestNetworkPort(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = network_port.serialize()
+            result = json.loads(network_port.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.network_port_mockup, json_str)
+        self.assertEqual(self.network_port_mockup, result)
 
     def test_invalid_port_id(self):
         # Tests if class with an invalid port_id

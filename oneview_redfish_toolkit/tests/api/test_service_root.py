@@ -18,6 +18,7 @@
     Tests for redfish_json_validator.py
 """
 
+import json
 import unittest
 from unittest import mock
 
@@ -48,10 +49,10 @@ class TestServiceRoot(unittest.TestCase):
         """Tests the serialize function result against known result"""
 
         service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
-        json_str = service_root.serialize()
+        result = json.loads(service_root.serialize())
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
         ) as f:
-            service_root_mockup = f.read()
-        self.assertEqual(service_root_mockup, json_str)
+            service_root_mockup = json.load(f)
+        self.assertEqual(service_root_mockup, result)
