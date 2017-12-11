@@ -87,10 +87,10 @@ def get_network_device_function(uuid, device_id, device_function_id):
         logging.exception(
             "Failed to convert device id {} to integer.".format(device_id))
         abort(status.HTTP_404_NOT_FOUND, "Network interface not found")
-    except OneViewRedfishError as e:
+    except OneViewRedfishResourceNotFoundError as e:
         logging.exception(e.msg)
         abort(status.HTTP_404_NOT_FOUND, e.msg)
-    except OneViewRedfishResourceNotFoundError as e:
+    except OneViewRedfishError as e:
         logging.exception(e.msg)
         abort(status.HTTP_404_NOT_FOUND, e.msg)
     except HPOneViewException as e:

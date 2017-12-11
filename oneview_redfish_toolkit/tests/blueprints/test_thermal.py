@@ -97,7 +97,7 @@ class TestChassis(unittest.TestCase):
         ) as f:
             server_hardware_utilization = json.load(f)
 
-        # Loading BladeChassisTermal mockup result
+        # Loading BladeChassisThermal mockup result
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
                 'BladeChassisThermal.json'

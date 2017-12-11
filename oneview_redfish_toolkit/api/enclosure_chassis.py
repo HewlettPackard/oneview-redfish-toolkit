@@ -69,7 +69,7 @@ class EnclosureChassis(Chassis):
 
             Args:
                 oneview_device_bays: list of dicts containing information
-                about devices and URI to OneView server hardwares.
+                about devices and URI to OneView server hardware.
         """
 
         computer_systems_uuid = self. \
@@ -85,11 +85,11 @@ class EnclosureChassis(Chassis):
         """Return Computer Systems UUID
 
             Iterate over oneview_device_bays and filter by only UUIDs
-            related to server hardwares.
+            related to server hardware.
 
             Args:
                 oneview_device_bays: list of dicts containing information
-                about devices and URI of OneView server hardwares.
+                about devices and URI of OneView server hardware.
 
             Returns:
                 list: List of ComputerSystem UUID.

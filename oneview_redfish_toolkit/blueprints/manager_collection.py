@@ -42,7 +42,7 @@ def get_manager_collection():
 
         Returns:
             JSON: Redfish json with ManagerCollection.
-            When Server hardwares or enclosures is not found
+            When Server hardware or enclosures is not found
             calls abort(404).
 
         Exceptions:
