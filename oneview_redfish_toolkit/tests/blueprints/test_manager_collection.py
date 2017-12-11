@@ -96,17 +96,17 @@ class TestManagerCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/errors/'
                 'Error500.json'
         ) as f:
-            error_500 = f.read()
+            error_500 = json.load(f)
 
         response = self.app.get("/redfish/v1/Managers/")
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(error_500, json_str)
+        self.assertEqual(error_500, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_enclosures_empty(self, get_oneview_client_mockup):
@@ -119,13 +119,13 @@ class TestManagerCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/errors/'
                 'EnclosuresNotFound.json'
         ) as f:
-            enclosures_list_not_found = f.read()
+            enclosures_list_not_found = json.load(f)
         response = self.app.get("/redfish/v1/Managers/")
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(enclosures_list_not_found, json_str)
+        self.assertEqual(enclosures_list_not_found, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_server_hardware_list_empty(self, get_oneview_client_mockup):
@@ -144,18 +144,18 @@ class TestManagerCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/errors/'
                 'ServerHardwareListNotFound.json'
         ) as f:
-            server_hardware_list_not_found = f.read()
+            server_hardware_list_not_found = json.load(f)
 
         oneview_client.enclosures.get_all.return_value = enclosures
         oneview_client.server_hardware.get_all.return_value = []
 
         response = self.app.get("/redfish/v1/Managers/")
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(server_hardware_list_not_found, json_str)
+        self.assertEqual(server_hardware_list_not_found, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_manager_collection(self, get_oneview_client_mockup):
@@ -179,7 +179,7 @@ class TestManagerCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/redfish/'
                 'ManagerCollection.json'
         ) as f:
-            manager_collection_mockup = f.read()
+            manager_collection_mockup = json.load(f)
 
         # Create mock response
         oneview_client = get_oneview_client_mockup()
@@ -191,9 +191,9 @@ class TestManagerCollection(unittest.TestCase):
         response = self.app.get("/redfish/v1/Managers/")
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(manager_collection_mockup, json_str)
+        self.assertEqual(manager_collection_mockup, result)

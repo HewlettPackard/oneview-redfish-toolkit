@@ -93,7 +93,7 @@ class TestNetworkInterface(unittest.TestCase):
             'oneview_redfish_toolkit/mockups/redfish/'
             'NetworkInterface3.json'
         ) as f:
-            network_interface_mockup = f.read()
+            network_interface_mockup = json.load(f)
 
         # Create mock response
         oneview_client = get_oneview_client_mockup()
@@ -106,12 +106,12 @@ class TestNetworkInterface(unittest.TestCase):
         )
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(network_interface_mockup, json_str)
+        self.assertEqual(network_interface_mockup, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_network_interface_invalid_id(self, get_oneview_client_mockup):

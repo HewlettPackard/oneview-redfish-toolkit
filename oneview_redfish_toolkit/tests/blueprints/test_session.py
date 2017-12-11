@@ -107,7 +107,7 @@ class TestSession(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Session.json'
         ) as f:
-            session_mockup = f.read()
+            session_mockup = json.load(f)
 
         # Create mock response
         oneview_client = oneview_client_mockup()
@@ -121,12 +121,12 @@ class TestSession(unittest.TestCase):
                                  content_type='application/json')
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(session_mockup, json_str)
+        self.assertEqual(session_mockup, result)
         self.assertIn("/redfish/v1/SessionService/Sessions/1",
                       response.headers["Location"])
         self.assertEqual("sessionId", response.headers["X-Auth-Token"])
@@ -147,20 +147,20 @@ class TestSession(unittest.TestCase):
                                  content_type='application/json')
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
                 'InvalidCredentialsJsonKey.json'
         ) as f:
-            invalid_json_key = f.read()
+            invalid_json_key = json.load(f)
 
         self.assertEqual(
             status.HTTP_400_BAD_REQUEST,
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(json_str, invalid_json_key)
+        self.assertEqual(result, invalid_json_key)
 
     @mock.patch.object(session_file, 'OneViewClient')
     def test_post_session_oneview_exception(self, oneview_client_mockup):

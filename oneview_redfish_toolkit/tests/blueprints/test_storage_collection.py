@@ -92,7 +92,7 @@ class TestStorageCollection(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/StorageCollection.json'
         ) as f:
-            storage_collection_mockup = f.read()
+            storage_collection_mockup = json.load(f)
 
         # Create mock response
         oneview_client = get_oneview_client_mockup()
@@ -104,12 +104,12 @@ class TestStorageCollection(unittest.TestCase):
         )
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(storage_collection_mockup, json_str)
+        self.assertEqual(storage_collection_mockup, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_storage_collection_sh_not_found(

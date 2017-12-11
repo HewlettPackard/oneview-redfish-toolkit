@@ -97,17 +97,17 @@ class TestChassisCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/errors/'
                 'Error500.json'
         ) as f:
-            error_500 = f.read()
+            error_500 = json.load(f)
 
         response = self.app.get("/redfish/v1/Chassis/")
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(error_500, json_str)
+        self.assertEqual(error_500, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_server_hardware_list_empty(self, get_oneview_client_mockup):
@@ -120,15 +120,15 @@ class TestChassisCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/errors/'
                 'ServerHardwareListNotFound.json'
         ) as f:
-            server_hardware_list_not_found = f.read()
+            server_hardware_list_not_found = json.load(f)
 
         response = self.app.get("/redfish/v1/Chassis/")
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(server_hardware_list_not_found, json_str)
+        self.assertEqual(server_hardware_list_not_found, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_enclosures_empty(self, get_oneview_client_mockup):
@@ -141,15 +141,15 @@ class TestChassisCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/errors/'
                 'EnclosuresNotFound.json'
         ) as f:
-            enclosures_not_found = f.read()
+            enclosures_not_found = json.load(f)
 
         response = self.app.get("/redfish/v1/Chassis/")
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(enclosures_not_found, json_str)
+        self.assertEqual(enclosures_not_found, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_racks_empty(self, get_oneview_client_mockup):
@@ -162,15 +162,15 @@ class TestChassisCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/errors/'
                 'RacksNotFound.json'
         ) as f:
-            racks_not_found = f.read()
+            racks_not_found = json.load(f)
 
         response = self.app.get("/redfish/v1/Chassis/")
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(racks_not_found, json_str)
+        self.assertEqual(racks_not_found, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_chassis_collection(self, get_oneview_client_mockup):
@@ -201,7 +201,7 @@ class TestChassisCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/redfish/'
                 'ChassisCollection.json'
         ) as f:
-            chassis_collection_mockup = f.read()
+            chassis_collection_mockup = json.load(f)
 
         # Create mock response
         client = get_oneview_client_mockup()
@@ -213,9 +213,9 @@ class TestChassisCollection(unittest.TestCase):
         response = self.app.get("/redfish/v1/Chassis/")
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(chassis_collection_mockup, json_str)
+        self.assertEqual(chassis_collection_mockup, result)

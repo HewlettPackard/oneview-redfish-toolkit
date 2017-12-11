@@ -103,7 +103,7 @@ class TestManager(unittest.TestCase):
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/EnclosureManager.json'
         ) as f:
-            rf_enclosure_manager = f.read()
+            rf_enclosure_manager = json.load(f)
 
         oneview_client = get_oneview_client_mockup()
 
@@ -118,12 +118,12 @@ class TestManager(unittest.TestCase):
             "/redfish/v1/Managers/0000000000A66101"
         )
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(rf_enclosure_manager, json_str)
+        self.assertEqual(rf_enclosure_manager, result)
         self.assertEqual(
             "{}{}".format("W/", ov_enclosure["eTag"]),
             response.headers["ETag"])
@@ -189,7 +189,7 @@ class TestManager(unittest.TestCase):
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/BladeManager.json'
         ) as f:
-            blade_manager_mockup = f.read()
+            blade_manager_mockup = json.load(f)
 
         oneview_client = get_oneview_client_mockup()
 
@@ -204,12 +204,12 @@ class TestManager(unittest.TestCase):
             "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"
         )
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(blade_manager_mockup, json_str)
+        self.assertEqual(blade_manager_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", server_hardware["eTag"]),
             response.headers["ETag"])

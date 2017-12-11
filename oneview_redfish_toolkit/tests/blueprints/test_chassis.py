@@ -104,7 +104,7 @@ class TestChassis(unittest.TestCase):
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/EnclosureChassis.json'
         ) as f:
-            self.enclosure_chassis_mockup = f.read()
+            self.enclosure_chassis_mockup = json.load(f)
 
         # Loading server_hardware mockup value
         with open(
@@ -116,7 +116,7 @@ class TestChassis(unittest.TestCase):
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/BladeChassis.json'
         ) as f:
-            self.blade_chassis_mockup = f.read()
+            self.blade_chassis_mockup = json.load(f)
 
         # Loading Rack mockup value
         with open(
@@ -128,7 +128,7 @@ class TestChassis(unittest.TestCase):
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/RackChassis.json'
         ) as f:
-            self.rack_chassis_mockup = f.read()
+            self.rack_chassis_mockup = json.load(f)
 
     #############
     # Enclosure #
@@ -151,12 +151,12 @@ class TestChassis(unittest.TestCase):
             "/redfish/v1/Chassis/0000000000A66101"
         )
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.enclosure_chassis_mockup, json_str)
+        self.assertEqual(self.enclosure_chassis_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", self.enclosure["eTag"]),
             response.headers["ETag"])
@@ -272,12 +272,12 @@ class TestChassis(unittest.TestCase):
             "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
         )
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.blade_chassis_mockup, json_str)
+        self.assertEqual(self.blade_chassis_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", self.server_hardware["eTag"]),
             response.headers["ETag"])
@@ -344,12 +344,12 @@ class TestChassis(unittest.TestCase):
             "/redfish/v1/Chassis/2AB100LMNB"
         )
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.rack_chassis_mockup, json_str)
+        self.assertEqual(self.rack_chassis_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", self.rack["eTag"]),
             response.headers["ETag"])

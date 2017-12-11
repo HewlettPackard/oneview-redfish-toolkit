@@ -245,7 +245,7 @@ class TestComputerSystem(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/ComputerSystem.json'
         ) as f:
-            computer_system_mockup = f.read()
+            computer_system_mockup = json.load(f)
 
         # Create mock response
         oneview_client = get_oneview_client_mockup()
@@ -259,12 +259,12 @@ class TestComputerSystem(unittest.TestCase):
         )
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(computer_system_mockup, json_str)
+        self.assertEqual(computer_system_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", server_hardware["eTag"]),
             response.headers["ETag"])
@@ -462,17 +462,17 @@ class TestComputerSystem(unittest.TestCase):
                                  data=json.dumps(dict(INVALID_KEY="On")),
                                  content_type='application/json')
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
                 'InvalidJsonKey.json'
         ) as f:
-            invalide_json_key = f.read()
+            invalid_json_key = json.load(f)
 
         self.assertEqual(
             status.HTTP_400_BAD_REQUEST,
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(json_str, invalide_json_key)
+        self.assertEqual(result, invalid_json_key)

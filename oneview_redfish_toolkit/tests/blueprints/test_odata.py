@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import json
 import unittest
 from unittest import mock
 
@@ -80,13 +81,13 @@ class TestOdata(unittest.TestCase):
 
         response = self.app.get("/redfish/v1/odata")
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Odata.json'
         ) as f:
-            odata_mockup = f.read()
+            odata_mockup = json.load(f)
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(odata_mockup, json_str)
+        self.assertEqual(odata_mockup, result)

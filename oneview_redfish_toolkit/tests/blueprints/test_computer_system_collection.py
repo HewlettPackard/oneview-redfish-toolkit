@@ -13,7 +13,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 import json
 import unittest
 from unittest import mock
@@ -88,16 +87,16 @@ class TestComputerSystemCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/errors/'
                 'ServerHardwareListNotFound.json'
         ) as f:
-            server_hardware_list_not_found = f.read()
+            server_hardware_list_not_found = json.load(f)
 
         response = self.app.get("/redfish/v1/Systems/")
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(server_hardware_list_not_found, json_str)
+        self.assertEqual(server_hardware_list_not_found, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_computer_system_collection_fail(
@@ -112,18 +111,18 @@ class TestComputerSystemCollection(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/errors/'
                 'Error500.json'
         ) as f:
-            error_500 = f.read()
+            error_500 = json.load(f)
 
         response = self.app.get("/redfish/v1/Systems/")
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(error_500, json_str)
+        self.assertEqual(error_500, result)
 
     @mock.patch.object(util, 'get_oneview_client')
     def test_get_computer_system_collection(
@@ -135,13 +134,13 @@ class TestComputerSystemCollection(unittest.TestCase):
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/ServerHardwares.json'
         ) as f:
-            server_hardware_list = json.loads(f.read())
+            server_hardware_list = json.load(f)
 
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
                 'ComputerSystemCollection.json'
         ) as f:
-            computer_system_collection_mockup = f.read()
+            computer_system_collection_mockup = json.load(f)
 
         # Create mock response
         oneview_client = get_oneview_client_mockup()
@@ -152,9 +151,10 @@ class TestComputerSystemCollection(unittest.TestCase):
         response = self.app.get("/redfish/v1/Systems/")
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(computer_system_collection_mockup, json_str)
+        self.assertEqual(computer_system_collection_mockup, result)
