@@ -43,15 +43,8 @@ def get_computer_system_collection():
                 JSON: JSON with ComputerSystemCollection.
     """
     try:
-        if util.config["redfish"]["authentication_mode"] == "session":
-            # Recover session id
-            session_id = request.headers.get('x-auth-token')
-            # Recover OV connection using token
-            oneview_client = util.get_oneview_client(session_id)
-        else:
-            # Rocver OV connection using credentials from config file
-            oneview_client = util.get_oneview_client()
-
+        oneview_client = util.get_oneview_client(
+            request.headers.get('x-auth-token'))
         # Gets all server hardware
         server_hardware_list = oneview_client.server_hardware.get_all()
         if not server_hardware_list:
