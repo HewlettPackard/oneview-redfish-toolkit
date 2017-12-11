@@ -46,13 +46,8 @@ def get_chassis(uuid):
             JSON: JSON with Chassis.
     """
     try:
-        if util.config["redfish"]["authentication_mode"] == "session":
-            # Recover session id
-            session_id = request.headers.get('x-auth-token')
-            # Recover OV connection
-            oneview_client = util.get_oneview_client(session_id)
-        else:
-            oneview_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client(
+            request.headers.get('x-auth-token'))
 
         resource_index = oneview_client.index_resources.get_all(
             filter='uuid=' + uuid

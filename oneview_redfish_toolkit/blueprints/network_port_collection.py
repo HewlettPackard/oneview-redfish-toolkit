@@ -44,13 +44,8 @@ def get_network_port_collection(server_hardware_uuid, device_id):
         if device_id < 1:
             raise Exception("Invalid id for device")
 
-        if util.config["redfish"]["authentication_mode"] == "session":
-            # Recover session id
-            session_id = request.headers.get('x-auth-token')
-            # Recover OV connection
-            oneview_client = util.get_oneview_client(session_id)
-        else:
-            oneview_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client(
+            request.headers.get('x-auth-token'))
 
         server_hardware = oneview_client. \
             server_hardware.get(server_hardware_uuid)

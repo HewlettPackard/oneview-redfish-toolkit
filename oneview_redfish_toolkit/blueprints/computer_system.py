@@ -51,13 +51,8 @@ def get_computer_system(uuid):
             Logs the exception and call abort(500)
     """
     try:
-        if util.config["redfish"]["authentication_mode"] == "session":
-            # Recover session id
-            session_id = request.headers.get('x-auth-token')
-            # Recover OV connection
-            oneview_client = util.get_oneview_client(session_id)
-        else:
-            oneview_client = util.get_oneview_client()
+        oneview_client = util.get_oneview_client(
+            request.headers.get('x-auth-token'))
 
         # Gets server hardware for given UUID
         server_hardware = oneview_client.server_hardware.get(uuid)
