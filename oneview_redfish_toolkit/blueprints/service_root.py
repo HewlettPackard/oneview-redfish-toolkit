@@ -20,13 +20,13 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
+from flask import g
 from flask import Response
 from flask_api import status
 
 # own libs
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.service_root import ServiceRoot
-from oneview_redfish_toolkit import util
 
 service_root = Blueprint('service_root', __name__)
 
@@ -40,12 +40,9 @@ def get_service_root():
     """
 
     try:
-        # Recover OV connection
-        oneview_client = util.get_oneview_client(None, True)
-
         # Gets serverhardware for given UUID
         appliance_node_information = \
-            oneview_client.appliance_node_information.get_version()
+            g.oneview_client.appliance_node_information.get_version()
         uuid = appliance_node_information['uuid']
 
         sr = ServiceRoot(uuid)

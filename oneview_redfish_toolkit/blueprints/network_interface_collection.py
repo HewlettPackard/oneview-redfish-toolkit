@@ -16,15 +16,13 @@
 
 from flask import abort
 from flask import Blueprint
-from flask import request
+from flask import g
 from flask import Response
 from flask_api import status
 
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.network_interface_collection \
     import NetworkInterfaceCollection
-
-from oneview_redfish_toolkit import util
 
 import logging
 
@@ -40,10 +38,7 @@ def get_network_interface_collection(uuid):
     Return NetworkInterfaceCollection Redfish JSON.
     """
     try:
-        oneview_client = util.get_oneview_client(
-            request.headers.get('x-auth-token'))
-
-        server_hardware = oneview_client.server_hardware.get(uuid)
+        server_hardware = g.oneview_client.server_hardware.get(uuid)
 
         nic = NetworkInterfaceCollection(server_hardware)
 

@@ -26,7 +26,7 @@ from hpOneView.exceptions import HPOneViewException
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.service_root import service_root
+from oneview_redfish_toolkit.blueprints import service_root
 from oneview_redfish_toolkit import util
 
 
@@ -42,7 +42,8 @@ class TestServiceRoot(unittest.TestCase):
 
         # creates a test client
         self.app = Flask(__name__)
-        self.app.register_blueprint(service_root, url_prefix='/redfish/v1/')
+        self.app.register_blueprint(
+            service_root.service_root, url_prefix='/redfish/v1/')
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -65,17 +66,16 @@ class TestServiceRoot(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_service_root_oneview_exception(self, get_oneview_client_mockup):
+    @mock.patch.object(service_root, 'g')
+    def test_service_root_oneview_exception(self, g):
         """Tests ServiceROOT with an exception"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'appliance error',
         })
 
-        oneview_client.appliance_node_information.get_version.side_effect = e
+        g.oneview_client.appliance_node_information.get_version.side_effect = e
 
         response = self.app.get("/redfish/v1/")
 
@@ -86,17 +86,16 @@ class TestServiceRoot(unittest.TestCase):
 
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_service_root_exception(self, get_oneview_client_mockup):
+    @mock.patch.object(service_root, 'g')
+    def test_service_root_exception(self, g):
         """Tests ServiceROOT with an exception"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'appliance error',
         })
 
-        oneview_client.appliance_node_information.get_version.side_effect = e
+        g.oneview_client.appliance_node_information.get_version.side_effect = e
 
         response = self.app.get("/redfish/v1/")
 
@@ -107,12 +106,11 @@ class TestServiceRoot(unittest.TestCase):
 
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_service_root(self, get_oneview_client_mockup):
+    @mock.patch.object(service_root, 'g')
+    def test_get_service_root(self, g):
         """Tests ServiceRoot blueprint result against know value """
 
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.appliance_node_information.get_version.return_value = \
+        g.oneview_client.appliance_node_information.get_version.return_value = \
             {'uuid': '00000000-0000-0000-0000-000000000000'}
 
         result = self.app.get("/redfish/v1/")

@@ -20,7 +20,7 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
-from flask import request
+from flask import g
 from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
@@ -30,7 +30,6 @@ from oneview_redfish_toolkit.api.blade_chassis import BladeChassis
 from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.rack_chassis import RackChassis
-from oneview_redfish_toolkit import util
 
 chassis = Blueprint("chassis", __name__)
 
@@ -46,10 +45,7 @@ def get_chassis(uuid):
             JSON: JSON with Chassis.
     """
     try:
-        oneview_client = util.get_oneview_client(
-            request.headers.get('x-auth-token'))
-
-        resource_index = oneview_client.index_resources.get_all(
+        resource_index = g.oneview_client.index_resources.get_all(
             filter='uuid=' + uuid
         )
 
@@ -59,20 +55,20 @@ def get_chassis(uuid):
             raise OneViewRedfishError('Cannot find Index resource')
 
         if category == 'server-hardware':
-            server_hardware = oneview_client.server_hardware.get(uuid)
+            server_hardware = g.oneview_client.server_hardware.get(uuid)
             etag = server_hardware['eTag']
             ch = BladeChassis(server_hardware)
         elif category == 'enclosures':
-            enclosure = oneview_client.enclosures.get(uuid)
+            enclosure = g.oneview_client.enclosures.get(uuid)
             etag = enclosure['eTag']
-            enclosure_environment_config = oneview_client.enclosures.\
+            enclosure_environment_config = g.oneview_client.enclosures.\
                 get_environmental_configuration(uuid)
             ch = EnclosureChassis(
                 enclosure,
                 enclosure_environment_config
             )
         elif category == 'racks':
-            racks = oneview_client.racks.get(uuid)
+            racks = g.oneview_client.racks.get(uuid)
             etag = racks['eTag']
             ch = RackChassis(racks)
         else:

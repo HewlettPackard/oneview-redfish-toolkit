@@ -24,16 +24,14 @@ from flask_api import status
 from oneview_redfish_toolkit import util
 
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.computer_system_collection \
-    import computer_system_collection
+from oneview_redfish_toolkit.blueprints import computer_system_collection
 
 
 class TestComputerSystemCollection(unittest.TestCase):
     """Tests for ComputerSystemCollection blueprint"""
 
     @mock.patch.object(util, 'OneViewClient')
-    @mock.patch.object(util, 'get_oneview_client')
-    def setUp(self, oneview_client_mockup, get_oneview_client_mockup):
+    def setUp(self, oneview_client_mockup):
         """Tests preparation"""
 
         # Load config on util
@@ -42,7 +40,8 @@ class TestComputerSystemCollection(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(computer_system_collection)
+        self.app.register_blueprint(
+            computer_system_collection.computer_system_collection)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -75,14 +74,11 @@ class TestComputerSystemCollection(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_collection_empty(
-            self,
-            get_oneview_client_mockup):
+    @mock.patch.object(computer_system_collection, 'g')
+    def test_get_computer_system_collection_empty(self, g):
         """Tests ComputerSystemCollection with an empty list"""
 
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get_all.return_value = []
+        g.oneview_client.server_hardware.get_all.return_value = []
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
@@ -99,14 +95,11 @@ class TestComputerSystemCollection(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(server_hardware_list_not_found, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_collection_fail(
-            self,
-            get_oneview_client_mockup):
+    @mock.patch.object(computer_system_collection, 'g')
+    def test_get_computer_system_collection_fail(self, g):
         """Tests ComputerSystemCollection with an error"""
 
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get_all.side_effect = Exception()
+        g.oneview_client.server_hardware.get_all.side_effect = Exception()
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
@@ -125,10 +118,8 @@ class TestComputerSystemCollection(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_computer_system_collection(
-            self,
-            get_oneview_client_mockup):
+    @mock.patch.object(computer_system_collection, 'g')
+    def test_get_computer_system_collection(self, g):
         """Tests ComputerSystemCollection with a known Server Hardware list"""
 
         # Read mock values
@@ -144,8 +135,7 @@ class TestComputerSystemCollection(unittest.TestCase):
             computer_system_collection_mockup = f.read()
 
         # Create mock response
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get_all.return_value = \
+        g.oneview_client.server_hardware.get_all.return_value = \
             server_hardware_list
 
         # Get ComputerSystemCollection

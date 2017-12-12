@@ -16,15 +16,13 @@
 
 from flask import abort
 from flask import Blueprint
-from flask import request
+from flask import g
 from flask import Response
 from flask_api import status
 
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.network_port_collection \
     import NetworkPortCollection
-
-from oneview_redfish_toolkit import util
 
 import logging
 
@@ -44,10 +42,7 @@ def get_network_port_collection(server_hardware_uuid, device_id):
         if device_id < 1:
             raise Exception("Invalid id for device")
 
-        oneview_client = util.get_oneview_client(
-            request.headers.get('x-auth-token'))
-
-        server_hardware = oneview_client. \
+        server_hardware = g.oneview_client. \
             server_hardware.get(server_hardware_uuid)
 
         npc = NetworkPortCollection(server_hardware, device_id)

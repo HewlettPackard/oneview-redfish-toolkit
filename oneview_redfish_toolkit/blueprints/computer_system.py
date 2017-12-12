@@ -20,6 +20,7 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
+from flask import g
 from flask import request
 from flask import Response
 from flask_api import status
@@ -28,7 +29,6 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-from oneview_redfish_toolkit import util
 
 
 computer_system = Blueprint("computer_system", __name__)
@@ -51,14 +51,11 @@ def get_computer_system(uuid):
             Logs the exception and call abort(500)
     """
     try:
-        oneview_client = util.get_oneview_client(
-            request.headers.get('x-auth-token'))
-
         # Gets server hardware for given UUID
-        server_hardware = oneview_client.server_hardware.get(uuid)
+        server_hardware = g.oneview_client.server_hardware.get(uuid)
 
         # Gets the server hardware type of the given server hardware
-        server_hardware_types = oneview_client.server_hardware_types.get(
+        server_hardware_types = g.oneview_client.server_hardware_types.get(
             server_hardware['serverHardwareTypeUri']
         )
 
@@ -144,14 +141,11 @@ def change_power_state(uuid):
                 {"errorCode": "INVALID_INFORMATION",
                  "message": "Invalid JSON key"})
 
-        # Recover OV connection
-        oneview_client = util.get_oneview_client()
-
         # Gets ServerHardware for given UUID
-        sh = oneview_client.server_hardware.get(uuid)
+        sh = g.oneview_client.server_hardware.get(uuid)
 
         # Gets the ServerHardwareType of the given server hardware
-        sht = oneview_client.server_hardware_types. \
+        sht = g.oneview_client.server_hardware_types. \
             get(sh['serverHardwareTypeUri'])
 
         # Build Computer System object and validates it
@@ -161,7 +155,7 @@ def change_power_state(uuid):
             cs.get_oneview_power_configuration(reset_type)
 
         # Changes the ServerHardware power state
-        oneview_client.server_hardware.update_power_state(
+        g.oneview_client.server_hardware.update_power_state(
             oneview_power_configuration, uuid)
 
         return Response(

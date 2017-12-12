@@ -20,7 +20,7 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
-from flask import request
+from flask import g
 from flask import Response
 from flask_api import status
 
@@ -28,7 +28,6 @@ from flask_api import status
 from oneview_redfish_toolkit.api.chassis_collection import ChassisCollection
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
-from oneview_redfish_toolkit import util
 
 
 chassis_collection = Blueprint("chassis_collection", __name__)
@@ -56,23 +55,20 @@ def get_chassis_collection():
     """
 
     try:
-        oneview_client = util.get_oneview_client(
-            request.headers.get('x-auth-token'))
-
         # Gets all enclosures
-        enclosures = oneview_client.enclosures.get_all()
+        enclosures = g.oneview_client.enclosures.get_all()
         if not enclosures:
             raise OneViewRedfishResourceNotFoundError(
                 "enclosures", "Resource")
 
         # Gets all racks
-        racks = oneview_client.racks.get_all()
+        racks = g.oneview_client.racks.get_all()
         if not racks:
             raise OneViewRedfishResourceNotFoundError(
                 "racks", "Resource")
 
         # Gets all server hardware
-        server_hardware_list = oneview_client.server_hardware.get_all()
+        server_hardware_list = g.oneview_client.server_hardware.get_all()
 
         if not server_hardware_list:
             raise OneViewRedfishResourceNotFoundError(

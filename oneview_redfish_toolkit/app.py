@@ -21,6 +21,7 @@ import os
 # 3rd party libs
 from flask import abort
 from flask import Flask
+from flask import g
 from flask import request
 from flask import Response
 from flask_api import status
@@ -106,6 +107,35 @@ if __name__ == '__main__':
     app.register_blueprint(network_adapter)
     app.register_blueprint(network_port)
     app.register_blueprint(session)
+
+    @app.before_request
+    def check_authentication():
+        # If authentication_mode = conf we do nothing
+        auth_mode = util.config["redfish"]["authentication_mode"]
+        if auth_mode == "conf":
+            return None
+        else:
+            # ServiceRoot don't need auth
+            if request.path in {"/redfish/v1", "/redfish/v1/", "/redfish",
+                                "/redfish/"}:
+                g.oneview_client = util.get_oneview_client(None, True)
+                return None
+            # If authenticating also we do nothing
+            if request.path == "/redfish/v1/SessionService/Sessions" and \
+                request.method == "POST":
+                return
+            # Any other path we demand auth
+            x_auth_token = request.headers.get('x-auth-token')
+            if not x_auth_token:
+                abort(
+                    status.HTTP_401_UNAUTHORIZED,
+                    "x-auth-token header not found")
+            else:
+                try:
+                    oneview_client = util.get_oneview_client(x_auth_token)
+                except Exception:
+                    abort(status.HTTP_401_UNAUTHORIZED, "invalid auth token")
+                g.oneview_client = oneview_client
 
     @app.before_request
     def has_odata_version_header():

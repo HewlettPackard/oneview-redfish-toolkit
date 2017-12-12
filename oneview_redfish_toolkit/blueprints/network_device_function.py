@@ -20,7 +20,7 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
-from flask import request
+from flask import g
 from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
@@ -33,7 +33,6 @@ from oneview_redfish_toolkit.api.errors import \
     OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.network_device_function import \
     NetworkDeviceFunction
-from oneview_redfish_toolkit import util
 
 
 network_device_function = Blueprint("network_device_function", __name__)
@@ -63,13 +62,10 @@ def get_network_device_function(uuid, device_id, device_function_id):
 
     """
     try:
-        oneview_client = util.get_oneview_client(
-            request.headers.get('x-auth-token'))
-
         # Initial validation of device_id
         device_id_validation = int(device_id)
 
-        server_hardware = oneview_client.server_hardware.get(uuid)
+        server_hardware = g.oneview_client.server_hardware.get(uuid)
 
         # Final validation of device_id
         if device_id_validation - 1 < 0 or (device_id_validation - 1) >= \
