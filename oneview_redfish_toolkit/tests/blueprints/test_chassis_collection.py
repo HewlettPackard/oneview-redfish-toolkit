@@ -27,8 +27,7 @@ from oneview_redfish_toolkit import util
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.chassis_collection \
-    import chassis_collection
+from oneview_redfish_toolkit.blueprints import chassis_collection
 
 
 class TestChassisCollection(unittest.TestCase):
@@ -52,7 +51,7 @@ class TestChassisCollection(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(chassis_collection)
+        self.app.register_blueprint(chassis_collection.chassis_collection)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -85,13 +84,11 @@ class TestChassisCollection(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_chassis_collection_unexpected_error(
-            self, get_oneview_client_mockup):
+    @mock.patch.object(chassis_collection, 'g')
+    def test_get_chassis_collection_unexpected_error(self, g):
         """Tests ChassisCollection with an error"""
 
-        client = get_oneview_client_mockup()
-        client.server_hardware.get_all.side_effect = Exception()
+        g.oneview_client.server_hardware.get_all.side_effect = Exception()
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
@@ -109,12 +106,11 @@ class TestChassisCollection(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_server_hardware_list_empty(self, get_oneview_client_mockup):
+    @mock.patch.object(chassis_collection, 'g')
+    def test_get_server_hardware_list_empty(self, g):
         """Tests ChassisCollection with an empty server hardware list"""
 
-        client = get_oneview_client_mockup()
-        client.server_hardware.get_all.return_value = []
+        g.oneview_client.server_hardware.get_all.return_value = []
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
@@ -130,12 +126,11 @@ class TestChassisCollection(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(server_hardware_list_not_found, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_enclosures_empty(self, get_oneview_client_mockup):
+    @mock.patch.object(chassis_collection, 'g')
+    def test_get_enclosures_empty(self, g):
         """Tests ChassisCollection with an empty enclosure list"""
 
-        client = get_oneview_client_mockup()
-        client.enclosures.get_all.return_value = []
+        g.oneview_client.enclosures.get_all.return_value = []
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
@@ -151,12 +146,11 @@ class TestChassisCollection(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(enclosures_not_found, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_racks_empty(self, get_oneview_client_mockup):
+    @mock.patch.object(chassis_collection, 'g')
+    def test_get_racks_empty(self, g):
         """Tests ChassisCollection with an empty rack list"""
 
-        client = get_oneview_client_mockup()
-        client.racks.get_all.return_value = []
+        g.oneview_client.racks.get_all.return_value = []
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
@@ -172,8 +166,8 @@ class TestChassisCollection(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(racks_not_found, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_chassis_collection(self, get_oneview_client_mockup):
+    @mock.patch.object(chassis_collection, 'g')
+    def test_get_chassis_collection(self, g):
         """Tests ChassisCollection with a known Results"""
 
         # Loading server_hardware mockup value
@@ -204,10 +198,10 @@ class TestChassisCollection(unittest.TestCase):
             chassis_collection_mockup = f.read()
 
         # Create mock response
-        client = get_oneview_client_mockup()
-        client.server_hardware.get_all.return_value = server_hardware_list
-        client.enclosures.get_all.return_value = enclosures
-        client.racks.get_all.return_value = racks
+        g.oneview_client.server_hardware.get_all.return_value = \
+            server_hardware_list
+        g.oneview_client.enclosures.get_all.return_value = enclosures
+        g.oneview_client.racks.get_all.return_value = racks
 
         # Get ChassisCollection
         response = self.app.get("/redfish/v1/Chassis/")

@@ -28,8 +28,8 @@ from oneview_redfish_toolkit import util
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.network_device_function_collection \
-    import network_device_function_collection
+from oneview_redfish_toolkit.blueprints import \
+    network_device_function_collection
 
 
 class TestNetworkDeviceFunctionCollection(unittest.TestCase):
@@ -45,7 +45,9 @@ class TestNetworkDeviceFunctionCollection(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(network_device_function_collection)
+        self.app.register_blueprint(
+            network_device_function_collection.
+            network_device_function_collection)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -78,9 +80,8 @@ class TestNetworkDeviceFunctionCollection(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_device_function_collection(
-        self, get_oneview_client_mockup):
+    @mock.patch.object(network_device_function_collection, 'g')
+    def test_get_network_device_function_collection(self, g):
         """Tests NetworkDeviceFunctionCollection"""
 
         # Loading server_hardware mockup value
@@ -97,8 +98,7 @@ class TestNetworkDeviceFunctionCollection(unittest.TestCase):
             network_device_function_collection_mockup = f.read()
 
         # Create mock response
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkDeviceFunctionCollection
         response = self.app.get(
@@ -114,17 +114,15 @@ class TestNetworkDeviceFunctionCollection(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(network_device_function_collection_mockup, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_device_function_collection_sh_not_found(
-        self, get_oneview_client_mockup):
+    @mock.patch.object(network_device_function_collection, 'g')
+    def test_get_network_device_function_collection_sh_not_found(self, g):
         """Tests NetworkDeviceFunctionCollection"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkDeviceFunctionCollection
         response = self.app.get(
@@ -135,17 +133,15 @@ class TestNetworkDeviceFunctionCollection(unittest.TestCase):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_device_function_collection_sh_exception(
-        self, get_oneview_client_mockup):
+    @mock.patch.object(network_device_function_collection, 'g')
+    def test_get_network_device_function_collection_sh_exception(self, g):
         """Tests NetworkDeviceFunctionCollection"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware-types error',
         })
-        oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkDeviceFunctionCollection
         response = self.app.get(

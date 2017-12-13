@@ -16,6 +16,7 @@
 
 from flask import abort
 from flask import Blueprint
+from flask import g
 from flask import Response
 from flask_api import status
 
@@ -23,7 +24,6 @@ from oneview_redfish_toolkit.api.computer_system_collection \
     import ComputerSystemCollection
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
-from oneview_redfish_toolkit import util
 
 import logging
 
@@ -42,11 +42,8 @@ def get_computer_system_collection():
                 JSON: JSON with ComputerSystemCollection.
     """
     try:
-        # Recover OV connection
-        oneview_client = util.get_oneview_client()
-
         # Gets all server hardware
-        server_hardware_list = oneview_client.server_hardware.get_all()
+        server_hardware_list = g.oneview_client.server_hardware.get_all()
         if not server_hardware_list:
             raise OneViewRedfishResourceNotFoundError(
                 "server-hardware-list", "Resource")

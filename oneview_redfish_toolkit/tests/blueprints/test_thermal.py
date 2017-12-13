@@ -28,7 +28,7 @@ from oneview_redfish_toolkit import util
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.thermal import thermal
+from oneview_redfish_toolkit.blueprints import thermal
 
 
 class TestChassis(unittest.TestCase):
@@ -50,7 +50,7 @@ class TestChassis(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(thermal)
+        self.app.register_blueprint(thermal.thermal)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -86,9 +86,8 @@ class TestChassis(unittest.TestCase):
     #############
     # Blade     #
     #############
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_blade_thermal(
-            self, get_oneview_client_mockup):
+    @mock.patch.object(thermal, 'g')
+    def test_get_blade_thermal(self, g):
         """"Tests BladeThermal with a known SH"""
 
         # Loading ServerHardwareUtilization mockup value
@@ -105,11 +104,9 @@ class TestChassis(unittest.TestCase):
         ) as f:
             blade_chassis_thermal_mockup = f.read()
 
-        oneview_client = get_oneview_client_mockup()
-
-        oneview_client.index_resources.get_all.return_value = \
+        g.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        oneview_client.server_hardware.get_utilization.return_value = \
+        g.oneview_client.server_hardware.get_utilization.return_value = \
             server_hardware_utilization
 
         # Get BladeThermal
@@ -124,22 +121,20 @@ class TestChassis(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(blade_chassis_thermal_mockup, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_blade_not_found(self, get_oneview_client_mockup):
+    @mock.patch.object(thermal, 'g')
+    def test_get_blade_not_found(self, g):
         """Tests BladeThermal with SH not found"""
 
-        oneview_client = get_oneview_client_mockup()
-
-        oneview_client.index_resources.get_all.return_value = \
+        g.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        oneview_client.server_hardware.get_utilization.return_value = \
+        g.oneview_client.server_hardware.get_utilization.return_value = \
             {'serverHardwareUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server hardware not found',
         })
 
-        oneview_client.server_hardware.get_utilization.side_effect = e
+        g.oneview_client.server_hardware.get_utilization.side_effect = e
 
         response = self.app.get(
             "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
@@ -148,15 +143,13 @@ class TestChassis(unittest.TestCase):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_blade_unexpected_error(self, get_oneview_client_mockup):
+    @mock.patch.object(thermal, 'g')
+    def test_blade_unexpected_error(self, g):
         """Tests BladeThermal with an unexpected error"""
 
-        oneview_client = get_oneview_client_mockup()
-
-        oneview_client.index_resources.get_all.return_value = \
+        g.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        oneview_client.server_hardware.get_utilization.side_effect = \
+        g.oneview_client.server_hardware.get_utilization.side_effect = \
             Exception()
 
         response = self.app.get(
@@ -171,8 +164,8 @@ class TestChassis(unittest.TestCase):
     #############
     # Enclosure #
     #############
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_encl_thermal(self, get_oneview_client_mockup):
+    @mock.patch.object(thermal, 'g')
+    def test_get_encl_thermal(self, g):
         """"Tests EnclosureThermal with a known Enclosure"""
 
         # Loading EnclosureUtilization mockup value
@@ -189,11 +182,9 @@ class TestChassis(unittest.TestCase):
         ) as f:
             enclosure_chasssis_thermal_mockup = f.read()
 
-        oneview_client = get_oneview_client_mockup()
-
-        oneview_client.index_resources.get_all.return_value = \
+        g.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
-        oneview_client.enclosures.get_utilization.return_value = \
+        g.oneview_client.enclosures.get_utilization.return_value = \
             enclosure_utilization
 
         # Get EnclosureThermal
@@ -211,8 +202,8 @@ class TestChassis(unittest.TestCase):
     ########
     # Rack #
     ########
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_rack_thermal(self, get_oneview_client_mockup):
+    @mock.patch.object(thermal, 'g')
+    def test_get_rack_thermal(self, g):
         """"Tests RackThermal with a known Rack"""
 
         # Loading RackDeviceTopology mockup value
@@ -228,11 +219,9 @@ class TestChassis(unittest.TestCase):
         ) as f:
             rack_chassis_thermal_mockup = f.read()
 
-        oneview_client = get_oneview_client_mockup()
-
-        oneview_client.index_resources.get_all.return_value = \
+        g.oneview_client.index_resources.get_all.return_value = \
             [{"category": "racks"}]
-        oneview_client.racks.get_device_topology.return_value = rack_topology
+        g.oneview_client.racks.get_device_topology.return_value = rack_topology
 
         # Get RackThermal
         response = self.app.get(

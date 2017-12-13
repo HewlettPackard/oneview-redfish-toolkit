@@ -27,7 +27,7 @@ from hpOneView.exceptions import HPOneViewException
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.network_port import network_port
+from oneview_redfish_toolkit.blueprints import network_port
 from oneview_redfish_toolkit import util
 
 
@@ -44,7 +44,7 @@ class TestNetworkPort(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(network_port)
+        self.app.register_blueprint(network_port.network_port)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -77,8 +77,8 @@ class TestNetworkPort(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_port(self, get_oneview_client_mockup):
+    @mock.patch.object(network_port, 'g')
+    def test_get_network_port(self, g):
         """Tests NetworkPort"""
 
         # Loading server_hardware mockup value
@@ -95,8 +95,7 @@ class TestNetworkPort(unittest.TestCase):
             network_port_mockup = f.read()
 
         # Create mock response
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkPort
         response = self.app.get(
@@ -112,8 +111,8 @@ class TestNetworkPort(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(network_port_mockup, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_port_fibre_channel(self, get_oneview_client_mockup):
+    @mock.patch.object(network_port, 'g')
+    def test_get_network_port_fibre_channel(self, g):
         """Tests NetworkPort"""
 
         # Loading server_hardware mockup value
@@ -131,8 +130,7 @@ class TestNetworkPort(unittest.TestCase):
             network_port_mockup = f.read()
 
         # Create mock response
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkPort
         response = self.app.get(
@@ -148,9 +146,9 @@ class TestNetworkPort(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(network_port_mockup, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
+    @mock.patch.object(network_port, 'g')
     def test_get_network_port_invalid_device_id(
-        self, get_oneview_client_mockup):
+        self, g):
         """Tests NetworkPort"""
 
         # Loading server_hardware mockup value
@@ -160,8 +158,7 @@ class TestNetworkPort(unittest.TestCase):
             server_hardware = json.load(f)
 
         # Create mock response
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkPort
         response = self.app.get(
@@ -173,17 +170,15 @@ class TestNetworkPort(unittest.TestCase):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_port_sh_not_found(
-        self, get_oneview_client_mockup):
+    @mock.patch.object(network_port, 'g')
+    def test_get_network_port_sh_not_found(self, g):
         """Tests NetworkPort server hardware not found"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkPort
         response = self.app.get(
@@ -194,17 +189,15 @@ class TestNetworkPort(unittest.TestCase):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_port_sh_exception(
-        self, get_oneview_client_mockup):
+    @mock.patch.object(network_port, 'g')
+    def test_get_network_port_sh_exception(self, g):
         """Tests NetworkPort unknown exception"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware error',
         })
-        oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkPort
         response = self.app.get(

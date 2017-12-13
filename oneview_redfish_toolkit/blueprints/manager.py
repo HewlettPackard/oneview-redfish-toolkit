@@ -20,6 +20,7 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
+from flask import g
 from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
@@ -28,7 +29,6 @@ from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.blade_manager import BladeManager
 from oneview_redfish_toolkit.api.enclosure_manager import EnclosureManager
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-from oneview_redfish_toolkit import util
 
 manager = Blueprint("manager", __name__)
 
@@ -44,13 +44,11 @@ def get_managers(uuid):
             JSON: JSON with Managers info for Enclosure or ServerHardware.
     """
     try:
-        oneview_client = util.get_oneview_client()
-
         appliance_information = \
-            oneview_client.appliance_node_information.get_version()
+            g.oneview_client.appliance_node_information.get_version()
         oneview_version = appliance_information['softwareVersion']
 
-        resource_index = oneview_client.index_resources.get_all(
+        resource_index = g.oneview_client.index_resources.get_all(
             filter='uuid=' + uuid
         )
 
@@ -60,11 +58,11 @@ def get_managers(uuid):
             raise OneViewRedfishError('Cannot find Index resource')
 
         if category == 'server-hardware':
-            server_hardware = oneview_client.server_hardware.get(uuid)
+            server_hardware = g.oneview_client.server_hardware.get(uuid)
             etag = server_hardware['eTag']
             manager = BladeManager(server_hardware)
         elif category == 'enclosures':
-            enclosure = oneview_client.enclosures.get(uuid)
+            enclosure = g.oneview_client.enclosures.get(uuid)
             etag = enclosure['eTag']
             manager = EnclosureManager(enclosure, oneview_version)
         else:

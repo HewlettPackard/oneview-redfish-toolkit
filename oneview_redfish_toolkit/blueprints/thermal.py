@@ -20,6 +20,7 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
+from flask import g
 from flask import Response
 from flask_api import status
 
@@ -27,7 +28,6 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.thermal import Thermal
-from oneview_redfish_toolkit import util
 
 
 thermal = Blueprint("thermal", __name__)
@@ -50,9 +50,7 @@ def get_thermal(uuid):
 
     """
     try:
-        oneview_client = util.get_oneview_client()
-
-        index_obj = oneview_client.index_resources.get_all(
+        index_obj = g.oneview_client.index_resources.get_all(
             filter='uuid=' + uuid
         )
 
@@ -62,15 +60,15 @@ def get_thermal(uuid):
             raise OneViewRedfishError('Cannot find Index resource')
 
         if category == 'server-hardware':
-            server_hardware = oneview_client.server_hardware. \
+            server_hardware = g.oneview_client.server_hardware. \
                 get_utilization(uuid, fields='AmbientTemperature')
             thrml = Thermal(server_hardware, uuid, 'Blade')
         elif category == 'enclosures':
-            enclosure = oneview_client.enclosures. \
+            enclosure = g.oneview_client.enclosures. \
                 get_utilization(uuid, fields='AmbientTemperature')
             thrml = Thermal(enclosure, uuid, 'Enclosure')
         elif category == 'racks':
-            rack = oneview_client.racks.\
+            rack = g.oneview_client.racks.\
                 get_device_topology(uuid)
             thrml = Thermal(rack, uuid, 'Rack')
         else:

@@ -16,14 +16,13 @@
 
 from flask import abort
 from flask import Blueprint
+from flask import g
 from flask import Response
 from flask_api import status
 
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.storage_collection \
     import StorageCollection
-
-from oneview_redfish_toolkit import util
 
 import logging
 
@@ -38,9 +37,7 @@ def get_storage_collection(uuid):
     Return StorageCollection Redfish JSON.
     """
     try:
-        oneview_client = util.get_oneview_client()
-
-        oneview_client.server_hardware.get(uuid)
+        g.oneview_client.server_hardware.get(uuid)
 
         storage = StorageCollection(uuid)
 

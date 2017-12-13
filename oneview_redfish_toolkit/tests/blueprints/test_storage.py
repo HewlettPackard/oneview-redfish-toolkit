@@ -28,7 +28,7 @@ from oneview_redfish_toolkit import util
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.storage import storage
+from oneview_redfish_toolkit.blueprints import storage
 
 
 class TestStorage(unittest.TestCase):
@@ -44,7 +44,7 @@ class TestStorage(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(storage)
+        self.app.register_blueprint(storage.storage)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -77,8 +77,8 @@ class TestStorage(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_storage(self, get_oneview_client_mockup):
+    @mock.patch.object(storage, 'g')
+    def test_get_storage(self, g):
         """Tests Storage"""
 
         # Loading server hardware mockup value
@@ -100,9 +100,8 @@ class TestStorage(unittest.TestCase):
             storage_mockup = f.read()
 
         # Create mock response
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get.return_value = server_hardware
-        oneview_client.server_hardware_types.get.return_value \
+        g.oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_hardware_types.get.return_value \
             = server_hardware_types
 
         # Get Storage
@@ -119,16 +118,15 @@ class TestStorage(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(storage_mockup, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_storage_sh_not_found(self, get_oneview_client_mockup):
+    @mock.patch.object(storage, 'g')
+    def test_get_storage_sh_not_found(self, g):
         """Tests Storage"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_hardware.get.side_effect = e
 
         # Get Storage
         response = self.app.get(
@@ -139,16 +137,15 @@ class TestStorage(unittest.TestCase):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_storage_sh_exception(self, get_oneview_client_mockup):
+    @mock.patch.object(storage, 'g')
+    def test_get_storage_sh_exception(self, g):
         """Tests Storage"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware error',
         })
-        oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_hardware.get.side_effect = e
 
         # Get Storage
         response = self.app.get(
@@ -162,17 +159,15 @@ class TestStorage(unittest.TestCase):
         )
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_storage_sht_not_found(
-        self, get_oneview_client_mockup):
+    @mock.patch.object(storage, 'g')
+    def test_get_storage_sht_not_found(self, g):
         """Tests Storage"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware-type not found',
         })
-        oneview_client.server_hardware_types.get.side_effect = e
+        g.oneview_client.server_hardware_types.get.side_effect = e
 
         # Get Storage
         response = self.app.get(
@@ -183,17 +178,15 @@ class TestStorage(unittest.TestCase):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_storage_sht_exception(
-        self, get_oneview_client_mockup):
+    @mock.patch.object(storage, 'g')
+    def test_get_storage_sht_exception(self, g):
         """Tests Storage"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware-type error',
         })
-        oneview_client.server_hardware_types.get.side_effect = e
+        g.oneview_client.server_hardware_types.get.side_effect = e
 
         # Get Storage
         response = self.app.get(

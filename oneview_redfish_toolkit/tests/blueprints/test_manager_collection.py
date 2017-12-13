@@ -27,8 +27,7 @@ from oneview_redfish_toolkit import util
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.manager_collection \
-    import manager_collection
+from oneview_redfish_toolkit.blueprints import manager_collection
 
 
 class TestManagerCollection(unittest.TestCase):
@@ -51,7 +50,8 @@ class TestManagerCollection(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(manager_collection)
+        self.app.register_blueprint(
+            manager_collection.manager_collection)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -84,13 +84,12 @@ class TestManagerCollection(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch.object(util, 'get_oneview_client')
+    @mock.patch.object(manager_collection, 'g')
     def test_get_manager_collection_unexpected_error(
-            self, get_oneview_client_mockup):
+            self, g):
         """Tests ManagerCollection with an error"""
 
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get_all.side_effect = Exception()
+        g.oneview_client.server_hardware.get_all.side_effect = Exception()
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
@@ -108,12 +107,11 @@ class TestManagerCollection(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_enclosures_empty(self, get_oneview_client_mockup):
+    @mock.patch.object(manager_collection, 'g')
+    def test_get_enclosures_empty(self, g):
         """Tests ManagerCollection with enclosures response empty"""
 
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.enclosures.get_all.return_value = []
+        g.oneview_client.enclosures.get_all.return_value = []
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
@@ -127,11 +125,9 @@ class TestManagerCollection(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(enclosures_list_not_found, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_server_hardware_list_empty(self, get_oneview_client_mockup):
+    @mock.patch.object(manager_collection, 'g')
+    def test_get_server_hardware_list_empty(self, g):
         """Tests ManagerCollection with server hardware response empty"""
-
-        oneview_client = get_oneview_client_mockup()
 
         # Loading enclosures mockup value
         with open(
@@ -146,8 +142,8 @@ class TestManagerCollection(unittest.TestCase):
         ) as f:
             server_hardware_list_not_found = f.read()
 
-        oneview_client.enclosures.get_all.return_value = enclosures
-        oneview_client.server_hardware.get_all.return_value = []
+        g.oneview_client.enclosures.get_all.return_value = enclosures
+        g.oneview_client.server_hardware.get_all.return_value = []
 
         response = self.app.get("/redfish/v1/Managers/")
 
@@ -157,8 +153,8 @@ class TestManagerCollection(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(server_hardware_list_not_found, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_manager_collection(self, get_oneview_client_mockup):
+    @mock.patch.object(manager_collection, 'g')
+    def test_get_manager_collection(self, g):
         """Tests a valid ManagerCollection"""
 
         # Loading server_hardware mockup value
@@ -182,10 +178,9 @@ class TestManagerCollection(unittest.TestCase):
             manager_collection_mockup = f.read()
 
         # Create mock response
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get_all.return_value = \
+        g.oneview_client.server_hardware.get_all.return_value = \
             server_hardware_list
-        oneview_client.enclosures.get_all.return_value = enclosures
+        g.oneview_client.enclosures.get_all.return_value = enclosures
 
         # Get ManagerCollection
         response = self.app.get("/redfish/v1/Managers/")

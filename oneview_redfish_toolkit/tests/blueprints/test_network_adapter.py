@@ -28,8 +28,7 @@ from oneview_redfish_toolkit import util
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.network_adapter \
-    import network_adapter
+from oneview_redfish_toolkit.blueprints import network_adapter
 
 
 class TestNetworkAdapter(unittest.TestCase):
@@ -45,7 +44,7 @@ class TestNetworkAdapter(unittest.TestCase):
         # creates a test client
         self.app = Flask(__name__)
 
-        self.app.register_blueprint(network_adapter)
+        self.app.register_blueprint(network_adapter.network_adapter)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -78,8 +77,8 @@ class TestNetworkAdapter(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_interface(self, get_oneview_client_mockup):
+    @mock.patch.object(network_adapter, 'g')
+    def test_get_network_interface(self, g):
         """Tests NetworkAdapter"""
 
         # Loading server_hardware mockup value
@@ -96,8 +95,7 @@ class TestNetworkAdapter(unittest.TestCase):
             network_adapter_mockup = f.read()
 
         # Create mock response
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkAdapter
         response = self.app.get(
@@ -113,8 +111,8 @@ class TestNetworkAdapter(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(network_adapter_mockup, json_str)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_interface_invalid_id(self, get_oneview_client_mockup):
+    @mock.patch.object(network_adapter, 'g')
+    def test_get_network_interface_invalid_id(self, g):
         """Tests NetworkAdapter"""
 
         # Loading server_hardware mockup value
@@ -124,8 +122,7 @@ class TestNetworkAdapter(unittest.TestCase):
             server_hardware = json.load(f)
 
         # Create mock response
-        oneview_client = get_oneview_client_mockup()
-        oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkAdapter
         response = self.app.get(
@@ -137,17 +134,15 @@ class TestNetworkAdapter(unittest.TestCase):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
-    def test_get_network_interface_sh_not_found(
-        self, get_oneview_client_mockup):
+    @mock.patch.object(network_adapter, 'g')
+    def test_get_network_interface_sh_not_found(self, g):
         """Tests NetworkAdapter server hardware not found"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkAdapter
         response = self.app.get(
@@ -158,17 +153,16 @@ class TestNetworkAdapter(unittest.TestCase):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'get_oneview_client')
+    @mock.patch.object(network_adapter, 'g')
     def test_get_network_interface_sh_exception(
-        self, get_oneview_client_mockup):
+        self, g):
         """Tests NetworkAdapter unknown exception"""
 
-        oneview_client = get_oneview_client_mockup()
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware error',
         })
-        oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkAdapter
         response = self.app.get(

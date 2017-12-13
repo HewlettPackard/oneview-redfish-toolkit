@@ -21,6 +21,7 @@ import os
 # 3rd party libs
 from flask import abort
 from flask import Flask
+from flask import g
 from flask import request
 from flask import Response
 from flask_api import status
@@ -73,6 +74,13 @@ if __name__ == '__main__':
         logging.exception(e)
         exit(1)
 
+    # Check auth mode
+    if util.config["redfish"]["authentication_mode"] not in \
+        ["conf", "session"]:
+        logging.error(
+            "Invalid authentication_mode. Please check your conf"
+            " file. Valid values are 'conf' or 'session'")
+
     # Flask application
     app = Flask(__name__)
 
@@ -99,6 +107,39 @@ if __name__ == '__main__':
     app.register_blueprint(network_adapter)
     app.register_blueprint(network_port)
     app.register_blueprint(session)
+
+    @app.before_request
+    def check_authentication():
+        """Checks authentication before serving the request"""
+        # If authentication_mode = conf we do nothing
+        auth_mode = util.config["redfish"]["authentication_mode"]
+        if auth_mode == "conf":
+            g.oneview_client = util.get_oneview_client()
+            return None
+        else:
+            # ServiceRoot don't need auth
+            if request.path.rstrip("/") in {"/redfish/v1",
+                                            "/redfish",
+                                            "/redfish/v1/odata",
+                                            "/redfish/v1/$metadata"}:
+                g.oneview_client = util.get_oneview_client(None, True)
+                return None
+            # If authenticating also we do nothing
+            if request.path == "/redfish/v1/SessionService/Sessions" and \
+                request.method == "POST":
+                return None
+            # Any other path we demand auth
+            x_auth_token = request.headers.get('x-auth-token')
+            if not x_auth_token:
+                abort(
+                    status.HTTP_401_UNAUTHORIZED,
+                    "x-auth-token header not found")
+            else:
+                try:
+                    oneview_client = util.get_oneview_client(x_auth_token)
+                    g.oneview_client = oneview_client
+                except Exception:
+                    abort(status.HTTP_401_UNAUTHORIZED, "invalid auth token")
 
     @app.before_request
     def has_odata_version_header():

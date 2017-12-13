@@ -16,14 +16,13 @@
 
 from flask import abort
 from flask import Blueprint
+from flask import g
 from flask import Response
 from flask_api import status
 
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.network_adapter_collection \
     import NetworkAdapterCollection
-
-from oneview_redfish_toolkit import util
 
 import logging
 
@@ -39,9 +38,7 @@ def get_network_adapter_collection(uuid):
     Return NetworkAdapterCollection Redfish JSON.
     """
     try:
-        oneview_client = util.get_oneview_client()
-
-        server_hardware = oneview_client.server_hardware.get(uuid)
+        server_hardware = g.oneview_client.server_hardware.get(uuid)
 
         nic = NetworkAdapterCollection(server_hardware)
 

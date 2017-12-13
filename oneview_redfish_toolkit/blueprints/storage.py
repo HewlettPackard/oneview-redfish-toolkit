@@ -20,13 +20,13 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
+from flask import g
 from flask import Response
 from flask_api import status
 
 # own libs
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.storage import Storage
-from oneview_redfish_toolkit import util
 
 storage = Blueprint("storage", __name__)
 
@@ -48,14 +48,12 @@ def get_storage(uuid):
 
     """
     try:
-        oneview_client = util.get_oneview_client()
-
-        server_hardware = oneview_client.server_hardware. \
+        server_hardware = g.oneview_client.server_hardware. \
             get(uuid)
 
         sht_uri = server_hardware['serverHardwareTypeUri']
         server_hardware_type = \
-            oneview_client.server_hardware_types.get(sht_uri)
+            g.oneview_client.server_hardware_types.get(sht_uri)
 
         st = Storage(uuid, server_hardware_type)
 

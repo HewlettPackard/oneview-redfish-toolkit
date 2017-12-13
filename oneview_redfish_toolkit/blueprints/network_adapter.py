@@ -20,6 +20,7 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
+from flask import g
 from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
@@ -29,7 +30,6 @@ from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.errors import \
     OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.network_adapter import NetworkAdapter
-from oneview_redfish_toolkit import util
 
 
 network_adapter = Blueprint("network_adapter", __name__)
@@ -57,11 +57,9 @@ def get_network_adapter(uuid, device_id):
 
     """
     try:
-        oneview_client = util.get_oneview_client()
-
         device_id_validation = int(device_id)
 
-        server_hardware = oneview_client.server_hardware.get(uuid)
+        server_hardware = g.oneview_client.server_hardware.get(uuid)
 
         if (device_id_validation - 1) < 0 or (device_id_validation - 1) >= \
             len(server_hardware["portMap"]["deviceSlots"]):
