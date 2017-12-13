@@ -110,20 +110,25 @@ if __name__ == '__main__':
 
     @app.before_request
     def check_authentication():
+        """ Checks authentication before serving the request"""
         # If authentication_mode = conf we do nothing
         auth_mode = util.config["redfish"]["authentication_mode"]
         if auth_mode == "conf":
+            g.oneview_client = util.get_oneview_client()
             return None
         else:
             # ServiceRoot don't need auth
-            if request.path in {"/redfish/v1", "/redfish/v1/", "/redfish",
-                                "/redfish/"}:
+            if request.path.rstrip("/") in {
+                "/redfish/v1",
+                "/redfish",
+                "/redfish/v1/odata",
+                "/redfish/v1/$metadata"}:
                 g.oneview_client = util.get_oneview_client(None, True)
                 return None
             # If authenticating also we do nothing
             if request.path == "/redfish/v1/SessionService/Sessions" and \
                 request.method == "POST":
-                return
+                return None
             # Any other path we demand auth
             x_auth_token = request.headers.get('x-auth-token')
             if not x_auth_token:

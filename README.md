@@ -62,13 +62,13 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 
   * **schema_dir**: path to where DTMF's Redfish JSON schemas are stored
   
-  * **indent_json**: whether JSON objects on answers are idented or not
+  * **indent_json**: whether JSON objects on answers are indented or not
 
-  * **xml_prettify**: whether XML objects on answers are idented or not
+  * **xml_prettify**: whether XML objects on answers are indented or not
 
   * **redfish_port**: the TCP port where redfish service will listen to
 
-  * **authentication_mode**: can be one of: `conf` or `session`. In `conf` mode authentication credentials from the conf file will be used for all requests. In `session` mode the user must authenticate himself using his own username and password doing a post request to `/redfish/v1/SessionService/Sessions`, passing the parameters UserName and Password in the body. The user will get an `x-auth-token` from this operation and all subsequent operations should send this token as a `x-auth-token` header. The `/redfish` and `/redfish/v1` endpoints can be accessed without authentication. If mode is set to `session` any other request to endpoints appart from those mentioned above are going to be rejected if they don't send a valid `x-auth-token` header.
+  * **authentication_mode**: can be one of: `conf` or `session`. In `conf` mode authentication credentials from the conf file will be used for all requests. In `session` mode the user must authenticate himself using his own username and password doing a post request to `/redfish/v1/SessionService/Sessions`, passing the parameters UserName and Password in the body. The user will get an `x-auth-token` from this operation and all subsequent operations should send this token as a `x-auth-token` header. The `/redfish` and `/redfish/v1` endpoints can be accessed without authentication. If mode is set to `session` any other request to endpoints apart from those mentioned above are going to be rejected if they don't send a valid `x-auth-token` header.
   
 
 * `oneview` section
