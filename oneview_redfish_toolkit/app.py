@@ -110,7 +110,7 @@ if __name__ == '__main__':
 
     @app.before_request
     def check_authentication():
-        """ Checks authentication before serving the request"""
+        """Checks authentication before serving the request"""
         # If authentication_mode = conf we do nothing
         auth_mode = util.config["redfish"]["authentication_mode"]
         if auth_mode == "conf":
@@ -118,11 +118,10 @@ if __name__ == '__main__':
             return None
         else:
             # ServiceRoot don't need auth
-            if request.path.rstrip("/") in {
-                "/redfish/v1",
-                "/redfish",
-                "/redfish/v1/odata",
-                "/redfish/v1/$metadata"}:
+            if request.path.rstrip("/") in {"/redfish/v1",
+                                            "/redfish",
+                                            "/redfish/v1/odata",
+                                            "/redfish/v1/$metadata"}:
                 g.oneview_client = util.get_oneview_client(None, True)
                 return None
             # If authenticating also we do nothing
@@ -138,9 +137,9 @@ if __name__ == '__main__':
             else:
                 try:
                     oneview_client = util.get_oneview_client(x_auth_token)
+                    g.oneview_client = oneview_client
                 except Exception:
                     abort(status.HTTP_401_UNAUTHORIZED, "invalid auth token")
-                g.oneview_client = oneview_client
 
     @app.before_request
     def has_odata_version_header():
