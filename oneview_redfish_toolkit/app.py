@@ -236,7 +236,7 @@ if __name__ == '__main__':
     if config["ssl"]["SSLType"] == "disabled":
         logging.warning(
             "Server is starting in HTTP mode. This is an insecure mode. "
-            "Running the server with HTTPS enabled is highly recommened.")
+            "Running the server with HTTPS enabled is highly recommended.")
 
     try:
         port = int(config["redfish"]["redfish_port"])
