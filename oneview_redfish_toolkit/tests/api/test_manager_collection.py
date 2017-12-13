@@ -57,7 +57,7 @@ class TestManagerCollection(unittest.TestCase):
             'oneview_redfish_toolkit/mockups/redfish/'
             'ManagerCollection.json'
         ) as f:
-            self.manager_collection_mockup = f.read()
+            self.manager_collection_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
@@ -85,8 +85,8 @@ class TestManagerCollection(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = manager_collection.serialize()
+            result = json.loads(manager_collection.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.manager_collection_mockup, json_str)
+        self.assertEqual(self.manager_collection_mockup, result)

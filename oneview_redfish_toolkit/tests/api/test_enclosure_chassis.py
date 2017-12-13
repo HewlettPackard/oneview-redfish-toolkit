@@ -50,7 +50,7 @@ class TestEnclosureChassis(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/EnclosureChassis.json'
         ) as f:
-            self.enclosure_mockup = f.read()
+            self.enclosure_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
@@ -78,8 +78,8 @@ class TestEnclosureChassis(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = enclosure_chassis.serialize()
+            result = json.loads(enclosure_chassis.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.enclosure_mockup, json_str)
+        self.assertEqual(self.enclosure_mockup, result)

@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-
+import json
 import unittest
 from unittest import mock
 
@@ -46,10 +46,10 @@ class TestSession(unittest.TestCase):
         """Tests the serialize function result against known result"""
 
         session = Session("administrator")
-        json_str = session.serialize()
+        result = json.loads(session.serialize())
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Session.json'
         ) as f:
-            session_mockup = f.read()
-        self.assertEqual(session_mockup, json_str)
+            session_mockup = json.load(f)
+        self.assertEqual(session_mockup, result)

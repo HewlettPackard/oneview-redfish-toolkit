@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-
+import json
 import unittest
 from unittest import mock
 
@@ -46,10 +46,10 @@ class TestOdata(unittest.TestCase):
         """Tests the serialize function result against known result"""
 
         odata = Odata()
-        json_str = odata.serialize()
+        result = json.loads(odata.serialize())
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Odata.json'
         ) as f:
-            odata_mockup = f.read()
-        self.assertEqual(odata_mockup, json_str)
+            odata_mockup = json.load(f)
+        self.assertEqual(odata_mockup, result)

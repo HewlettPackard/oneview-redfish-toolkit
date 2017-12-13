@@ -44,7 +44,7 @@ class TestThermal(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/BladeChassisThermal.json'
         ) as f:
-            self.blade_thermal_mockup = f.read()
+            self.blade_thermal_mockup = json.load(f)
 
         # Loading OneView Enclosure Utilization mockup value
         with open(
@@ -57,7 +57,7 @@ class TestThermal(unittest.TestCase):
             'oneview_redfish_toolkit/mockups/redfish/'
             'EnclosureChassisThermal.json'
         ) as f:
-            self.enclosure_thermal_mockup = f.read()
+            self.enclosure_thermal_mockup = json.load(f)
 
         # Loading OneView Rack Topology mockup value
         with open(
@@ -69,7 +69,7 @@ class TestThermal(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/RackChassisThermal.json'
         ) as f:
-            self.rack_thermal_mockup = f.read()
+            self.rack_thermal_mockup = json.load(f)
 
     def test_class_instantiation_for_blade(self):
         # Tests if class is correctly instantiated and validated
@@ -114,11 +114,11 @@ class TestThermal(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            result = json.loads(obj.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.blade_thermal_mockup, json_str)
+        self.assertEqual(self.blade_thermal_mockup, result)
 
     def test_serialize_for_enclosure(self):
         # Tests the serialize function result against known result
@@ -133,11 +133,11 @@ class TestThermal(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            result = json.loads(obj.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.enclosure_thermal_mockup, json_str)
+        self.assertEqual(self.enclosure_thermal_mockup, result)
 
     def test_serialize_for_rack(self):
         # Tests the serialize function result against known result
@@ -152,8 +152,8 @@ class TestThermal(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = obj.serialize()
+            result = json.loads(obj.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-            self.assertEqual(self.rack_thermal_mockup, json_str)
+        self.assertEqual(self.rack_thermal_mockup, result)

@@ -102,7 +102,7 @@ class TestChassis(unittest.TestCase):
                 'oneview_redfish_toolkit/mockups/redfish/'
                 'BladeChassisThermal.json'
         ) as f:
-            blade_chassis_thermal_mockup = f.read()
+            blade_chassis_thermal_mockup = json.load(f)
 
         g.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
@@ -114,12 +114,12 @@ class TestChassis(unittest.TestCase):
             "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
         )
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(blade_chassis_thermal_mockup, json_str)
+        self.assertEqual(blade_chassis_thermal_mockup, result)
 
     @mock.patch.object(thermal, 'g')
     def test_get_blade_not_found(self, g):
@@ -180,7 +180,7 @@ class TestChassis(unittest.TestCase):
             'oneview_redfish_toolkit/mockups/redfish/'
             'EnclosureChassisThermal.json'
         ) as f:
-            enclosure_chasssis_thermal_mockup = f.read()
+            enclosure_chasssis_thermal_mockup = json.load(f)
 
         g.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
@@ -192,12 +192,12 @@ class TestChassis(unittest.TestCase):
             "/redfish/v1/Chassis/0000000000A66101/Thermal"
         )
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(enclosure_chasssis_thermal_mockup, json_str)
+        self.assertEqual(enclosure_chasssis_thermal_mockup, result)
 
     ########
     # Rack #
@@ -217,7 +217,7 @@ class TestChassis(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/RackChassisThermal.json'
         ) as f:
-            rack_chassis_thermal_mockup = f.read()
+            rack_chassis_thermal_mockup = json.load(f)
 
         g.oneview_client.index_resources.get_all.return_value = \
             [{"category": "racks"}]
@@ -228,9 +228,9 @@ class TestChassis(unittest.TestCase):
             "/redfish/v1/Chassis/2AB100LMNB/Thermal"
         )
 
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(rack_chassis_thermal_mockup, json_str)
+        self.assertEqual(rack_chassis_thermal_mockup, result)

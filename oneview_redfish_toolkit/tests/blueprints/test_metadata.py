@@ -88,13 +88,13 @@ class Metadata(unittest.TestCase):
 
         response = self.app.get("/redfish/v1/$metadata")
 
-        json_str = response.data.decode("utf-8")
+        result = response.data.decode("utf-8")
 
         with open(
-            'oneview_redfish_toolkit/mockups/redfish/Metadata.json'
+            'oneview_redfish_toolkit/mockups/redfish/Metadata.xml'
         ) as f:
             metadata_mockup = f.read()
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("text/xml", response.mimetype)
-        self.assertEqual(metadata_mockup, json_str)
+        self.assertEqual(metadata_mockup, result)

@@ -50,10 +50,10 @@ class TestOdata(unittest.TestCase):
         """Tests the serialize function result against known result"""
 
         metadata = Metadata(self.schemas)
-        json_str = metadata.serialize()
+        result = metadata.serialize()
 
         with open(
-            'oneview_redfish_toolkit/mockups/redfish/Metadata.json'
+            'oneview_redfish_toolkit/mockups/redfish/Metadata.xml'
         ) as f:
             metadata_mockup = f.read()
-        self.assertEqual(metadata_mockup, json_str)
+        self.assertEqual(metadata_mockup, result)

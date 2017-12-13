@@ -14,6 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import json
+
 from oneview_redfish_toolkit.api.storage_collection import StorageCollection
 from oneview_redfish_toolkit import util
 
@@ -35,7 +37,7 @@ class TestStorageCollection(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/StorageCollection.json'
         ) as f:
-            self.storage_collection_mockup = f.read()
+            self.storage_collection_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
@@ -59,8 +61,8 @@ class TestStorageCollection(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = storage_collection.serialize()
+            result = json.loads(storage_collection.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.storage_collection_mockup, json_str)
+        self.assertEqual(self.storage_collection_mockup, result)

@@ -43,7 +43,7 @@ class TestEnclosureManager(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/EnclosureManager.json'
         ) as f:
-            self.enclosure_manager_mockup = f.read()
+            self.enclosure_manager_mockup = json.load(f)
 
         self.oneview_version = "3.00.07-0288219"
 
@@ -73,8 +73,8 @@ class TestEnclosureManager(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = enclosure_manager.serialize()
+            result = json.loads(enclosure_manager.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.enclosure_manager_mockup, json_str)
+        self.assertEqual(self.enclosure_manager_mockup, result)

@@ -51,7 +51,7 @@ class TestComputerSystem(unittest.TestCase):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/ComputerSystem.json'
         ) as f:
-            self.computer_system_mockup = f.read()
+            self.computer_system_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
@@ -87,11 +87,11 @@ class TestComputerSystem(unittest.TestCase):
                       " Error: {}".format(e))
 
         try:
-            json_str = computer_system.serialize()
+            result = json.loads(computer_system.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.computer_system_mockup, json_str)
+        self.assertEqual(self.computer_system_mockup, result)
 
     def test_get_oneview_power_configuration(self):
         # Tests invalid mapping values of power state

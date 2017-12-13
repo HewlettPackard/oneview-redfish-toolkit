@@ -93,7 +93,7 @@ class TestNetworkDeviceFunction(unittest.TestCase):
             'oneview_redfish_toolkit/mockups/redfish/'
             'NetworkDeviceFunction1_1_a.json'
         ) as f:
-            network_device_function_mockup = f.read()
+            network_device_function_mockup = json.load(f)
 
         # Create mock response
         g.oneview_client.server_hardware.get.return_value = server_hardware
@@ -105,12 +105,12 @@ class TestNetworkDeviceFunction(unittest.TestCase):
         )
 
         # Gets json from response
-        json_str = response.data.decode("utf-8")
+        result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(network_device_function_mockup, json_str)
+        self.assertEqual(network_device_function_mockup, result)
 
     @mock.patch.object(network_device_function, 'g')
     def test_get_network_device_function_invalid_device_id(self, g):

@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-
+import json
 import unittest
 from unittest import mock
 
@@ -47,14 +47,14 @@ class TestRedfishError(unittest.TestCase):
         """Tests the serialize function result against known result"""
 
         redfish_error = RedfishError("GeneralError", "General Error")
-        json_str = redfish_error.serialize()
+        result = json.loads(redfish_error.serialize())
 
         with open(
             'oneview_redfish_toolkit/mockups/errors/'
             'RedfishErrorNoExtendedInfo.json'
         ) as f:
-            redfish_error_mockup = f.read()
-        self.assertEqual(redfish_error_mockup, json_str)
+            redfish_error_mockup = json.load(f)
+        self.assertEqual(redfish_error_mockup, result)
 
     def test_add_extended_info_invalid_error_code(self):
         """Tests the add_extended_info invalid error code"""
@@ -85,13 +85,13 @@ class TestRedfishError(unittest.TestCase):
                 'Message has 2 replacements to be made but 1 args where sent')
 
     def test_redfish_error_with_extended_info(self):
-        """Tests the add_extended_info with two aditional info"""
+        """Tests the add_extended_info with two additional info"""
 
         with open(
             'oneview_redfish_toolkit/mockups/errors/'
             'RedfishErrorExtendedInfo.json'
         ) as f:
-            redfish_error_mockup = f.read()
+            redfish_error_mockup = json.load(f)
 
         try:
             redfish_error = RedfishError(
@@ -109,6 +109,5 @@ class TestRedfishError(unittest.TestCase):
         except errors.OneViewRedfishError as e:
             self.fail("Failled to add Extened info".format(e))
 
-        json_str = redfish_error.serialize()
-
-        self.assertEqual(redfish_error_mockup, json_str)
+        result = json.loads(redfish_error.serialize())
+        self.assertEqual(redfish_error_mockup, result)

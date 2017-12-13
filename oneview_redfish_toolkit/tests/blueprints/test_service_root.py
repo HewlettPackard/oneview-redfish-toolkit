@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import json
 import unittest
 from unittest import mock
 
@@ -115,10 +116,10 @@ class TestServiceRoot(unittest.TestCase):
 
         result = self.app.get("/redfish/v1/")
 
-        json_str = result.data.decode("utf-8")
+        result = json.loads(result.data.decode("utf-8"))
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
         ) as f:
-            service_root_mockup = f.read()
-        self.assertEqual(service_root_mockup, json_str)
+            service_root_mockup = json.load(f)
+        self.assertEqual(service_root_mockup, result)
