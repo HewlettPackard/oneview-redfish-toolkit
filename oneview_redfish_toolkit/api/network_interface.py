@@ -40,11 +40,9 @@ class NetworkInterface(RedfishJsonValidator):
             "#NetworkInterface.v1_1_0.NetworkInterface"
         self.redfish["Id"] = device_id
 
-        device_name = self.get_resource_by_id(
+        self.redfish["Name"] = self.get_resource_by_id(
             server_hardware["portMap"]["deviceSlots"], "deviceNumber",
             device_id, "Network Interface")["deviceName"]
-
-        self.redfish["Name"] = device_name
 
         self.redfish["Links"] = dict()
         self.redfish["Links"]["NetworkAdapter"] = dict()

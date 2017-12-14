@@ -44,18 +44,24 @@ class NetworkDeviceFunction(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        physical_ports = self.get_resource_by_id(
-            server_hardware["portMap"]["deviceSlots"], "deviceNumber",
-            device_id, "Network Device Function")["physicalPorts"]
-
         # device_function_id validation
         try:
             port_number, virtual_port_number, virtual_port_function = \
                 device_function_id.split("_")
-            port_index = int(port_number) - 1
-            virtual_port_index = int(virtual_port_number) - 1
-            virtual_port_function_validation = physical_ports[port_index][
-                "virtualPorts"][virtual_port_index]["portFunction"]
+
+            physical_ports = self.get_resource_by_id(
+                server_hardware["portMap"]["deviceSlots"], "deviceNumber",
+                device_id, "Network Device Function")["physicalPorts"]
+
+            port = self.get_resource_by_id(
+                physical_ports, "portNumber",
+                port_number, "Network Device Function")
+
+            virtual_port = self.get_resource_by_id(
+                port["virtualPorts"], "portNumber",
+                virtual_port_number, "Network Device Function")
+
+            virtual_port_function_validation = virtual_port["portFunction"]
         except Exception:
             raise OneViewRedfishResourceNotFoundError(
                 device_function_id, "NetworkDeviceFunction")
@@ -71,11 +77,7 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             "function {}".format(
                 port_number, virtual_port_number, virtual_port_function)
 
-        port = physical_ports[port_index]
-
         if port["type"] == "Ethernet":
-            virtual_port = physical_ports[port_index]["virtualPorts"][
-                virtual_port_index]
             self.redfish["Ethernet"] = dict()
             self.redfish["Ethernet"]["MACAddress"] = virtual_port["mac"]
             self.redfish["NetDevFuncType"] = "Ethernet"
