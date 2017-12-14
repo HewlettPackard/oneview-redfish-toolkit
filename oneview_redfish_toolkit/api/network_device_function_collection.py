@@ -40,9 +40,12 @@ class NetworkDeviceFunctionCollection(RedfishJsonValidator):
         self.redfish["Name"] = "Network Device Function Collection"
         members_count = 0
         self.redfish["Members"] = list()
-        index = int(device_id) - 1
-        devices = server_hardware["portMap"]["deviceSlots"][index]
-        for port in devices["physicalPorts"]:
+
+        physical_ports = self.get_resource_by_id(
+            server_hardware["portMap"]["deviceSlots"], "deviceNumber",
+            device_id, "Network Device Function Collection")["physicalPorts"]
+
+        for port in physical_ports:
             physical_port = str(port["portNumber"])
             for virtual_port in port["virtualPorts"]:
                 virtual_port_id = "_".join((

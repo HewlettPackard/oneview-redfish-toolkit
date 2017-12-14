@@ -42,17 +42,21 @@ class NetworkPort(RedfishJsonValidator):
                 server_hardware: Oneview's server hardware dict
         """
         super().__init__(self.SCHEMA_NAME)
-        index = int(device_id) - 1
+
+        physical_ports = self.get_resource_by_id(
+            server_hardware["portMap"]["deviceSlots"], "deviceNumber",
+            device_id, "Network Port")["physicalPorts"]
+
         # port_id validation
         try:
             port_index = -1
             port_count = -1
-            for port in server_hardware["portMap"]["deviceSlots"][index][
-                "physicalPorts"]:
+            for port in physical_ports:
                 port_count += 1
                 if port["portNumber"] == int(port_id):
-                    if port["type"] not in [
-                        "Ethernet", "FibreChannel", "Infiniband"]:
+                    if port["type"] not in ["Ethernet",
+                                            "FibreChannel",
+                                            "InfiniBand"]:
                         raise OneViewRedfishError(
                             "Port id refers to invalid port type")
                     port_index = port_count
@@ -64,8 +68,7 @@ class NetworkPort(RedfishJsonValidator):
             raise OneViewRedfishResourceNotFoundError(
                 port_id, "NetworkPort")
 
-        port = server_hardware["portMap"]["deviceSlots"][index][
-            "physicalPorts"][port_index]
+        port = physical_ports[port_index]
 
         self.redfish["@odata.type"] = \
             "#NetworkPort.v1_1_0.NetworkPort"
@@ -87,4 +90,5 @@ class NetworkPort(RedfishJsonValidator):
             server_hardware["uuid"] + \
             "/NetworkAdapters/" + device_id + \
             "/NetworkPorts/" + port_id
+
         self._validate()

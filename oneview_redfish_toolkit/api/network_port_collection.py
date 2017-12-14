@@ -37,7 +37,9 @@ class NetworkPortCollection(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        physical_ports = self._get_physical_ports(server_hardware, device_id)
+        physical_ports = self.get_resource_by_id(
+            server_hardware["portMap"]["deviceSlots"], "deviceNumber",
+            device_id, "Network Port Collection")["physicalPorts"]
 
         self.redfish["@odata.type"] = \
             "#NetworkPortCollection.NetworkPortCollection"
@@ -61,11 +63,3 @@ class NetworkPortCollection(RedfishJsonValidator):
             .format(server_hardware["uuid"], device_id)
 
         self._validate()
-
-    def _get_physical_ports(self, server_hardware, device_id):
-        """Returns all physical ports corresponding to device"""
-        try:
-            return (server_hardware["portMap"]["deviceSlots"]
-                    [device_id - 1]["physicalPorts"])
-        except IndexError:
-            raise Exception("Invalid id for device")

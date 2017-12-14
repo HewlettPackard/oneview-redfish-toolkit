@@ -111,7 +111,7 @@ if __name__ == '__main__':
     @app.before_request
     def check_authentication():
         """Checks authentication before serving the request"""
-        # If authentication_mode = conf we do nothing
+        # If authentication_mode = conf don't need auth
         auth_mode = util.config["redfish"]["authentication_mode"]
         if auth_mode == "conf":
             g.oneview_client = util.get_oneview_client()
@@ -124,7 +124,7 @@ if __name__ == '__main__':
                                             "/redfish/v1/$metadata"}:
                 g.oneview_client = util.get_oneview_client(None, True)
                 return None
-            # If authenticating also we do nothing
+            # If authenticating we do nothing
             if request.path == "/redfish/v1/SessionService/Sessions" and \
                 request.method == "POST":
                 return None
