@@ -38,13 +38,13 @@ Then, proceed with:
 ```bash
 $ cd oneview-redfish-toolkit # enter the service folder
 # edit redfish.conf
-$ pip install -r requirements.txt # to install all requirements into the virtual environemnt
+$ pip install -r requirements.txt # to install all requirements into the virtual environment
 $ ./run.sh    # to launch the service
 ```
 
 ## Redfish API Implementation
 
-A status of the Redfish standand covered by the implemented service is available at [Wiki section](https://github.com/HewlettPackard/oneview-redfish-toolkit/wiki/Redfish-Implementation-Status).
+A status of the Redfish standard covered by the implemented service is available at [Wiki section](https://github.com/HewlettPackard/oneview-redfish-toolkit/wiki/Redfish-Implementation-Status).
 
 ## SDK Documentation
 
@@ -105,7 +105,7 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 
   * **commonName**: FQDN of the server or it's IP address. If not provided will detect de default route IP and use it. **Optional.**
  
-  * **emailAddress**: Email address to contact the responsable for this server/certificate. This is an optional information. Will not be added to certificate if not informed. **Optional.**
+  * **emailAddress**: Email address to contact the responsible for this server/certificate. This is an optional information. Will not be added to certificate if not informed. **Optional.**
 
 * `schemas` section
 
@@ -129,7 +129,7 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
   
   * **Event**: DTMF's Redfish JSON schema for `Event` objects
 
-Note: HPE OneView' credentials are stred in clear-text. Make sure only authorized users can access this file.
+Note: HPE OneView' credentials are stored in clear-text. Make sure only authorized users can access this file.
 
 ## Contributing
 

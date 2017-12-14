@@ -39,17 +39,17 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             Args:
                 device_id: ID of the NetworkAdapter
                 device_function_id: ID of the DeviceFunction. Expected format:
-                    portNumber_virtualPortNumber_virutalPortFunction
+                    portNumber_virtualPortNumber_virtualPortFunction
                 server_hardware: Oneview's server hardware dict
         """
         super().__init__(self.SCHEMA_NAME)
         index = int(device_id) - 1
         # device_function_id validation
         try:
-            port_Number, vitualPortNumber, virtualPortFuncion = \
+            port_number, virtual_port_number, virtual_port_funcion = \
                 device_function_id.split("_")
-            port_index = int(port_Number) - 1
-            virtual_port_index = int(vitualPortNumber) - 1
+            port_index = int(port_number) - 1
+            virtual_port_index = int(virtual_port_number) - 1
             virtual_port_function_validation = server_hardware["portMap"][
                 "deviceSlots"][index]["physicalPorts"][port_index][
                 "virtualPorts"][virtual_port_index]["portFunction"]
@@ -57,7 +57,7 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             raise OneViewRedfishResourceNotFoundError(
                 device_function_id, "NetworkDeviceFunction")
 
-        if virtual_port_function_validation != virtualPortFuncion:
+        if virtual_port_function_validation != virtual_port_funcion:
             raise OneViewRedfishResourceNotFoundError(
                 device_function_id, "NetworkDeviceFunction")
 
@@ -66,7 +66,7 @@ class NetworkDeviceFunction(RedfishJsonValidator):
         self.redfish["Id"] = device_function_id
         self.redfish["Name"] = "Physical port {}, virtual port {}, device "\
             "function {}".format(
-                port_Number, vitualPortNumber, virtualPortFuncion)
+                port_number, virtual_port_number, virtual_port_funcion)
 
         port = server_hardware["portMap"]["deviceSlots"][index][
             "physicalPorts"][port_index]
@@ -89,4 +89,5 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             server_hardware["uuid"] + \
             "/NetworkAdapters/" + device_id + \
             "/NetworkDeviceFunctions/" + device_function_id
+
         self._validate()

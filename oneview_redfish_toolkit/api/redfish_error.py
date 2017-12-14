@@ -29,7 +29,7 @@ class RedfishError(RedfishJsonValidator):
     """Creates a Redfish Error Dict
 
         Populates self.redfish with errors. Will not validate as there's no
-        schema to validate agains.
+        schema to validate against.
 
     """
 
@@ -43,7 +43,7 @@ class RedfishError(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
         self.redfish["error"] = collections.OrderedDict()
-        # Check if Code is a valide Code Error in the registry
+        # Check if Code is a valid Code Error in the registry
         if code not in util.registry_dict["Base"]["Messages"]:
             raise OneViewRedfishResourceNotFoundError(code, "registry")
         self.redfish["error"]["code"] = "Base.1.1." + code
@@ -66,13 +66,13 @@ class RedfishError(RedfishJsonValidator):
                 message_args: List of string to replace markers on Redfish
                     messages. Must have the same length as the number of %
                     signs found in the registry Message field
-                related_properties: Proprerties relates to this e error if
+                related_properties: Properties relates to this e error if
                     necessary
 
         """
         messages = util.registry_dict["Base"]["Messages"]
 
-        # Verify if message_id existis in registry
+        # Verify if message_id exists in registry
         try:
             severity = messages[message_id]["Severity"]
         except Exception:

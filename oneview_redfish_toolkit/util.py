@@ -296,13 +296,13 @@ def get_ip():
     s = socket.socket(type=socket.SOCK_DGRAM)
     try:
         s.connect(("8.8.8.8", 1))
-        IP = s.getsockname()[0]
+        ip = s.getsockname()[0]
     except Exception as e:
         logging.exception(e)
-        IP = "127.0.0.1"
+        ip = "127.0.0.1"
     finally:
         s.close()
-    return IP
+    return ip
 
 
 def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
@@ -313,7 +313,7 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
             file_name: name of the files that will be created. It will append
                 .crt to certificate file and .key to key file
             key_length: key length in bits
-            key_type: cryto type: RSA or DSA; defaults to RSA
+            key_type: crypto type: RSA or DSA; defaults to RSA
         Returns:
             Nothing
         Exceptions:

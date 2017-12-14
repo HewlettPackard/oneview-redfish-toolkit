@@ -83,13 +83,13 @@ class NetworkAdapter(RedfishJsonValidator):
                     str(port["portNumber"]),
                     str(virtual_port["portNumber"]),
                     virtual_port["portFunction"]))
-                network_device_funcion = {
+                network_device_function = {
                     "@odata:id": "/redfish/v1/Chassis/" +
                     server_hardware["uuid"] + "/NetworkAdapters/" +
                     device_id + "/NetworkDeviceFunctions/" +
                     network_device_function_id}
                 self.redfish["Controllers"][0]["Links"][
-                    "NetworkDeviceFunctions"].append(network_device_funcion)
+                    "NetworkDeviceFunctions"].append(network_device_function)
         self.redfish["NetworkPorts"] = dict()
         self.redfish["NetworkPorts"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + server_hardware["uuid"] + \

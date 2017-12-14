@@ -20,7 +20,6 @@ import re
 from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
-
 # Project libs
 from oneview_redfish_toolkit import util
 
@@ -41,29 +40,29 @@ class Metadata(object):
             "xmlns:edmx", "http://docs.oasis-open.org/odata/ns/edmx")
         metadata.set("Version", "4.0")
         for key in reference_list:
-            Reference = ET.SubElement(metadata, "edmx:Reference")
-            Reference.set(
+            reference = ET.SubElement(metadata, "edmx:Reference")
+            reference.set(
                 "Uri", "http://redfish.dmtf.org/schemas/v1/{}.xml".format(key))
-            Include = ET.SubElement(Reference, "edmx:Include")
-            Include.set("Namespace", key)
+            include = ET.SubElement(reference, "edmx:Include")
+            include.set("Namespace", key)
             if key.find('Collection') == -1:
-                Include2 = ET.SubElement(Reference, "edmx:Include")
-                FileVersion = re.search(
+                include2 = ET.SubElement(reference, "edmx:Include")
+                file_version = re.search(
                     '.+\.v(\d+_\d+_\d+)\.json', reference_list[key]).group(1)
-                FileVersion = FileVersion.replace("_", ".")
-                Include2.set("Namespace", key + "." + FileVersion)
-        Reference = ET.SubElement(metadata, "edmx:Reference")
-        Reference.set(
+                file_version = file_version.replace("_", ".")
+                include2.set("Namespace", key + "." + file_version)
+        reference = ET.SubElement(metadata, "edmx:Reference")
+        reference.set(
             "Uri", "http://redfish.dmtf.org/schemas/v1/RedfishExtensions.xml")
-        Include = ET.SubElement(Reference, "edmx:Include")
-        Include.set("Namespace", "RedfishExtensions.1.0.0")
-        Include.set("Alias", "RedfishExtensions")
-        DataServices = ET.SubElement(metadata, "edmx:DataServices")
-        Schema = ET.SubElement(DataServices, "Schema")
-        Schema.set("NameSpace", "Service")
-        EntityContainer = ET.SubElement(Schema, "EntityContainer")
-        EntityContainer.set("Name", "Service")
-        EntityContainer.set("Extends", "ServiceRoot.1.0.0.ServiceContainer")
+        include = ET.SubElement(reference, "edmx:Include")
+        include.set("Namespace", "RedfishExtensions.1.0.0")
+        include.set("Alias", "RedfishExtensions")
+        data_services = ET.SubElement(metadata, "edmx:DataServices")
+        schema = ET.SubElement(data_services, "Schema")
+        schema.set("NameSpace", "Service")
+        entity_container = ET.SubElement(schema, "EntityContainer")
+        entity_container.set("Name", "Service")
+        entity_container.set("Extends", "ServiceRoot.1.0.0.ServiceContainer")
 
         self.metadata = metadata
 

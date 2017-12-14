@@ -25,7 +25,7 @@ class Odata(RedfishJsonValidator):
     """Creates a hardcoded odata redfish dict
 
         Populates self.redfish with a hardcoded odata values. These should
-        have all service ofered by the servers.
+        have all service offered by the servers.
 
     """
 

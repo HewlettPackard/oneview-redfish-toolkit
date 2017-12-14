@@ -40,7 +40,6 @@ def get_service_root():
     """
 
     try:
-        # Gets serverhardware for given UUID
         appliance_node_information = \
             g.oneview_client.appliance_node_information.get_version()
         uuid = appliance_node_information['uuid']

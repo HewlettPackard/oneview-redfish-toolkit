@@ -34,7 +34,6 @@ class BladeManager(Manager):
 
             Args:
                 server_hardware: A dict for a server hardware
-                ov_version: OneView version string
         """
 
         super().__init__(server_hardware, server_hardware['mpFirmwareVersion'])

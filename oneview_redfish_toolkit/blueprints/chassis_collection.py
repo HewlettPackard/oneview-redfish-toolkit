@@ -43,7 +43,7 @@ def get_chassis_collection():
 
         Returns:
             JSON: Redfish json with ChassisCollection.
-            When Server hardwares, enclosures or racks is not found
+            When Server hardware, enclosures or racks is not found
             calls abort(404).
 
         Exceptions:
