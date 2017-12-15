@@ -60,13 +60,7 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             virtual_port = self.get_resource_by_id(
                 port["virtualPorts"], "portNumber",
                 virtual_port_number, "Network Device Function")
-
-            virtual_port_function_validation = virtual_port["portFunction"]
         except Exception:
-            raise OneViewRedfishResourceNotFoundError(
-                device_function_id, "NetworkDeviceFunction")
-
-        if virtual_port_function_validation != virtual_port_function:
             raise OneViewRedfishResourceNotFoundError(
                 device_function_id, "NetworkDeviceFunction")
 

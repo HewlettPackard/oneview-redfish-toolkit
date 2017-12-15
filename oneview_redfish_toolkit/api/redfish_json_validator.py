@@ -19,6 +19,8 @@ import json
 import jsonschema
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit import util
 
 
@@ -113,10 +115,11 @@ class RedfishJsonValidator(object):
 
             Returns:
                 Resource in the list.
-                Returns None if the resource was not found.
 
             Exception:
                 OneViewRedfishError: If the ID is not an integer.
+                OneViewRedfishResourceNotFoundError: If the resource
+                    was not found.
         """
         try:
             resource_id = int(resource_id)
@@ -127,4 +130,4 @@ class RedfishJsonValidator(object):
             if resource_list[i][field_name] == resource_id:
                 return resource_list[i]
 
-        return None
+        raise OneViewRedfishResourceNotFoundError("Object", resource_name)

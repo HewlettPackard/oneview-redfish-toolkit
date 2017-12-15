@@ -48,6 +48,9 @@ class NetworkPort(RedfishJsonValidator):
         port = self.get_resource_by_id(
             physical_ports, "portNumber", port_id, "Network Port")
 
+        if port["type"] not in ["Ethernet", "FibreChannel", "InfiniBand"]:
+            raise OneViewRedfishError("Port ID refers to invalid port type.")
+
         self.redfish["@odata.type"] = \
             "#NetworkPort.v1_1_0.NetworkPort"
         self.redfish["Id"] = port_id

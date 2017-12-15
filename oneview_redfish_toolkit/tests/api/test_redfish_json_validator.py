@@ -24,6 +24,8 @@ import unittest
 from unittest import mock
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
 from oneview_redfish_toolkit import util
@@ -79,9 +81,10 @@ class TestRedfishJsonValidator(unittest.TestCase):
 
     def test_get_resource_empty_list(self):
         redfish_json_validator = RedfishJsonValidator('ServiceRoot')
-        self.assertEqual(
-            None, redfish_json_validator.get_resource_by_id(
-                [], "deviceNumber", 1, "Network Adapter"))
+
+        with self.assertRaises(OneViewRedfishResourceNotFoundError):
+            redfish_json_validator.get_resource_by_id(
+                [], "deviceNumber", 1, "Network Adapter")
 
     def test_get_resource_invalid_id(self):
         redfish_json_validator = RedfishJsonValidator('ServiceRoot')
