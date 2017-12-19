@@ -68,8 +68,7 @@ class TestRedfishJsonValidator(unittest.TestCase):
             server_hardware = json.load(f)
 
         device_slot = redfish_json_validator.get_resource_by_id(
-            server_hardware["portMap"]["deviceSlots"], "deviceNumber",
-            3, "Network Adapter")
+            server_hardware["portMap"]["deviceSlots"], "deviceNumber", 3)
 
         json_device_slot = None
 
@@ -83,12 +82,11 @@ class TestRedfishJsonValidator(unittest.TestCase):
         redfish_json_validator = RedfishJsonValidator('ServiceRoot')
 
         with self.assertRaises(OneViewRedfishResourceNotFoundError):
-            redfish_json_validator.get_resource_by_id(
-                [], "deviceNumber", 1, "Network Adapter")
+            redfish_json_validator.get_resource_by_id([], "deviceNumber", 1)
 
     def test_get_resource_invalid_id(self):
         redfish_json_validator = RedfishJsonValidator('ServiceRoot')
 
         with self.assertRaises(OneViewRedfishError):
             redfish_json_validator.get_resource_by_id(
-                [], "deviceNumber", "INVALID_ID", "Network Adapter")
+                [], "deviceNumber", "INVALID_ID")

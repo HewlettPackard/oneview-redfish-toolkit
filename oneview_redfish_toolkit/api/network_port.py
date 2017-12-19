@@ -43,10 +43,9 @@ class NetworkPort(RedfishJsonValidator):
 
         physical_ports = self.get_resource_by_id(
             server_hardware["portMap"]["deviceSlots"], "deviceNumber",
-            device_id, "Network Port")["physicalPorts"]
+            device_id)["physicalPorts"]
 
-        port = self.get_resource_by_id(
-            physical_ports, "portNumber", port_id, "Network Port")
+        port = self.get_resource_by_id(physical_ports, "portNumber", port_id)
 
         if port["type"] not in ["Ethernet", "FibreChannel", "InfiniBand"]:
             raise OneViewRedfishError("Port ID refers to invalid port type.")

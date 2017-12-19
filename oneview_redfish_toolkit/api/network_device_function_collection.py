@@ -43,7 +43,7 @@ class NetworkDeviceFunctionCollection(RedfishJsonValidator):
 
         physical_ports = self.get_resource_by_id(
             server_hardware["portMap"]["deviceSlots"], "deviceNumber",
-            device_id, "Network Device Function Collection")["physicalPorts"]
+            device_id)["physicalPorts"]
 
         for port in physical_ports:
             physical_port = str(port["portNumber"])

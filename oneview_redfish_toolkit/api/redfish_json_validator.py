@@ -99,8 +99,8 @@ class RedfishJsonValidator(object):
             sort_keys=False,
             indent=indent)
 
-    def get_resource_by_id(self, resource_list, resource_number_key,
-                           resource_id, resource_name):
+    def get_resource_by_id(self, resource_list,
+                           resource_number_key, resource_id):
         """Gets a specific resource in the resource list
 
             Validates the resource ID and gets the resource in
@@ -112,7 +112,6 @@ class RedfishJsonValidator(object):
                     number in the JSON.
                 resource_id: Resource's ID that will be searched
                     in the resource list.
-                resource_name: Resource name used to improve error message.
 
             Returns:
                 Resource in the list.
@@ -125,10 +124,12 @@ class RedfishJsonValidator(object):
         try:
             resource_id = int(resource_id)
         except ValueError:
-            raise OneViewRedfishError("Invalid {} ID".format(resource_name))
+            raise OneViewRedfishError("Invalid {} ID".format(
+                self.__class__.__name__))
 
         for resource in resource_list:
             if resource[resource_number_key] == resource_id:
                 return resource
 
-        raise OneViewRedfishResourceNotFoundError("Object", resource_name)
+        raise OneViewRedfishResourceNotFoundError(
+            "Object", self.__class__.__name__)

@@ -51,15 +51,13 @@ class NetworkDeviceFunction(RedfishJsonValidator):
 
             physical_ports = self.get_resource_by_id(
                 server_hardware["portMap"]["deviceSlots"], "deviceNumber",
-                device_id, "Network Device Function")["physicalPorts"]
+                device_id)["physicalPorts"]
 
             port = self.get_resource_by_id(
-                physical_ports, "portNumber",
-                port_number, "Network Device Function")
+                physical_ports, "portNumber", port_number)
 
             virtual_port = self.get_resource_by_id(
-                port["virtualPorts"], "portNumber",
-                virtual_port_number, "Network Device Function")
+                port["virtualPorts"], "portNumber", virtual_port_number)
         except Exception:
             raise OneViewRedfishResourceNotFoundError(
                 device_function_id, "NetworkDeviceFunction")

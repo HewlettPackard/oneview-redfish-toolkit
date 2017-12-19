@@ -44,8 +44,8 @@ class NetworkAdapter(RedfishJsonValidator):
         self.redfish["Id"] = device_id
 
         device_slot = self.get_resource_by_id(
-            server_hardware["portMap"]["deviceSlots"], "deviceNumber",
-            device_id, "Network Adapter")
+            server_hardware["portMap"]["deviceSlots"],
+            "deviceNumber", device_id)
 
         self.redfish["Name"] = device_slot["deviceName"]
 
