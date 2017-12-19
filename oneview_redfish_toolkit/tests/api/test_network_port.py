@@ -18,8 +18,7 @@ import json
 import unittest
 from unittest import mock
 
-from oneview_redfish_toolkit.api.errors import \
-    OneViewRedfishResourceNotFoundError
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.network_port import \
     NetworkPort
 from oneview_redfish_toolkit import util
@@ -96,8 +95,8 @@ class TestNetworkPort(unittest.TestCase):
                 self.device_id,
                 "invalid_port_id",
                 self.server_hardware)
-        except OneViewRedfishResourceNotFoundError as e:
-            self.assertIsInstance(e, OneViewRedfishResourceNotFoundError)
+        except OneViewRedfishError as e:
+            self.assertIsInstance(e, OneViewRedfishError)
         except Exception as e:
             self.fail("Failed to instantiate NetworkPort class."
                       " Error: {}".format(e))

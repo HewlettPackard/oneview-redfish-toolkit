@@ -42,41 +42,45 @@ class NetworkAdapter(RedfishJsonValidator):
         self.redfish["@odata.type"] = \
             "#NetworkAdapter.v1_0_1.NetworkAdapter"
         self.redfish["Id"] = device_id
-        index = int(device_id) - 1
-        self.redfish["Name"] = \
-            server_hardware["portMap"]["deviceSlots"][index]["deviceName"]
+
+        device_slot = self.get_resource_by_id(
+            server_hardware["portMap"]["deviceSlots"],
+            "deviceNumber", device_id)
+
+        self.redfish["Name"] = device_slot["deviceName"]
 
         self.redfish["Controllers"] = list()
         self.redfish["Controllers"].append(collections.OrderedDict())
+
         # ControllerCapabilities property
         self.redfish["Controllers"][0]["ControllerCapabilities"] = \
             collections.OrderedDict()
-        port_count = len(
-            server_hardware["portMap"]["deviceSlots"][index]["physicalPorts"])
+        port_count = len(device_slot["physicalPorts"])
         virtual_port_count = 0
         if port_count > 0:
             for i in range(0, port_count):
                 virtual_port_count += len(
-                    server_hardware["portMap"]["deviceSlots"][index]
-                    ["physicalPorts"][i]["virtualPorts"])
+                    device_slot["physicalPorts"][i]["virtualPorts"])
         self.redfish["Controllers"][0]["ControllerCapabilities"][
             "NetworkPortCount"] = port_count
         self.redfish["Controllers"][0]["ControllerCapabilities"][
             "NetworkDeviceFunctionCount"] = virtual_port_count
+
         # Links property
         self.redfish["Controllers"][0]["Links"] = collections.OrderedDict()
         self.redfish["Controllers"][0]["Links"]["NetworkPorts"] = list()
         self.redfish["Controllers"][0]["Links"]["NetworkDeviceFunctions"] = \
             list()
+
         # Adding NetworkPorts
-        for port in server_hardware["portMap"]["deviceSlots"][index][
-            "physicalPorts"]:
+        for port in device_slot["physicalPorts"]:
             new_port = {
                 "@odata:id": "/redfish/v1/Chassis/" + server_hardware["uuid"] +
                 "/NetworkAdapters/" + device_id + "/NetworkPorts/" +
                 str(port["portNumber"])}
             self.redfish["Controllers"][0]["Links"]["NetworkPorts"].\
                 append(new_port)
+
             # Adding NetworkDeviceFunction
             for virtual_port in port["virtualPorts"]:
                 network_device_function_id = "_".join((
@@ -104,4 +108,5 @@ class NetworkAdapter(RedfishJsonValidator):
             "/redfish/v1/$metadata#NetworkAdapter.NetworkAdapter"
         self.redfish["@odata.id"] = "/redfish/v1/Systems/" + \
             server_hardware["uuid"] + "/NetworkAdapters/" + device_id
+
         self._validate()

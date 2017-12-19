@@ -15,8 +15,6 @@
 # under the License.
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-from oneview_redfish_toolkit.api.errors import \
-    OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 
@@ -42,30 +40,15 @@ class NetworkPort(RedfishJsonValidator):
                 server_hardware: Oneview's server hardware dict
         """
         super().__init__(self.SCHEMA_NAME)
-        index = int(device_id) - 1
-        # port_id validation
-        try:
-            port_index = -1
-            port_count = -1
-            for port in server_hardware["portMap"]["deviceSlots"][index][
-                "physicalPorts"]:
-                port_count += 1
-                if port["portNumber"] == int(port_id):
-                    if port["type"] not in [
-                        "Ethernet", "FibreChannel", "Infiniband"]:
-                        raise OneViewRedfishError(
-                            "Port id refers to invalid port type")
-                    port_index = port_count
-                    break
-            if port_index == -1:
-                raise OneViewRedfishResourceNotFoundError(
-                    port_id, "NetworkPort")
-        except Exception:
-            raise OneViewRedfishResourceNotFoundError(
-                port_id, "NetworkPort")
 
-        port = server_hardware["portMap"]["deviceSlots"][index][
-            "physicalPorts"][port_index]
+        physical_ports = self.get_resource_by_id(
+            server_hardware["portMap"]["deviceSlots"], "deviceNumber",
+            device_id)["physicalPorts"]
+
+        port = self.get_resource_by_id(physical_ports, "portNumber", port_id)
+
+        if port["type"] not in ["Ethernet", "FibreChannel", "InfiniBand"]:
+            raise OneViewRedfishError("Port ID refers to invalid port type.")
 
         self.redfish["@odata.type"] = \
             "#NetworkPort.v1_1_0.NetworkPort"
@@ -87,4 +70,5 @@ class NetworkPort(RedfishJsonValidator):
             server_hardware["uuid"] + \
             "/NetworkAdapters/" + device_id + \
             "/NetworkPorts/" + port_id
+
         self._validate()

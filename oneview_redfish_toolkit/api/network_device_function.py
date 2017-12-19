@@ -43,21 +43,22 @@ class NetworkDeviceFunction(RedfishJsonValidator):
                 server_hardware: Oneview's server hardware dict
         """
         super().__init__(self.SCHEMA_NAME)
-        index = int(device_id) - 1
+
         # device_function_id validation
         try:
-            port_number, virtual_port_number, virtual_port_funcion = \
+            port_number, virtual_port_number, virtual_port_function = \
                 device_function_id.split("_")
-            port_index = int(port_number) - 1
-            virtual_port_index = int(virtual_port_number) - 1
-            virtual_port_function_validation = server_hardware["portMap"][
-                "deviceSlots"][index]["physicalPorts"][port_index][
-                "virtualPorts"][virtual_port_index]["portFunction"]
-        except Exception:
-            raise OneViewRedfishResourceNotFoundError(
-                device_function_id, "NetworkDeviceFunction")
 
-        if virtual_port_function_validation != virtual_port_funcion:
+            physical_ports = self.get_resource_by_id(
+                server_hardware["portMap"]["deviceSlots"], "deviceNumber",
+                device_id)["physicalPorts"]
+
+            port = self.get_resource_by_id(
+                physical_ports, "portNumber", port_number)
+
+            virtual_port = self.get_resource_by_id(
+                port["virtualPorts"], "portNumber", virtual_port_number)
+        except Exception:
             raise OneViewRedfishResourceNotFoundError(
                 device_function_id, "NetworkDeviceFunction")
 
@@ -66,15 +67,9 @@ class NetworkDeviceFunction(RedfishJsonValidator):
         self.redfish["Id"] = device_function_id
         self.redfish["Name"] = "Physical port {}, virtual port {}, device "\
             "function {}".format(
-                port_number, virtual_port_number, virtual_port_funcion)
-
-        port = server_hardware["portMap"]["deviceSlots"][index][
-            "physicalPorts"][port_index]
+                port_number, virtual_port_number, virtual_port_function)
 
         if port["type"] == "Ethernet":
-            virtual_port = server_hardware["portMap"]["deviceSlots"][index][
-                "physicalPorts"][port_index]["virtualPorts"][
-                virtual_port_index]
             self.redfish["Ethernet"] = dict()
             self.redfish["Ethernet"]["MACAddress"] = virtual_port["mac"]
             self.redfish["NetDevFuncType"] = "Ethernet"

@@ -19,9 +19,13 @@
 """
 
 import collections
+import json
 import unittest
 from unittest import mock
 
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
 from oneview_redfish_toolkit import util
@@ -53,3 +57,36 @@ class TestRedfishJsonValidator(unittest.TestCase):
         self.assertIsInstance(
             redfish_json_validator.redfish,
             collections.OrderedDict)
+
+    def test_get_resource_by_id(self):
+        redfish_json_validator = RedfishJsonValidator('ServiceRoot')
+
+        # Loading server_hardware mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
+        ) as f:
+            server_hardware = json.load(f)
+
+        device_slot = redfish_json_validator.get_resource_by_id(
+            server_hardware["portMap"]["deviceSlots"], "deviceNumber", 3)
+
+        json_device_slot = None
+
+        for i in server_hardware["portMap"]["deviceSlots"]:
+            if i["deviceNumber"] == 3:
+                json_device_slot = i
+
+        self.assertEqual(device_slot, json_device_slot)
+
+    def test_get_resource_empty_list(self):
+        redfish_json_validator = RedfishJsonValidator('ServiceRoot')
+
+        with self.assertRaises(OneViewRedfishResourceNotFoundError):
+            redfish_json_validator.get_resource_by_id([], "deviceNumber", 1)
+
+    def test_get_resource_invalid_id(self):
+        redfish_json_validator = RedfishJsonValidator('ServiceRoot')
+
+        with self.assertRaises(OneViewRedfishError):
+            redfish_json_validator.get_resource_by_id(
+                [], "deviceNumber", "INVALID_ID")
