@@ -1,3 +1,27 @@
+# 0.2.0
+# Notes
+ - Check README for more information on the new authentication mode and
+ the changes in configuration for self-signed certificates.
+
+# Bug fixes & Enhancements
+ - #159 Add support to OData-Version header
+ - #162 Warn user when not using https with valid certificate
+ - #163 Revert to https by default
+ - #164 Generate a self-signed cert on first run
+ - #169 New windows launcher script
+ - #151 Enhances log messages with stack traces for debugging
+ - #135 Perform schema validation with local resources
+ - #184 Add config support to session based authentication 
+
+# New Redfish resources
+ - Storage
+ - Network Interface
+ - NetworkAdapter
+ - NetworkPort
+ - NetworkDeviceFunction
+ - SessionService/Sessions
+
+
 # 0.1.2
 # Bug fixes
 This release fixes problems with service launcher.
