@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import ipaddress
 import logging
 import os
 
@@ -231,22 +232,33 @@ if __name__ == '__main__':
             mimetype='application/json')
 
     config = util.config
+
+    try:
+        host = config["redfish"]["host"]
+
+        # Gets the correct IP type based on the string
+        ipaddress.ip_address(host)
+    except ValueError:
+        logging.error("Host must be a valid IP address.")
+        exit(1)
+
+    try:
+        port = int(config["redfish"]["redfish_port"])
+    except Exception:
+        logging.exception(
+            "Port must be an integer number between 1 and 65536.")
+        exit(1)
+    # Checking port range
+    if port < 1 or port > 65536:
+        logging.error("Port must be an integer number between 1 and 65536.")
+        exit(1)
+
     if config["ssl"]["SSLType"] in ("self-signed", "adhoc"):
         logging.warning("Server is starting with a self-signed certificate.")
     if config["ssl"]["SSLType"] == "disabled":
         logging.warning(
             "Server is starting in HTTP mode. This is an insecure mode. "
             "Running the server with HTTPS enabled is highly recommended.")
-
-    try:
-        port = int(config["redfish"]["redfish_port"])
-    except Exception:
-        logging.exception("Port must be an integer number between 1 and 65536")
-        exit(1)
-    # Checking port range
-    if port < 1 or port > 65536:
-        logging.error("Port must be an integer number between 1 and 65536")
-        exit(1)
 
     ssl_type = config["ssl"]["SSLType"]
     # Check SSLType:
@@ -258,9 +270,9 @@ if __name__ == '__main__':
         exit(1)
 
     if ssl_type == 'disabled':
-        app.run(host="0.0.0.0", port=port, debug=True)
+        app.run(host=host, port=port, debug=True)
     elif ssl_type == 'adhoc':
-        app.run(host="0.0.0.0", port=port, debug=True, ssl_context="adhoc")
+        app.run(host=host, port=port, debug=True, ssl_context="adhoc")
     else:
         # We should use certs file provided by the user
         ssl_cert_file = config["ssl"]["SSLCertFile"]
@@ -282,4 +294,4 @@ if __name__ == '__main__':
                 format(ssl_cert_file, ssl_key_file))
 
         ssl_context = (ssl_cert_file, ssl_key_file)
-        app.run(host="0.0.0.0", port=port, debug=True, ssl_context=ssl_context)
+        app.run(host=host, port=port, debug=True, ssl_context=ssl_context)
