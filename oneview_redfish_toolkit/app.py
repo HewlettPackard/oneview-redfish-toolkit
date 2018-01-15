@@ -239,7 +239,8 @@ if __name__ == '__main__':
         # Gets the correct IP type based on the string
         ipaddress.ip_address(host)
     except ValueError:
-        logging.error("Host must be a valid IP address.")
+        logging.error("Informed IP is not valid. Check the "
+                      "variable 'host' on your config file.")
         exit(1)
 
     try:
