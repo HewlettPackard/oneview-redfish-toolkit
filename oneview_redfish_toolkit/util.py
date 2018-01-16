@@ -223,7 +223,10 @@ def store_schemas(schema_dir):
         with open(path) as schema_file:
             json_schema = json.load(schema_file)
 
-        file_name = path.split('/')[-1]
+        if os.name == 'nt':
+            file_name = path.split('\\')[-1]
+        else:
+            file_name = path.split('/')[-1]
         stored_schemas["http://redfish.dmtf.org/schemas/v1/" + file_name] = \
             json_schema
 

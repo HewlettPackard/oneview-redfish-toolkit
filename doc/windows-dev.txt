@@ -1,0 +1,25 @@
+Steps to have a development environment running on a windows machine
+
+1.  Install git
+2.  Install python 3.5+ from python.org
+3.  clone the project:
+    git clone https://waffle.io/HewlettPackard/oneview-redfish-toolkit
+4.  Access project directory:
+    cd oneview-redfish-toolkit
+5.  Create a virtual environment(venv):
+    py -m venv .venv
+    NOTE: .venv is the directory of the virtual environment. You can name it whatever you like, given it's not an existing dir in the project.
+6.  activate the virtual env:
+    ./venv/scripts/activate
+    NOTE: this may trigger a security error. If you get an error regarding script policy you can pass that by issuing the command below:
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+7.  Install the project and dependencies in the venv
+    pip install -e .
+8.  Edit the configuration file [redfish.conf] and set the OneView credentials
+9.  Start the service:
+    ./run.cmd
+10. Runinng tests
+    py -m unittest
+11. Runing pep8 check
+    py -m flake8
+
