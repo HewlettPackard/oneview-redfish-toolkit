@@ -66,7 +66,7 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 
   * **xml_prettify**: whether XML objects on answers are indented or not
 
-  * **host**: the IP address where redfish service will listen to. Using `host = 0.0.0.0` means to listen to all IP addresses, however it doesn't work on Windows operating systems.
+  * **redfish_host**: the IP address where redfish service will listen to. Using `host = 0.0.0.0` means it will listen to all IP addresses.
 
   * **redfish_port**: the TCP port where redfish service will listen to
 

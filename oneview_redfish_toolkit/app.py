@@ -234,13 +234,13 @@ if __name__ == '__main__':
     config = util.config
 
     try:
-        host = config["redfish"]["host"]
+        host = config["redfish"]["redfish_host"]
 
         # Gets the correct IP type based on the string
         ipaddress.ip_address(host)
     except ValueError:
         logging.error("Informed IP is not valid. Check the "
-                      "variable 'host' on your config file.")
+                      "variable 'redfish_host' on your config file.")
         exit(1)
 
     try:
