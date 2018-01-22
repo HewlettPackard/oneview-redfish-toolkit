@@ -34,7 +34,7 @@ class TestOdata(unittest.TestCase):
 
         self.schemas = collections.OrderedDict()
         self.schemas["ComputerSystemCollection"] = \
-            "ComputerSystemCollection.jon"
+            "ComputerSystemCollection.json"
         self.schemas["ComputerSystem"] = "ComputerSystem.v1_4_0.json"
 
     def test_class_instantiation(self):

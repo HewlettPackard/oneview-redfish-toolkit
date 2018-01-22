@@ -81,7 +81,7 @@ class Metadata(unittest.TestCase):
         """Tests Metadata blueprint result against know value """
 
         schemas = collections.OrderedDict()
-        schemas["ComputerSystemCollection"] = "ComputerSystemCollection.jon"
+        schemas["ComputerSystemCollection"] = "ComputerSystemCollection.json"
         schemas["ComputerSystem"] = "ComputerSystem.v1_4_0.json"
 
         config_mockup.return_value = schemas

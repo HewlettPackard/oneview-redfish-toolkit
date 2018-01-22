@@ -42,7 +42,8 @@ class Metadata(object):
         for key in reference_list:
             reference = ET.SubElement(metadata, "edmx:Reference")
             reference.set(
-                "Uri", "http://redfish.dmtf.org/schemas/v1/{}.xml".format(key))
+                "Uri",
+                "http://redfish.dmtf.org/schemas/v1/{}_v1.xml".format(key))
             include = ET.SubElement(reference, "edmx:Include")
             include.set("Namespace", key)
             if key.find('Collection') == -1:
@@ -53,7 +54,8 @@ class Metadata(object):
                 include2.set("Namespace", key + "." + file_version)
         reference = ET.SubElement(metadata, "edmx:Reference")
         reference.set(
-            "Uri", "http://redfish.dmtf.org/schemas/v1/RedfishExtensions.xml")
+            "Uri",
+            "http://redfish.dmtf.org/schemas/v1/RedfishExtensions_v1.xml")
         include = ET.SubElement(reference, "edmx:Include")
         include.set("Namespace", "RedfishExtensions.1.0.0")
         include.set("Alias", "RedfishExtensions")
