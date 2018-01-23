@@ -12,7 +12,10 @@
  - #151 Enhances log messages with stack traces for debugging
  - #135 Perform schema validation with local resources
  - #184 Add config support to session based authentication 
-
+ - #197 Fix schema loading when running on Windows
+ - #198 Allow user to specify a different host ip address
+ - #209 Fix wrong links in XML metadata
+ 
 # New Redfish resources
  - Storage
  - Network Interface
