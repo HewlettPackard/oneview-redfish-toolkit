@@ -49,7 +49,7 @@ class TestSubscriptionCollection(unittest.TestCase):
         # Tests if class is correctly instantiated and validated
 
         try:
-            event_service = SubscriptionCollection()
+            event_service = SubscriptionCollection({})
         except Exception as e:
             self.fail("Failed to instantiate SubscriptionCollection class."
                       " Error: {}".format(e))
@@ -59,7 +59,7 @@ class TestSubscriptionCollection(unittest.TestCase):
         # Tests the serialize function result against known result
 
         try:
-            manager_collection = SubscriptionCollection()
+            manager_collection = SubscriptionCollection({})
         except Exception as e:
             self.fail("Failed to instantiate EventService class."
                       " Error: {}".format(e))

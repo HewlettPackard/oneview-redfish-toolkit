@@ -18,7 +18,6 @@ import collections
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
-from oneview_redfish_toolkit import util
 
 
 class SubscriptionCollection(RedfishJsonValidator):
@@ -30,22 +29,24 @@ class SubscriptionCollection(RedfishJsonValidator):
 
     SCHEMA_NAME = 'EventDestinationCollection'
 
-    def __init__(self):
+    def __init__(self, all_subscriptions):
         """SubscriptionCollection constructor.
 
             Populates self.redfish with hardcoded SubscriptionCollection
             values.
+
+            all_subscriptions: Dictionary with all subscriptions.
         """
         super().__init__(self.SCHEMA_NAME)
 
         self.redfish["@odata.type"] = \
             "#EventDestinationCollection.EventDestinationCollection"
         self.redfish["Name"] = "Event Subscriptions Collection"
-        self.redfish["Members@odata.count"] = len(util.all_subscriptions)
+        self.redfish["Members@odata.count"] = len(all_subscriptions)
         self.redfish["Members"] = list()
         self.redfish["Members"].append(collections.OrderedDict())
 
-        for subscription in util.all_subscriptions:
+        for subscription in all_subscriptions:
             member = collections.OrderedDict()
             member["@odata.id"] = \
                 "/redfish/v1/EventService" \

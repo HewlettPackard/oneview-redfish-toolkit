@@ -24,6 +24,8 @@ from flask_api import status
 
 from oneview_redfish_toolkit.api.subscription_collection \
     import SubscriptionCollection
+from oneview_redfish_toolkit import util
+
 
 subscription_collection = Blueprint("subscription_collection", __name__)
 
@@ -40,7 +42,7 @@ def get_subscription_collection():
     """
     try:
         # Build Subscription Collection object and validates it
-        sc = SubscriptionCollection()
+        sc = SubscriptionCollection(util.all_subscriptions)
 
         # Build redfish json
         json_str = sc.serialize()
