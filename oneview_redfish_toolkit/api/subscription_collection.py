@@ -15,8 +15,10 @@
 # under the License.
 
 import collections
+
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit import util
 
 
 class SubscriptionCollection(RedfishJsonValidator):
@@ -39,12 +41,18 @@ class SubscriptionCollection(RedfishJsonValidator):
         self.redfish["@odata.type"] = \
             "#EventDestinationCollection.EventDestinationCollection"
         self.redfish["Name"] = "Event Subscriptions Collection"
-        self.redfish["Members@odata.count"] = 1
+        self.redfish["Members@odata.count"] = len(util.all_subscriptions)
         self.redfish["Members"] = list()
         self.redfish["Members"].append(collections.OrderedDict())
-        # This information is currently hard-coded
-        self.redfish["Members"][0]["@odata.id"] = \
-            "/redfish/v1/EventService/Subscriptions/1"
+
+        for subscription in util.all_subscriptions:
+            member = collections.OrderedDict()
+            member["@odata.id"] = \
+                "/redfish/v1/EventService" \
+                "/Subscriptions/{}".format(subscription.redfish["Id"])
+
+            self.redfish["Members"].append(member)
+
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#EventDestinationCollection" \
             ".EventDestinationCollection"
