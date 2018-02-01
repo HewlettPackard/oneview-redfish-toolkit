@@ -22,8 +22,10 @@ from flask import Blueprint
 from flask import Response
 from flask_api import status
 
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.event_service \
     import EventService
+from oneview_redfish_toolkit import util
 
 
 event_service = Blueprint("event_service", __name__)
@@ -37,11 +39,32 @@ def get_event_service():
         /redfish/v1/SessionService is requested.
 
         Returns:
-                JSON: JSON with EventService.
+            JSON: JSON with EventService.
+
+        Exceptions:
+            OneViewRedfishError: if there are invalid integers in
+                DeliveryRetryAttempts and DeliveryRetryIntervalSeconds
+                on the CONFIG file.
     """
     try:
+        try:
+            delivery_retry_attempts = \
+                int(util.config["event_service"]["DeliveryRetryAttempts"])
+            delivery_retry_interval = \
+                int(util.
+                    config["event_service"]["DeliveryRetryIntervalSeconds"])
+
+            if delivery_retry_attempts <= 0 or delivery_retry_interval <= 0:
+                raise OneViewRedfishError("DeliveryRetryAttempts and "
+                                          "DeliveryRetryIntervalSeconds must "
+                                          "be an integer greater than zero.")
+        except ValueError:
+            raise OneViewRedfishError("DeliveryRetryAttempts and "
+                                      "DeliveryRetryIntervalSeconds must "
+                                      "be valid integers.")
+
         # Build Event Service object and validates it
-        evs = EventService()
+        evs = EventService(delivery_retry_attempts, delivery_retry_interval)
 
         # Build redfish json
         json_str = evs.serialize()
@@ -51,7 +74,7 @@ def get_event_service():
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
-    except Exception as e:
+    except OneViewRedfishError as e:
         # In case of error print exception and abort
         logging.exception(e)
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

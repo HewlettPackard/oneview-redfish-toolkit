@@ -17,8 +17,6 @@
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 
-from oneview_redfish_toolkit import util
-
 
 class EventService(RedfishJsonValidator):
     """Creates a Event Service dict
@@ -28,7 +26,7 @@ class EventService(RedfishJsonValidator):
 
     SCHEMA_NAME = 'EventService'
 
-    def __init__(self):
+    def __init__(self, delivery_retry_attempts, delivery_retry_interval):
         """Manager constructor
 
             Populates self.redfish with some hardcoded EventService
@@ -49,16 +47,17 @@ class EventService(RedfishJsonValidator):
         self.redfish["EventTypesForSubscription"] = \
             ["StatusChange", "ResourceUpdated", "ResourceAdded",
              "ResourceRemoved", "Alert"]
-        self.redfish["DeliveryRetryAttempts"] = \
-            int(util.config["event_service"]["DeliveryRetryAttempts"])
-        self.redfish["DeliveryRetryIntervalSeconds"] = \
-            int(util.config["event_service"]["DeliveryRetryIntervalSeconds"])
+        self.redfish["DeliveryRetryAttempts"] = delivery_retry_attempts
+        self.redfish["DeliveryRetryIntervalSeconds"] = delivery_retry_interval
         # All information bellow is hard-coded
         # until we decide where to find it
         self.redfish["Status"] = dict()
         self.redfish["Status"]["Health"] = "OK"
         self.redfish["Status"]["HealthRollup"] = "OK"
         self.redfish["Status"]["State"] = "Enabled"
-        self.redfish["ServiceEnabled"] = True
+        self.redfish["ServiceEnabled"] = self.set_service_status()
 
         self._validate()
+
+    def set_service_status(self):
+        return True

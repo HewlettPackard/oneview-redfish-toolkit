@@ -48,7 +48,7 @@ class TestEventService(unittest.TestCase):
         # Tests if class is correctly instantiated and validated
 
         try:
-            event_service = EventService()
+            event_service = EventService(3, 30)
         except Exception as e:
             self.fail("Failed to instantiate EventService class."
                       " Error: {}".format(e))
@@ -58,7 +58,7 @@ class TestEventService(unittest.TestCase):
         # Tests the serialize function result against known result
 
         try:
-            manager_collection = EventService()
+            manager_collection = EventService(3, 30)
         except Exception as e:
             self.fail("Failed to instantiate EventService class."
                       " Error: {}".format(e))

@@ -67,6 +67,7 @@ class TestEventService(unittest.TestCase):
 
     def test_get_event_service(self):
         """Tests EventService blueprint result against know value """
+
         response = self.app.get("/redfish/v1/SessionService/")
 
         result = json.loads(response.data.decode("utf-8"))
