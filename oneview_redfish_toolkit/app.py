@@ -62,6 +62,8 @@ from oneview_redfish_toolkit.blueprints.session import session
 from oneview_redfish_toolkit.blueprints.storage import storage
 from oneview_redfish_toolkit.blueprints.storage_collection \
     import storage_collection
+from oneview_redfish_toolkit.blueprints.subscription\
+    import subscription
 from oneview_redfish_toolkit.blueprints.subscription_collection \
     import subscription_collection
 from oneview_redfish_toolkit.blueprints.thermal import thermal
@@ -113,6 +115,7 @@ if __name__ == '__main__':
     app.register_blueprint(session)
     app.register_blueprint(event_service)
     app.register_blueprint(subscription_collection)
+    app.register_blueprint(subscription)
 
     @app.before_request
     def check_authentication():
