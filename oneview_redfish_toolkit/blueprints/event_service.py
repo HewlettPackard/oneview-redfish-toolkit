@@ -31,7 +31,7 @@ from oneview_redfish_toolkit import util
 event_service = Blueprint("event_service", __name__)
 
 
-@event_service.route("/redfish/v1/SessionService/", methods=["GET"])
+@event_service.route("/redfish/v1/EventService/", methods=["GET"])
 def get_event_service():
     """Get the Redfish Event Service.
 
