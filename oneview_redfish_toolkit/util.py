@@ -29,7 +29,11 @@ import socket
 from hpOneView.oneview_client import OneViewClient
 
 # Modules own libs
-from oneview_redfish_toolkit.api import errors
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotAccessibleError
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotFoundError
 
 
 def configure_logging(log_file_path):
@@ -107,6 +111,8 @@ def load_config(conf_file):
 
     registries = dict(config.items('registry'))
 
+    load_event_service_info()
+
     # Load schemas | Store schemas | Connect to OneView
     try:
         ov_client = OneViewClient(ov_config)
@@ -119,12 +125,12 @@ def load_config(conf_file):
         globals()['registry_dict'] = registry_dict
 
         store_schemas(config['redfish']['schema_dir'])
-    except errors.OneViewRedfishResourceNotFoundError as e:
-        raise errors.OneViewRedfishError(
+    except OneViewRedfishResourceNotFoundError as e:
+        raise OneViewRedfishError(
             'Failed to load schemas or registries: {}'.format(e)
         )
     except Exception as e:
-        raise errors.OneViewRedfishError(
+        raise OneViewRedfishError(
             'Failed to connect to OneView: {}'.format(e)
         )
 
@@ -146,7 +152,7 @@ def load_conf(conf_file):
     """
 
     if not os.path.isfile(conf_file):
-        raise errors.OneViewRedfishResourceNotFoundError(conf_file, 'File')
+        raise OneViewRedfishResourceNotFoundError(conf_file, 'File')
 
     config = configparser.ConfigParser()
     config.optionxform = str
@@ -156,6 +162,38 @@ def load_conf(conf_file):
         raise
 
     return config
+
+
+def load_event_service_info():
+    """Loads Event Service information
+
+        Loads DeliveryRetryAttempts and DeliveryRetryIntervalSeconds
+        from CONFIG file and store it in a global var.
+
+        Exceptions:
+            OneViewRedfishError: DeliveryRetryAttempts and
+            DeliveryRetryIntervalSeconds must be integers greater than zero.
+    """
+    config = globals()['config']
+    event_service = dict(config.items("event_service"))
+
+    try:
+        delivery_retry_attempts = \
+            int(event_service["DeliveryRetryAttempts"])
+        delivery_retry_interval = \
+            int(event_service["DeliveryRetryIntervalSeconds"])
+
+        if delivery_retry_attempts <= 0 or delivery_retry_interval <= 0:
+            raise OneViewRedfishError(
+                "DeliveryRetryAttempts and DeliveryRetryIntervalSeconds must"
+                " be an integer greater than zero.")
+    except ValueError:
+        raise OneViewRedfishError(
+            "DeliveryRetryAttempts and DeliveryRetryIntervalSeconds "
+            "must be valid integers.")
+
+    globals()['delivery_retry_attempts'] = delivery_retry_attempts
+    globals()['delivery_retry_interval'] = delivery_retry_interval
 
 
 def load_registry(registry_dir, registries):
@@ -181,10 +219,10 @@ def load_registry(registry_dir, registries):
     """
 
     if os.path.isdir(registry_dir) is False:
-        raise errors.OneViewRedfishResourceNotFoundError(
+        raise OneViewRedfishResourceNotFoundError(
             registry_dir, 'Directory')
     if os.access(registry_dir, os.R_OK) is False:
-        raise errors.OneViewRedFishResourceNotAccessibleError(
+        raise OneViewRedfishResourceNotAccessibleError(
             registry_dir, 'directory')
 
     registries_dict = collections.OrderedDict()
@@ -193,7 +231,7 @@ def load_registry(registry_dir, registries):
             with open(registry_dir + '/' + registries[key]) as f:
                 registries_dict[key] = json.load(f)
         except Exception:
-            raise errors.OneViewRedfishResourceNotFoundError(
+            raise OneViewRedfishResourceNotFoundError(
                 registries[key], 'File')
 
     return registries_dict
@@ -214,7 +252,7 @@ def store_schemas(schema_dir):
     schema_paths = glob.glob(schema_dir + '/*.json')
 
     if not schema_paths:
-        raise errors.OneViewRedfishResourceNotFoundError(
+        raise OneViewRedfishResourceNotFoundError(
             "JSON Schemas", "File")
 
     stored_schemas = dict()
@@ -277,7 +315,7 @@ def get_oneview_client(session_id=None, is_service_root=False):
                 logging.exception('Re-authenticated')
                 ov_client.connection.login(ov_config['credentials'])
                 return ov_client
-            # if faild abort
+            # if failed abort
             except Exception:
                 raise
     else:
@@ -332,7 +370,7 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
     else:
         message = "Invalid key_type"
         logging.error(message)
-        raise errors.OneViewRedfishError(message)
+        raise OneViewRedfishError(message)
 
     if not config.has_option("ssl-cert-defaults", "commonName"):
         config["ssl-cert-defaults"]["commonName"] = get_ip()

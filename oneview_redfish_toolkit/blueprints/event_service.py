@@ -42,29 +42,12 @@ def get_event_service():
             JSON: JSON with EventService.
 
         Exceptions:
-            OneViewRedfishError: if there are invalid integers in
-                DeliveryRetryAttempts and DeliveryRetryIntervalSeconds
-                on the CONFIG file.
+            OneViewRedfishError: General error.
     """
     try:
-        try:
-            delivery_retry_attempts = \
-                int(util.config["event_service"]["DeliveryRetryAttempts"])
-            delivery_retry_interval = \
-                int(util.
-                    config["event_service"]["DeliveryRetryIntervalSeconds"])
-
-            if delivery_retry_attempts <= 0 or delivery_retry_interval <= 0:
-                raise OneViewRedfishError("DeliveryRetryAttempts and "
-                                          "DeliveryRetryIntervalSeconds must "
-                                          "be an integer greater than zero.")
-        except ValueError:
-            raise OneViewRedfishError("DeliveryRetryAttempts and "
-                                      "DeliveryRetryIntervalSeconds must "
-                                      "be valid integers.")
-
         # Build Event Service object and validates it
-        evs = EventService(delivery_retry_attempts, delivery_retry_interval)
+        evs = EventService(util.delivery_retry_attempts,
+                           util.delivery_retry_interval)
 
         # Build redfish json
         json_str = evs.serialize()
