@@ -44,7 +44,6 @@ class SubscriptionCollection(RedfishJsonValidator):
         self.redfish["Name"] = "Event Subscriptions Collection"
         self.redfish["Members@odata.count"] = len(all_subscriptions)
         self.redfish["Members"] = list()
-        self.redfish["Members"].append(collections.OrderedDict())
 
         for subscription in all_subscriptions:
             member = collections.OrderedDict()
