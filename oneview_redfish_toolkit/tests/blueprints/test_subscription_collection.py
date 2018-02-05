@@ -69,7 +69,7 @@ class TestSubscriptionCollection(unittest.TestCase):
     def test_get_subscription_collection(self):
         """Tests SubscriptionCollection blueprint result against know value"""
         response = \
-            self.app.get("/redfish/v1/SessionService/EventSubscriptions/")
+            self.app.get("/redfish/v1/EventService/EventSubscriptions/")
 
         result = json.loads(response.data.decode("utf-8"))
 
