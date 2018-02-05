@@ -31,12 +31,12 @@ subscription_collection = Blueprint("subscription_collection", __name__)
 
 
 @subscription_collection.route(
-    "/redfish/v1/SessionService/EventSubscriptions/", methods=["GET"])
+    "/redfish/v1/EventService/EventSubscriptions/", methods=["GET"])
 def get_subscription_collection():
     """Get the Redfish Subscription Collection.
 
         Get method to return SubscriptionCollection JSON when
-        /redfish/v1/SessionService/EventSubscriptions is requested.
+        /redfish/v1/EventService/EventSubscriptions is requested.
         Returns:
                 JSON: JSON with EventSubscriptions.
     """
