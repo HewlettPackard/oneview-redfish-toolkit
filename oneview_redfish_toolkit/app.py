@@ -35,6 +35,7 @@ from oneview_redfish_toolkit.blueprints.chassis_collection \
 from oneview_redfish_toolkit.blueprints.computer_system import computer_system
 from oneview_redfish_toolkit.blueprints.computer_system_collection \
     import computer_system_collection
+from oneview_redfish_toolkit.blueprints.event_service import event_service
 from oneview_redfish_toolkit.blueprints.manager import manager
 from oneview_redfish_toolkit.blueprints.manager_collection \
     import manager_collection
@@ -108,6 +109,7 @@ if __name__ == '__main__':
     app.register_blueprint(network_adapter)
     app.register_blueprint(network_port)
     app.register_blueprint(session)
+    app.register_blueprint(event_service)
 
     @app.before_request
     def check_authentication():
