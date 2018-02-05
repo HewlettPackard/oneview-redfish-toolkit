@@ -36,7 +36,7 @@ def get_event_service():
     """Get the Redfish Event Service.
 
         Get method to return EventService JSON when
-        /redfish/v1/SessionService is requested.
+        /redfish/v1/EventService is requested.
 
         Returns:
             JSON: JSON with EventService.
