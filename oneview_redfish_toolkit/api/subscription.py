@@ -26,7 +26,7 @@ class Subscription(RedfishJsonValidator):
 
     SCHEMA_NAME = 'EventDestination'
 
-    def __init__(self, subscription_id, event_types):
+    def __init__(self, subscription_id, destination, event_types, context):
         """Session constructor
 
             Populates self.redfish with Subscription response.
@@ -38,12 +38,13 @@ class Subscription(RedfishJsonValidator):
             "#EventDestination.v1_2_0.EventDestination"
         self.redfish["Id"] = subscription_id
         self.redfish["Name"] = "EventSubscription " + subscription_id
-        self.redfish["Destination"] = "http://www.dnsname.com/Destination1"
+        self.redfish["Destination"] = destination
         self.redfish["EventTypes"] = event_types
-        self.redfish["Context"] = "WebUser3"
+        self.redfish["Context"] = context
         self.redfish["Protocol"] = "Redfish"
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#EventDestination.EventDestination"
-        self.redfish["@odata.id"] = "/redfish/v1/EventService/Subscriptions/1"
+        self.redfish["@odata.id"] = \
+            "/redfish/v1/EventService/Subscriptions/" + subscription_id
 
         self._validate()

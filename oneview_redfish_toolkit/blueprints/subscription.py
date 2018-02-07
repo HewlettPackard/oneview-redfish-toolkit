@@ -15,6 +15,7 @@
 # under the License.
 
 import logging
+import uuid
 
 from flask import abort
 from flask import Blueprint
@@ -36,7 +37,8 @@ def add_subscription():
     """Add the Redfish Subscription.
 
         Add a new subscription when this POST operation is requested.
-        The body of the request must have an array of EventTypes.
+        The body of the request must have the Destination,
+        an array of EventTypes, and the Context.
 
         EventTypes:
             - StatusChange
@@ -56,24 +58,27 @@ def add_subscription():
             return abort(500)
     """
     try:
-        # get information from post
+        # get Destination, EventTypes and Context from post
+        # generate subscription uuid
         # add subscription in subscriptions_by_type
         # add subscription in all_subscriptions
-        # the subscription id is len(all_subscriptions) + 1
 
         try:
             body = request.get_json()
+            destination = body["Destination"]
             event_types = body["EventTypes"]
+            context = body["Context"]
         except Exception:
             raise OneViewRedfishError(
                 {"errorCode": "INVALID_INFORMATION",
                  "message": "Invalid JSON key. The JSON request body"
-                            " must have the key EventTypes."})
+                            " must have the keys Destination,"
+                            " EventTypes and Context."})
 
-        subscription_id = str(len(util.all_subscriptions) + 1)
+        subscription_id = str(uuid.uuid1())
 
         # Build Subscription object and validates it
-        sc = Subscription(subscription_id, event_types)
+        sc = Subscription(subscription_id, destination, event_types, context)
 
         for event_type in event_types:
             if event_type not in util.subscriptions_by_type:
