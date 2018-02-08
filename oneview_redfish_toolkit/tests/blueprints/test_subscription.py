@@ -106,3 +106,68 @@ class TestSubscription(unittest.TestCase):
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(subscription_mockup, result)
+
+    @mock.patch('uuid.uuid1')
+    def test_add_subscription_invalid_key1(self, uuid_mockup):
+        """Test POST Subscription with invalid Destination key"""
+
+        uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
+
+        response = self.app.post(
+            "/redfish/v1/EventService/EventSubscriptions/",
+            data=json.dumps(dict(
+                INVALID="http://www.dnsname.com/Destination1",
+                EventTypes=["Alert", "StatusChange"])),
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch('uuid.uuid1')
+    def test_add_subscription_invalid_key2(self, uuid_mockup):
+        """Test POST Subscription with invalid EventTypes key"""
+
+        uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
+
+        response = self.app.post(
+            "/redfish/v1/EventService/EventSubscriptions/",
+            data=json.dumps(dict(
+                Destination="http://www.dnsname.com/Destination1",
+                INVALID=["Alert", "StatusChange"])),
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch('uuid.uuid1')
+    def test_add_subscription_invalid_events(self, uuid_mockup):
+        """Test POST Subscription with invalid EventTypes"""
+
+        uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
+
+        response = self.app.post(
+            "/redfish/v1/EventService/EventSubscriptions/",
+            data=json.dumps(dict(
+                Destination="http://www.dnsname.com/Destination1",
+                EventTypes=["INVALID"])),
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch('uuid.uuid1')
+    def test_add_subscription_with_context(self, uuid_mockup):
+        """Test POST Subscription with a Context"""
+
+        uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
+
+        response = self.app.post(
+            "/redfish/v1/EventService/EventSubscriptions/",
+            data=json.dumps(dict(
+                Destination="http://www.dnsname.com/Destination1",
+                EventTypes=["Alert"],
+                Context="WebUser3")),
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
