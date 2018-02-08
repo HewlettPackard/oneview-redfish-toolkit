@@ -1,0 +1,14 @@
+{
+    "@odata.type": "#EventDestination.v1_2_0.EventDestination",
+    "Id": "e7f93fa2-0cb4-11e8-9060-e839359bc36a",
+    "Name": "EventSubscription e7f93fa2-0cb4-11e8-9060-e839359bc36a",
+    "Destination": "http://www.dnsname.com/Destination1",
+    "EventTypes": [
+        "Alert",
+        "StatusChange"
+    ],
+    "Context": null,
+    "Protocol": "Redfish",
+    "@odata.context": "/redfish/v1/$metadata#EventDestination.EventDestination",
+    "@odata.id": "/redfish/v1/EventService/Subscriptions/e7f93fa2-0cb4-11e8-9060-e839359bc36a"
+}

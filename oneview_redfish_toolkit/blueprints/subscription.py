@@ -22,6 +22,7 @@ from flask import Blueprint
 from flask import request
 from flask import Response
 from flask_api import status
+from jsonschema.exceptions import ValidationError
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.subscription import Subscription
@@ -38,7 +39,7 @@ def add_subscription():
 
         Add a new subscription when this POST operation is requested.
         The body of the request must have the Destination,
-        an array of EventTypes, and the Context.
+        an array of EventTypes. Context is optional.
 
         EventTypes:
             - StatusChange
@@ -67,22 +68,28 @@ def add_subscription():
             body = request.get_json()
             destination = body["Destination"]
             event_types = body["EventTypes"]
-            context = body["Context"]
-        except Exception:
+            context = body.get("Context")
+        except KeyError:
             raise OneViewRedfishError(
                 {"errorCode": "INVALID_INFORMATION",
                  "message": "Invalid JSON key. The JSON request body"
-                            " must have the keys Destination,"
-                            " EventTypes and Context."})
+                            " must have the keys Destination and EventTypes."
+                            " The Context is optional."})
 
         subscription_id = str(uuid.uuid1())
 
-        # Build Subscription object and validates it
-        sc = Subscription(subscription_id, destination, event_types, context)
+        try:
+            # Build Subscription object and validates it
+            sc = Subscription(subscription_id, destination,
+                              event_types, context)
+        except ValidationError:
+            raise OneViewRedfishError(
+                {"errorCode": "INVALID_INFORMATION",
+                 "message": "Invalid EventType. The EventTypes are "
+                            "StatusChange, ResourceUpdated, ResourceAdded,"
+                            " ResourceRemoved and Alert."})
 
         for event_type in event_types:
-            if event_type not in util.subscriptions_by_type:
-                util.subscriptions_by_type[event_type] = dict()
             util.subscriptions_by_type[event_type][subscription_id] = sc
 
         util.all_subscriptions[subscription_id] = sc
@@ -104,6 +111,5 @@ def add_subscription():
         logging.exception('Mapping error: {}'.format(e))
         abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
     except Exception as e:
-        # In case of error print exception and abort
         logging.exception(e)
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

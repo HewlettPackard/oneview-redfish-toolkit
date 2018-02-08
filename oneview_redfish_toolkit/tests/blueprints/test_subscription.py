@@ -26,24 +26,23 @@ from flask_api import status
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.subscription_collection\
-    import subscription_collection
+from oneview_redfish_toolkit.blueprints.subscription import subscription
 from oneview_redfish_toolkit import util
 
 
-class TestSubscriptionCollection(unittest.TestCase):
-    """Tests for SubscriptionCollection blueprint"""
+class TestSubscription(unittest.TestCase):
+    """Tests for Subscription blueprint"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, oneview_client):
-        """Tests SubscriptionCollection blueprint setup"""
+        """Tests Subscription blueprint setup"""
 
         # Loading variable in util module
         util.load_config('redfish.conf')
 
         # creates a test client
         self.app = Flask(__name__)
-        self.app.register_blueprint(subscription_collection)
+        self.app.register_blueprint(subscription)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -60,29 +59,50 @@ class TestSubscriptionCollection(unittest.TestCase):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 mimetype="application/json")
 
+        @self.app.errorhandler(status.HTTP_400_BAD_REQUEST)
+        def bad_request(error):
+            """Creates a Bad Request Error response"""
+            redfish_error = RedfishError(
+                "PropertyValueNotInList", error.description)
+
+            redfish_error.add_extended_info(
+                message_id="PropertyValueNotInList",
+                message_args=["VALUE", "PROPERTY"],
+                related_properties=["PROPERTY"])
+
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_400_BAD_REQUEST,
+                mimetype='application/json')
+
         # creates a test client
         self.app = self.app.test_client()
 
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch('oneview_redfish_toolkit.util.all_subscriptions')
-    def test_get_subscription_collection(self, subscriptions_mockup):
-        """Tests SubscriptionCollection blueprint result against know value"""
+    @mock.patch('uuid.uuid1')
+    def test_add_subscription(self, uuid_mockup):
+        """Test POST Subscription"""
 
-        subscriptions_mockup.return_value = dict()
+        uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 
-        response = \
-            self.app.get("/redfish/v1/EventService/EventSubscriptions/")
+        response = self.app.post(
+            "/redfish/v1/EventService/EventSubscriptions/",
+            data=json.dumps(dict(
+                Destination="http://www.dnsname.com/Destination1",
+                EventTypes=["Alert", "StatusChange"])),
+            content_type='application/json')
 
         result = json.loads(response.data.decode("utf-8"))
 
         with open(
             'oneview_redfish_toolkit/mockups/'
-            'redfish/SubscriptionCollection.json'
+            'redfish/Subscription.json'
         ) as f:
-            subscription_collection_mockup = json.loads(f.read())
+            subscription_mockup = json.loads(f.read())
 
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(subscription_collection_mockup, result)
+        self.assertEqual(subscription_mockup, result)
