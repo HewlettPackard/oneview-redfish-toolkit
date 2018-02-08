@@ -65,6 +65,8 @@ class TestEventService(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
+    @mock.patch('oneview_redfish_toolkit.util.delivery_retry_attempts', 3)
+    @mock.patch('oneview_redfish_toolkit.util.delivery_retry_interval', 30)
     def test_get_event_service(self):
         """Tests EventService blueprint result against know value """
 
