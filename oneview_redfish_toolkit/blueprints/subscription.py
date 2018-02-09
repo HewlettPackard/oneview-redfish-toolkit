@@ -23,6 +23,7 @@ from flask import request
 from flask import Response
 from flask_api import status
 from jsonschema.exceptions import ValidationError
+import validators
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.subscription import Subscription
@@ -67,6 +68,12 @@ def add_subscription():
         try:
             body = request.get_json()
             destination = body["Destination"]
+
+            if not validators.url(destination):
+                raise OneViewRedfishError(
+                    {"errorCode": "INVALID_INFORMATION",
+                     "message": "Destination must be an URI."})
+
             event_types = body["EventTypes"]
             context = body.get("Context")
         except KeyError:

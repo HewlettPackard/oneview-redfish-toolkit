@@ -171,3 +171,19 @@ class TestSubscription(unittest.TestCase):
 
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch('uuid.uuid1')
+    def test_add_subscription_invalid_destination(self, uuid_mockup):
+        """Test POST Subscription with a invalid Destination URI"""
+
+        uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
+
+        response = self.app.post(
+            "/redfish/v1/EventService/EventSubscriptions/",
+            data=json.dumps(dict(
+                Destination="INVALID",
+                EventTypes=["Alert"])),
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
