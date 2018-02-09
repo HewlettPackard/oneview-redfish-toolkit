@@ -36,7 +36,7 @@ class TestSubscriptionCollection(unittest.TestCase):
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, oneview_client):
-        """Tests EventService blueprint setup"""
+        """Tests SubscriptionCollection blueprint setup"""
 
         # Loading variable in util module
         util.load_config('redfish.conf')
@@ -66,8 +66,12 @@ class TestSubscriptionCollection(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    def test_get_subscription_collection(self):
+    @mock.patch('oneview_redfish_toolkit.util.all_subscriptions')
+    def test_get_subscription_collection(self, subscriptions_mockup):
         """Tests SubscriptionCollection blueprint result against know value"""
+
+        subscriptions_mockup.return_value = dict()
+
         response = \
             self.app.get("/redfish/v1/EventService/EventSubscriptions/")
 
@@ -77,8 +81,8 @@ class TestSubscriptionCollection(unittest.TestCase):
             'oneview_redfish_toolkit/mockups/'
             'redfish/SubscriptionCollection.json'
         ) as f:
-            event_service_mockup = json.loads(f.read())
+            subscription_collection_mockup = json.loads(f.read())
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(event_service_mockup, result)
+        self.assertEqual(subscription_collection_mockup, result)

@@ -15,21 +15,21 @@
 # under the License.
 
 """
-    Tests for subscription_collection.py
+    Tests for test_subscription.py
 """
 
 import json
 
-from oneview_redfish_toolkit.api.subscription_collection \
-    import SubscriptionCollection
+from oneview_redfish_toolkit.api.subscription \
+    import Subscription
 from oneview_redfish_toolkit import util
 
 import unittest
 from unittest import mock
 
 
-class TestSubscriptionCollection(unittest.TestCase):
-    """Tests for SubscriptionCollection class"""
+class TestSubscription(unittest.TestCase):
+    """Tests for Subscription class"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, mock_ov):
@@ -38,35 +38,38 @@ class TestSubscriptionCollection(unittest.TestCase):
         # Loading variable in util module
         util.load_config('redfish.conf')
 
-        # Loading SubscriptionCollection result mockup
+        # Loading Subscription result mockup
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
-            'SubscriptionCollection.json'
+            'Subscription.json'
         ) as f:
-            self.subscription_collection_mockup = json.load(f)
+            self.subscription_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
-            subscription = SubscriptionCollection({})
+            subscription = Subscription("", "", [], None)
         except Exception as e:
-            self.fail("Failed to instantiate SubscriptionCollection class."
+            self.fail("Failed to instantiate Subscription class."
                       " Error: {}".format(e))
-        self.assertIsInstance(subscription, SubscriptionCollection)
+        self.assertIsInstance(subscription, Subscription)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
         try:
-            subscription_collection = SubscriptionCollection({})
+            subscription = Subscription(
+                "e7f93fa2-0cb4-11e8-9060-e839359bc36a",
+                "http://www.dnsname.com/Destination1",
+                ["Alert", "StatusChange"], None)
         except Exception as e:
-            self.fail("Failed to instantiate SubscriptionCollection class."
+            self.fail("Failed to instantiate Subscription class."
                       " Error: {}".format(e))
 
         try:
-            result = json.loads(subscription_collection.serialize())
+            result = json.loads(subscription.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.subscription_collection_mockup, result)
+        self.assertEqual(self.subscription_mockup, result)

@@ -9,3 +9,4 @@ hpOneView
 jsonschema
 pbr>=2.0 # Apache-2.0
 pyOpenSSL
+validators
