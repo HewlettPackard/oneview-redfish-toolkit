@@ -49,7 +49,7 @@ class SubscriptionCollection(RedfishJsonValidator):
             member = collections.OrderedDict()
             member["@odata.id"] = \
                 "/redfish/v1/EventService" \
-                "/Subscriptions/{}".format(
+                "/EventSubscriptions/{}".format(
                     all_subscriptions[subscription_id].redfish["Id"])
 
             self.redfish["Members"].append(member)

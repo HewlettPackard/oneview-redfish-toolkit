@@ -45,6 +45,6 @@ class Subscription(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#EventDestination.EventDestination"
         self.redfish["@odata.id"] = \
-            "/redfish/v1/EventService/Subscriptions/" + subscription_id
+            "/redfish/v1/EventService/EventSubscriptions/" + subscription_id
 
         self._validate()
