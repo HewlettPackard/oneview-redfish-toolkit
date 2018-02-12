@@ -14,15 +14,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
 import json
+import logging
 import os
 import ssl
 import sys
 
+from hpOneView.exceptions import HPOneViewException
 import pika
 from pika.credentials import ExternalCredentials
-from hpOneView.exceptions import HPOneViewException
 
 
 from oneview_redfish_toolkit import util
@@ -41,6 +41,7 @@ def check_cert_exist():
     if not os.path.isfile(SCMB_KEY):
         return False
     return True
+
 
 def get_cert():
     # Get CA
@@ -85,18 +86,18 @@ def scmb_connect():
 
     scmb_connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-        scmb_server, 5671, credentials=ExternalCredentials(),
-        ssl=True, ssl_options=ssl_options))
+            scmb_server, 5671, credentials=ExternalCredentials(),
+            ssl=True, ssl_options=ssl_options))
     return scmb_connection
 
 
 def test_cert():
-# Create and bind to queue
+    # Create and bind to queue
     EXCHANGE_NAME = 'scmb'
     ROUTE = 'scmb.alerts.#'
     try:
         scmb_conn = scmb_connect()
-        channel =  scmb_conn.channel()
+        channel = scmb_conn.channel()
         queue = channel.queue_declare(auto_delete=True)
         channel.queue_bind(
             queue=queue.method.queue,
@@ -108,9 +109,11 @@ def test_cert():
         logging.exception("Failed to test scmb connenction")
         sys.exit(1)
 
+
 def consume_message(ch, method, properties, body):
-    body =  json.loads(body.decode('utf-8'))
+    body = json.loads(body.decode('utf-8'))
     print(json.dumps(body, indent=4))
+
 
 def listen_scmb():
     try:
@@ -122,7 +125,10 @@ def listen_scmb():
         EXCHANGE_NAME = 'scmb'
         ROUTE = 'scmb.alerts.#'
 
-        ch.queue_bind(queue=queue_name.method.queue, exchange=EXCHANGE_NAME, routing_key=ROUTE)
+        ch.queue_bind(
+            queue=queue_name.method.queue,
+            exchange=EXCHANGE_NAME,
+            routing_key=ROUTE)
 
         ch.basic_consume(consume_message, queue=queue_name.method.queue)
         ch.start_consuming()
@@ -131,18 +137,3 @@ def listen_scmb():
         scmb_conn.close()
     except Exception:
         logging.exception("Failed to listen to scmb messages")
-
-
-if __name__ == '__main__':
-    print('loading config')
-    util.load_config('redfish.conf')
-    print("config settings")
-    print(util.config)
-    if check_cert_exist():
-        print('SCMB certs already exists testing connection...')
-    else:
-        print('SCMB certs not found. Generating/getting certs....')
-        get_cert()
-        print('Got certs. Testing connection...')
-    test_cert()
-    listen_scmb()

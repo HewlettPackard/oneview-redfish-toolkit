@@ -249,8 +249,7 @@ if __name__ == '__main__':
         scmb_thread.start()
     else:
         logging.warning("Authentication mode set to session. SCMB events will "
-            "be disabled")
-
+                        "be disabled")
 
     config = util.config
 
