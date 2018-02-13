@@ -141,7 +141,7 @@ Note: HPE OneView' credentials are stored in clear-text. Make sure only authoriz
 
 ## SCMB notes:
 
-SCMB event listenning will only be started if authentication_mode is set to `conf`. If necessary the app will request OneView's to generate SCMB certs file and/or download the certs to the correct location. The certs file are: **oneview\_ca**: OneView's CA cert file located at: `certs/oneview_ca.pem`. **scmb\_cert**: OneView's SCMB Client cert file located at: `certs/oneview_scmb.pem`. **scmb\_key**: OneView's SCMB Client key file located at: `certs/oneview_scmb.key`
+SCMB event listening will only be started if authentication_mode is set to `conf`. If necessary the app will request OneView to generate SCMB certs file and/or download the certs to the correct location. The certs file are: **oneview\_ca**: OneView's CA cert file located at: `certs/oneview_ca.pem`. **scmb\_cert**: OneView's SCMB Client cert file located at: `certs/oneview_scmb.pem`. **scmb\_key**: OneView's SCMB Client key file located at: `certs/oneview_scmb.key`
 
 
 ## Contributing
