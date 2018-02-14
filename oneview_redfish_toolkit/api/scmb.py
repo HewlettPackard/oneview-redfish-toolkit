@@ -18,7 +18,6 @@ import json
 import logging
 import os
 import ssl
-import sys
 
 from hpOneView.exceptions import HPOneViewException
 import pika
@@ -46,7 +45,7 @@ def check_cert_exist():
 def get_cert():
     # Get CA
     cert = util.ov_client.certificate_authority.get()
-    with open(util.config['scmb']['oneview_ca'], 'w+') as f:
+    with open(ONEVIEW_CA, 'w+') as f:
         f.write(cert)
     # Generate scmb Cert:
     try:
@@ -56,7 +55,6 @@ def get_cert():
         }
         util.ov_client.certificate_rabbitmq.generate(cert_info)
     except HPOneViewException as e:
-        print(dir(e.oneview_response))
         # Cert with that commonName already exists. We are going to get it
         if e.oneview_response["errorCode"] == 'RABBITMQ_CLIENTCERT_CONFLICT':
             logging.info('Certs already exists in oneview')
@@ -67,10 +65,10 @@ def get_cert():
     certs = util.ov_client.certificate_rabbitmq.get_key_pair(
         'default')
     # Save cert
-    with open(util.config['scmb']['scmb_cert'], 'w+') as f:
+    with open(SCMB_CERT, 'w+') as f:
         f.write(certs['base64SSLCertData'])
     # Save key
-    with open(util.config['scmb']['scmb_key'], 'w+') as f:
+    with open(SCMB_KEY, 'w+') as f:
         f.write(certs['base64SSLKeyData'])
 
 
@@ -107,7 +105,8 @@ def test_cert():
         scmb_conn.close()
     except Exception:
         logging.exception("Failed to test scmb connenction")
-        sys.exit(1)
+        return False
+    return True
 
 
 def consume_message(ch, method, properties, body):
