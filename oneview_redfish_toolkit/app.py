@@ -245,7 +245,7 @@ if __name__ == '__main__':
             logging.info('Got certs. Testing connection...')
         if scmb.test_cert() is False:
             logging.error('Failed to connect to scmb. Aborting...')
-            sys.exit(1)
+            exit(1)
         scmb_thread = Thread(target=scmb.listen_scmb)
         scmb_thread.daemon = True
         scmb_thread.start()
