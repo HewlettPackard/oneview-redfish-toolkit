@@ -1,0 +1,1 @@
+{"Name": "Cold Start.", "@odata.context": "/redfish/v1/$metadata#Event.Event", "Events": [{"Severity": "OK", "EventType": "Alert", "EventTimestamp": "2018-02-12T20:12:03.207Z", "EventId": "0", "MessageId": "Base.1.1.Success"}], "Id": "49", "@odata.type": "#Event.v1_2_0.Event"}

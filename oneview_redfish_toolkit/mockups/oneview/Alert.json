@@ -1,0 +1,57 @@
+{
+    "newState": "Cleared",
+    "userInitiatedTask": false,
+    "changeType": "Created",
+    "data": null,
+    "timestamp": "2018-02-12T20:12:03.231Z",
+    "associatedTask": null,
+    "resourceUri": "/rest/alerts/49",
+    "resource": {
+        "childAlerts": null,
+        "created": "2018-02-12T20:12:03.207Z",
+        "severity": "OK",
+        "activityUri": null,
+        "assignedToUser": null,
+        "associatedResource": {
+            "resourceCategory": "server-hardware",
+            "resourceUri": "/rest/server-hardware/30373737-3237-4D32-3230-313530314752",
+            "associationType": "HAS_A",
+            "resourceName": "0000A66101, bay 3"
+        },
+        "clearedByUser": "System",
+        "type": "AlertResourceV3",
+        "lifeCycle": true,
+        "clearedTime": "2018-02-12T20:12:03.206Z",
+        "changeLog": [
+            {
+                "userEntered": false,
+                "uri": null,
+                "notes": "CLEARED",
+                "username": "System",
+                "created": null
+            }
+        ],
+        "description": "Cold Start.",
+        "alertState": "Cleared",
+        "parentAlert": null,
+        "serviceEventDetails": null,
+        "alertTypeID": "Trap.coldStart",
+        "eTag": "2018-02-12T20:12:03.207Z",
+        "serviceEventSource": false,
+        "modified": "2018-02-12T20:12:03.207Z",
+        "correctiveAction": null,
+        "healthCategory": "None",
+        "uri": "/rest/alerts/49",
+        "category": "alerts",
+        "resourceUri": "/rest/server-hardware/30373737-3237-4D32-3230-313530314752",
+        "urgency": "None",
+        "resourceID": null,
+        "associatedEventUris": [
+            "/rest/events/321"
+        ],
+        "physicalResourceType": "server-hardware"
+    },
+    "changedAttributes": [],
+    "eTag": "2018-02-12T20:12:03.207Z",
+    "newSubState": null
+}
