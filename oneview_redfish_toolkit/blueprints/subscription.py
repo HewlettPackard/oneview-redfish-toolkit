@@ -142,5 +142,5 @@ def get_subscription(id):
             status=status.HTTP_200_OK,
             mimetype="application/json")
     except KeyError as e:
-        logging.exception("Invalid Subscription Id: " + str(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logging.exception("Subscription not found: " + str(e))
+        abort(status.HTTP_404_NOT_FOUND)

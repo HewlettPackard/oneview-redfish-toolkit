@@ -76,6 +76,17 @@ class TestSubscription(unittest.TestCase):
                 status=status.HTTP_400_BAD_REQUEST,
                 mimetype='application/json')
 
+        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
+        def not_found(error):
+            """Creates a Not Found Error response"""
+            redfish_error = RedfishError(
+                "GeneralError", error.description)
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_404_NOT_FOUND,
+                mimetype='application/json')
+
         # creates a test client
         self.app = self.app.test_client()
 
@@ -223,5 +234,5 @@ class TestSubscription(unittest.TestCase):
             "/redfish/v1/EventService/EventSubscriptions/INVALID")
 
         self.assertEqual(
-            status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
+            status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
