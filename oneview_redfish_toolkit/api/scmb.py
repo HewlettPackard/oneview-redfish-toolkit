@@ -33,7 +33,8 @@ SCMB_KEY = "certs/oneview_scmb.key"
 
 
 def check_cert_exist():
-    return os.path.isfile(ONEVIEW_CA) & os.path.isfile(SCMB_CERT) & os.path.isfile(SCMB_KEY)
+    return os.path.isfile(ONEVIEW_CA) & os.path.isfile(SCMB_CERT) & \
+        os.path.isfile(SCMB_KEY)
 
 
 def get_cert():
