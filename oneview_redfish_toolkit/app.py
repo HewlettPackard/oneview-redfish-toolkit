@@ -243,7 +243,7 @@ if __name__ == '__main__':
             logging.info('SCMB certs not found. Generating/getting certs....')
             scmb.get_cert()
             logging.info('Got certs. Testing connection...')
-        if scmb.test_cert() is False:
+        if not scmb.is_cert_working_with_scmb():
             logging.error('Failed to connect to scmb. Aborting...')
             exit(1)
         scmb_thread = Thread(target=scmb.listen_scmb)

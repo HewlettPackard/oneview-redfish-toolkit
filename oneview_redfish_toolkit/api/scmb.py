@@ -33,13 +33,7 @@ SCMB_KEY = "certs/oneview_scmb.key"
 
 
 def check_cert_exist():
-    if not os.path.isfile(ONEVIEW_CA):
-        return False
-    if not os.path.isfile(SCMB_CERT):
-        return False
-    if not os.path.isfile(SCMB_KEY):
-        return False
-    return True
+    return os.path.isfile(ONEVIEW_CA) & os.path.isfile(SCMB_CERT) & os.path.isfile(SCMB_KEY)
 
 
 def get_cert():
@@ -60,6 +54,7 @@ def get_cert():
             logging.info('Certs already exists in oneview')
         else:
             # Another error is not expected, we raise.
+            logging.exception("Unexpected error")
             raise
     # Get the scmb certs key pair
     certs = util.ov_client.certificate_rabbitmq.get_key_pair(
@@ -89,7 +84,7 @@ def scmb_connect():
     return scmb_connection
 
 
-def test_cert():
+def is_cert_working_with_scmb():
     # Create and bind to queue
     EXCHANGE_NAME = 'scmb'
     ROUTE = 'scmb.alerts.#'
