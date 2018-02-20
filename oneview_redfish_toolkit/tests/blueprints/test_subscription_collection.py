@@ -26,23 +26,24 @@ from flask_api import status
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.event_service import event_service
+from oneview_redfish_toolkit.blueprints.subscription_collection\
+    import subscription_collection
 from oneview_redfish_toolkit import util
 
 
-class TestEventService(unittest.TestCase):
-    """Tests for EventService blueprint"""
+class TestSubscriptionCollection(unittest.TestCase):
+    """Tests for SubscriptionCollection blueprint"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, oneview_client):
-        """Tests EventService blueprint setup"""
+        """Tests SubscriptionCollection blueprint setup"""
 
         # Loading variable in util module
         util.load_config('redfish.conf')
 
         # creates a test client
         self.app = Flask(__name__)
-        self.app.register_blueprint(event_service)
+        self.app.register_blueprint(subscription_collection)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -65,20 +66,23 @@ class TestEventService(unittest.TestCase):
         # propagate the exceptions to the test client
         self.app.testing = True
 
-    @mock.patch('oneview_redfish_toolkit.util.delivery_retry_attempts', 3)
-    @mock.patch('oneview_redfish_toolkit.util.delivery_retry_interval', 30)
-    def test_get_event_service(self):
-        """Tests EventService blueprint result against know value """
+    @mock.patch('oneview_redfish_toolkit.util.all_subscriptions')
+    def test_get_subscription_collection(self, subscriptions_mockup):
+        """Tests SubscriptionCollection blueprint result against know value"""
 
-        response = self.app.get("/redfish/v1/EventService/")
+        subscriptions_mockup.return_value = dict()
+
+        response = \
+            self.app.get("/redfish/v1/EventService/EventSubscriptions/")
 
         result = json.loads(response.data.decode("utf-8"))
 
         with open(
-            'oneview_redfish_toolkit/mockups/redfish/EventService.json'
+            'oneview_redfish_toolkit/mockups/'
+            'redfish/SubscriptionCollection.json'
         ) as f:
-            event_service_mockup = json.loads(f.read())
+            subscription_collection_mockup = json.loads(f.read())
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(event_service_mockup, result)
+        self.assertEqual(subscription_collection_mockup, result)

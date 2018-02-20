@@ -23,7 +23,9 @@ import configparser
 import os
 import socket
 
-from oneview_redfish_toolkit.api import errors
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit import util
 import unittest
 from unittest import mock
@@ -67,7 +69,7 @@ class TestUtil(unittest.TestCase):
         except Exception as e:
             self.assertIsInstance(
                 e,
-                errors.OneViewRedfishResourceNotFoundError
+                OneViewRedfishResourceNotFoundError
             )
 
     def test_load_conf_valid_config_file(self):
@@ -94,6 +96,9 @@ class TestUtil(unittest.TestCase):
         self.assertTrue(cfg.has_section('registry'),
                         msg='Section {} not found in ini file {}'.
                         format('registry', self.config_file))
+        self.assertTrue(cfg.has_section('event_service'),
+                        msg='Section {} not found in ini file {}'.
+                        format('event_service', self.config_file))
 
     def test_load_conf_has_all_options(self):
         # Tests if ini file has all expected options
@@ -133,7 +138,7 @@ class TestUtil(unittest.TestCase):
         except Exception as e:
             self.assertIsInstance(
                 e,
-                errors.OneViewRedfishResourceNotFoundError,
+                OneViewRedfishResourceNotFoundError,
                 msg="Unexpected exception: {}".format(e.msg)
             )
 
@@ -148,7 +153,7 @@ class TestUtil(unittest.TestCase):
         except Exception as e:
             self.assertIsInstance(
                 e,
-                errors.OneViewRedfishResourceNotFoundError,
+                OneViewRedfishResourceNotFoundError,
                 msg="Unexpected exception: {}".format(e.msg)
             )
 
@@ -164,12 +169,12 @@ class TestUtil(unittest.TestCase):
         except Exception as e:
             self.assertIsInstance(
                 e,
-                errors.OneViewRedfishResourceNotFoundError,
+                OneViewRedfishResourceNotFoundError,
                 msg="Unexpected exception: {}".format(e.msg)
             )
 
     def test_load_registries_valid_registry_dir_valid_dict(self):
-        # Tests loading regitry files from redfish.conf
+        # Tests loading registry files from redfish.conf
 
         cfg = util.load_conf(self.config_file)
         registries = dict(cfg.items('registry'))
@@ -182,7 +187,7 @@ class TestUtil(unittest.TestCase):
 
     @mock.patch.object(util, 'OneViewClient')
     def test_load_config(self, mock_ov):
-        # Teste load config function
+        # Test load config function
 
         util.load_config(self.config_file)
 
@@ -201,7 +206,7 @@ class TestUtil(unittest.TestCase):
         oneview_client.connection.get.return_value = list()
 
         try:
-            ov_client = util.OneViewClient()
+            ov_client = util.OneViewClient({})
         except Exception as e:
             self.fail('Failed to connect to OneView: '.format(e))
         self.assertIsNotNone(ov_client)
@@ -216,7 +221,7 @@ class TestUtil(unittest.TestCase):
         oneview_client.connection.login.return_value = oneview_client
 
         try:
-            ov_client = util.OneViewClient()
+            ov_client = util.OneViewClient({})
         except Exception as e:
             self.fail('Failed to connect to OneView: '.format(e))
         self.assertIsNotNone(ov_client)
@@ -232,7 +237,7 @@ class TestUtil(unittest.TestCase):
             Exception('OneView not responding')
 
         try:
-            ov_client = util.OneViewClient()
+            ov_client = util.OneViewClient({})
         except Exception as e:
             self.fail('Failed to connect to OneView: '.format(e))
         self.assertIsNotNone(ov_client)
@@ -246,7 +251,7 @@ class TestUtil(unittest.TestCase):
             self.fail("Failed to get a valid IP Address")
 
     @mock.patch.object(util, 'OneViewClient')
-    def test_creat_certs(self, oneview_client_mockup):
+    def test_create_certs(self, oneview_client_mockup):
         # Test generate_certificate function
 
         util.load_config(self.config_file)
@@ -255,3 +260,10 @@ class TestUtil(unittest.TestCase):
 
         self.assertTrue(os.path.exists(os.path.join("certs", "test" + ".crt")))
         self.assertTrue(os.path.exists(os.path.join("certs", "test" + ".key")))
+
+    @mock.patch.object(util, 'OneViewClient')
+    @mock.patch('oneview_redfish_toolkit.util.delivery_retry_attempts', '')
+    @mock.patch('oneview_redfish_toolkit.util.delivery_retry_interval', '')
+    def test_load_event_service_invalid_info(self, oneview_client_mockup):
+        self.assertRaises(
+            OneViewRedfishError, util.load_config(self.config_file))

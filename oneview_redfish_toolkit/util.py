@@ -36,6 +36,17 @@ from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
 
 
+globals()['subscriptions_by_type'] = {
+    "StatusChange": {},
+    "ResourceUpdated": {},
+    "ResourceAdded": {},
+    "ResourceRemoved": {},
+    "Alert": {}
+}
+
+globals()['all_subscriptions'] = {}
+
+
 def configure_logging(log_file_path):
     """Loads logging.conf file
 
