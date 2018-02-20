@@ -18,6 +18,7 @@
 import ipaddress
 import logging
 import os
+from threading import Thread
 
 # 3rd party libs
 from flask import abort
@@ -29,6 +30,7 @@ from flask_api import status
 
 # own libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
+from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.chassis_collection \
     import chassis_collection
@@ -238,6 +240,24 @@ if __name__ == '__main__':
             response=error_str,
             status=status.HTTP_501_NOT_IMPLEMENTED,
             mimetype='application/json')
+
+    if util.config['redfish']['authentication_mode'] == 'conf':
+        # Loading scmb connection
+        if scmb.check_cert_exist():
+            logging.info('SCMB certs already exists testing connection...')
+        else:
+            logging.info('SCMB certs not found. Generating/getting certs....')
+            scmb.get_cert()
+            logging.info('Got certs. Testing connection...')
+        if not scmb.is_cert_working_with_scmb():
+            logging.error('Failed to connect to scmb. Aborting...')
+            exit(1)
+        scmb_thread = Thread(target=scmb.listen_scmb)
+        scmb_thread.daemon = True
+        scmb_thread.start()
+    else:
+        logging.warning("Authentication mode set to session. SCMB events will "
+                        "be disabled")
 
     config = util.config
 
