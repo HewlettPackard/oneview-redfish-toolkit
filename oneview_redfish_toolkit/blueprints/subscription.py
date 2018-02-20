@@ -120,3 +120,27 @@ def add_subscription():
     except Exception as e:
         logging.exception(e)
         return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@subscription.route(
+    "/redfish/v1/EventService/EventSubscriptions/<id>", methods=["GET"])
+def get_subscription(id):
+    """Gets a specific Subscription
+
+        Args:
+            id: The Subscription ID.
+
+        Returns:
+            Subscription JSON.
+    """
+    try:
+        sc = util.all_subscriptions[id]
+
+        json_str = sc.serialize()
+        return Response(
+            response=json_str,
+            status=status.HTTP_200_OK,
+            mimetype="application/json")
+    except KeyError as e:
+        logging.exception("Subscription not found: " + str(e))
+        abort(status.HTTP_404_NOT_FOUND)

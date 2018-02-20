@@ -76,6 +76,17 @@ class TestSubscription(unittest.TestCase):
                 status=status.HTTP_400_BAD_REQUEST,
                 mimetype='application/json')
 
+        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
+        def not_found(error):
+            """Creates a Not Found Error response"""
+            redfish_error = RedfishError(
+                "GeneralError", error.description)
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_404_NOT_FOUND,
+                mimetype='application/json')
+
         # creates a test client
         self.app = self.app.test_client()
 
@@ -186,4 +197,42 @@ class TestSubscription(unittest.TestCase):
             content_type='application/json')
 
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch('uuid.uuid1')
+    def test_get_subscription(self, uuid_mockup):
+        """Test GET Subscription"""
+
+        uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
+
+        self.app.post("/redfish/v1/EventService/EventSubscriptions/",
+                      data=json.dumps(dict(
+                          Destination="http://www.dnsname.com/Destination1",
+                          EventTypes=["Alert", "StatusChange"])),
+                      content_type='application/json')
+
+        with open(
+            'oneview_redfish_toolkit/mockups/'
+            'redfish/Subscription.json'
+        ) as f:
+            subscription_mockup = json.loads(f.read())
+
+        response = self.app.get(
+            "/redfish/v1/EventService/EventSubscriptions/"
+            "e7f93fa2-0cb4-11e8-9060-e839359bc36a")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual(subscription_mockup, result)
+
+    def test_get_invalid_subscription(self):
+        """Test GET invalid Subscription"""
+
+        response = self.app.get(
+            "/redfish/v1/EventService/EventSubscriptions/INVALID")
+
+        self.assertEqual(
+            status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
