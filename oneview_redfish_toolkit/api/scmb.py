@@ -100,7 +100,7 @@ def is_cert_working_with_scmb():
         channel.close()
         scmb_conn.close()
     except Exception:
-        logging.exception("Failed to test scmb connenction")
+        logging.exception("Failed to test scmb connection")
         return False
     return True
 
