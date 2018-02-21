@@ -123,6 +123,34 @@ def add_subscription():
 
 
 @subscription.route(
+    "/redfish/v1/EventService/EventSubscriptions/<id>", methods=["DELETE"])
+def remove_subscription(id):
+    """Removes a specific Subscription
+
+        Args:
+            id: The Subscription ID.
+
+        Returns:
+            Subscription JSON.
+    """
+    try:
+        sc = util.all_subscriptions[id]
+        event_types = sc.redfish["EventTypes"]
+
+        for event in event_types:
+            del util.subscriptions_by_type[event][id]
+
+        del util.all_subscriptions[id]
+
+        return Response(
+            status=status.HTTP_200_OK,
+            mimetype="application/json")
+    except KeyError as e:
+        logging.exception("Subscription not found: " + str(e))
+        abort(status.HTTP_404_NOT_FOUND)
+
+
+@subscription.route(
     "/redfish/v1/EventService/EventSubscriptions/<id>", methods=["GET"])
 def get_subscription(id):
     """Gets a specific Subscription

@@ -200,6 +200,42 @@ class TestSubscription(unittest.TestCase):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch('uuid.uuid1')
+    def test_remove_subscription(self, uuid_mockup):
+        """Test REMOVE Subscription"""
+
+        uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
+
+        self.app.post("/redfish/v1/EventService/EventSubscriptions/",
+                      data=json.dumps(dict(
+                          Destination="http://www.dnsname.com/Destination1",
+                          EventTypes=["Alert", "StatusChange"])),
+                      content_type='application/json')
+
+        response = self.app.delete(
+            "/redfish/v1/EventService/EventSubscriptions/"
+            "e7f93fa2-0cb4-11e8-9060-e839359bc36a",
+            data=json.dumps(dict(
+                Destination="http://www.dnsname.com/Destination1",
+                EventTypes=["Alert", "StatusChange"])),
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    def test_remove_subscription_invalid_id(self):
+        """Test REMOVE Subscription with invalid ID"""
+
+        response = self.app.delete(
+            "/redfish/v1/EventService/EventSubscriptions/INVALID",
+            data=json.dumps(dict(
+                Destination="http://www.dnsname.com/Destination1",
+                EventTypes=["Alert", "StatusChange"])),
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch('uuid.uuid1')
     def test_get_subscription(self, uuid_mockup):
         """Test GET Subscription"""
 
