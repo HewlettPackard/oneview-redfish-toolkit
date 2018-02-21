@@ -48,7 +48,7 @@ class NetworkInterfaceCollection(RedfishJsonValidator):
                     device_link = dict()
                     device_link["@odata.id"] = \
                         "/redfish/v1/Systems/" + server_hardware["uuid"] + \
-                        "/NetworkInterface/" + str(device["deviceNumber"])
+                        "/NetworkInterfaces/" + str(device["deviceNumber"])
                     self.redfish["Members"].append(device_link)
                     break
         self.redfish["Members@odata.count"] = members_count
