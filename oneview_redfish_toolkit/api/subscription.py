@@ -14,6 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from collections import OrderedDict
+
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 
@@ -30,6 +32,18 @@ class Subscription(RedfishJsonValidator):
         """Session constructor
 
             Populates self.redfish with Subscription response.
+
+            Args:
+                subscription_id: Uniquely identifies the resource within
+                the collection of like resources.
+
+                destination: The URI of the destination Event Service.
+
+                event_types: This property shall contain the types of events
+                that shall be sent to the destination.
+
+                context: A client-supplied string that is stored with the
+                event destination subscription.
         """
 
         super().__init__(self.SCHEMA_NAME)
@@ -39,7 +53,8 @@ class Subscription(RedfishJsonValidator):
         self.redfish["Id"] = subscription_id
         self.redfish["Name"] = "EventSubscription " + subscription_id
         self.redfish["Destination"] = destination
-        self.redfish["EventTypes"] = event_types
+        self.redfish["EventTypes"] = self. \
+            _remove_duplicated_event_types(event_types)
         self.redfish["Context"] = context
         self.redfish["Protocol"] = "Redfish"
         self.redfish["@odata.context"] = \
@@ -48,3 +63,21 @@ class Subscription(RedfishJsonValidator):
             "/redfish/v1/EventService/EventSubscriptions/" + subscription_id
 
         self._validate()
+
+    def get_id(self):
+        """Gets subscription Id"""
+        return self.redfish["Id"]
+
+    def get_event_types(self):
+        """Gets the list of event types"""
+        return self.redfish["EventTypes"]
+
+    def _remove_duplicated_event_types(self, event_types):
+        """Duplicated elements in event_types must be removed.
+
+            OrderedDict keeps the order of the elements,
+            so it will preserve list definition.
+        """
+        # One of the fastest and shortest ways to remove
+        # duplicates and keeps the order in Python 3.5
+        return list(OrderedDict.fromkeys(event_types))
