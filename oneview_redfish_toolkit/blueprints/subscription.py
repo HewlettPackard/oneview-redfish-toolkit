@@ -129,9 +129,6 @@ def remove_subscription(id):
 
         Args:
             id: The Subscription ID.
-
-        Returns:
-            Subscription JSON.
     """
     try:
         sc = util.all_subscriptions[id]
