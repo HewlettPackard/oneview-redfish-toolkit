@@ -64,6 +64,14 @@ class Subscription(RedfishJsonValidator):
 
         self._validate()
 
+    def get_id(self):
+        """Gets subscription Id"""
+        return self.redfish["Id"]
+
+    def get_event_types(self):
+        """Gets the list of event types"""
+        return self.redfish["EventTypes"]
+
     def _remove_duplicated_event_types(self, event_types):
         """Duplicated elements in event_types must be removed.
 

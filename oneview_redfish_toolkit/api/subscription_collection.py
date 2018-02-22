@@ -50,7 +50,7 @@ class SubscriptionCollection(RedfishJsonValidator):
             member["@odata.id"] = \
                 "/redfish/v1/EventService" \
                 "/EventSubscriptions/{}".format(
-                    all_subscriptions[subscription_id].redfish["Id"])
+                    all_subscriptions[subscription_id].get_id())
 
             self.redfish["Members"].append(member)
 

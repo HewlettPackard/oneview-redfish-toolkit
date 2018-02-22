@@ -75,6 +75,12 @@ def add_subscription():
                      "message": "Destination must be an URI."})
 
             event_types = body["EventTypes"]
+
+            if not event_types:
+                raise OneViewRedfishError(
+                    {"errorCode": "INVALID_INFORMATION",
+                     "message": "EventTypes cannot be empty."})
+
             context = body.get("Context")
         except KeyError:
             raise OneViewRedfishError(
@@ -96,7 +102,7 @@ def add_subscription():
                             "StatusChange, ResourceUpdated, ResourceAdded,"
                             " ResourceRemoved and Alert."})
 
-        for event_type in event_types:
+        for event_type in sc.get_event_types():
             util.subscriptions_by_type[event_type][subscription_id] = sc
 
         util.all_subscriptions[subscription_id] = sc
@@ -115,7 +121,7 @@ def add_subscription():
         return response
 
     except OneViewRedfishError as e:
-        logging.exception('Mapping error: {}'.format(e))
+        logging.exception(e)
         abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
     except Exception as e:
         logging.exception(e)
@@ -123,21 +129,22 @@ def add_subscription():
 
 
 @subscription.route(
-    "/redfish/v1/EventService/EventSubscriptions/<id>", methods=["DELETE"])
-def remove_subscription(id):
+    "/redfish/v1/EventService/EventSubscriptions/<subscription_id>",
+    methods=["DELETE"])
+def remove_subscription(subscription_id):
     """Removes a specific Subscription
 
         Args:
-            id: The Subscription ID.
+            subscription_id: The Subscription ID.
     """
     try:
-        sc = util.all_subscriptions[id]
-        event_types = sc.redfish["EventTypes"]
+        sc = util.all_subscriptions[subscription_id]
+        event_types = sc.get_event_types()
 
         for event in event_types:
-            del util.subscriptions_by_type[event][id]
+            del util.subscriptions_by_type[event][subscription_id]
 
-        del util.all_subscriptions[id]
+        del util.all_subscriptions[subscription_id]
 
         return Response(
             status=status.HTTP_200_OK,
@@ -148,18 +155,19 @@ def remove_subscription(id):
 
 
 @subscription.route(
-    "/redfish/v1/EventService/EventSubscriptions/<id>", methods=["GET"])
-def get_subscription(id):
+    "/redfish/v1/EventService/EventSubscriptions/<subscription_id>",
+    methods=["GET"])
+def get_subscription(subscription_id):
     """Gets a specific Subscription
 
         Args:
-            id: The Subscription ID.
+            subscription_id: The Subscription ID.
 
         Returns:
             Subscription JSON.
     """
     try:
-        sc = util.all_subscriptions[id]
+        sc = util.all_subscriptions[subscription_id]
 
         json_str = sc.serialize()
         return Response(
