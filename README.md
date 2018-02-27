@@ -46,6 +46,8 @@ $ ./run.sh    # to launch the service
 
 The latest version of the SDK documentation can be found in the [SDK Documentation section](https://hewlettpackard.github.io/oneview-redfish-toolkit/index.html).
 
+> Note: This documentation has been manually updated following the steps found [here](https://github.com/HewlettPackard/python-hpOneView/blob/master/deploy.sh).
+
 ## Logging
 
 Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output (which will generate a `redfish.log` file).
