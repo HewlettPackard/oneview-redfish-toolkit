@@ -42,10 +42,6 @@ $ pip install -r requirements.txt # to install all requirements into the virtual
 $ ./run.sh    # to launch the service
 ```
 
-## Redfish API Implementation
-
-A status of the Redfish standard covered by the implemented service is available at [Wiki section](https://github.com/HewlettPackard/oneview-redfish-toolkit/wiki/Redfish-Implementation-Status).
-
 ## SDK Documentation
 
 The latest version of the SDK documentation can be found in the [SDK Documentation section](https://hewlettpackard.github.io/oneview-redfish-toolkit/index.html).
