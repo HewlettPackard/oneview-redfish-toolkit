@@ -173,6 +173,7 @@
 <span class="c1"># 3rd party libs</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">abort</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">g</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">request</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Response</span>
 <span class="kn">from</span> <span class="nn">flask_api</span> <span class="k">import</span> <span class="n">status</span>
@@ -181,7 +182,6 @@
 <span class="kn">from</span> <span class="nn">hpOneView.exceptions</span> <span class="k">import</span> <span class="n">HPOneViewException</span>
 <span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.computer_system</span> <span class="k">import</span> <span class="n">ComputerSystem</span>
 <span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.errors</span> <span class="k">import</span> <span class="n">OneViewRedfishError</span>
-<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit</span> <span class="k">import</span> <span class="n">util</span>
 
 
 <span class="n">computer_system</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;computer_system&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
@@ -204,14 +204,11 @@
 <span class="sd">            Logs the exception and call abort(500)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Recover OV connection</span>
-        <span class="n">oneview_client</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_oneview_client</span><span class="p">()</span>
-
         <span class="c1"># Gets server hardware for given UUID</span>
-        <span class="n">server_hardware</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="n">server_hardware</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
 
         <span class="c1"># Gets the server hardware type of the given server hardware</span>
-        <span class="n">server_hardware_types</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">server_hardware_types</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
             <span class="n">server_hardware</span><span class="p">[</span><span class="s1">&#39;serverHardwareTypeUri&#39;</span><span class="p">]</span>
         <span class="p">)</span>
 
@@ -222,10 +219,12 @@
         <span class="n">json_str</span> <span class="o">=</span> <span class="n">cs</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
 
         <span class="c1"># Build response and returns</span>
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span>
             <span class="n">response</span><span class="o">=</span><span class="n">json_str</span><span class="p">,</span>
             <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
             <span class="n">mimetype</span><span class="o">=</span><span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;ETag&quot;</span><span class="p">,</span> <span class="s2">&quot;W/&quot;</span> <span class="o">+</span> <span class="n">server_hardware</span><span class="p">[</span><span class="s1">&#39;eTag&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">response</span>
     <span class="k">except</span> <span class="n">HPOneViewException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">oneview_response</span><span class="p">[</span><span class="s1">&#39;errorCode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;RESOURCE_NOT_FOUND&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;server-hardware-types&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
@@ -244,23 +243,23 @@
                     <span class="s2">&quot;Server hardware not found&quot;</span><span class="p">)</span>
 
         <span class="k">elif</span> <span class="n">e</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;server-hardware-types&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                 <span class="s1">&#39;OneView Exception while looking for server hardware type&#39;</span>
                 <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">e</span><span class="o">.</span><span class="n">msg</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;server-hardware&quot;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span>
                 <span class="s1">&#39;OneView Exception while looking for &#39;</span>
                 <span class="s1">&#39;server hardware: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
             <span class="p">)</span>
             <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unexpected OneView Exception: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Unexpected OneView Exception: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># In case of error print exception and abort</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unexpected error: &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Unexpected error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span></div>
 
 
@@ -295,14 +294,11 @@
                 <span class="p">{</span><span class="s2">&quot;errorCode&quot;</span><span class="p">:</span> <span class="s2">&quot;INVALID_INFORMATION&quot;</span><span class="p">,</span>
                  <span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Invalid JSON key&quot;</span><span class="p">})</span>
 
-        <span class="c1"># Recover OV connection</span>
-        <span class="n">oneview_client</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_oneview_client</span><span class="p">()</span>
-
         <span class="c1"># Gets ServerHardware for given UUID</span>
-        <span class="n">sh</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+        <span class="n">sh</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
 
         <span class="c1"># Gets the ServerHardwareType of the given server hardware</span>
-        <span class="n">sht</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware_types</span><span class="o">.</span> \
+        <span class="n">sht</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware_types</span><span class="o">.</span> \
             <span class="n">get</span><span class="p">(</span><span class="n">sh</span><span class="p">[</span><span class="s1">&#39;serverHardwareTypeUri&#39;</span><span class="p">])</span>
 
         <span class="c1"># Build Computer System object and validates it</span>
@@ -312,7 +308,7 @@
             <span class="n">cs</span><span class="o">.</span><span class="n">get_oneview_power_configuration</span><span class="p">(</span><span class="n">reset_type</span><span class="p">)</span>
 
         <span class="c1"># Changes the ServerHardware power state</span>
-        <span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware</span><span class="o">.</span><span class="n">update_power_state</span><span class="p">(</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware</span><span class="o">.</span><span class="n">update_power_state</span><span class="p">(</span>
             <span class="n">oneview_power_configuration</span><span class="p">,</span> <span class="n">uuid</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span>
@@ -322,7 +318,7 @@
 
     <span class="k">except</span> <span class="n">HPOneViewException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># In case of error log exception and abort</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">oneview_response</span><span class="p">[</span><span class="s1">&#39;errorCode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;RESOURCE_NOT_FOUND&quot;</span><span class="p">:</span>
             <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="s2">&quot;Server hardware not found&quot;</span><span class="p">)</span>
@@ -331,7 +327,7 @@
 
     <span class="k">except</span> <span class="n">OneViewRedfishError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># In case of error log exception and abort</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Mapping error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Mapping error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">msg</span><span class="p">[</span><span class="s2">&quot;errorCode&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;NOT_IMPLEMENTED&quot;</span><span class="p">:</span>
             <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_501_NOT_IMPLEMENTED</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">msg</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">])</span>
@@ -340,7 +336,7 @@
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># In case of error log exception and abort</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unexpected error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Unexpected error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span></div>
 </pre></div>
 

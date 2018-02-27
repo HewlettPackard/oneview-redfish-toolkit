@@ -173,13 +173,13 @@
 <span class="c1"># 3rd party libs</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">abort</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">g</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Response</span>
 <span class="kn">from</span> <span class="nn">flask_api</span> <span class="k">import</span> <span class="n">status</span>
 
 <span class="c1"># own libs</span>
 <span class="kn">from</span> <span class="nn">hpOneView.exceptions</span> <span class="k">import</span> <span class="n">HPOneViewException</span>
 <span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.service_root</span> <span class="k">import</span> <span class="n">ServiceRoot</span>
-<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit</span> <span class="k">import</span> <span class="n">util</span>
 
 <span class="n">service_root</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s1">&#39;service_root&#39;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
@@ -193,12 +193,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># Recover OV connection</span>
-        <span class="n">oneview_client</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_oneview_client</span><span class="p">()</span>
-
-        <span class="c1"># Gets serverhardware for given UUID</span>
         <span class="n">appliance_node_information</span> <span class="o">=</span> \
-            <span class="n">oneview_client</span><span class="o">.</span><span class="n">appliance_node_information</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">oneview_client</span><span class="o">.</span><span class="n">appliance_node_information</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
         <span class="n">uuid</span> <span class="o">=</span> <span class="n">appliance_node_information</span><span class="p">[</span><span class="s1">&#39;uuid&#39;</span><span class="p">]</span>
 
         <span class="n">sr</span> <span class="o">=</span> <span class="n">ServiceRoot</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
@@ -209,13 +205,13 @@
             <span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">HPOneViewException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">oneview_response</span><span class="p">[</span><span class="s1">&#39;errorCode&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;RESOURCE_NOT_FOUND&quot;</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Resource not found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Resource not found: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="s2">&quot;Appliance not found&quot;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;OneView Exception: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;OneView Exception: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
             <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;ServiceRoot error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;ServiceRoot error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span></div>
 </pre></div>
 

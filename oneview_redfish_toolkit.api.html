@@ -99,15 +99,31 @@
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.enclosure_chassis">oneview_redfish_toolkit.api.enclosure_chassis module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.enclosure_manager">oneview_redfish_toolkit.api.enclosure_manager module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.errors">oneview_redfish_toolkit.api.errors module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.event">oneview_redfish_toolkit.api.event module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.event_service">oneview_redfish_toolkit.api.event_service module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.manager">oneview_redfish_toolkit.api.manager module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.manager_collection">oneview_redfish_toolkit.api.manager_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.metadata">oneview_redfish_toolkit.api.metadata module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.network_adapter">oneview_redfish_toolkit.api.network_adapter module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.network_adapter_collection">oneview_redfish_toolkit.api.network_adapter_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.network_device_function">oneview_redfish_toolkit.api.network_device_function module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.network_device_function_collection">oneview_redfish_toolkit.api.network_device_function_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.network_interface">oneview_redfish_toolkit.api.network_interface module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.network_interface_collection">oneview_redfish_toolkit.api.network_interface_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.network_port">oneview_redfish_toolkit.api.network_port module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.network_port_collection">oneview_redfish_toolkit.api.network_port_collection module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.odata">oneview_redfish_toolkit.api.odata module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.rack_chassis">oneview_redfish_toolkit.api.rack_chassis module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.redfish_error">oneview_redfish_toolkit.api.redfish_error module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.redfish_json_validator">oneview_redfish_toolkit.api.redfish_json_validator module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.scmb">oneview_redfish_toolkit.api.scmb module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.service_root">oneview_redfish_toolkit.api.service_root module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.session">oneview_redfish_toolkit.api.session module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.status_mapping">oneview_redfish_toolkit.api.status_mapping module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.storage">oneview_redfish_toolkit.api.storage module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.storage_collection">oneview_redfish_toolkit.api.storage_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.subscription">oneview_redfish_toolkit.api.subscription module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.subscription_collection">oneview_redfish_toolkit.api.subscription_collection module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api.thermal">oneview_redfish_toolkit.api.thermal module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.api">Module contents</a></li>
 </ul>
@@ -344,7 +360,7 @@ values and with the response from OneView.</p>
 <dl class="exception">
 <dt id="oneview_redfish_toolkit.api.errors.OneViewRedfishError">
 <em class="property">exception </em><code class="descclassname">oneview_redfish_toolkit.api.errors.</code><code class="descname">OneViewRedfishError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/errors.html#OneViewRedfishError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.errors.OneViewRedfishError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
 </dd></dl>
 
 <dl class="exception">
@@ -357,6 +373,44 @@ values and with the response from OneView.</p>
 <dt id="oneview_redfish_toolkit.api.errors.OneViewRedfishResourceNotFoundError">
 <em class="property">exception </em><code class="descclassname">oneview_redfish_toolkit.api.errors.</code><code class="descname">OneViewRedfishResourceNotFoundError</code><span class="sig-paren">(</span><em>resource_name</em>, <em>resource_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/errors.html#OneViewRedfishResourceNotFoundError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.errors.OneViewRedfishResourceNotFoundError" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.errors.OneViewRedfishError" title="oneview_redfish_toolkit.api.errors.OneViewRedfishError"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.errors.OneViewRedfishError</span></code></a></p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.event">
+<span id="oneview-redfish-toolkit-api-event-module"></span><h2>oneview_redfish_toolkit.api.event module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.event" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.event.Event">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.event.</code><code class="descname">Event</code><span class="sig-paren">(</span><em>oneview_alert</em>, <em>event_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/event.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.event.Event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Event Redfish dict</p>
+<p>Populates self.redfish with some hardcoded Event
+values and with the response from OneView.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.event.Event.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'Event'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.event.Event.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.event_service">
+<span id="oneview-redfish-toolkit-api-event-service-module"></span><h2>oneview_redfish_toolkit.api.event_service module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.event_service" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.event_service.EventService">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.event_service.</code><code class="descname">EventService</code><span class="sig-paren">(</span><em>delivery_retry_attempts</em>, <em>delivery_retry_interval</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/event_service.html#EventService"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.event_service.EventService" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Event Service dict</p>
+<p>Populates self.redfish with EventService values.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.event_service.EventService.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'EventService'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.event_service.EventService.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="oneview_redfish_toolkit.api.event_service.EventService.set_service_status">
+<code class="descname">set_service_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/event_service.html#EventService.set_service_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.event_service.EventService.set_service_status" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -395,6 +449,156 @@ enclosures resource.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-oneview_redfish_toolkit.api.metadata">
+<span id="oneview-redfish-toolkit-api-metadata-module"></span><h2>oneview_redfish_toolkit.api.metadata module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.metadata" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.metadata.Metadata">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.metadata.</code><code class="descname">Metadata</code><span class="sig-paren">(</span><em>reference_list</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/metadata.html#Metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.metadata.Metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Creates a redfish $metadata XML</p>
+<dl class="method">
+<dt id="oneview_redfish_toolkit.api.metadata.Metadata.serialize">
+<code class="descname">serialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/metadata.html#Metadata.serialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.metadata.Metadata.serialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.network_adapter">
+<span id="oneview-redfish-toolkit-api-network-adapter-module"></span><h2>oneview_redfish_toolkit.api.network_adapter module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.network_adapter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.network_adapter.NetworkAdapter">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.network_adapter.</code><code class="descname">NetworkAdapter</code><span class="sig-paren">(</span><em>device_id</em>, <em>server_hardware</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/network_adapter.html#NetworkAdapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.network_adapter.NetworkAdapter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a NetworkAdapter Redfish dict</p>
+<p>Populates self.redfish with NetworkAdapter data retrieved from
+OneView</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.network_adapter.NetworkAdapter.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'NetworkAdapter'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.network_adapter.NetworkAdapter.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.network_adapter_collection">
+<span id="oneview-redfish-toolkit-api-network-adapter-collection-module"></span><h2>oneview_redfish_toolkit.api.network_adapter_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.network_adapter_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.network_adapter_collection.NetworkAdapterCollection">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.network_adapter_collection.</code><code class="descname">NetworkAdapterCollection</code><span class="sig-paren">(</span><em>server_hardware</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/network_adapter_collection.html#NetworkAdapterCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.network_adapter_collection.NetworkAdapterCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a NetworkAdapterCollection Redfish dict</p>
+<p>Populates self.redfish with some hardcoded NetworkAdapterCollection
+values and Oneview ServerHardware result</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.network_adapter_collection.NetworkAdapterCollection.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'NetworkAdapterCollection'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.network_adapter_collection.NetworkAdapterCollection.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.network_device_function">
+<span id="oneview-redfish-toolkit-api-network-device-function-module"></span><h2>oneview_redfish_toolkit.api.network_device_function module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.network_device_function" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.network_device_function.NetworkDeviceFunction">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.network_device_function.</code><code class="descname">NetworkDeviceFunction</code><span class="sig-paren">(</span><em>device_id</em>, <em>device_function_id</em>, <em>server_hardware</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/network_device_function.html#NetworkDeviceFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.network_device_function.NetworkDeviceFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a NetworkDeviceFunction Redfish dict</p>
+<p>Populates self.redfish with NetworkDeviceFunction data retrieved from
+OneView</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.network_device_function.NetworkDeviceFunction.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'NetworkDeviceFunction'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.network_device_function.NetworkDeviceFunction.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.network_device_function_collection">
+<span id="oneview-redfish-toolkit-api-network-device-function-collection-module"></span><h2>oneview_redfish_toolkit.api.network_device_function_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.network_device_function_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.network_device_function_collection.NetworkDeviceFunctionCollection">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.network_device_function_collection.</code><code class="descname">NetworkDeviceFunctionCollection</code><span class="sig-paren">(</span><em>device_id</em>, <em>server_hardware</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/network_device_function_collection.html#NetworkDeviceFunctionCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.network_device_function_collection.NetworkDeviceFunctionCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Network Device Function Collection Redfish dict</p>
+<p>Populates self.redfish with a NetworkDeviceFunctionCollection</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.network_device_function_collection.NetworkDeviceFunctionCollection.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'NetworkDeviceFunctionCollection'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.network_device_function_collection.NetworkDeviceFunctionCollection.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.network_interface">
+<span id="oneview-redfish-toolkit-api-network-interface-module"></span><h2>oneview_redfish_toolkit.api.network_interface module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.network_interface" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.network_interface.NetworkInterface">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.network_interface.</code><code class="descname">NetworkInterface</code><span class="sig-paren">(</span><em>device_id</em>, <em>server_hardware</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/network_interface.html#NetworkInterface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.network_interface.NetworkInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a NetworkInterface Redfish dict</p>
+<p>Populates self.redfish with NetworkInterface data retrieved from
+OneView</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.network_interface.NetworkInterface.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'NetworkInterface'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.network_interface.NetworkInterface.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.network_interface_collection">
+<span id="oneview-redfish-toolkit-api-network-interface-collection-module"></span><h2>oneview_redfish_toolkit.api.network_interface_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.network_interface_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.network_interface_collection.NetworkInterfaceCollection">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.network_interface_collection.</code><code class="descname">NetworkInterfaceCollection</code><span class="sig-paren">(</span><em>server_hardware</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/network_interface_collection.html#NetworkInterfaceCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.network_interface_collection.NetworkInterfaceCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Network Interface Collection Redfish dict</p>
+<p>Populates self.redfish with some hardcoded NetworkInterfaceCollection
+values and Oneview ServerHardware result</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.network_interface_collection.NetworkInterfaceCollection.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'NetworkInterfaceCollection'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.network_interface_collection.NetworkInterfaceCollection.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.network_port">
+<span id="oneview-redfish-toolkit-api-network-port-module"></span><h2>oneview_redfish_toolkit.api.network_port module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.network_port" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.network_port.NetworkPort">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.network_port.</code><code class="descname">NetworkPort</code><span class="sig-paren">(</span><em>device_id</em>, <em>port_id</em>, <em>server_hardware</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/network_port.html#NetworkPort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.network_port.NetworkPort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a NetworkPort Redfish dict</p>
+<p>Populates self.redfish with NetworkPort data retrieved from
+OneView</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.network_port.NetworkPort.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'NetworkPort'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.network_port.NetworkPort.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.network_port_collection">
+<span id="oneview-redfish-toolkit-api-network-port-collection-module"></span><h2>oneview_redfish_toolkit.api.network_port_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.network_port_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.network_port_collection.NetworkPortCollection">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.network_port_collection.</code><code class="descname">NetworkPortCollection</code><span class="sig-paren">(</span><em>server_hardware</em>, <em>device_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/network_port_collection.html#NetworkPortCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.network_port_collection.NetworkPortCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Network Port Collection Redfish dict</p>
+<p>Populates self.redfish with some hardcoded NetworkPortCollection
+values and Oneview ServerHardware result.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.network_port_collection.NetworkPortCollection.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'NetworkPortCollection'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.network_port_collection.NetworkPortCollection.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-oneview_redfish_toolkit.api.odata">
 <span id="oneview-redfish-toolkit-api-odata-module"></span><h2>oneview_redfish_toolkit.api.odata module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.odata" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -403,7 +607,7 @@ enclosures resource.</p>
 <dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
 <p>Creates a hardcoded odata redfish dict</p>
 <p>Populates self.redfish with a hardcoded odata values. These should
-have all service ofered by the servers.</p>
+have all service offered by the servers.</p>
 <dl class="attribute">
 <dt id="oneview_redfish_toolkit.api.odata.Odata.SCHEMA_NAME">
 <code class="descname">SCHEMA_NAME</code><em class="property"> = None</em><a class="headerlink" href="#oneview_redfish_toolkit.api.odata.Odata.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
@@ -432,7 +636,7 @@ values and with the response of OneView Rack.</p>
 <dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
 <p>Creates a Redfish Error Dict</p>
 <p>Populates self.redfish with errors. Will not validate as there’s no
-schema to validate agains.</p>
+schema to validate against.</p>
 <dl class="attribute">
 <dt id="oneview_redfish_toolkit.api.redfish_error.RedfishError.SCHEMA_NAME">
 <code class="descname">SCHEMA_NAME</code><em class="property"> = None</em><a class="headerlink" href="#oneview_redfish_toolkit.api.redfish_error.RedfishError.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
@@ -454,7 +658,7 @@ Registry Messages</li>
 <li><strong>message_args</strong> – List of string to replace markers on Redfish
 messages. Must have the same length as the number of %
 signs found in the registry Message field</li>
-<li><strong>related_properties</strong> – Proprerties relates to this e error if
+<li><strong>related_properties</strong> – Properties relates to this e error if
 necessary</li>
 </ul>
 </td>
@@ -481,6 +685,40 @@ The Serialize method always validates the redfish content before
 generating the json string, It returns the redfish json string on
 successful validation and raises an exception on validation failure</p>
 <dl class="method">
+<dt id="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator.get_resource_by_id">
+<code class="descname">get_resource_by_id</code><span class="sig-paren">(</span><em>resource_list</em>, <em>resource_number_key</em>, <em>resource_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/redfish_json_validator.html#RedfishJsonValidator.get_resource_by_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator.get_resource_by_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a specific resource in the resource list</p>
+<p>Validates the resource ID and gets the resource in
+the resource list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>resource_list</strong> – List of resources.</li>
+<li><strong>resource_number_key</strong> – Field name of the resource
+number in the JSON.</li>
+<li><strong>resource_id</strong> – Resource’s ID that will be searched
+in the resource list.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Resource in the list.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Exception:</dt>
+<dd><p class="first">OneViewRedfishError: If the ID is not an integer.
+OneViewRedfishResourceNotFoundError: If the resource</p>
+<blockquote class="last">
+<div>was not found.</div></blockquote>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator.serialize">
 <code class="descname">serialize</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/redfish_json_validator.html#RedfishJsonValidator.serialize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator.serialize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a json string from redfish content</p>
@@ -502,6 +740,39 @@ not the result.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-oneview_redfish_toolkit.api.scmb">
+<span id="oneview-redfish-toolkit-api-scmb-module"></span><h2>oneview_redfish_toolkit.api.scmb module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.scmb" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.api.scmb.check_cert_exist">
+<code class="descclassname">oneview_redfish_toolkit.api.scmb.</code><code class="descname">check_cert_exist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/scmb.html#check_cert_exist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.scmb.check_cert_exist" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="oneview_redfish_toolkit.api.scmb.consume_message">
+<code class="descclassname">oneview_redfish_toolkit.api.scmb.</code><code class="descname">consume_message</code><span class="sig-paren">(</span><em>ch</em>, <em>method</em>, <em>properties</em>, <em>body</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/scmb.html#consume_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.scmb.consume_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="oneview_redfish_toolkit.api.scmb.get_cert">
+<code class="descclassname">oneview_redfish_toolkit.api.scmb.</code><code class="descname">get_cert</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/scmb.html#get_cert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.scmb.get_cert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="oneview_redfish_toolkit.api.scmb.is_cert_working_with_scmb">
+<code class="descclassname">oneview_redfish_toolkit.api.scmb.</code><code class="descname">is_cert_working_with_scmb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/scmb.html#is_cert_working_with_scmb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.scmb.is_cert_working_with_scmb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="oneview_redfish_toolkit.api.scmb.listen_scmb">
+<code class="descclassname">oneview_redfish_toolkit.api.scmb.</code><code class="descname">listen_scmb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/scmb.html#listen_scmb"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.scmb.listen_scmb" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="oneview_redfish_toolkit.api.scmb.scmb_connect">
+<code class="descclassname">oneview_redfish_toolkit.api.scmb.</code><code class="descname">scmb_connect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/scmb.html#scmb_connect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.scmb.scmb_connect" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
 <div class="section" id="module-oneview_redfish_toolkit.api.service_root">
 <span id="oneview-redfish-toolkit-api-service-root-module"></span><h2>oneview_redfish_toolkit.api.service_root module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.service_root" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -514,6 +785,22 @@ a BladeSystem</p>
 <dl class="attribute">
 <dt id="oneview_redfish_toolkit.api.service_root.ServiceRoot.SCHEMA_NAME">
 <code class="descname">SCHEMA_NAME</code><em class="property"> = 'ServiceRoot'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.service_root.ServiceRoot.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.session">
+<span id="oneview-redfish-toolkit-api-session-module"></span><h2>oneview_redfish_toolkit.api.session module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.session" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.session.Session">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.session.</code><code class="descname">Session</code><span class="sig-paren">(</span><em>username</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/session.html#Session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.session.Session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Super class of Session Service</p>
+<p>Populates self.redfish with Session response.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.session.Session.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'Session'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.session.Session.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -534,6 +821,27 @@ a BladeSystem</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-oneview_redfish_toolkit.api.storage">
+<span id="oneview-redfish-toolkit-api-storage-module"></span><h2>oneview_redfish_toolkit.api.storage module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.storage" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.storage.Storage">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.storage.</code><code class="descname">Storage</code><span class="sig-paren">(</span><em>uuid</em>, <em>server_hardware_type</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/storage.html#Storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.storage.Storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Storage Redfish dict</p>
+<p>Populates self.redfish with Storage data retrieved from OneView</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.storage.Storage.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'Storage'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.storage.Storage.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="oneview_redfish_toolkit.api.storage.Storage.map_supported_device_protos">
+<code class="descname">map_supported_device_protos</code><span class="sig-paren">(</span><em>drive_technologies</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/storage.html#Storage.map_supported_device_protos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.storage.Storage.map_supported_device_protos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-oneview_redfish_toolkit.api.storage_collection">
 <span id="oneview-redfish-toolkit-api-storage-collection-module"></span><h2>oneview_redfish_toolkit.api.storage_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.storage_collection" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -546,6 +854,51 @@ values</p>
 <dl class="attribute">
 <dt id="oneview_redfish_toolkit.api.storage_collection.StorageCollection.SCHEMA_NAME">
 <code class="descname">SCHEMA_NAME</code><em class="property"> = 'StorageCollection'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.storage_collection.StorageCollection.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.subscription">
+<span id="oneview-redfish-toolkit-api-subscription-module"></span><h2>oneview_redfish_toolkit.api.subscription module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.subscription" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.subscription.Subscription">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.subscription.</code><code class="descname">Subscription</code><span class="sig-paren">(</span><em>subscription_id</em>, <em>destination</em>, <em>event_types</em>, <em>context</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/subscription.html#Subscription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.subscription.Subscription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates the Subscription class</p>
+<p>Populates self.redfish with Subscription response.</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.subscription.Subscription.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'EventDestination'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.subscription.Subscription.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="oneview_redfish_toolkit.api.subscription.Subscription.get_event_types">
+<code class="descname">get_event_types</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/subscription.html#Subscription.get_event_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.subscription.Subscription.get_event_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the list of event types</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="oneview_redfish_toolkit.api.subscription.Subscription.get_id">
+<code class="descname">get_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/subscription.html#Subscription.get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.subscription.Subscription.get_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets subscription Id</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.api.subscription_collection">
+<span id="oneview-redfish-toolkit-api-subscription-collection-module"></span><h2>oneview_redfish_toolkit.api.subscription_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.api.subscription_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="oneview_redfish_toolkit.api.subscription_collection.SubscriptionCollection">
+<em class="property">class </em><code class="descclassname">oneview_redfish_toolkit.api.subscription_collection.</code><code class="descname">SubscriptionCollection</code><span class="sig-paren">(</span><em>all_subscriptions</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/api/subscription_collection.html#SubscriptionCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.api.subscription_collection.SubscriptionCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator" title="oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator"><code class="xref py py-class docutils literal"><span class="pre">oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator</span></code></a></p>
+<p>Creates a Subscription Collection Redfish dict</p>
+<p>Populates self.redfish with some hardcoded SubscriptionCollection
+values</p>
+<dl class="attribute">
+<dt id="oneview_redfish_toolkit.api.subscription_collection.SubscriptionCollection.SCHEMA_NAME">
+<code class="descname">SCHEMA_NAME</code><em class="property"> = 'EventDestinationCollection'</em><a class="headerlink" href="#oneview_redfish_toolkit.api.subscription_collection.SubscriptionCollection.SCHEMA_NAME" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>

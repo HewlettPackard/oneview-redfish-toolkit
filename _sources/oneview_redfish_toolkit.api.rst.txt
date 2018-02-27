@@ -76,6 +76,22 @@ oneview\_redfish\_toolkit\.api\.errors module
     :undoc-members:
     :show-inheritance:
 
+oneview\_redfish\_toolkit\.api\.event module
+--------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.event
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.event\_service module
+-----------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.event_service
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 oneview\_redfish\_toolkit\.api\.manager module
 ----------------------------------------------
 
@@ -88,6 +104,78 @@ oneview\_redfish\_toolkit\.api\.manager\_collection module
 ----------------------------------------------------------
 
 .. automodule:: oneview_redfish_toolkit.api.manager_collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.metadata module
+-----------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.metadata
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.network\_adapter module
+-------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.network_adapter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.network\_adapter\_collection module
+-------------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.network_adapter_collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.network\_device\_function module
+----------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.network_device_function
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.network\_device\_function\_collection module
+----------------------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.network_device_function_collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.network\_interface module
+---------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.network_interface
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.network\_interface\_collection module
+---------------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.network_interface_collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.network\_port module
+----------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.network_port
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.network\_port\_collection module
+----------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.network_port_collection
     :members:
     :undoc-members:
     :show-inheritance:
@@ -124,10 +212,26 @@ oneview\_redfish\_toolkit\.api\.redfish\_json\_validator module
     :undoc-members:
     :show-inheritance:
 
+oneview\_redfish\_toolkit\.api\.scmb module
+-------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.scmb
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 oneview\_redfish\_toolkit\.api\.service\_root module
 ----------------------------------------------------
 
 .. automodule:: oneview_redfish_toolkit.api.service_root
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.session module
+----------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.session
     :members:
     :undoc-members:
     :show-inheritance:
@@ -140,10 +244,34 @@ oneview\_redfish\_toolkit\.api\.status\_mapping module
     :undoc-members:
     :show-inheritance:
 
+oneview\_redfish\_toolkit\.api\.storage module
+----------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.storage
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 oneview\_redfish\_toolkit\.api\.storage\_collection module
 ----------------------------------------------------------
 
 .. automodule:: oneview_redfish_toolkit.api.storage_collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.subscription module
+---------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.subscription
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.api\.subscription\_collection module
+---------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.api.subscription_collection
     :members:
     :undoc-members:
     :show-inheritance:

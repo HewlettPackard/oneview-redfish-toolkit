@@ -94,12 +94,26 @@
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.chassis_collection">oneview_redfish_toolkit.blueprints.chassis_collection module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.computer_system">oneview_redfish_toolkit.blueprints.computer_system module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.computer_system_collection">oneview_redfish_toolkit.blueprints.computer_system_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.event_service">oneview_redfish_toolkit.blueprints.event_service module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.manager">oneview_redfish_toolkit.blueprints.manager module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.manager_collection">oneview_redfish_toolkit.blueprints.manager_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.metadata">oneview_redfish_toolkit.blueprints.metadata module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.network_adapter">oneview_redfish_toolkit.blueprints.network_adapter module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.network_adapter_collection">oneview_redfish_toolkit.blueprints.network_adapter_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.network_device_function">oneview_redfish_toolkit.blueprints.network_device_function module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.network_device_function_collection">oneview_redfish_toolkit.blueprints.network_device_function_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.network_interface">oneview_redfish_toolkit.blueprints.network_interface module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.network_interface_collection">oneview_redfish_toolkit.blueprints.network_interface_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.network_port">oneview_redfish_toolkit.blueprints.network_port module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.network_port_collection">oneview_redfish_toolkit.blueprints.network_port_collection module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.odata">oneview_redfish_toolkit.blueprints.odata module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.redfish_base">oneview_redfish_toolkit.blueprints.redfish_base module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.service_root">oneview_redfish_toolkit.blueprints.service_root module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.session">oneview_redfish_toolkit.blueprints.session module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.storage">oneview_redfish_toolkit.blueprints.storage module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.storage_collection">oneview_redfish_toolkit.blueprints.storage_collection module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.subscription">oneview_redfish_toolkit.blueprints.subscription module</a></li>
+<li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.subscription_collection">oneview_redfish_toolkit.blueprints.subscription_collection module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints.thermal">oneview_redfish_toolkit.blueprints.thermal module</a></li>
 <li><a class="reference internal" href="#module-oneview_redfish_toolkit.blueprints">Module contents</a></li>
 </ul>
@@ -207,7 +221,7 @@ Internal Server Error or Not Found.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Redfish json with ChassisCollection.
-When Server hardwares, enclosures or racks is not found
+When Server hardware, enclosures or racks is not found
 calls abort(404).</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">JSON</td>
@@ -303,6 +317,31 @@ When Server hardware is not found calls abort(404)</td>
 </dd></dl>
 
 </div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.event_service">
+<span id="oneview-redfish-toolkit-blueprints-event-service-module"></span><h2>oneview_redfish_toolkit.blueprints.event_service module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.event_service" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.event_service.get_event_service">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.event_service.</code><code class="descname">get_event_service</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/event_service.html#get_event_service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.event_service.get_event_service" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish Event Service.</p>
+<p>Get method to return EventService JSON when
+/redfish/v1/EventService is requested.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">JSON with EventService.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">JSON</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Exceptions:</dt>
+<dd>OneViewRedfishError: General error.</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-oneview_redfish_toolkit.blueprints.manager">
 <span id="oneview-redfish-toolkit-blueprints-manager-module"></span><h2>oneview_redfish_toolkit.blueprints.manager module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.manager" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -338,7 +377,7 @@ Internal Server Error or Not Found.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Redfish json with ManagerCollection.
-When Server hardwares or enclosures is not found
+When Server hardware or enclosures is not found
 calls abort(404).</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">JSON</td>
@@ -356,6 +395,194 @@ Logs the exception and call abort(404).</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.metadata">
+<span id="oneview-redfish-toolkit-blueprints-metadata-module"></span><h2>oneview_redfish_toolkit.blueprints.metadata module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.metadata" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.metadata.get_metadata">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.metadata.</code><code class="descname">get_metadata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/metadata.html#get_metadata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.metadata.get_metadata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets metadata</p>
+<p>Generates the XML with schemas used by this system</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.network_adapter">
+<span id="oneview-redfish-toolkit-blueprints-network-adapter-module"></span><h2>oneview_redfish_toolkit.blueprints.network_adapter module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.network_adapter" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.network_adapter.get_network_adapter">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.network_adapter.</code><code class="descname">get_network_adapter</code><span class="sig-paren">(</span><em>uuid</em>, <em>device_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/network_adapter.html#get_network_adapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.network_adapter.get_network_adapter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish NetworkInterface for a given UUID and device_id.</p>
+<p>Return NetworkInterface Redfish JSON for a given hardware UUID
+and device_id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>uuid</strong> – the UUID of the server_hardware</li>
+<li><strong>device_id</strong> – The id of the network device</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Redfish json with NetworkInterface</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">JSON</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Exceptions:</dt>
+<dd>When hardware is not found calls abort(404)
+When other errors occur calls abort(500)</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.network_adapter_collection">
+<span id="oneview-redfish-toolkit-blueprints-network-adapter-collection-module"></span><h2>oneview_redfish_toolkit.blueprints.network_adapter_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.network_adapter_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.network_adapter_collection.get_network_adapter_collection">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.network_adapter_collection.</code><code class="descname">get_network_adapter_collection</code><span class="sig-paren">(</span><em>uuid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/network_adapter_collection.html#get_network_adapter_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.network_adapter_collection.get_network_adapter_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish Network Adapters Collection.</p>
+<p>Return NetworkAdapterCollection Redfish JSON.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.network_device_function">
+<span id="oneview-redfish-toolkit-blueprints-network-device-function-module"></span><h2>oneview_redfish_toolkit.blueprints.network_device_function module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.network_device_function" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.network_device_function.get_network_device_function">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.network_device_function.</code><code class="descname">get_network_device_function</code><span class="sig-paren">(</span><em>uuid</em>, <em>device_id</em>, <em>device_function_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/network_device_function.html#get_network_device_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.network_device_function.get_network_device_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish NetworkDeviceFunction for a given UUID and device_id.</p>
+<p>Return NetworkDeviceFunction Redfish JSON for a given hardware UUID
+and device_id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>uuid</strong> – the UUID of the server_hardware</li>
+<li><strong>device_id</strong> – The id of the network device</li>
+<li><strong>device_function_id</strong> – The id of the device function</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Redfish json with NetworkDeviceFunction</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">JSON</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Exceptions:</dt>
+<dd>When hardware is not found calls abort(404)
+When other errors occur calls abort(500)</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.network_device_function_collection">
+<span id="oneview-redfish-toolkit-blueprints-network-device-function-collection-module"></span><h2>oneview_redfish_toolkit.blueprints.network_device_function_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.network_device_function_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.network_device_function_collection.get_network_device_function_collection">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.network_device_function_collection.</code><code class="descname">get_network_device_function_collection</code><span class="sig-paren">(</span><em>uuid</em>, <em>device_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/network_device_function_collection.html#get_network_device_function_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.network_device_function_collection.get_network_device_function_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish Network Interfaces Collection.</p>
+<p>Return NetworkDeviceFunctionCollection Redfish JSON.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.network_interface">
+<span id="oneview-redfish-toolkit-blueprints-network-interface-module"></span><h2>oneview_redfish_toolkit.blueprints.network_interface module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.network_interface" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.network_interface.get_network_interface">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.network_interface.</code><code class="descname">get_network_interface</code><span class="sig-paren">(</span><em>uuid</em>, <em>device_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/network_interface.html#get_network_interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.network_interface.get_network_interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish NetworkInterface for a given UUID and device_id.</p>
+<p>Return NetworkInterface Redfish JSON for a given hardware UUID
+and device_id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>uuid</strong> – the UUID of the server_hardware</li>
+<li><strong>device_id</strong> – The id of the network device</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Redfish json with NetworkInterface</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">JSON</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Exceptions:</dt>
+<dd>When hardware is not found calls abort(404)
+When other errors occur calls abort(500)</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.network_interface_collection">
+<span id="oneview-redfish-toolkit-blueprints-network-interface-collection-module"></span><h2>oneview_redfish_toolkit.blueprints.network_interface_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.network_interface_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.network_interface_collection.get_network_interface_collection">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.network_interface_collection.</code><code class="descname">get_network_interface_collection</code><span class="sig-paren">(</span><em>uuid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/network_interface_collection.html#get_network_interface_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.network_interface_collection.get_network_interface_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish Network Interfaces Collection.</p>
+<p>Return NetworkInterfaceCollection Redfish JSON.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.network_port">
+<span id="oneview-redfish-toolkit-blueprints-network-port-module"></span><h2>oneview_redfish_toolkit.blueprints.network_port module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.network_port" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.network_port.get_network_port">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.network_port.</code><code class="descname">get_network_port</code><span class="sig-paren">(</span><em>uuid</em>, <em>device_id</em>, <em>port_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/network_port.html#get_network_port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.network_port.get_network_port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish NetworkPort for a given UUID, device_id and port_id.</p>
+<p>Return NetworkPort Redfish JSON for a given hardware UUID, device_id
+and port_id.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>uuid</strong> – the UUID of the server_hardware</li>
+<li><strong>device_id</strong> – The id of the network device</li>
+<li><strong>port_id</strong> – The id of the port</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Redfish json with NetworkPort</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">JSON</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Exceptions:</dt>
+<dd>When hardware is not found calls abort(404)
+When other errors occur calls abort(500)</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.network_port_collection">
+<span id="oneview-redfish-toolkit-blueprints-network-port-collection-module"></span><h2>oneview_redfish_toolkit.blueprints.network_port_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.network_port_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.network_port_collection.get_network_port_collection">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.network_port_collection.</code><code class="descname">get_network_port_collection</code><span class="sig-paren">(</span><em>server_hardware_uuid</em>, <em>device_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/network_port_collection.html#get_network_port_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.network_port_collection.get_network_port_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish Network Port Collection.</p>
+<p>Return NetworkPortCollection Redfish JSON.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-oneview_redfish_toolkit.blueprints.odata">
 <span id="oneview-redfish-toolkit-blueprints-odata-module"></span><h2>oneview_redfish_toolkit.blueprints.odata module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.odata" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -363,12 +590,6 @@ Logs the exception and call abort(404).</p>
 <code class="descclassname">oneview_redfish_toolkit.blueprints.odata.</code><code class="descname">get_odata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/odata.html#get_odata"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.odata.get_odata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets Odata</p>
 <p>List the services offered by this server</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="oneview_redfish_toolkit.blueprints.odata.internal_server_error">
-<code class="descclassname">oneview_redfish_toolkit.blueprints.odata.</code><code class="descname">internal_server_error</code><span class="sig-paren">(</span><em>error</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/odata.html#internal_server_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.odata.internal_server_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an Internal Server Error response</p>
 </dd></dl>
 
 </div>
@@ -402,6 +623,63 @@ ServiceRoot redfish JSON</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.session">
+<span id="oneview-redfish-toolkit-blueprints-session-module"></span><h2>oneview_redfish_toolkit.blueprints.session module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.session" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.session.post_session">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.session.</code><code class="descname">post_session</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/session.html#post_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.session.post_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Posts Session</p>
+<p>The response to the POST request to create a session includes:</p>
+<blockquote>
+<div><ul class="simple">
+<li>An X-Auth-Token header that contains a session auth token that</li>
+</ul>
+<p>the client can use an subsequent requests.
+- A Location header that contains a link to the newly created
+session resource.
+- The JSON response body that contains a full representation of
+the newly created session object.</p>
+</div></blockquote>
+<dl class="docutils">
+<dt>Exception:</dt>
+<dd><p class="first">HPOneViewException: Invalid username or password.
+return abort(401)</p>
+<p>OneViewRedfishError: When occur a credential key mapping error.
+return abort(400)</p>
+<p class="last">Exception: Unexpected error.
+return abort(500)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.storage">
+<span id="oneview-redfish-toolkit-blueprints-storage-module"></span><h2>oneview_redfish_toolkit.blueprints.storage module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.storage" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.storage.get_storage">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.storage.</code><code class="descname">get_storage</code><span class="sig-paren">(</span><em>uuid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/storage.html#get_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.storage.get_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish Storage for a given UUID.</p>
+<p>Return Storage Redfish JSON for a given hardware UUID.
+Logs exception of any error and return abort(500)
+Internal Server Error.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Redfish json with Storage
+When hardware or hardware type is not found calls abort(404)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">JSON</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Exceptions:</dt>
+<dd>Logs the exception and call abort(500)</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-oneview_redfish_toolkit.blueprints.storage_collection">
 <span id="oneview-redfish-toolkit-blueprints-storage-collection-module"></span><h2>oneview_redfish_toolkit.blueprints.storage_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.storage_collection" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -409,6 +687,90 @@ ServiceRoot redfish JSON</p>
 <code class="descclassname">oneview_redfish_toolkit.blueprints.storage_collection.</code><code class="descname">get_storage_collection</code><span class="sig-paren">(</span><em>uuid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/storage_collection.html#get_storage_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.storage_collection.get_storage_collection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the Redfish Storage Collection.</p>
 <p>Return StorageCollection Redfish JSON.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.subscription">
+<span id="oneview-redfish-toolkit-blueprints-subscription-module"></span><h2>oneview_redfish_toolkit.blueprints.subscription module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.subscription" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.subscription.add_subscription">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.subscription.</code><code class="descname">add_subscription</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/subscription.html#add_subscription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.subscription.add_subscription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the Redfish Subscription.</p>
+<p>Add a new subscription when this POST operation is requested.
+The body of the request must have the Destination,
+an array of EventTypes. Context is optional.</p>
+<dl class="docutils">
+<dt>EventTypes:</dt>
+<dd><ul class="first last simple">
+<li>StatusChange</li>
+<li>ResourceUpdated</li>
+<li>ResourceAdded</li>
+<li>ResourceRemoved</li>
+<li>Alert</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">JSON with Subscription information.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">JSON</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>Exception:</dt>
+<dd><p class="first">OneViewRedfishError: When occur a key mapping error.
+return abort(400)</p>
+<p class="last">Exception: Unexpected error.
+return abort(500)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.subscription.get_subscription">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.subscription.</code><code class="descname">get_subscription</code><span class="sig-paren">(</span><em>subscription_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/subscription.html#get_subscription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.subscription.get_subscription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a specific Subscription</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>subscription_id</strong> – The Subscription ID.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Subscription JSON.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.subscription.remove_subscription">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.subscription.</code><code class="descname">remove_subscription</code><span class="sig-paren">(</span><em>subscription_id</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/subscription.html#remove_subscription"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.subscription.remove_subscription" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes a specific Subscription</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>subscription_id</strong> – The Subscription ID.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-oneview_redfish_toolkit.blueprints.subscription_collection">
+<span id="oneview-redfish-toolkit-blueprints-subscription-collection-module"></span><h2>oneview_redfish_toolkit.blueprints.subscription_collection module<a class="headerlink" href="#module-oneview_redfish_toolkit.blueprints.subscription_collection" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="oneview_redfish_toolkit.blueprints.subscription_collection.get_subscription_collection">
+<code class="descclassname">oneview_redfish_toolkit.blueprints.subscription_collection.</code><code class="descname">get_subscription_collection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/oneview_redfish_toolkit/blueprints/subscription_collection.html#get_subscription_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#oneview_redfish_toolkit.blueprints.subscription_collection.get_subscription_collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the Redfish Subscription Collection.</p>
+<p>Get method to return SubscriptionCollection JSON when
+/redfish/v1/EventService/EventSubscriptions is requested.
+:returns: JSON with EventSubscriptions.
+:rtype: JSON</p>
 </dd></dl>
 
 </div>

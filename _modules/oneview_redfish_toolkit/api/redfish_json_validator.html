@@ -167,13 +167,13 @@
 <span class="c1"># WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the</span>
 <span class="c1"># License for the specific language governing permissions and limitations</span>
 <span class="c1"># under the License.</span>
-
-
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">jsonschema</span>
 
 <span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.errors</span> <span class="k">import</span> <span class="n">OneViewRedfishError</span>
+<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.errors</span> \
+    <span class="kn">import</span> <span class="nn">OneViewRedfishResourceNotFoundError</span>
 <span class="kn">from</span> <span class="nn">oneview_redfish_toolkit</span> <span class="k">import</span> <span class="n">util</span>
 
 
@@ -197,36 +197,39 @@
 <span class="sd">            the redfish json</span>
 
 <span class="sd">            Args:</span>
-<span class="sd">                schema_obj: An object containing the redfish schema to be used</span>
+<span class="sd">                schema_name: The redfish schema name to be used</span>
 <span class="sd">                            to validate the redfish json created</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="k">if</span> <span class="n">schema_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">schema_obj</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">schema_obj</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">schemas_dict</span><span class="p">[</span><span class="n">schema_name</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema_name</span> <span class="o">=</span> <span class="n">schema_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">redfish</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Validates self.redfish against self.schema_obj</span>
 
 <span class="sd">            Validates a redfish OrderedDict against the schema object passed</span>
-<span class="sd">            on the object creation</span>
+<span class="sd">            on the object creation.</span>
 
 <span class="sd">            Returns:</span>
 <span class="sd">                None</span>
 
 <span class="sd">            Exception:</span>
-<span class="sd">                raises an exception on validation failure</span>
+<span class="sd">                ValidationError: Raises this exception on validation failure.</span>
+
+<span class="sd">                OneViewRedfishError: Raises this exception if</span>
+<span class="sd">                schema is not found.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span>
-                <span class="s2">&quot;Can&#39;t serialize without a schema object. Schema name was&quot;</span>
-                <span class="s2">&quot; set to None at object instanciation.&quot;</span><span class="p">)</span>
+        <span class="n">schema_version</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">schemas</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">schema_name</span><span class="p">]</span>
+        <span class="n">stored_schemas</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">stored_schemas</span>
+
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">redfish</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">schema_obj</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span>
+            <span class="n">schema_obj</span> <span class="o">=</span> <span class="n">stored_schemas</span><span class="p">[</span>
+                <span class="s2">&quot;http://redfish.dmtf.org/schemas/v1/&quot;</span> <span class="o">+</span> <span class="n">schema_version</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> not found&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">schema_version</span><span class="p">))</span>
+
+        <span class="n">resolver</span> <span class="o">=</span> <span class="n">jsonschema</span><span class="o">.</span><span class="n">RefResolver</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">schema_obj</span><span class="p">,</span> <span class="n">store</span><span class="o">=</span><span class="n">stored_schemas</span><span class="p">)</span>
+        <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">redfish</span><span class="p">,</span> <span class="n">schema_obj</span><span class="p">,</span> <span class="n">resolver</span><span class="o">=</span><span class="n">resolver</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RedfishJsonValidator.serialize"><a class="viewcode-back" href="../../../oneview_redfish_toolkit.api.html#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator.serialize">[docs]</a>    <span class="k">def</span> <span class="nf">serialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates a json string from redfish content</span>
@@ -247,8 +250,42 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">redfish</span><span class="p">,</span>
             <span class="n">default</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span> <span class="n">o</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">,</span>
             <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">indent</span><span class="o">=</span><span class="n">indent</span>
-        <span class="p">)</span></div></div>
+            <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RedfishJsonValidator.get_resource_by_id"><a class="viewcode-back" href="../../../oneview_redfish_toolkit.api.html#oneview_redfish_toolkit.api.redfish_json_validator.RedfishJsonValidator.get_resource_by_id">[docs]</a>    <span class="k">def</span> <span class="nf">get_resource_by_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">resource_list</span><span class="p">,</span>
+                           <span class="n">resource_number_key</span><span class="p">,</span> <span class="n">resource_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets a specific resource in the resource list</span>
+
+<span class="sd">            Validates the resource ID and gets the resource in</span>
+<span class="sd">            the resource list.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                resource_list: List of resources.</span>
+<span class="sd">                resource_number_key: Field name of the resource</span>
+<span class="sd">                    number in the JSON.</span>
+<span class="sd">                resource_id: Resource&#39;s ID that will be searched</span>
+<span class="sd">                    in the resource list.</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                Resource in the list.</span>
+
+<span class="sd">            Exception:</span>
+<span class="sd">                OneViewRedfishError: If the ID is not an integer.</span>
+<span class="sd">                OneViewRedfishResourceNotFoundError: If the resource</span>
+<span class="sd">                    was not found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resource_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resource_id</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span><span class="s2">&quot;Invalid </span><span class="si">{}</span><span class="s2"> ID&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">resource</span> <span class="ow">in</span> <span class="n">resource_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">resource</span><span class="p">[</span><span class="n">resource_number_key</span><span class="p">]</span> <span class="o">==</span> <span class="n">resource_id</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">resource</span>
+
+        <span class="k">raise</span> <span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
+            <span class="s2">&quot;Object&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div></div>
 </pre></div>
 
            </div>

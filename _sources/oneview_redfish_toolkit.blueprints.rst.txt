@@ -36,6 +36,14 @@ oneview\_redfish\_toolkit\.blueprints\.computer\_system\_collection module
     :undoc-members:
     :show-inheritance:
 
+oneview\_redfish\_toolkit\.blueprints\.event\_service module
+------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.event_service
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 oneview\_redfish\_toolkit\.blueprints\.manager module
 -----------------------------------------------------
 
@@ -48,6 +56,78 @@ oneview\_redfish\_toolkit\.blueprints\.manager\_collection module
 -----------------------------------------------------------------
 
 .. automodule:: oneview_redfish_toolkit.blueprints.manager_collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.metadata module
+------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.metadata
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.network\_adapter module
+--------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.network_adapter
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.network\_adapter\_collection module
+--------------------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.network_adapter_collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.network\_device\_function module
+-----------------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.network_device_function
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.network\_device\_function\_collection module
+-----------------------------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.network_device_function_collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.network\_interface module
+----------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.network_interface
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.network\_interface\_collection module
+----------------------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.network_interface_collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.network\_port module
+-----------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.network_port
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.network\_port\_collection module
+-----------------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.network_port_collection
     :members:
     :undoc-members:
     :show-inheritance:
@@ -76,10 +156,42 @@ oneview\_redfish\_toolkit\.blueprints\.service\_root module
     :undoc-members:
     :show-inheritance:
 
+oneview\_redfish\_toolkit\.blueprints\.session module
+-----------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.session
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.storage module
+-----------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.storage
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 oneview\_redfish\_toolkit\.blueprints\.storage\_collection module
 -----------------------------------------------------------------
 
 .. automodule:: oneview_redfish_toolkit.blueprints.storage_collection
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.subscription module
+----------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.subscription
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+oneview\_redfish\_toolkit\.blueprints\.subscription\_collection module
+----------------------------------------------------------------------
+
+.. automodule:: oneview_redfish_toolkit.blueprints.subscription_collection
     :members:
     :undoc-members:
     :show-inheritance:

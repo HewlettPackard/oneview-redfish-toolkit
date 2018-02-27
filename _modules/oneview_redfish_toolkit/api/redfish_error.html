@@ -182,7 +182,7 @@
     <span class="sd">&quot;&quot;&quot;Creates a Redfish Error Dict</span>
 
 <span class="sd">        Populates self.redfish with errors. Will not validate as there&#39;s no</span>
-<span class="sd">        schema to validate agains.</span>
+<span class="sd">        schema to validate against.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -196,7 +196,7 @@
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SCHEMA_NAME</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">redfish</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
-        <span class="c1"># Check if Code is a valide Code Error in the registry</span>
+        <span class="c1"># Check if Code is a valid Code Error in the registry</span>
         <span class="k">if</span> <span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">util</span><span class="o">.</span><span class="n">registry_dict</span><span class="p">[</span><span class="s2">&quot;Base&quot;</span><span class="p">][</span><span class="s2">&quot;Messages&quot;</span><span class="p">]:</span>
             <span class="k">raise</span> <span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="s2">&quot;registry&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">redfish</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">][</span><span class="s2">&quot;code&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Base.1.1.&quot;</span> <span class="o">+</span> <span class="n">code</span>
@@ -219,13 +219,13 @@
 <span class="sd">                message_args: List of string to replace markers on Redfish</span>
 <span class="sd">                    messages. Must have the same length as the number of %</span>
 <span class="sd">                    signs found in the registry Message field</span>
-<span class="sd">                related_properties: Proprerties relates to this e error if</span>
+<span class="sd">                related_properties: Properties relates to this e error if</span>
 <span class="sd">                    necessary</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">messages</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">registry_dict</span><span class="p">[</span><span class="s2">&quot;Base&quot;</span><span class="p">][</span><span class="s2">&quot;Messages&quot;</span><span class="p">]</span>
 
-        <span class="c1"># Verify if message_id existis in registry</span>
+        <span class="c1"># Verify if message_id exists in registry</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">severity</span> <span class="o">=</span> <span class="n">messages</span><span class="p">[</span><span class="n">message_id</span><span class="p">][</span><span class="s2">&quot;Severity&quot;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>

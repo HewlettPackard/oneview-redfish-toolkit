@@ -170,16 +170,34 @@
 <span class="c1"># Python libs</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">import</span> <span class="nn">configparser</span>
+<span class="kn">import</span> <span class="nn">glob</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">logging.config</span>
+<span class="kn">import</span> <span class="nn">OpenSSL</span>
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">socket</span>
 
 <span class="c1"># 3rd party libs</span>
 <span class="kn">from</span> <span class="nn">hpOneView.oneview_client</span> <span class="k">import</span> <span class="n">OneViewClient</span>
 
 <span class="c1"># Modules own libs</span>
-<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api</span> <span class="k">import</span> <span class="n">errors</span>
+<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.errors</span> <span class="k">import</span> <span class="n">OneViewRedfishError</span>
+<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.errors</span> \
+    <span class="kn">import</span> <span class="nn">OneViewRedfishResourceNotAccessibleError</span>
+<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.errors</span> \
+    <span class="kn">import</span> <span class="nn">OneViewRedfishResourceNotFoundError</span>
+
+
+<span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;subscriptions_by_type&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;StatusChange&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s2">&quot;ResourceUpdated&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s2">&quot;ResourceAdded&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s2">&quot;ResourceRemoved&quot;</span><span class="p">:</span> <span class="p">{},</span>
+    <span class="s2">&quot;Alert&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+
+<span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;all_subscriptions&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
 
 <div class="viewcode-block" id="configure_logging"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.configure_logging">[docs]</a><span class="k">def</span> <span class="nf">configure_logging</span><span class="p">(</span><span class="n">log_file_path</span><span class="p">):</span>
@@ -202,7 +220,7 @@
 <span class="sd">        NOTSET:   00</span>
 <span class="sd">        ---------------------</span>
 
-<span class="sd">        How to use: import logging and logging.error(&#39;message&#39;)</span>
+<span class="sd">        How to use: import logging and logging.exception(&#39;message&#39;)</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            log_file_path: logging.conf path.</span>
@@ -253,28 +271,30 @@
 
     <span class="c1"># Setting schemas_dict</span>
     <span class="n">schemas</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s1">&#39;schemas&#39;</span><span class="p">))</span>
+    <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;schemas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schemas</span>
+
     <span class="n">registries</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s1">&#39;registry&#39;</span><span class="p">))</span>
 
-    <span class="c1"># Load schemas and connect to oneview</span>
+    <span class="n">load_event_service_info</span><span class="p">()</span>
+
+    <span class="c1"># Load schemas | Store schemas | Connect to OneView</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">schemas_dict</span> <span class="o">=</span> <span class="n">load_schemas</span><span class="p">(</span>
-            <span class="n">config</span><span class="p">[</span><span class="s1">&#39;redfish&#39;</span><span class="p">][</span><span class="s1">&#39;schema_dir&#39;</span><span class="p">],</span>
-            <span class="n">schemas</span>
-        <span class="p">)</span>
         <span class="n">ov_client</span> <span class="o">=</span> <span class="n">OneViewClient</span><span class="p">(</span><span class="n">ov_config</span><span class="p">)</span>
-        <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;schemas_dict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">schemas_dict</span>
+
         <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;ov_client&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ov_client</span>
+
         <span class="n">registry_dict</span> <span class="o">=</span> <span class="n">load_registry</span><span class="p">(</span>
             <span class="n">config</span><span class="p">[</span><span class="s1">&#39;redfish&#39;</span><span class="p">][</span><span class="s1">&#39;registry_dir&#39;</span><span class="p">],</span>
-            <span class="n">registries</span>
-            <span class="p">)</span>
+            <span class="n">registries</span><span class="p">)</span>
         <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;registry_dict&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">registry_dict</span>
-    <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishError</span><span class="p">(</span>
+
+        <span class="n">store_schemas</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;redfish&#39;</span><span class="p">][</span><span class="s1">&#39;schema_dir&#39;</span><span class="p">])</span>
+    <span class="k">except</span> <span class="n">OneViewRedfishResourceNotFoundError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span>
             <span class="s1">&#39;Failed to load schemas or registries: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishError</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span>
             <span class="s1">&#39;Failed to connect to OneView: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="p">)</span></div>
 
@@ -288,7 +308,7 @@
 <span class="sd">            conf_file: string with the conf file name</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            configparser object with conf_file configs</span>
+<span class="sd">            ConfigParser object with conf_file configs</span>
 
 <span class="sd">        Exception:</span>
 <span class="sd">            OneViewRedfishResourceNotFoundError:</span>
@@ -296,7 +316,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">conf_file</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span><span class="n">conf_file</span><span class="p">,</span> <span class="s1">&#39;File&#39;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span><span class="n">conf_file</span><span class="p">,</span> <span class="s1">&#39;File&#39;</span><span class="p">)</span>
 
     <span class="n">config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
     <span class="n">config</span><span class="o">.</span><span class="n">optionxform</span> <span class="o">=</span> <span class="nb">str</span>
@@ -308,51 +328,36 @@
     <span class="k">return</span> <span class="n">config</span></div>
 
 
-<div class="viewcode-block" id="load_schemas"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.load_schemas">[docs]</a><span class="k">def</span> <span class="nf">load_schemas</span><span class="p">(</span><span class="n">schema_dir</span><span class="p">,</span> <span class="n">schemas</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Loads schemas</span>
+<div class="viewcode-block" id="load_event_service_info"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.load_event_service_info">[docs]</a><span class="k">def</span> <span class="nf">load_event_service_info</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Loads Event Service information</span>
 
-<span class="sd">        Loads all schemas in listed in schemas searching on schema_dir</span>
-<span class="sd">        directory</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            schema_dir: string with the directory to load schemas from</span>
-<span class="sd">            schemas: dict with schema name as key and schema file_name</span>
-<span class="sd">                as value. The key will also be the key in the returning dict</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            OrderedDict: A dict containing (&#39;SchemasName&#39; : schema_obj) pairs</span>
+<span class="sd">        Loads DeliveryRetryAttempts and DeliveryRetryIntervalSeconds</span>
+<span class="sd">        from CONFIG file and store it in a global var.</span>
 
 <span class="sd">        Exceptions:</span>
-<span class="sd">            OneviewRedfishResourceNotFoundError:</span>
-<span class="sd">                - if schema_dir is not found</span>
-<span class="sd">                - any of json files is not found</span>
-<span class="sd">            OneviewRedfishResourceNotAccessible:</span>
-<span class="sd">                - if schema_dir is can&#39;t be accessed</span>
+<span class="sd">            OneViewRedfishError: DeliveryRetryAttempts and</span>
+<span class="sd">            DeliveryRetryIntervalSeconds must be integers greater than zero.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;config&#39;</span><span class="p">]</span>
+    <span class="n">event_service</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s2">&quot;event_service&quot;</span><span class="p">))</span>
 
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">schema_dir</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
-            <span class="n">schema_dir</span><span class="p">,</span>
-            <span class="s1">&#39;Directory&#39;</span>
-        <span class="p">)</span>
-    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">schema_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedFishResourceNotAccessibleError</span><span class="p">(</span>
-            <span class="n">schema_dir</span><span class="p">,</span>
-            <span class="s1">&#39;directory&#39;</span>
-        <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">delivery_retry_attempts</span> <span class="o">=</span> \
+            <span class="nb">int</span><span class="p">(</span><span class="n">event_service</span><span class="p">[</span><span class="s2">&quot;DeliveryRetryAttempts&quot;</span><span class="p">])</span>
+        <span class="n">delivery_retry_interval</span> <span class="o">=</span> \
+            <span class="nb">int</span><span class="p">(</span><span class="n">event_service</span><span class="p">[</span><span class="s2">&quot;DeliveryRetryIntervalSeconds&quot;</span><span class="p">])</span>
 
-    <span class="n">schema_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">schemas</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">schema_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">schemas</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-                <span class="n">schema_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
-                <span class="n">schemas</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
-                <span class="s1">&#39;File&#39;</span>
-            <span class="p">)</span>
+        <span class="k">if</span> <span class="n">delivery_retry_attempts</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">delivery_retry_interval</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span>
+                <span class="s2">&quot;DeliveryRetryAttempts and DeliveryRetryIntervalSeconds must&quot;</span>
+                <span class="s2">&quot; be an integer greater than zero.&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span>
+            <span class="s2">&quot;DeliveryRetryAttempts and DeliveryRetryIntervalSeconds &quot;</span>
+            <span class="s2">&quot;must be valid integers.&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">schema_dict</span></div>
+    <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;delivery_retry_attempts&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">delivery_retry_attempts</span>
+    <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;delivery_retry_interval&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">delivery_retry_interval</span></div>
 
 
 <div class="viewcode-block" id="load_registry"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.load_registry">[docs]</a><span class="k">def</span> <span class="nf">load_registry</span><span class="p">(</span><span class="n">registry_dir</span><span class="p">,</span> <span class="n">registries</span><span class="p">):</span>
@@ -364,7 +369,7 @@
 <span class="sd">        Args:</span>
 <span class="sd">            registry_dir: string with the directory to load registries from</span>
 <span class="sd">            registries: dict with registry name as key and registry file_name</span>
-<span class="sd">                as value. The key will also be the key in the returning dict</span>
+<span class="sd">                as value. The key will also be the key in the returning dict.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            OrderedDict: A dict containing &#39;RegistryName&#39;: registry_obj</span>
@@ -378,15 +383,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">registry_dir</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
-            <span class="n">registry_dir</span><span class="p">,</span>
-            <span class="s1">&#39;Directory&#39;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
+            <span class="n">registry_dir</span><span class="p">,</span> <span class="s1">&#39;Directory&#39;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">registry_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedFishResourceNotAccessibleError</span><span class="p">(</span>
-            <span class="n">registry_dir</span><span class="p">,</span>
-            <span class="s1">&#39;directory&#39;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="n">OneViewRedfishResourceNotAccessibleError</span><span class="p">(</span>
+            <span class="n">registry_dir</span><span class="p">,</span> <span class="s1">&#39;directory&#39;</span><span class="p">)</span>
 
     <span class="n">registries_dict</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">OrderedDict</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">registries</span><span class="p">:</span>
@@ -394,15 +395,47 @@
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">registry_dir</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">registries</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
                 <span class="n">registries_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
-                <span class="n">registries</span><span class="p">[</span><span class="n">key</span><span class="p">],</span>
-                <span class="s1">&#39;File&#39;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
+                <span class="n">registries</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="s1">&#39;File&#39;</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">registries_dict</span></div>
 
 
-<div class="viewcode-block" id="get_oneview_client"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.get_oneview_client">[docs]</a><span class="k">def</span> <span class="nf">get_oneview_client</span><span class="p">():</span>
+<div class="viewcode-block" id="store_schemas"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.store_schemas">[docs]</a><span class="k">def</span> <span class="nf">store_schemas</span><span class="p">(</span><span class="n">schema_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Stores all DMTF JSON Schemas</span>
+
+<span class="sd">        Stores all schemas listed in schemas searching schema_dir directory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            schema_dir: String with the directory to load schemas from.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary: A dict containing (&#39;http://redfish.dmtf.org/schemas/</span>
+<span class="sd">                        v1/&lt;schema_file_name&gt;&#39;: schema_obj) pairs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">schema_paths</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">schema_dir</span> <span class="o">+</span> <span class="s1">&#39;/*.json&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">schema_paths</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">OneViewRedfishResourceNotFoundError</span><span class="p">(</span>
+            <span class="s2">&quot;JSON Schemas&quot;</span><span class="p">,</span> <span class="s2">&quot;File&quot;</span><span class="p">)</span>
+
+    <span class="n">stored_schemas</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">schema_paths</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">as</span> <span class="n">schema_file</span><span class="p">:</span>
+            <span class="n">json_schema</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">schema_file</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;nt&#39;</span><span class="p">:</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">file_name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">stored_schemas</span><span class="p">[</span><span class="s2">&quot;http://redfish.dmtf.org/schemas/v1/&quot;</span> <span class="o">+</span> <span class="n">file_name</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="n">json_schema</span>
+
+    <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;stored_schemas&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">stored_schemas</span></div>
+
+
+<div class="viewcode-block" id="get_oneview_client"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.get_oneview_client">[docs]</a><span class="k">def</span> <span class="nf">get_oneview_client</span><span class="p">(</span><span class="n">session_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">is_service_root</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Establishes a OneView connection to be used in the module</span>
 
 <span class="sd">        Establishes a OV connection if one does not exists.</span>
@@ -411,8 +444,14 @@
 <span class="sd">        Sets the connection on the ov_conn global var</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            None. Uses global var ov_config which is set by load_config</span>
-<span class="sd">            with OV configuration and credentials</span>
+<span class="sd">            session_id: The ID of a valid authenticated session, if the</span>
+<span class="sd">            authentication_mode is session. Defaults to None.</span>
+
+<span class="sd">            is_service_root: Informs if who is calling this function is the</span>
+<span class="sd">            ServiceRoot blueprint. If true, even if authentication_mode is</span>
+<span class="sd">            set to session it will use the information on the conf file to</span>
+<span class="sd">            return a connection.  This is a workaround to allow ServiceRoot</span>
+<span class="sd">            to retrieve the appliance UUID before user logs in.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            OneViewClient object</span>
@@ -421,22 +460,107 @@
 <span class="sd">            HPOneViewException if can&#39;t connect or reconnect to OV</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">ov_client</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;ov_client&#39;</span><span class="p">]</span>
-    <span class="n">ov_config</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;ov_config&#39;</span><span class="p">]</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;config&#39;</span><span class="p">]</span>
 
-    <span class="c1"># Check if connection is ok yet</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">ov_client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/rest/logindomains&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ov_client</span>
-    <span class="c1"># If expired try to make a new connection</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="n">auth_mode</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;redfish&quot;</span><span class="p">][</span><span class="s2">&quot;authentication_mode&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">auth_mode</span> <span class="o">==</span> <span class="s2">&quot;conf&quot;</span> <span class="ow">or</span> <span class="n">is_service_root</span><span class="p">:</span>
+        <span class="c1"># Doing conf based authentication</span>
+        <span class="n">ov_client</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;ov_client&#39;</span><span class="p">]</span>
+        <span class="n">ov_config</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;ov_config&#39;</span><span class="p">]</span>
+
+        <span class="c1"># Check if connection is ok yet</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Re-authenticated&#39;</span><span class="p">)</span>
-            <span class="n">ov_client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">ov_config</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">])</span>
+            <span class="n">ov_client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/rest/logindomains&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">ov_client</span>
-        <span class="c1"># if faild abort</span>
+        <span class="c1"># If expired try to make a new connection</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Re-authenticated&#39;</span><span class="p">)</span>
+                <span class="n">ov_client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">login</span><span class="p">(</span><span class="n">ov_config</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">ov_client</span>
+            <span class="c1"># if failed abort</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="k">raise</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Auth mode is session</span>
+        <span class="n">oneview_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s1">&#39;oneview_config&#39;</span><span class="p">))</span>
+        <span class="n">oneview_config</span><span class="p">[</span><span class="s1">&#39;credentials&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sessionID&quot;</span><span class="p">:</span> <span class="n">session_id</span><span class="p">}</span>
+        <span class="n">oneview_config</span><span class="p">[</span><span class="s1">&#39;api_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">oneview_config</span><span class="p">[</span><span class="s1">&#39;api_version&#39;</span><span class="p">])</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">oneview_client</span> <span class="o">=</span> <span class="n">OneViewClient</span><span class="p">(</span><span class="n">oneview_config</span><span class="p">)</span>
+            <span class="n">oneview_client</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;/rest/logindomains&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">oneview_client</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s2">&quot;Failed to recover session based connection&quot;</span><span class="p">)</span>
             <span class="k">raise</span></div>
+
+
+<div class="viewcode-block" id="get_ip"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.get_ip">[docs]</a><span class="k">def</span> <span class="nf">get_ip</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Tries to detect default route IP Address&quot;&quot;&quot;</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="n">socket</span><span class="o">.</span><span class="n">SOCK_DGRAM</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="s2">&quot;8.8.8.8&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">getsockname</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">ip</span> <span class="o">=</span> <span class="s2">&quot;127.0.0.1&quot;</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">ip</span></div>
+
+
+<div class="viewcode-block" id="generate_certificate"><a class="viewcode-back" href="../../oneview_redfish_toolkit.html#oneview_redfish_toolkit.util.generate_certificate">[docs]</a><span class="k">def</span> <span class="nf">generate_certificate</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">file_name</span><span class="p">,</span> <span class="n">key_length</span><span class="p">,</span> <span class="n">key_type</span><span class="o">=</span><span class="s2">&quot;rsa&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Create self-signed cert and key files</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            dir_name: name of the directory to store the files</span>
+<span class="sd">            file_name: name of the files that will be created. It will append</span>
+<span class="sd">                .crt to certificate file and .key to key file</span>
+<span class="sd">            key_length: key length in bits</span>
+<span class="sd">            key_type: crypto type: RSA or DSA; defaults to RSA</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Nothing</span>
+<span class="sd">        Exceptions:</span>
+<span class="sd">            Raise exceptions on error</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="nb">globals</span><span class="p">()[</span><span class="s1">&#39;config&#39;</span><span class="p">]</span>
+    <span class="n">private_key</span> <span class="o">=</span> <span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">PKey</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">key_type</span> <span class="o">==</span> <span class="s2">&quot;rsa&quot;</span><span class="p">:</span>
+        <span class="n">private_key</span><span class="o">.</span><span class="n">generate_key</span><span class="p">(</span><span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">TYPE_RSA</span><span class="p">,</span> <span class="n">key_length</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">key_type</span> <span class="o">==</span> <span class="s2">&quot;dsa&quot;</span><span class="p">:</span>
+        <span class="n">private_key</span><span class="o">.</span><span class="n">generate_key</span><span class="p">(</span><span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">TYPE_DSA</span><span class="p">,</span> <span class="n">key_length</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s2">&quot;Invalid key_type&quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">has_option</span><span class="p">(</span><span class="s2">&quot;ssl-cert-defaults&quot;</span><span class="p">,</span> <span class="s2">&quot;commonName&quot;</span><span class="p">):</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;ssl-cert-defaults&quot;</span><span class="p">][</span><span class="s2">&quot;commonName&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_ip</span><span class="p">()</span>
+
+    <span class="n">cert</span> <span class="o">=</span> <span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">X509</span><span class="p">()</span>
+    <span class="n">cert_subject</span> <span class="o">=</span> <span class="n">cert</span><span class="o">.</span><span class="n">get_subject</span><span class="p">()</span>
+
+    <span class="n">cert_defaults</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">(</span><span class="s2">&quot;ssl-cert-defaults&quot;</span><span class="p">))</span>
+
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">cert_defaults</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">cert_subject</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="n">cert</span><span class="o">.</span><span class="n">set_serial_number</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">cert</span><span class="o">.</span><span class="n">gmtime_adj_notBefore</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">cert</span><span class="o">.</span><span class="n">gmtime_adj_notAfter</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="mi">365</span> <span class="o">*</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">cert</span><span class="o">.</span><span class="n">set_issuer</span><span class="p">(</span><span class="n">cert</span><span class="o">.</span><span class="n">get_subject</span><span class="p">())</span>
+    <span class="n">cert</span><span class="o">.</span><span class="n">set_pubkey</span><span class="p">(</span><span class="n">private_key</span><span class="p">)</span>
+    <span class="n">cert</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">private_key</span><span class="p">,</span> <span class="s2">&quot;sha1&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Save Files</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot;.crt&quot;</span><span class="p">),</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">dump_certificate</span><span class="p">(</span>
+            <span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">cert</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">file_name</span> <span class="o">+</span> <span class="s2">&quot;.key&quot;</span><span class="p">),</span> <span class="s2">&quot;wt&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">dump_privatekey</span><span class="p">(</span>
+            <span class="n">OpenSSL</span><span class="o">.</span><span class="n">crypto</span><span class="o">.</span><span class="n">FILETYPE_PEM</span><span class="p">,</span> <span class="n">private_key</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;UTF-8&quot;</span><span class="p">))</span></div>
 </pre></div>
 
            </div>

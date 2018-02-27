@@ -197,18 +197,8 @@
             <span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
             <span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Odata error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Odata error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="internal_server_error"><a class="viewcode-back" href="../../../oneview_redfish_toolkit.blueprints.html#oneview_redfish_toolkit.blueprints.odata.internal_server_error">[docs]</a><span class="nd">@odata</span><span class="o">.</span><span class="n">errorhandler</span><span class="p">(</span>
-    <span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span>
-<span class="k">def</span> <span class="nf">internal_server_error</span><span class="p">(</span><span class="n">error</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Creates an Internal Server Error response&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span>
-        <span class="n">response</span><span class="o">=</span><span class="s1">&#39;{&quot;error&quot;: &quot;Internal Server Error&quot;}&#39;</span><span class="p">,</span>
-        <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">,</span>
-        <span class="n">mimetype</span><span class="o">=</span><span class="s1">&#39;application/json&#39;</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

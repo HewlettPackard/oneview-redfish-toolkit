@@ -173,6 +173,7 @@
 <span class="c1"># 3rd party libs</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">abort</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">g</span>
 <span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Response</span>
 <span class="kn">from</span> <span class="nn">flask_api</span> <span class="k">import</span> <span class="n">status</span>
 <span class="kn">from</span> <span class="nn">hpOneView.exceptions</span> <span class="k">import</span> <span class="n">HPOneViewException</span>
@@ -181,7 +182,6 @@
 <span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.blade_manager</span> <span class="k">import</span> <span class="n">BladeManager</span>
 <span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.enclosure_manager</span> <span class="k">import</span> <span class="n">EnclosureManager</span>
 <span class="kn">from</span> <span class="nn">oneview_redfish_toolkit.api.errors</span> <span class="k">import</span> <span class="n">OneViewRedfishError</span>
-<span class="kn">from</span> <span class="nn">oneview_redfish_toolkit</span> <span class="k">import</span> <span class="n">util</span>
 
 <span class="n">manager</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="s2">&quot;manager&quot;</span><span class="p">,</span> <span class="vm">__name__</span><span class="p">)</span>
 
@@ -197,13 +197,11 @@
 <span class="sd">            JSON: JSON with Managers info for Enclosure or ServerHardware.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">oneview_client</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_oneview_client</span><span class="p">()</span>
-
         <span class="n">appliance_information</span> <span class="o">=</span> \
-            <span class="n">oneview_client</span><span class="o">.</span><span class="n">appliance_node_information</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">oneview_client</span><span class="o">.</span><span class="n">appliance_node_information</span><span class="o">.</span><span class="n">get_version</span><span class="p">()</span>
         <span class="n">oneview_version</span> <span class="o">=</span> <span class="n">appliance_information</span><span class="p">[</span><span class="s1">&#39;softwareVersion&#39;</span><span class="p">]</span>
 
-        <span class="n">resource_index</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">index_resources</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span>
+        <span class="n">resource_index</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">oneview_client</span><span class="o">.</span><span class="n">index_resources</span><span class="o">.</span><span class="n">get_all</span><span class="p">(</span>
             <span class="nb">filter</span><span class="o">=</span><span class="s1">&#39;uuid=&#39;</span> <span class="o">+</span> <span class="n">uuid</span>
         <span class="p">)</span>
 
@@ -213,33 +211,37 @@
             <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span><span class="s1">&#39;Cannot find Index resource&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">category</span> <span class="o">==</span> <span class="s1">&#39;server-hardware&#39;</span><span class="p">:</span>
-            <span class="n">server_hardware</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="n">server_hardware</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">oneview_client</span><span class="o">.</span><span class="n">server_hardware</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="n">etag</span> <span class="o">=</span> <span class="n">server_hardware</span><span class="p">[</span><span class="s1">&#39;eTag&#39;</span><span class="p">]</span>
             <span class="n">manager</span> <span class="o">=</span> <span class="n">BladeManager</span><span class="p">(</span><span class="n">server_hardware</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">category</span> <span class="o">==</span> <span class="s1">&#39;enclosures&#39;</span><span class="p">:</span>
-            <span class="n">enclosure</span> <span class="o">=</span> <span class="n">oneview_client</span><span class="o">.</span><span class="n">enclosures</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="n">enclosure</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">oneview_client</span><span class="o">.</span><span class="n">enclosures</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">uuid</span><span class="p">)</span>
+            <span class="n">etag</span> <span class="o">=</span> <span class="n">enclosure</span><span class="p">[</span><span class="s1">&#39;eTag&#39;</span><span class="p">]</span>
             <span class="n">manager</span> <span class="o">=</span> <span class="n">EnclosureManager</span><span class="p">(</span><span class="n">enclosure</span><span class="p">,</span> <span class="n">oneview_version</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">OneViewRedfishError</span><span class="p">(</span><span class="s1">&#39;Enclosure type not found&#39;</span><span class="p">)</span>
 
         <span class="n">json_str</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">serialize</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span>
             <span class="n">response</span><span class="o">=</span><span class="n">json_str</span><span class="p">,</span>
             <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_200_OK</span><span class="p">,</span>
             <span class="n">mimetype</span><span class="o">=</span><span class="s2">&quot;application/json&quot;</span><span class="p">)</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;ETag&quot;</span><span class="p">,</span> <span class="s2">&quot;W/&quot;</span> <span class="o">+</span> <span class="n">etag</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">response</span>
     <span class="k">except</span> <span class="n">HPOneViewException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># In case of error log exception and abort</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="s2">&quot;Manager not found&quot;</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="n">OneViewRedfishError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># In case of error log exception and abort</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unexpected error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Unexpected error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_404_NOT_FOUND</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># In case of error log exception and abort</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Unexpected error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">exception</span><span class="p">(</span><span class="s1">&#39;Unexpected error: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
         <span class="n">abort</span><span class="p">(</span><span class="n">status</span><span class="o">.</span><span class="n">HTTP_500_INTERNAL_SERVER_ERROR</span><span class="p">)</span></div>
 </pre></div>
 
