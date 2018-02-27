@@ -1,3 +1,21 @@
+# 0.3.0 (unreleased)
+
+# Bug fixes & Enhancements
+ - #216 Implement GET EventService
+ - #217 Implement GET SubscriptionCollection
+ - #218 Implement POST Subscription
+ - #221 Implement GET Subscription
+ - #222 Open scmb connection
+ - #225 Fix NetworkInterface URL in NetworkInterfaceCollection
+ - #227 Implements DELETE Subscription
+ 
+# New Redfish resources
+ - EventService
+ - EventSubscription
+ - EventDestinationCollection
+ - EventDestination
+
+
 # 0.2.0
 # Notes
  - Check README for more information on the new authentication mode and
