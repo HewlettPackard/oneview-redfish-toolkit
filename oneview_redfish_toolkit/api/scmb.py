@@ -30,6 +30,8 @@ from oneview_redfish_toolkit import util
 ONEVIEW_CA = "certs/oneview_ca.pem"
 SCMB_CERT = "certs/oneview_scmb.pem"
 SCMB_KEY = "certs/oneview_scmb.key"
+SCMB_PORT = 5671
+SCMB_SOCKET_TIMEOUT = 5  # seconds
 
 
 def check_cert_exist():
@@ -80,8 +82,13 @@ def scmb_connect():
 
     scmb_connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            scmb_server, 5671, credentials=ExternalCredentials(),
-            ssl=True, ssl_options=ssl_options))
+            scmb_server,
+            SCMB_PORT,
+            credentials=ExternalCredentials(),
+            socket_timeout=SCMB_SOCKET_TIMEOUT,
+            ssl=True,
+            ssl_options=ssl_options))
+
     return scmb_connection
 
 
