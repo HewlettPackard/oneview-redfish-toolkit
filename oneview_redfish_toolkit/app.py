@@ -298,10 +298,24 @@ if __name__ == '__main__':
             format(ssl_type))
         exit(1)
 
+    try:
+        debug = config["redfish"]["debug"].lower()
+
+        if debug not in ('false', 'true'):
+            logging.warning(
+                "Debug option must be either \'true\' or \'false\'. "
+                "Defaulting to \'false\'.")
+            debug = False
+        else:
+            debug = (debug == "true")
+    except Exception:
+        logging.warning("Invalid debug configuration. Defaulting to \'false\'.")
+        debug = False
+
     if ssl_type == 'disabled':
-        app.run(host=host, port=port, debug=True)
+        app.run(host=host, port=port, debug=debug)
     elif ssl_type == 'adhoc':
-        app.run(host=host, port=port, debug=True, ssl_context="adhoc")
+        app.run(host=host, port=port, debug=debug, ssl_context="adhoc")
     else:
         # We should use certs file provided by the user
         ssl_cert_file = config["ssl"]["SSLCertFile"]
@@ -323,4 +337,4 @@ if __name__ == '__main__':
                 format(ssl_cert_file, ssl_key_file))
 
         ssl_context = (ssl_cert_file, ssl_key_file)
-        app.run(host=host, port=port, debug=True, ssl_context=ssl_context)
+        app.run(host=host, port=port, debug=debug, ssl_context=ssl_context)
