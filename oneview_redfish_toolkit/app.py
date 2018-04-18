@@ -299,7 +299,7 @@ if __name__ == '__main__':
         exit(1)
 
     try:
-        debug = config["redfish"]["debug"].lower()
+        debug = config["redfish"]["debug"]
 
         if debug not in ('false', 'true'):
             logging.warning(
@@ -309,7 +309,9 @@ if __name__ == '__main__':
         else:
             debug = (debug == "true")
     except Exception:
-        logging.warning("Invalid debug configuration. Defaulting to \'false\'.")
+        logging.warning(
+            "Invalid debug configuration. "
+            "Defaulting to \'false\'.")
         debug = False
 
     if ssl_type == 'disabled':
