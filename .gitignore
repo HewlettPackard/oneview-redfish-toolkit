@@ -59,6 +59,7 @@ ChangeLog
 .*sw?
 *.sublime-project
 *.sublime-workspace
+.vscode/
 
 # Files created by PyCharm
 .idea/
