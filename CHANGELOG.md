@@ -10,6 +10,7 @@
  - #227 Implements DELETE Subscription
  - #239 Add debug option in the service configuration file
  - #243 Add info about session management (README)
+ - #230 Check missing schemas from local repo
 
 # New Redfish resources
  - EventService
