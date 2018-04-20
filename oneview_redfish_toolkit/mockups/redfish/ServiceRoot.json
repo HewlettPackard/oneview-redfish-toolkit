@@ -13,6 +13,9 @@
     "Managers": {
         "@odata.id": "/redfish/v1/Managers"
     },
+    "CompositionService": {
+        "@odata.id": "/redfish/v1/CompositionService"
+    },
     "Links": {},
     "@odata.context": "/redfish/v1/$metadata#ServiceRoot.ServiceRoot",
     "@odata.id": "/redfish/v1/",

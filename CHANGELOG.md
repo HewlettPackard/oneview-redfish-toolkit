@@ -8,15 +8,17 @@
  - #222 Open scmb connection
  - #225 Fix NetworkInterface URL in NetworkInterfaceCollection
  - #227 Implements DELETE Subscription
- - #239 Add debug option in the service configuration file
  - #243 Add info about session management (README)
  - #230 Check missing schemas from local repo
+ - #236 Flask running in debug mode
+ - #232 Implement CompositionService
 
 # New Redfish resources
  - EventService
  - EventSubscription
  - EventDestinationCollection
  - EventDestination
+ - CompositionService
 
 
 # 0.2.0
