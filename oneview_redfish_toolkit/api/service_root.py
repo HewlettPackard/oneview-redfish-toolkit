@@ -1,7 +1,7 @@
 #!./redfish-venv/bin/python
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -53,6 +53,9 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["Chassis"]["@odata.id"] = "/redfish/v1/Chassis"
         self.redfish["Managers"] = collections.OrderedDict()
         self.redfish["Managers"]["@odata.id"] = "/redfish/v1/Managers"
+        self.redfish["CompositionService"] = collections.OrderedDict()
+        self.redfish["CompositionService"]["@odata.id"] = \
+            "/redfish/v1/CompositionService"
         # self.redfish["EventService"] = collections.OrderedDict()
         # self.redfish["EventService"]["@odata.id"] = \
         # "/redfish/v1/EventService"

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -34,6 +34,8 @@ from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.chassis_collection \
     import chassis_collection
+from oneview_redfish_toolkit.blueprints.composition_service \
+    import composition_service
 from oneview_redfish_toolkit.blueprints.computer_system import computer_system
 from oneview_redfish_toolkit.blueprints.computer_system_collection \
     import computer_system_collection
@@ -98,6 +100,7 @@ if __name__ == '__main__':
     app.register_blueprint(chassis_collection)
     app.register_blueprint(computer_system_collection)
     app.register_blueprint(computer_system)
+    app.register_blueprint(composition_service)
     app.register_blueprint(chassis)
     app.register_blueprint(manager_collection)
     app.register_blueprint(manager)
