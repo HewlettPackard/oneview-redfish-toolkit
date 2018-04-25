@@ -8,7 +8,8 @@
  - #222 Open scmb connection
  - #225 Fix NetworkInterface URL in NetworkInterfaceCollection
  - #227 Implements DELETE Subscription
- 
+ - #239 Add debug option in the service configuration file
+
 # New Redfish resources
  - EventService
  - EventSubscription
@@ -29,11 +30,11 @@
  - #169 New windows launcher script
  - #151 Enhances log messages with stack traces for debugging
  - #135 Perform schema validation with local resources
- - #184 Add config support to session based authentication 
+ - #184 Add config support to session based authentication
  - #197 Fix schema loading when running on Windows
  - #198 Allow user to specify a different host ip address
  - #209 Fix wrong links in XML metadata
- 
+
 # New Redfish resources
  - Storage
  - Network Interface
