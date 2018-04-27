@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -14,22 +14,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""
-    Tests for computer_system_collection.py
-"""
 
 import json
-
-from oneview_redfish_toolkit.api.computer_system_collection \
-    import ComputerSystemCollection
-from oneview_redfish_toolkit import util
-
 import unittest
+
 from unittest import mock
 
+from oneview_redfish_toolkit.api.resource_block_collection \
+    import ResourceBlockCollection
+from oneview_redfish_toolkit import util
 
-class TestComputerSystemCollection(unittest.TestCase):
-    """Tests for ComputerSystemCollection class"""
+
+class TestResourceBlockCollection(unittest.TestCase):
+    """Tests for ResourceBlockCollection class"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, oneview_client_mock):
@@ -45,42 +42,36 @@ class TestComputerSystemCollection(unittest.TestCase):
         ) as f:
             self.server_hardware_list = json.load(f)
 
-        # Loading ComputerSystemCollection result mockup
+        # Loading ResourceBlockCollection result mockup
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
-            'ComputerSystemCollection.json'
+            'ResourceBlockCollection.json'
         ) as f:
-            self.computer_system_collection_mockup = json.load(f)
+            self.resource_block_collection_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
-
         try:
-            computer_system_collection = ComputerSystemCollection(
-                self.server_hardware_list
-            )
+            resource_block_collection = ResourceBlockCollection(
+                self.server_hardware_list)
         except Exception as e:
-            self.fail("Failed to instantiate ComputerSystemCollection class."
+            self.fail("Failed to instantiate ResourceBlockCollection class."
                       " Error: {}".format(e))
         self.assertIsInstance(
-            computer_system_collection,
-            ComputerSystemCollection
-        )
+            resource_block_collection, ResourceBlockCollection)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
-
         try:
-            computer_system_collection = ComputerSystemCollection(
-                self.server_hardware_list
-            )
+            resource_block_collection = ResourceBlockCollection(
+                self.server_hardware_list)
         except Exception as e:
-            self.fail("Failed to instantiate ComputerSystemCollection class."
+            self.fail("Failed to instantiate ResourceBlockCollection class."
                       " Error: {}".format(e))
 
         try:
-            result = json.loads(computer_system_collection.serialize())
+            result = json.loads(resource_block_collection.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: {}".format(e))
 
-        self.assertEqual(self.computer_system_collection_mockup, result)
+        self.assertEqual(self.resource_block_collection_mockup, result)

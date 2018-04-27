@@ -34,8 +34,8 @@ class TestCompositionService(unittest.TestCase):
     """Tests for CompositionService blueprint
 
         Tests:
-            - oneview unexpected exception
-            - know composition service
+            - composition service serialization exception
+            - known composition service resource
     """
 
     @mock.patch.object(util, 'OneViewClient')

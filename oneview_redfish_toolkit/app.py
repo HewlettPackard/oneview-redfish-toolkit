@@ -61,6 +61,8 @@ from oneview_redfish_toolkit.blueprints.network_port_collection \
     import network_port_collection
 from oneview_redfish_toolkit.blueprints.odata import odata
 from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
+from oneview_redfish_toolkit.blueprints.resource_block_collection \
+    import resource_block_collection
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 from oneview_redfish_toolkit.blueprints.session import session
 from oneview_redfish_toolkit.blueprints.storage import storage
@@ -119,6 +121,7 @@ if __name__ == '__main__':
     app.register_blueprint(network_adapter)
     app.register_blueprint(network_port)
     app.register_blueprint(session)
+    app.register_blueprint(resource_block_collection)
 
     if auth_mode == "conf":
         app.register_blueprint(event_service)
