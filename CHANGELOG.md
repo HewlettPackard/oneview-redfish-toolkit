@@ -16,7 +16,7 @@
  - #214 Subscribe to each EventType
  - #215 Add TestEvent Action
  - #249 Redfish Events notification
-
+ - #233 Implement ResourceBlocks
 
 # New Redfish resources
  - EventService
@@ -24,7 +24,7 @@
  - EventDestinationCollection
  - EventDestination
  - CompositionService
-
+ - ResourceBlockCollection
 
 # 0.2.0
 # Notes
