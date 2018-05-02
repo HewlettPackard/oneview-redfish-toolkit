@@ -9,6 +9,7 @@
  - #225 Fix NetworkInterface URL in NetworkInterfaceCollection
  - #227 Implements DELETE Subscription
  - #239 Add debug option in the service configuration file
+ - #243 Add info about session management (README)
 
 # New Redfish resources
  - EventService
