@@ -139,7 +139,7 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 
 ## Session Management
     
-As specified in the Redfish spec, the endpoints `/redfish` and `/redfish/v1` can be accessed without authentication. For any other endpoint, a Redfish session must be created.
+As specified in the Redfish spec, the endpoints `/redfish` and `/redfish/v1` can be accessed unauthenticated, also POST to Sessions Collection (that's how a Redfish session can be established).
 
 To create a Redfish session, the redfish client must authenticate himself using his own username and password sending a post request to `/redfish/v1/SessionService/Sessions`. Since current toolkit implementation delegates the session management to OneView, the Redfish client must pass a valid OneView user and password:
 
