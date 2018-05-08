@@ -34,7 +34,7 @@ subscription = Blueprint("subscription", __name__)
 
 
 @subscription.route(
-    "/redfish/v1/EventService/EventSubscriptions/", methods=["POST"])
+    "/redfish/v1/EventService/Subscriptions/", methods=["POST"])
 def add_subscription():
     """Add the Redfish Subscription.
 
@@ -116,7 +116,7 @@ def add_subscription():
             status=status.HTTP_201_CREATED,
             mimetype="application/json")
         response.headers.add(
-            "Location", "/redfish/v1/EventService/EventSubscriptions/"
+            "Location", "/redfish/v1/EventService/Subscriptions/"
                         "{}".format(subscription_id))
         return response
 
@@ -129,7 +129,7 @@ def add_subscription():
 
 
 @subscription.route(
-    "/redfish/v1/EventService/EventSubscriptions/<subscription_id>",
+    "/redfish/v1/EventService/Subscriptions/<subscription_id>",
     methods=["DELETE"])
 def remove_subscription(subscription_id):
     """Removes a specific Subscription
@@ -155,7 +155,7 @@ def remove_subscription(subscription_id):
 
 
 @subscription.route(
-    "/redfish/v1/EventService/EventSubscriptions/<subscription_id>",
+    "/redfish/v1/EventService/Subscriptions/<subscription_id>",
     methods=["GET"])
 def get_subscription(subscription_id):
     """Gets a specific Subscription

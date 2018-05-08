@@ -73,7 +73,7 @@ class TestSubscriptionCollection(unittest.TestCase):
         subscriptions_mockup.return_value = dict()
 
         response = \
-            self.app.get("/redfish/v1/EventService/EventSubscriptions/")
+            self.app.get("/redfish/v1/EventService/Subscriptions/")
 
         result = json.loads(response.data.decode("utf-8"))
 

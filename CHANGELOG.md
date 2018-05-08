@@ -13,7 +13,6 @@
 
 # New Redfish resources
  - EventService
- - EventSubscription
  - EventDestinationCollection
  - EventDestination
 
