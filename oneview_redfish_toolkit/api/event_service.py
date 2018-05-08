@@ -39,11 +39,12 @@ class EventService(RedfishJsonValidator):
         self.redfish["Id"] = "EventService"
         self.redfish["Name"] = "Event Service"
         self.redfish["Description"] = "Event Subscription service"
-        self.redfish["@odata.context"] = "/redfish/v1/$metadata#EventService"
+        self.redfish["@odata.context"] = \
+            "/redfish/v1/$metadata#EventService.EventService"
         self.redfish["@odata.id"] = "/redfish/v1/EventService/"
         self.redfish["Subscriptions"] = dict()
         self.redfish["Subscriptions"]["@odata.id"] = \
-            "/redfish/v1/EventService/EventSubscriptions/"
+            "/redfish/v1/EventService/Subscriptions/"
         self.redfish["EventTypesForSubscription"] = \
             ["StatusChange", "ResourceUpdated", "ResourceAdded",
              "ResourceRemoved", "Alert"]

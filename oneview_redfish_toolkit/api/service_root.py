@@ -53,9 +53,9 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["Chassis"]["@odata.id"] = "/redfish/v1/Chassis"
         self.redfish["Managers"] = collections.OrderedDict()
         self.redfish["Managers"]["@odata.id"] = "/redfish/v1/Managers"
-        # self.redfish["EventService"] = collections.OrderedDict()
-        # self.redfish["EventService"]["@odata.id"] = \
-        # "/redfish/v1/EventService"
+        self.redfish["EventService"] = collections.OrderedDict()
+        self.redfish["EventService"]["@odata.id"] = \
+            "/redfish/v1/EventService"
         self.redfish['Links'] = collections.OrderedDict()
         # self.redfish['Links']['Sessions'] = collections.OrderedDict()
         # self.redfish['Links']['Sessions']['@odata.id'] = \
