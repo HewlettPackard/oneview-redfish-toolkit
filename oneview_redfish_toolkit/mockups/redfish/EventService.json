@@ -3,10 +3,10 @@
     "Id": "EventService",
     "Name": "Event Service",
     "Description": "Event Subscription service",
-    "@odata.context": "/redfish/v1/$metadata#EventService",
+    "@odata.context": "/redfish/v1/$metadata#EventService.EventService",
     "@odata.id": "/redfish/v1/EventService/",
     "Subscriptions": {
-        "@odata.id": "/redfish/v1/EventService/EventSubscriptions/"
+        "@odata.id": "/redfish/v1/EventService/Subscriptions/"
     },
     "EventTypesForSubscription": [
         "StatusChange",

@@ -51,7 +51,7 @@ class Subscription(RedfishJsonValidator):
         self.redfish["@odata.type"] = \
             "#EventDestination.v1_2_0.EventDestination"
         self.redfish["Id"] = subscription_id
-        self.redfish["Name"] = "EventSubscription " + subscription_id
+        self.redfish["Name"] = "Event Subscription " + subscription_id
         self.redfish["Destination"] = destination
         self.redfish["EventTypes"] = self. \
             _remove_duplicated_event_types(event_types)
@@ -60,7 +60,7 @@ class Subscription(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#EventDestination.EventDestination"
         self.redfish["@odata.id"] = \
-            "/redfish/v1/EventService/EventSubscriptions/" + subscription_id
+            "/redfish/v1/EventService/Subscriptions/" + subscription_id
 
         self._validate()
 

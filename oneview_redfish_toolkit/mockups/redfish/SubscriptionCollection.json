@@ -5,5 +5,5 @@
     "Members": [
     ],
     "@odata.context": "/redfish/v1/$metadata#EventDestinationCollection.EventDestinationCollection",
-    "@odata.id": "/redfish/v1/EventService/EventSubscriptions/"
+    "@odata.id": "/redfish/v1/EventService/Subscriptions/"
 }
