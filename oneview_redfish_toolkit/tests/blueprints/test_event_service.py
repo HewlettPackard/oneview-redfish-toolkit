@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -26,7 +26,7 @@ from flask_api import status
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints.event_service import event_service
+from oneview_redfish_toolkit.blueprints import event_service
 from oneview_redfish_toolkit import util
 
 
@@ -42,7 +42,7 @@ class TestEventService(unittest.TestCase):
 
         # creates a test client
         self.app = Flask(__name__)
-        self.app.register_blueprint(event_service)
+        self.app.register_blueprint(event_service.event_service)
 
         @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
@@ -59,6 +59,23 @@ class TestEventService(unittest.TestCase):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 mimetype="application/json")
 
+        @self.app.errorhandler(status.HTTP_400_BAD_REQUEST)
+        def bad_request(error):
+            """Creates a Bad Request Error response"""
+            redfish_error = RedfishError(
+                "PropertyValueNotInList", error.description)
+
+            redfish_error.add_extended_info(
+                message_id="PropertyValueNotInList",
+                message_args=["VALUE", "PROPERTY"],
+                related_properties=["PROPERTY"])
+
+            error_str = redfish_error.serialize()
+            return Response(
+                response=error_str,
+                status=status.HTTP_400_BAD_REQUEST,
+                mimetype='application/json')
+
         # creates a test client
         self.app = self.app.test_client()
 
@@ -68,7 +85,7 @@ class TestEventService(unittest.TestCase):
     @mock.patch('oneview_redfish_toolkit.util.delivery_retry_attempts', 3)
     @mock.patch('oneview_redfish_toolkit.util.delivery_retry_interval', 30)
     def test_get_event_service(self):
-        """Tests EventService blueprint result against know value """
+        """Tests EventService blueprint result against know value"""
 
         response = self.app.get("/redfish/v1/EventService/")
 
@@ -82,3 +99,58 @@ class TestEventService(unittest.TestCase):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(event_service_mockup, result)
+
+    def test_post_submit_event_without_event_type(self):
+        """Tests EventService SubmitTestEvent action without EventType"""
+
+        response = self.app.post(
+            '/redfish/v1/EventService/Actions''/EventService.SubmitTestEvent/')
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual('application/json', response.mimetype)
+
+    def test_submit_event_with_invalid_event_type(self):
+        """Tests EventService SubmitTestEvent action with invalid EventType"""
+
+        response = self.app.post(
+            '/redfish/v1/EventService/Actions''/EventService.SubmitTestEvent/',
+            data='{"EventType": "INVALID"}',
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual('application/json', response.mimetype)
+
+    @mock.patch.object(util, 'dispatch_event')
+    def test_submit_event_with_exception(self, dispatch_event_mock):
+        """Tests SubmitTestEvent when dispatch_event raises an exception"""
+
+        dispatch_event_mock.side_effect = Exception()
+
+        response = self.app.post(
+            '/redfish/v1/EventService/Actions''/EventService.SubmitTestEvent/',
+            data='{"EventType": "Alert"}',
+            content_type='application/json')
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
+
+    @mock.patch.object(util, 'dispatch_event')
+    def test_submit_event_correct_response(self, dispatch_event_mock):
+        """Tests SubmitTestEvent action with OneView SCMB alert"""
+
+        # Loading Alert mockup value
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/Alert.json'
+        ) as f:
+            self.alert_mockup = json.load(f)
+
+        response = self.app.post(
+            '/redfish/v1/EventService/Actions''/EventService.SubmitTestEvent/',
+            data='{"EventType": "Alert"}',
+            content_type='application/json')
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(self.alert_mockup, result)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual('application/json', response.mimetype)

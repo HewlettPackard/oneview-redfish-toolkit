@@ -1,13 +1,12 @@
 {
-    "Name": "Cold Start.",
+    "@odata.type": "#Event.v1_2_0.Event",
     "@odata.context": "/redfish/v1/$metadata#Event.Event",
+    "Events@odata.count": 1,
     "Events": [{
-        "Severity": "OK",
         "EventType": "Alert",
-        "EventTimestamp": "2018-02-12T20:12:03.207Z",
-        "EventId": "0",
+        "EventTimestamp": "2018-02-12T20:12:03.231Z",
         "MessageId": "Base.1.1.Success"
     }],
-    "Id": "49",
-    "@odata.type": "#Event.v1_2_0.Event"
+    "Id": "30373737-3237-4D32-3230-313530314752",
+    "Name": "0000A66101, bay 3"
 }

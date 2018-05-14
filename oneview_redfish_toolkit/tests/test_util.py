@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -20,12 +20,15 @@
 
 import collections
 import configparser
+import json
 import os
 import socket
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
+from oneview_redfish_toolkit.api.event import Event
+from oneview_redfish_toolkit.api.subscription import Subscription
 from oneview_redfish_toolkit import util
 import unittest
 from unittest import mock
@@ -267,3 +270,72 @@ class TestUtil(unittest.TestCase):
     def test_load_event_service_invalid_info(self, oneview_client_mockup):
         self.assertRaises(
             OneViewRedfishError, util.load_config(self.config_file))
+
+    @mock.patch.object(util, 'OneViewClient')
+    @mock.patch('http.client.HTTPConnection.request')
+    @mock.patch.object(util, 'subscriptions_by_type')
+    @mock.patch.object(util, 'logging')
+    def test_submit_event_unresponsive_server(
+        self, logging_mock, subscription_mock, request_mock, ov_mock):
+        """Tests SubmitTestEvent action to an unresposive server"""
+
+        util.load_config(self.config_file)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/Alert.json'
+        ) as f:
+            event_mockup = Event(json.loads(f.read()))
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/EventDestination.json'
+        ) as f:
+            subscription_mockup = (json.loads(f.read()))
+
+        subscription_mock['Alert'].values.return_value = [
+            Subscription(
+                subscription_mockup['Id'],
+                subscription_mockup['Destination'],
+                subscription_mockup['EventTypes'],
+                subscription_mockup['Context'])
+        ]
+
+        # Forces an exception when calling request
+        request_mock.side_effect = ConnectionError()
+
+        util.dispatch_event(event_mockup)
+
+        self.assertTrue(logging_mock.error.called)
+        self.assertFalse(logging_mock.exception.called)
+
+    @mock.patch.object(util, 'OneViewClient')
+    @mock.patch('http.client.HTTPConnection.request')
+    @mock.patch.object(util, 'subscriptions_by_type')
+    @mock.patch.object(util, 'logging')
+    def test_submit_event_responsive_server(
+        self, logging_mock, subscription_mock, request_mock, ov_mock):
+        """Tests SubmitTestEvent action to a functional server"""
+
+        util.load_config(self.config_file)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/Alert.json'
+        ) as f:
+            event_mockup = Event(json.loads(f.read()))
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/EventDestination.json'
+        ) as f:
+            subscription_mockup = (json.loads(f.read()))
+
+        subscription_mock['Alert'].values.return_value = [
+            Subscription(
+                subscription_mockup['Id'],
+                subscription_mockup['Destination'],
+                subscription_mockup['EventTypes'],
+                subscription_mockup['Context'])
+        ]
+
+        util.dispatch_event(event_mockup)
+
+        self.assertFalse(logging_mock.error.called)
+        self.assertFalse(logging_mock.exception.called)

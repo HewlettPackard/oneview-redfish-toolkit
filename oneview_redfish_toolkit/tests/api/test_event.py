@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -49,7 +49,7 @@ class TestEvent(unittest.TestCase):
         # Tests if class is correctly instantiated and validated
 
         try:
-            event = Event(self.alert, "Alert")
+            event = Event(self.alert)
         except Exception as e:
             self.fail("Failed to instantiate Event class."
                       " Error: {}".format(e))
@@ -59,7 +59,7 @@ class TestEvent(unittest.TestCase):
         # Tests the serialize function result against known result
 
         try:
-            event = Event(self.alert, "Alert")
+            event = Event(self.alert)
         except Exception as e:
             self.fail("Failed to instantiate Event class."
                       " Error: {}".format(e))
@@ -67,6 +67,6 @@ class TestEvent(unittest.TestCase):
         try:
             result = json.loads(event.serialize())
         except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+            self.fail("Failed to serialize. Error: {}".format(e))
 
         self.assertEqual(self.event_mockup, result)
