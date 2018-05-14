@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -36,11 +36,29 @@ class EventService(RedfishJsonValidator):
         super().__init__(self.SCHEMA_NAME)
 
         self.redfish["@odata.type"] = "#EventService.v1_0_4.EventService"
+        self.redfish["@odata.context"] = "/redfish/v1/$metadata" \
+            "#EventService.EventService"
+        self.redfish["@odata.id"] = "/redfish/v1/EventService/"
+
+        submit_test_event = dict()
+        submit_test_event["EventType@Redfish.AllowableValues"] = [
+            "StatusChange",
+            "ResourceUpdated",
+            "ResourceAdded",
+            "ResourceRemoved",
+            "Alert"
+        ]
+        submit_test_event["target"] = "/redfish/v1/EventService" \
+            "/Actions/EventService.SubmitTestEvent/"
+
+        self.redfish["Actions"] = dict()
+        self.redfish["Actions"]["#EventService.SubmitTestEvent"] = \
+            submit_test_event
+
         self.redfish["Id"] = "EventService"
         self.redfish["Name"] = "Event Service"
         self.redfish["Description"] = "Event Subscription service"
-        self.redfish["@odata.context"] = "/redfish/v1/$metadata#EventService"
-        self.redfish["@odata.id"] = "/redfish/v1/EventService/"
+
         self.redfish["Subscriptions"] = dict()
         self.redfish["Subscriptions"]["@odata.id"] = \
             "/redfish/v1/EventService/EventSubscriptions/"

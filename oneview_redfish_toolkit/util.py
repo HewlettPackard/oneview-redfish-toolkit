@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -27,6 +27,8 @@ import socket
 
 # 3rd party libs
 from hpOneView.oneview_client import OneViewClient
+from http.client import HTTPConnection
+from urllib.parse import urlparse
 
 # Modules own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
@@ -408,3 +410,37 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
     with open(os.path.join(dir_name, file_name + ".key"), "wt") as f:
         f.write(OpenSSL.crypto.dump_privatekey(
             OpenSSL.crypto.FILETYPE_PEM, private_key).decode("UTF-8"))
+
+
+def dispatch_event(event):
+    """Execute the POST request to the targets of an event subscription
+
+        Args:
+            event: The Event schema describing the JSON payload
+            which will be send to the event subscribers.
+
+        Returns:
+            Nothing
+    """
+    # Event resource contains only ONE EventRecord
+    events = event.redfish['Events']
+    event_record = events[0]
+
+    subscriptions = \
+        globals()['subscriptions_by_type'][event_record['EventType']].values()
+
+    try:
+        for subscription in subscriptions:
+            url = urlparse(subscription.redfish['Destination'])
+            connection = HTTPConnection(url.hostname, port=url.port)
+            json_str = event.serialize()
+
+            connection.request(
+                'POST',
+                url.path,
+                json_str,
+                {'Content-Type': 'application/json'})
+    except ConnectionError as e:
+        logging.error('Could not POST event to {}'.format(e))
+    except Exception as e:
+        logging.exception('Could not POST event to {}'.format(e))

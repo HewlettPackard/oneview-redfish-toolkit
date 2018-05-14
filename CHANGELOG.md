@@ -12,6 +12,7 @@
  - #230 Check missing schemas from local repo
  - #236 Flask running in debug mode
  - #232 Implement CompositionService
+ - #215 Add TestEvent Action
 
 # New Redfish resources
  - EventService
