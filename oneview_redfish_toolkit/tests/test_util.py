@@ -272,12 +272,12 @@ class TestUtil(unittest.TestCase):
             OneViewRedfishError, util.load_config(self.config_file))
 
     @mock.patch.object(util, 'OneViewClient')
-    @mock.patch('http.client.HTTPConnection.request')
     @mock.patch.object(util, 'subscriptions_by_type')
-    @mock.patch.object(util, 'logging')
-    def test_submit_event_unresponsive_server(
-        self, logging_mock, subscription_mock, request_mock, ov_mock):
-        """Tests SubmitTestEvent action to an unresposive server"""
+    @mock.patch(
+        'oneview_redfish_toolkit.event_dispatcher.EventDispatcher.start')
+    def test_submit_event_with_subscriber(
+        self, start_mock, subscription_mock, ov_mock):
+        """Tests SubmitTestEvent action with two subscribers"""
 
         util.load_config(self.config_file)
 
@@ -286,34 +286,22 @@ class TestUtil(unittest.TestCase):
         ) as f:
             event_mockup = Event(json.loads(f.read()))
 
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/EventDestination.json'
-        ) as f:
-            subscription_mockup = (json.loads(f.read()))
-
         subscription_mock['Alert'].values.return_value = [
-            Subscription(
-                subscription_mockup['Id'],
-                subscription_mockup['Destination'],
-                subscription_mockup['EventTypes'],
-                subscription_mockup['Context'])
+            Subscription('1', 'destination1', [], 'context1'),
+            Subscription('2', 'destination2', [], 'context2')
         ]
-
-        # Forces an exception when calling request
-        request_mock.side_effect = ConnectionError()
 
         util.dispatch_event(event_mockup)
 
-        self.assertTrue(logging_mock.error.called)
-        self.assertFalse(logging_mock.exception.called)
+        self.assertTrue(start_mock.call_count == 2)
 
     @mock.patch.object(util, 'OneViewClient')
-    @mock.patch('http.client.HTTPConnection.request')
     @mock.patch.object(util, 'subscriptions_by_type')
-    @mock.patch.object(util, 'logging')
-    def test_submit_event_responsive_server(
-        self, logging_mock, subscription_mock, request_mock, ov_mock):
-        """Tests SubmitTestEvent action to a functional server"""
+    @mock.patch(
+        'oneview_redfish_toolkit.event_dispatcher.EventDispatcher.start')
+    def test_submit_event_without_subscriber(
+        self, start_mock, subscription_mock, ov_mock):
+        """Tests SubmitTestEvent action with no subscribers"""
 
         util.load_config(self.config_file)
 
@@ -322,20 +310,8 @@ class TestUtil(unittest.TestCase):
         ) as f:
             event_mockup = Event(json.loads(f.read()))
 
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/EventDestination.json'
-        ) as f:
-            subscription_mockup = (json.loads(f.read()))
-
-        subscription_mock['Alert'].values.return_value = [
-            Subscription(
-                subscription_mockup['Id'],
-                subscription_mockup['Destination'],
-                subscription_mockup['EventTypes'],
-                subscription_mockup['Context'])
-        ]
+        subscription_mock['Alert'].values.return_value = []
 
         util.dispatch_event(event_mockup)
 
-        self.assertFalse(logging_mock.error.called)
-        self.assertFalse(logging_mock.exception.called)
+        self.assertFalse(start_mock.called)

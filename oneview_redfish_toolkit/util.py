@@ -27,8 +27,6 @@ import socket
 
 # 3rd party libs
 from hpOneView.oneview_client import OneViewClient
-from http.client import HTTPConnection
-from urllib.parse import urlparse
 
 # Modules own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
@@ -36,6 +34,7 @@ from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotAccessibleError
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
+from oneview_redfish_toolkit.event_dispatcher import EventDispatcher
 
 
 globals()['subscriptions_by_type'] = {
@@ -429,18 +428,11 @@ def dispatch_event(event):
     subscriptions = \
         globals()['subscriptions_by_type'][event_record['EventType']].values()
 
-    try:
-        for subscription in subscriptions:
-            url = urlparse(subscription.redfish['Destination'])
-            connection = HTTPConnection(url.hostname, port=url.port)
-            json_str = event.serialize()
+    for subscription in subscriptions:
+        dispatcher = EventDispatcher(
+            event,
+            subscription,
+            globals()['delivery_retry_attempts'],
+            globals()['delivery_retry_interval'])
 
-            connection.request(
-                'POST',
-                url.path,
-                json_str,
-                {'Content-Type': 'application/json'})
-    except ConnectionError as e:
-        logging.error('Could not POST event to {}'.format(e))
-    except Exception as e:
-        logging.exception('Could not POST event to {}'.format(e))
+        dispatcher.start()
