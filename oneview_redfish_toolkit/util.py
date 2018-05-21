@@ -412,7 +412,7 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
 
 
 def dispatch_event(event):
-    """Execute the POST request to the targets of an event subscription
+    """Creates an EventDispatcher for each subscriber of the event
 
         Args:
             event: The Event schema describing the JSON payload

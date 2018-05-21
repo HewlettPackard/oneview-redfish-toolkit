@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -17,13 +17,13 @@
 import json
 import logging
 import os
+import pika
 import ssl
 
 from hpOneView.exceptions import HPOneViewException
-import pika
 from pika.credentials import ExternalCredentials
 
-
+from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit import util
 
 
@@ -32,6 +32,12 @@ SCMB_CERT = "certs/oneview_scmb.pem"
 SCMB_KEY = "certs/oneview_scmb.key"
 SCMB_PORT = 5671
 SCMB_SOCKET_TIMEOUT = 5  # seconds
+SCMB_RESOURCE_LIST = [
+    'alerts',
+    'enclosures',
+    'racks',
+    'server-hardware']
+SCMB_EXCHANGE_NAME = 'scmb'
 
 
 def check_cert_exist():
@@ -114,7 +120,19 @@ def is_cert_working_with_scmb():
 
 def consume_message(ch, method, properties, body):
     body = json.loads(body.decode('utf-8'))
-    print(json.dumps(body, indent=4))
+    resource = body['resource']
+
+    if (resource['category'] == 'alerts'):
+        category = resource['associatedResource']['resourceCategory']
+    else:
+        category = resource['category']
+
+    if (category in SCMB_RESOURCE_LIST):
+        event = Event(body)
+
+        util.dispatch_event(event)
+    else:
+        logging.debug('SCMB message received for an unmanaged resource')
 
 
 def listen_scmb():
@@ -124,13 +142,14 @@ def listen_scmb():
 
         queue_name = ch.queue_declare(auto_delete=True)
 
-        EXCHANGE_NAME = 'scmb'
-        ROUTE = 'scmb.alerts.#'
+        for resource in SCMB_RESOURCE_LIST:
+            # scmb.<resource>.#
+            route = SCMB_EXCHANGE_NAME + '.' + resource + '.#'
 
-        ch.queue_bind(
-            queue=queue_name.method.queue,
-            exchange=EXCHANGE_NAME,
-            routing_key=ROUTE)
+            ch.queue_bind(
+                queue=queue_name.method.queue,
+                exchange=SCMB_EXCHANGE_NAME,
+                routing_key=route)
 
         ch.basic_consume(consume_message, queue=queue_name.method.queue)
         ch.start_consuming()

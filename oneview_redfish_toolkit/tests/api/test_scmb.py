@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -14,9 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from contextlib import contextmanager
-from io import StringIO
-import sys
 import unittest
 from unittest import mock
 
@@ -26,19 +23,8 @@ from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit import util
 
 
-@contextmanager
-def captured_output():
-    new_out, new_err = StringIO(), StringIO()
-    old_out, old_err = sys.stdout, sys.stderr
-    try:
-        sys.stdout, sys.stderr = new_out, new_err
-        yield sys.stdout, sys.stderr
-    finally:
-        sys.stdout, sys.stderr = old_out, old_err
-
-
 class TestSCMB(unittest.TestCase):
-    """Tests for Chassis class"""
+    """Tests for SCMB module"""
 
     @mock.patch.object(util, 'OneViewClient')
     def setUp(self, oneview_client_mock):
@@ -84,8 +70,13 @@ class TestSCMB(unittest.TestCase):
         ext_cred.return_value = {}
         self.assertEqual(scmb.scmb_connect(), {})
 
-    def test_consume_message(self):
-        with captured_output() as (out, err):
-            scmb.consume_message(None, None, None, b'{"teste": "teste"}')
-            output = out.getvalue().strip()
-            self.assertEqual(output, '{\n    "teste": "teste"\n}')
+    @mock.patch.object(util, 'dispatch_event')
+    def test_consume_message(self, dispatch_mock):
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/Alert.json'
+        ) as f:
+            event_mockup = f.read().encode('UTF-8')
+
+        scmb.consume_message(None, None, None, event_mockup)
+
+        self.assertTrue(dispatch_mock.called)
