@@ -85,7 +85,7 @@ class TestEventService(unittest.TestCase):
     @mock.patch('oneview_redfish_toolkit.util.delivery_retry_attempts', 3)
     @mock.patch('oneview_redfish_toolkit.util.delivery_retry_interval', 30)
     def test_get_event_service(self):
-        """Tests EventService blueprint result against know value"""
+        """Tests EventService blueprint result against known value"""
 
         response = self.app.get("/redfish/v1/EventService/")
 
@@ -104,7 +104,7 @@ class TestEventService(unittest.TestCase):
         """Tests EventService SubmitTestEvent action without EventType"""
 
         response = self.app.post(
-            '/redfish/v1/EventService/Actions''/EventService.SubmitTestEvent/')
+            '/redfish/v1/EventService/Actions/EventService.SubmitTestEvent/')
 
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual('application/json', response.mimetype)
@@ -113,7 +113,7 @@ class TestEventService(unittest.TestCase):
         """Tests EventService SubmitTestEvent action with invalid EventType"""
 
         response = self.app.post(
-            '/redfish/v1/EventService/Actions''/EventService.SubmitTestEvent/',
+            '/redfish/v1/EventService/Actions/EventService.SubmitTestEvent/',
             data='{"EventType": "INVALID"}',
             content_type='application/json')
 
@@ -127,7 +127,7 @@ class TestEventService(unittest.TestCase):
         dispatch_event_mock.side_effect = Exception()
 
         response = self.app.post(
-            '/redfish/v1/EventService/Actions''/EventService.SubmitTestEvent/',
+            '/redfish/v1/EventService/Actions/EventService.SubmitTestEvent/',
             data='{"EventType": "Alert"}',
             content_type='application/json')
 
@@ -152,5 +152,5 @@ class TestEventService(unittest.TestCase):
         result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(self.alert_mockup, result)
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         self.assertEqual('application/json', response.mimetype)

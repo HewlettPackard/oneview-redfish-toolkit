@@ -144,7 +144,7 @@ def execute_test_event_action():
 
         return Response(
             response=json_str,
-            status=status.HTTP_200_OK,
+            status=status.HTTP_202_ACCEPTED,
             mimetype='application/json')
     except OneViewRedfishError as e:
         logging.exception('Mapping error: {}'.format(e))
