@@ -12,7 +12,11 @@
  - #230 Check missing schemas from local repo
  - #236 Flask running in debug mode
  - #232 Implement CompositionService
+ - #201 How are HPE OneView event types structured?
+ - #214 Subscribe to each EventType
  - #215 Add TestEvent Action
+ - #249 Redfish Events notification
+
 
 # New Redfish resources
  - EventService
