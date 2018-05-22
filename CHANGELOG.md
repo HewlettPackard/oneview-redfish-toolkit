@@ -17,6 +17,7 @@
  - #215 Add TestEvent Action
  - #249 Redfish Events notification
  - #233 Implement ResourceBlocks
+ - #234 Implement ResourceZones
 
 # New Redfish resources
  - EventService
@@ -25,6 +26,8 @@
  - EventDestination
  - CompositionService
  - ResourceBlockCollection
+ - ZoneCollection
+
 
 # 0.2.0
 # Notes
