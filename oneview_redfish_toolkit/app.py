@@ -73,6 +73,7 @@ from oneview_redfish_toolkit.blueprints.subscription\
 from oneview_redfish_toolkit.blueprints.subscription_collection \
     import subscription_collection
 from oneview_redfish_toolkit.blueprints.thermal import thermal
+from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
 from oneview_redfish_toolkit import util
 
 util.configure_logging(os.getenv("LOGGING_FILE", "logging.conf"))
@@ -122,6 +123,7 @@ if __name__ == '__main__':
     app.register_blueprint(network_port)
     app.register_blueprint(session)
     app.register_blueprint(resource_block_collection)
+    app.register_blueprint(zone_collection)
 
     if auth_mode == "conf":
         app.register_blueprint(event_service)
