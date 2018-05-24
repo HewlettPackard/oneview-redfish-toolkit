@@ -85,8 +85,9 @@ if __name__ == '__main__':
         exit(1)
 
     # Check auth mode
-    if util.config["redfish"]["authentication_mode"] not in \
-        ["conf", "session"]:
+    auth_mode = util.config.get('redfish', 'authentication_mode')
+
+    if auth_mode not in ["conf", "session"]:
         logging.error(
             "Invalid authentication_mode. Please check your conf"
             " file. Valid values are 'conf' or 'session'")
@@ -118,9 +119,11 @@ if __name__ == '__main__':
     app.register_blueprint(network_adapter)
     app.register_blueprint(network_port)
     app.register_blueprint(session)
-    app.register_blueprint(event_service)
-    app.register_blueprint(subscription_collection)
-    app.register_blueprint(subscription)
+
+    if auth_mode == "conf":
+        app.register_blueprint(event_service)
+        app.register_blueprint(subscription_collection)
+        app.register_blueprint(subscription)
 
     @app.before_request
     def check_authentication():

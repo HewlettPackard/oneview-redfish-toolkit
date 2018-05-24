@@ -16,8 +16,10 @@
 # under the License.
 
 import collections
+
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
+from oneview_redfish_toolkit import util
 
 
 class ServiceRoot(RedfishJsonValidator):
@@ -56,9 +58,11 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["CompositionService"] = collections.OrderedDict()
         self.redfish["CompositionService"]["@odata.id"] = \
             "/redfish/v1/CompositionService"
-        self.redfish["EventService"] = collections.OrderedDict()
-        self.redfish["EventService"]["@odata.id"] = \
-            "/redfish/v1/EventService"
+
+        # Add the Redfish EventService API according to the
+        # configured authentication mode
+        self.add_event_service_api()
+
         self.redfish['Links'] = collections.OrderedDict()
         # self.redfish['Links']['Sessions'] = collections.OrderedDict()
         # self.redfish['Links']['Sessions']['@odata.id'] = \
@@ -70,3 +74,11 @@ class ServiceRoot(RedfishJsonValidator):
             "Copyright (2017) Hewlett Packard Enterprise Development LP"
 
         self._validate()
+
+    def add_event_service_api(self):
+        auth_mode = util.config.get('redfish', 'authentication_mode')
+
+        if auth_mode == "conf":
+            self.redfish["EventService"] = collections.OrderedDict()
+            self.redfish["EventService"]["@odata.id"] = \
+                "/redfish/v1/EventService"
