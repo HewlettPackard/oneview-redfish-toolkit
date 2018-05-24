@@ -42,11 +42,21 @@ class TestServiceRoot(unittest.TestCase):
         try:
             service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
         except Exception as e:
-            self.fail("Failed to instantiate service root. Error: ".format(e))
+            self.fail("Failed to instantiate service root. "
+                      "Error: {}".format(e))
         self.assertIsInstance(service_root, ServiceRoot)
 
-    def test_serialize(self):
+    @mock.patch.object(util, 'config')
+    def test_serialize(self, config_mock):
         """Tests the serialize function result against known result"""
+
+        def side_effect(section, option):
+            if section == "redfish" and option == "authentication_mode":
+                return "conf"
+            else:
+                return util.config.get(section, option)
+
+        config_mock.get.side_effect = side_effect
 
         service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
         result = json.loads(service_root.serialize())
