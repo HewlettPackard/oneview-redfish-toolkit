@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import argparse
 import ipaddress
 import logging
 import os
@@ -76,12 +77,12 @@ from oneview_redfish_toolkit.blueprints.thermal import thermal
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
 from oneview_redfish_toolkit import util
 
-util.configure_logging(os.getenv("LOGGING_FILE", "logging.conf"))
 
-if __name__ == '__main__':
+def main(config_file_path, logging_config_file_path):
     # Load config file, schemas and creates a OV connection
     try:
-        util.load_config('redfish.conf')
+        util.configure_logging(logging_config_file_path)
+        util.load_config(config_file_path)
     except Exception as e:
         logging.exception('Failed to load app configuration')
         logging.exception(e)
@@ -339,7 +340,8 @@ if __name__ == '__main__':
                 os.path.exists(ssl_key_file):
                 logging.warning("Generating self-signed certs")
                 # Generate certificates
-                util.generate_certificate("certs", "self-signed", 2048)
+                util.generate_certificate(
+                    os.path.dirname(ssl_cert_file), "self-signed", 2048)
             else:
                 logging.warning("Using existing self-signed certs")
 
@@ -351,3 +353,14 @@ if __name__ == '__main__':
 
         ssl_context = (ssl_cert_file, ssl_key_file)
         app.run(host=host, port=port, debug=debug, ssl_context=ssl_context)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Arguments parser')
+    parser.add_argument('--config', type=str,
+                        help='A required path to config file')
+    parser.add_argument('--log-config', type=str,
+                        help='A required path to logging config file')
+    args = parser.parse_args()
+
+    main(args.config, args.log_config)
