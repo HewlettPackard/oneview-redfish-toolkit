@@ -5,7 +5,7 @@
     "mpState": "OK",
     "modified": "2017-09-04T07:59:58.556Z",
     "processorCoreCount": 4,
-    "serverGroupUri": null,
+    "serverGroupUri": "/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
     "formFactor": "HalfHeight",
     "category": "server-hardware",
     "refreshState": "NotRefreshing",
@@ -212,7 +212,7 @@
         ]
     },
     "licensingIntent": "NotApplicable",
-    "serverHardwareTypeUri": "/rest/server-hardware-types/FE50A6FE-B1AC-4E42-8D40-B73CA8CC0CD2",
+    "serverHardwareTypeUri": "/rest/server-hardware-types/0AB36CC2-D424-4C88-9CA5-25DF0B1A2A87",
     "signature": {
         "personalityChecksum": 0,
         "serverHwChecksum": 1805351517
@@ -266,7 +266,7 @@
     "name": "0000A66103, bay 5",
     "model": "HPE Synergy 480 Gen9 Compute Module",
     "mpModel": "iLO4",
-    "serverProfileUri": null,
+    "serverProfileUri": "/rest/server-profiles/b425802b-a6a5-4941-8885-aab68dfa2ee2",
     "memoryMb": 4096,
     "remoteSupportSettings": {
         "remoteSupportCurrentState": "Unregistered",
@@ -274,7 +274,7 @@
     },
     "status": "OK",
     "created": "2017-08-09T12:46:02.364Z",
-    "state": "Monitored",
+    "state": "ProfileApplied",
     "serverFirmwareInventoryUri": "/rest/server-hardware/30303437-3034-4D32-3230-313133364752/firmware",
     "intelligentProvisioningVersion": "2.30",
     "supportState": "NotSupported",
