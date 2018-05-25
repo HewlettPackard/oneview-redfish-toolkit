@@ -18,7 +18,29 @@ HPE OneView Redfish Toolkit service relies on Python 3.5 or newer (as long as py
 
 In order to run tests and documentation generation `tox` is also needed. General instructions on how to install are available [here](https://tox.readthedocs.io/en/latest/install.html).
 
-### From source
+### Production Environment
+
+Install the application:
+
+```bash
+$ pip install git+https://github.com/HewlettPackard/oneview-redfish-toolkit.git
+```
+
+Run the application:
+
+```bash
+$ oneview-redfish-toolkit
+```
+
+ At first time, it will create all the needed configuration files under user directory, and will prompt for the OneView IP.
+
+You can update the configuration files created under the user directory, or if you want to use custom configuration files you can pass them as arguments:
+
+```bash
+$ oneview-redfish-toolkit --config redfish.conf --log-config logging.conf
+```
+
+### Development Environment
 
 We recommend to run inside a virtual environment. You can create one running:
 
@@ -59,7 +81,7 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 * `redfish` section
 
   * **schema_dir**: path to where DTMF's Redfish JSON schemas are stored
-  
+
   * **indent_json**: whether JSON objects on answers are indented or not
 
   * **xml_prettify**: whether XML objects on answers are indented or not
@@ -68,14 +90,14 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 
   * **redfish_port**: the TCP port where redfish service will listen to
 
-  * **authentication_mode**: can be `conf` or `session`. 
-    * **`conf`**: credentials from the conf file will be used for the requests. The toolkit will handle authentication with OneView internally. 
+  * **authentication_mode**: can be `conf` or `session`.
+    * **`conf`**: credentials from the conf file will be used for the requests. The toolkit will handle authentication with OneView internally.
     * **`session`**: the Redfish client must create a session and use the generated `x-auth-token` for the requests. For more details please check Session Management section.
 
 * `oneview` section
 
   * **ip**: HPE OneView's IP or FQDN address
-  
+
   * **api_version**: HPE OneView's version. Defaults to 300.
 
 * `credentials` section
@@ -138,7 +160,7 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
   * **Event**: DTMF's Redfish JSON schema for `Event` objects
 
 ## Session Management
-    
+
 As specified in the Redfish spec, the endpoints `/redfish` and `/redfish/v1` can be accessed unauthenticated, also POST to Sessions Collection (that's how a Redfish session can be established).
 
 To create a Redfish session, the redfish client must authenticate himself using his own username and password sending a post request to `/redfish/v1/SessionService/Sessions`. Since current toolkit implementation delegates the session management to OneView, the Redfish client must pass a valid OneView user and password:
@@ -160,7 +182,7 @@ curl -X GET \
   -H 'x-auth-token: NzQ8ODI6MTcxOTkxRdvdtE-HaNeFgkoylkaQVA3l1uIsHxQ7'
  ```
 
-**Note**: In the current implementation, each user can have only 1 active session (always mapped to “/redfish/v1/SessionService/Sessions/1” ), GET and DELETE features not implemented. Thus, if the Redfish client creates another session (another POST), the toolkit will just create another session in OneView. The client decides which session token to use. If it is still valid, the request will be processed, otherwise an error will be returned to the client. 
+**Note**: In the current implementation, each user can have only 1 active session (always mapped to “/redfish/v1/SessionService/Sessions/1” ), GET and DELETE features not implemented. Thus, if the Redfish client creates another session (another POST), the toolkit will just create another session in OneView. The client decides which session token to use. If it is still valid, the request will be processed, otherwise an error will be returned to the client.
 
 ## Event Service notes
 

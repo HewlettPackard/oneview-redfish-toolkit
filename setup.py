@@ -26,5 +26,8 @@ except ImportError:
     pass
 
 setuptools.setup(
+    packages=setuptools.find_packages(),
+    scripts=['scripts/oneview-redfish-toolkit'],
     setup_requires=["pbr"],
-    pbr=True)
+    pbr=True
+    )
