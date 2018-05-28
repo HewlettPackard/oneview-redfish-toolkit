@@ -22,8 +22,6 @@ from flask import g
 from flask import Response
 from flask_api import status
 
-from oneview_redfish_toolkit.api.errors \
-    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
 
 
@@ -49,10 +47,6 @@ def get_zone_collection():
         server_profile_templates = \
             g.oneview_client.server_profile_templates.get_all()
 
-        if not server_profile_templates:
-            raise OneViewRedfishResourceNotFoundError(
-                "server-profile-template-list", "Resource")
-
         # Build ZoneCollection object and validates it
         zc = ZoneCollection(server_profile_templates)
 
@@ -64,10 +58,6 @@ def get_zone_collection():
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
-    except OneViewRedfishResourceNotFoundError as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
     except Exception as e:
         # In case of error print exception and abort
         logging.exception('Unexpected error: {}'.format(e))

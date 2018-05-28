@@ -57,17 +57,6 @@ class TestZoneCollection(unittest.TestCase):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 mimetype="application/json")
 
-        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
-        def not_found(error):
-            """Creates a Not Found Error response"""
-            redfish_error = RedfishError(
-                "GeneralError", error.description)
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_404_NOT_FOUND,
-                mimetype='application/json')
-
         self.app = self.app.test_client()
 
         # propagate the exceptions to the test client
@@ -134,10 +123,9 @@ class TestZoneCollection(unittest.TestCase):
             []
 
         with open(
-            'oneview_redfish_toolkit/mockups/errors/'
-            'ServerProfileTemplatesNotFound.json'
+            'oneview_redfish_toolkit/mockups/redfish/ZoneCollectionEmpty.json'
         ) as f:
-            server_profile_template_list_not_found = json.load(f)
+            zone_collection_empty_mockup = json.load(f)
 
         # Get ZoneCollection
         response = self.app.get(
@@ -146,6 +134,6 @@ class TestZoneCollection(unittest.TestCase):
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(server_profile_template_list_not_found, result)
+        self.assertEqual(zone_collection_empty_mockup, result)
