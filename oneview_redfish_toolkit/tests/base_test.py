@@ -34,8 +34,8 @@ class BaseTest(TestCase):
                 return sub_setUp(self, *args, **kwargs)
             cls.setUp = setUpOverride
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_mock):
+    @mock.patch.object(util, 'check_oneview_availability')
+    def setUp(self, check_ov_availability):
         self.config_file = './redfish.conf'
 
         util.load_config(self.config_file)
