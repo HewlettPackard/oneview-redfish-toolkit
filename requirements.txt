@@ -10,4 +10,5 @@ jsonschema
 pbr>=2.0 # Apache-2.0
 pika
 pyOpenSSL
+requests
 validators

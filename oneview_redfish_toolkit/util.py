@@ -23,6 +23,7 @@ import logging
 import logging.config
 import OpenSSL
 import os
+import requests
 import socket
 
 # 3rd party libs
@@ -125,12 +126,10 @@ def load_config(conf_file):
 
     load_event_service_info()
 
-    # Load schemas | Store schemas | Connect to OneView
+    get_oneview_availability(ov_config)
+
+    # Load schemas | Store schemas
     try:
-        ov_client = OneViewClient(ov_config)
-
-        globals()['ov_client'] = ov_client
-
         registry_dict = load_registry(
             config['redfish']['registry_dir'],
             registries)
@@ -313,20 +312,27 @@ def get_oneview_client(session_id=None, is_service_root=False):
     auth_mode = config["redfish"]["authentication_mode"]
 
     if auth_mode == "conf" or is_service_root:
+
         # Doing conf based authentication
-        ov_client = globals()['ov_client']
         ov_config = globals()['ov_config']
+        ov_client = None
 
         # Check if connection is ok yet
         try:
+            #Check if OneViewClient already exists
+            if 'ov_client' not in globals():
+                globals()['ov_client'] = OneViewClient(ov_config)
+
+            ov_client = globals()['ov_client']
             ov_client.connection.get('/rest/logindomains')
             return ov_client
         # If expired try to make a new connection
         except Exception:
             try:
                 logging.exception('Re-authenticated')
-                ov_client.connection.login(ov_config['credentials'])
-                return ov_client
+                if ov_client:
+                    ov_client.connection.login(ov_config['credentials'])
+                    return ov_client
             # if failed abort
             except Exception:
                 raise
@@ -410,7 +416,6 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
         f.write(OpenSSL.crypto.dump_privatekey(
             OpenSSL.crypto.FILETYPE_PEM, private_key).decode("UTF-8"))
 
-
 def dispatch_event(event):
     """Creates an EventDispatcher for each subscriber of the event
 
@@ -436,3 +441,17 @@ def dispatch_event(event):
             globals()['delivery_retry_interval'])
 
         dispatcher.start()
+
+def get_oneview_availability(ov_config):
+    r = requests.get('https://' + ov_config['ip'] + '/controller-state.json', verify=False)
+
+    if r.status_code != requests.codes.ok:
+        message = "OneView is unreachable at " + ov_config['ip']
+        logging.error(message)
+        raise OneViewRedfishError(message)
+
+    r = r.json()
+    if r['state'] != 'OK':
+        message = "OneView is unreachable at " + ov_config['ip']
+        logging.error(message)
+        raise OneViewRedfishError(message)
