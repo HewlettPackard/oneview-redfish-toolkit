@@ -19,6 +19,7 @@
  - #233 Implement ResourceBlocks
  - #234 Implement ResourceZones
  - #259 Add ResourceBlocks for each Server Profile Template in the ResourceBlocks collection
+ - #258 Check OneView availability
 
 # New Redfish resources
  - EventService

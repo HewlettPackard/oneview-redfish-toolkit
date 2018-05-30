@@ -35,14 +35,16 @@ class TestSCMB(BaseTest):
         isfile.return_value = False
         self.assertFalse(scmb.check_cert_exist())
 
-    @mock.patch.object(util, 'ov_client')
-    def test_get_cert(self, oneview_client):
+    @mock.patch.object(util, 'get_oneview_client')
+    def test_get_cert(self, get_oneview_client):
         # Certs Generated with success
+        oneview_client = mock.MagicMock()
         oneview_client.certificate_authority.get.return_value = "CA CERT"
         oneview_client.certificate_rabbitmq.generate.return_value = True
         oneview_client.certificate_rabbitmq.get_key_pair.return_value = {
             'base64SSLCertData': 'Client CERT',
             'base64SSLKeyData': 'Client Key'}
+        get_oneview_client.return_value = oneview_client
         scmb.get_cert()
         self.assertTrue(scmb.check_cert_exist())
         # Certs already exist
