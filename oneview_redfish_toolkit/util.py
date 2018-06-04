@@ -126,10 +126,10 @@ def load_config(conf_file):
 
     load_event_service_info()
 
-    get_oneview_availability(ov_config)
-
     # Load schemas | Store schemas
     try:
+        get_oneview_availability(ov_config)
+
         registry_dict = load_registry(
             config['redfish']['registry_dir'],
             registries)
