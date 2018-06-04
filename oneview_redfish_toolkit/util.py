@@ -28,6 +28,7 @@ import socket
 
 # 3rd party libs
 from hpOneView.oneview_client import OneViewClient
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 # Modules own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
@@ -36,7 +37,6 @@ from oneview_redfish_toolkit.api.errors \
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.event_dispatcher import EventDispatcher
-
 
 globals()['subscriptions_by_type'] = {
     "StatusChange": {},
@@ -128,7 +128,7 @@ def load_config(conf_file):
 
     # Load schemas | Store schemas
     try:
-        get_oneview_availability(ov_config)
+        check_oneview_availability(ov_config)
 
         registry_dict = load_registry(
             config['redfish']['registry_dir'],
@@ -318,7 +318,7 @@ def get_oneview_client(session_id=None, is_service_root=False):
 
         # Check if connection is ok yet
         try:
-            #Check if OneViewClient already exists
+            # Check if OneViewClient already exists
             if 'ov_client' not in globals():
                 globals()['ov_client'] = OneViewClient(ov_config)
 
@@ -441,8 +441,12 @@ def dispatch_event(event):
 
         dispatcher.start()
 
-def get_oneview_availability(ov_config):
-    r = requests.get('https://' + ov_config['ip'] + '/controller-state.json', verify=False)
+def check_oneview_availability(ov_config):
+    """Check OneView availability by doing a GET request to OneView"""
+    # Disable warning for insecure requests
+    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+    r = requests.get(
+        'https://' + ov_config['ip'] + '/controller-state.json', verify=False)
 
     if r.status_code != requests.codes.ok:
         message = "OneView is unreachable at " + ov_config['ip']

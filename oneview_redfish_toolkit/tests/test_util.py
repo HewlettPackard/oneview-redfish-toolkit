@@ -199,7 +199,6 @@ class TestUtil(unittest.TestCase):
         self.assertIsNotNone(util.ov_config, msg='Failed do create ov_config')
         self.assertIsNotNone(
             util.registry_dict, msg='Failed to load registries')
-        self.assertIsNotNone(util.ov_client, msg='Failed to connect to OV')
 
     @mock.patch.object(util, 'OneViewClient')
     def test_get_ov_client_recover(self, oneview_client_mockup):
