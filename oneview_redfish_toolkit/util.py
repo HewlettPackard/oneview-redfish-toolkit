@@ -312,7 +312,6 @@ def get_oneview_client(session_id=None, is_service_root=False):
     auth_mode = config["redfish"]["authentication_mode"]
 
     if auth_mode == "conf" or is_service_root:
-
         # Doing conf based authentication
         ov_config = globals()['ov_config']
         ov_client = None

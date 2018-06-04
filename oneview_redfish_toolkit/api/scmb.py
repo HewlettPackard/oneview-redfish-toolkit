@@ -46,19 +46,19 @@ def check_cert_exist():
 
 
 def get_cert():
-    try:
-        # Get CA
-        ov_client = util.get_oneview_client()
-        cert = ov_client.certificate_authority.get()
+    # Get CA
+    ov_client = util.get_oneview_client()
+    cert = ov_client.certificate_authority.get()
 
-        with open(ONEVIEW_CA, 'w+') as f:
-            f.write(cert)
-        # Generate scmb Cert:
+    with open(ONEVIEW_CA, 'w+') as f:
+        f.write(cert)
+    # Generate scmb Cert:
+    try:
         cert_info = {
             "commonName": "default",
             "type": "RabbitMqClientCertV2"
         }
-        util.get_oneview_client().certificate_rabbitmq.generate(cert_info)
+        ov_client.certificate_rabbitmq.generate(cert_info)
     except HPOneViewException as e:
         # Cert with that commonName already exists. We are going to get it
         if e.oneview_response["errorCode"] == 'RABBITMQ_CLIENTCERT_CONFLICT':
@@ -68,7 +68,7 @@ def get_cert():
             logging.exception("Unexpected error")
             raise
     # Get the scmb certs key pair
-    certs = util.get_oneview_client().certificate_rabbitmq.get_key_pair(
+    certs = ov_client.certificate_rabbitmq.get_key_pair(
         'default')
     # Save cert
     with open(SCMB_CERT, 'w+') as f:
