@@ -27,7 +27,7 @@ class ResourceBlockCollection(RedfishJsonValidator):
 
     SCHEMA_NAME = 'ResourceBlockCollection'
 
-    def __init__(self, server_hardware):
+    def __init__(self, server_hardware=[], server_profile_templates=[]):
         """ResourceBlockCollection constructor
 
             Populates self.redfish with a hardcoded ResourceBlockCollection
@@ -36,12 +36,12 @@ class ResourceBlockCollection(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        self.server_hardware = server_hardware
+        self.members = server_hardware + server_profile_templates
 
         self.redfish["@odata.type"] = \
             "#ResourceBlockCollection.ResourceBlockCollection"
         self.redfish["Name"] = "Resource Block Collection"
-        self.redfish["Members@odata.count"] = len(server_hardware)
+        self.redfish["Members@odata.count"] = len(self.members)
         self.redfish["Members"] = list()
         self._set_redfish_members()
         self.redfish["@odata.context"] = \
@@ -59,10 +59,11 @@ class ResourceBlockCollection(RedfishJsonValidator):
             ResourceBlock.
         """
 
-        for server_hardware in self.server_hardware:
+        for item in self.members:
             resource_block = dict()
 
+            uuid = item.get('uuid') or item["uri"].split("/")[-1]
             resource_block["@odata.id"] = "/redfish/v1/CompositionService/" \
-                "ResourceBlocks/" + server_hardware["uuid"]
+                "ResourceBlocks/" + uuid
 
             self.redfish["Members"].append(resource_block)
