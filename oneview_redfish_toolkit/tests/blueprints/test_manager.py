@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-import unittest
 from unittest import mock
 
 # 3rd party libs
@@ -24,14 +23,14 @@ from flask import Flask
 from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
-from oneview_redfish_toolkit import util
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import manager
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestManager(unittest.TestCase):
+class TestManager(BaseTest):
     """Tests for Managers blueprint
 
         Tests:
@@ -42,12 +41,8 @@ class TestManager(unittest.TestCase):
             - blades
     """
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
+    def setUp(self):
         """Tests preparation"""
-
-        # Load config on util
-        util.load_config('redfish.conf')
 
         # creates a test client
         self.app = Flask(__name__)
