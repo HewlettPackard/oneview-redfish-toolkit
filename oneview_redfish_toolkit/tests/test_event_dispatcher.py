@@ -17,22 +17,15 @@
 import json
 
 from unittest import mock
-from unittest import TestCase
 
 from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit.api.subscription import Subscription
 from oneview_redfish_toolkit.event_dispatcher import EventDispatcher
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestEventDispatcher(TestCase):
+class TestEventDispatcher(BaseTest):
     """Tests for event_dispatcher.py"""
-
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_mock):
-        self.config_file = './redfish.conf'
-
-        util.load_config(self.config_file)
 
     @mock.patch('http.client.HTTPConnection.request')
     @mock.patch('logging.exception')

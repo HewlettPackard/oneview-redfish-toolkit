@@ -415,6 +415,7 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
         f.write(OpenSSL.crypto.dump_privatekey(
             OpenSSL.crypto.FILETYPE_PEM, private_key).decode("UTF-8"))
 
+
 def dispatch_event(event):
     """Creates an EventDispatcher for each subscriber of the event
 
@@ -440,6 +441,7 @@ def dispatch_event(event):
             globals()['delivery_retry_interval'])
 
         dispatcher.start()
+
 
 def check_oneview_availability(ov_config):
     """Check OneView availability by doing a GET request to OneView"""

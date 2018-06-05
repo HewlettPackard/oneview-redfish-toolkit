@@ -188,8 +188,9 @@ class TestUtil(unittest.TestCase):
         except Exception as e:
             self.fail('Failed to load registries files: {}'.format(e.msg))
 
+    @mock.patch.object(util, 'check_oneview_availability')
     @mock.patch.object(util, 'OneViewClient')
-    def test_load_config(self, mock_ov):
+    def test_load_config(self, mock_ov, check_ov_availability):
         # Test load config function
 
         util.load_config(self.config_file)
@@ -199,6 +200,7 @@ class TestUtil(unittest.TestCase):
         self.assertIsNotNone(util.ov_config, msg='Failed do create ov_config')
         self.assertIsNotNone(
             util.registry_dict, msg='Failed to load registries')
+        self.assertTrue(check_ov_availability.called)
 
     @mock.patch.object(util, 'OneViewClient')
     def test_get_ov_client_recover(self, oneview_client_mockup):
@@ -253,8 +255,12 @@ class TestUtil(unittest.TestCase):
             self.fail("Failed to get a valid IP Address")
 
     @mock.patch.object(util, 'OneViewClient')
-    def test_create_certs(self, oneview_client_mockup):
+    @mock.patch.object(util, 'check_oneview_availability')
+    def test_create_certs(
+        self, check_ov_availability, oneview_client_mockup):
         # Test generate_certificate function
+
+        check_ov_availability.return_value = 0
 
         util.load_config(self.config_file)
 
@@ -264,20 +270,26 @@ class TestUtil(unittest.TestCase):
         self.assertTrue(os.path.exists(os.path.join("certs", "test" + ".key")))
 
     @mock.patch.object(util, 'OneViewClient')
+    @mock.patch.object(util, 'check_oneview_availability')
     @mock.patch('oneview_redfish_toolkit.util.delivery_retry_attempts', '')
     @mock.patch('oneview_redfish_toolkit.util.delivery_retry_interval', '')
-    def test_load_event_service_invalid_info(self, oneview_client_mockup):
+    def test_load_event_service_invalid_info(
+        self, check_ov_availability, oneview_client_mockup):
+        check_ov_availability.return_value = 0
+
         self.assertRaises(
             OneViewRedfishError, util.load_config(self.config_file))
 
+    @mock.patch.object(util, 'check_oneview_availability')
     @mock.patch.object(util, 'OneViewClient')
     @mock.patch.object(util, 'subscriptions_by_type')
     @mock.patch(
         'oneview_redfish_toolkit.event_dispatcher.EventDispatcher.start')
     def test_submit_event_with_subscriber(
-        self, start_mock, subscription_mock, ov_mock):
+        self, start_mock, subscription_mock, ov_mock, check_ov_availability):
         """Tests SubmitTestEvent action with two subscribers"""
 
+        check_ov_availability.return_value = 0
         util.load_config(self.config_file)
 
         with open(
@@ -294,14 +306,16 @@ class TestUtil(unittest.TestCase):
 
         self.assertTrue(start_mock.call_count == 2)
 
+    @mock.patch.object(util, 'check_oneview_availability')
     @mock.patch.object(util, 'OneViewClient')
     @mock.patch.object(util, 'subscriptions_by_type')
     @mock.patch(
         'oneview_redfish_toolkit.event_dispatcher.EventDispatcher.start')
     def test_submit_event_without_subscriber(
-        self, start_mock, subscription_mock, ov_mock):
+        self, start_mock, subscription_mock, ov_mock, check_ov_availability):
         """Tests SubmitTestEvent action with no subscribers"""
 
+        check_ov_availability.return_value = 0
         util.load_config(self.config_file)
 
         with open(
