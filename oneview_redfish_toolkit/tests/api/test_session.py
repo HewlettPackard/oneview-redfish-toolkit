@@ -15,23 +15,14 @@
 # under the License.
 
 import json
-import unittest
-from unittest import mock
 
 
 from oneview_redfish_toolkit.api.session import Session
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestSession(unittest.TestCase):
+class TestSession(BaseTest):
     """Tests for Session class"""
-
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
-        """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
     def test_class_instantiation(self):
         """Tests class instantiation and validation"""

@@ -19,21 +19,14 @@ from jsonschema.exceptions import ValidationError
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-from oneview_redfish_toolkit import util
-
-import unittest
-from unittest import mock
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestComputerSystem(unittest.TestCase):
+class TestComputerSystem(BaseTest):
     """Tests for ComputerSystem class"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mock):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # Loading server_hardware mockup value
         with open(

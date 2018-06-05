@@ -20,25 +20,16 @@
 
 import collections
 import json
-import unittest
-from unittest import mock
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestRedfishJsonValidator(unittest.TestCase):
-
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
-        """Tests preparation """
-
-        # Load configuration on util module
-        util.load_config('redfish.conf')
+class TestRedfishJsonValidator(BaseTest):
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated

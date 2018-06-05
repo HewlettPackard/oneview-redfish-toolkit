@@ -15,24 +15,14 @@
 # under the License.
 
 import json
-import unittest
-from unittest import mock
-
 
 from oneview_redfish_toolkit.api import errors
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestRedfishError(unittest.TestCase):
+class TestRedfishError(BaseTest):
     """Tests for RedfishError class"""
-
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
-        """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
     def test_class_instantiation(self):
         """Tests class instantiation"""

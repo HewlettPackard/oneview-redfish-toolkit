@@ -19,22 +19,15 @@
 """
 
 import json
-import unittest
 from unittest import mock
 
 from oneview_redfish_toolkit.api.service_root import ServiceRoot
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 from oneview_redfish_toolkit import util
 
 
-class TestServiceRoot(unittest.TestCase):
+class TestServiceRoot(BaseTest):
     """Tests for ServiceRoot class"""
-
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
-        """Tests preparation """
-
-        # Load configuration on util module
-        util.load_config('redfish.conf')
 
     def test_class_instantiation(self):
         """Tests class instantiation and validation"""

@@ -15,24 +15,18 @@
 # under the License.
 
 import json
-import unittest
-from unittest import mock
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.network_port import \
     NetworkPort
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestNetworkPort(unittest.TestCase):
+class TestNetworkPort(BaseTest):
     """Tests for NetworkPort class"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mock):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # Loading ServerHardware mockup
         with open(

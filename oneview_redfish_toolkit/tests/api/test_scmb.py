@@ -14,24 +14,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import unittest
 from unittest import mock
 
 from hpOneView.exceptions import HPOneViewException
 
 from oneview_redfish_toolkit.api import scmb
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 from oneview_redfish_toolkit import util
 
 
-class TestSCMB(unittest.TestCase):
+class TestSCMB(BaseTest):
     """Tests for SCMB module"""
-
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mock):
-        """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
     @mock.patch('os.path.isfile')
     def test_check_cert_exist(self, isfile):

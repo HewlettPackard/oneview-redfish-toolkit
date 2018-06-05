@@ -17,21 +17,14 @@
 import json
 
 from oneview_redfish_toolkit.api.composition_service import CompositionService
-from oneview_redfish_toolkit import util
-
-import unittest
-from unittest import mock
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestCompositionService(unittest.TestCase):
+class TestCompositionService(BaseTest):
     """Tests for CompositionService class"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mock):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # Loading CompositionService mockup result
         with open(

@@ -17,21 +17,14 @@
 import json
 
 from oneview_redfish_toolkit.api.thermal import Thermal
-from oneview_redfish_toolkit import util
-
-import unittest
-from unittest import mock
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestThermal(unittest.TestCase):
+class TestThermal(BaseTest):
     """Tests for Thermal class"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # Loading OneView SH Utilization mockup value
         with open(
