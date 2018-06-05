@@ -14,27 +14,22 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import json
-import unittest
 from unittest import mock
 
 from flask import Flask
 from flask import Response
 from flask_api import status
-from oneview_redfish_toolkit import util
 
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import computer_system_collection
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestComputerSystemCollection(unittest.TestCase):
+class TestComputerSystemCollection(BaseTest):
     """Tests for ComputerSystemCollection blueprint"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
+    def setUp(self):
         """Tests preparation"""
-
-        # Load config on util
-        util.load_config('redfish.conf')
 
         # creates a test client
         self.app = Flask(__name__)

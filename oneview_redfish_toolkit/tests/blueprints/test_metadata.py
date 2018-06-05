@@ -16,7 +16,6 @@
 
 # Python libs
 import collections
-import unittest
 from unittest import mock
 
 # 3rd party libs
@@ -27,18 +26,14 @@ from flask_api import status
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints.metadata import metadata
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class Metadata(unittest.TestCase):
+class Metadata(BaseTest):
     """Tests for Metadata blueprint"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client):
+    def setUp(self):
         """Tests Metadata blueprint setup"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # creates a test client
         self.app = Flask(__name__)

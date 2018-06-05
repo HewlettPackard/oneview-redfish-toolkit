@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-import unittest
 from unittest import mock
 
 # 3rd party libs
@@ -28,18 +27,14 @@ from hpOneView.exceptions import HPOneViewException
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import service_root
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 from oneview_redfish_toolkit import util
 
 
-class TestServiceRoot(unittest.TestCase):
+class TestServiceRoot(BaseTest):
     """Tests from ServiceRoot blueprint"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
-        """Tests ServiceRoot blueprint setup"""
-
-        # Load config on util
-        util.load_config('redfish.conf')
+    def setUp(self):
 
         # creates a test client
         self.app = Flask(__name__)

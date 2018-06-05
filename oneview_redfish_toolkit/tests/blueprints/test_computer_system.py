@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-import unittest
 from unittest import mock
 
 # 3rd party libs
@@ -28,10 +27,10 @@ from hpOneView.exceptions import HPOneViewException
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import computer_system
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestComputerSystem(unittest.TestCase):
+class TestComputerSystem(BaseTest):
     """Tests for ComputerSystem blueprint
 
         Tests:
@@ -48,12 +47,8 @@ class TestComputerSystem(unittest.TestCase):
             - change power state with SHT not found
     """
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
+    def setUp(self):
         """Tests preparation"""
-
-        # Load config on util
-        util.load_config('redfish.conf')
 
         # creates a test client
         self.app = Flask(__name__)

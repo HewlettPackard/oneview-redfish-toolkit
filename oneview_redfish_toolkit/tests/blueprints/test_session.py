@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-import unittest
 from unittest import mock
 
 # 3rd party libs
@@ -31,19 +30,15 @@ from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import session as session_file
 from oneview_redfish_toolkit.blueprints.session \
     import session as session_blueprint
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestSession(unittest.TestCase):
+class TestSession(BaseTest):
     """Tests for Session blueprint"""
 
     @mock.patch.object(session_file, 'OneViewClient')
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup, util_mockup):
+    def setUp(self, util_mockup):
         """Tests preparation"""
-
-        # Load config on util
-        util.load_config('redfish.conf')
 
         # creates a test client
         self.app = Flask(__name__)
