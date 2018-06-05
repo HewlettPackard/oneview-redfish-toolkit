@@ -18,6 +18,7 @@
  - #249 Redfish Events notification
  - #233 Implement ResourceBlocks
  - #234 Implement ResourceZones
+ - #258 Check OneView avaialability
 
 # New Redfish resources
  - EventService
