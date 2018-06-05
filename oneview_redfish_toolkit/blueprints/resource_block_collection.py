@@ -45,10 +45,12 @@ def get_resource_block_collection():
     try:
         # Gets all server hardware
         server_hardware_list = g.oneview_client.server_hardware.get_all()
-        server_profile_template_list = g.oneview_client.server_profile_templates.get_all()
+        server_profile_template_list = g.oneview_client.\
+            server_profile_templates.get_all()
 
         # Build ResourceBlockCollection object and validates it
-        cc = ResourceBlockCollection(server_hardware_list, server_profile_template_list)
+        cc = ResourceBlockCollection(server_hardware_list,
+                                     server_profile_template_list)
 
         # Build redfish json
         json_str = cc.serialize()
