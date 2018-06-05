@@ -98,7 +98,8 @@ class TestResourceBlockCollection(unittest.TestCase):
             server_hardware_list = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerProfileTemplates.json'
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'ServerProfileTemplates.json'
         ) as f:
             server_profile_template_list = json.load(f)
 
@@ -140,14 +141,11 @@ class TestResourceBlockCollection(unittest.TestCase):
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
 
-        expected_result = {
-            "@odata.type": "#ResourceBlockCollection.ResourceBlockCollection",
-            "Name": "Resource Block Collection",
-            "Members@odata.count": 0,
-            "Members": [],
-            "@odata.context": "/redfish/v1/$metadata#ResourceBlockCollection.ResourceBlockCollection",
-            "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks"
-        }
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'ResourceBlockCollectionEmpty.json'
+        ) as f:
+            expected_result = json.load(f)
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)

@@ -84,14 +84,11 @@ class TestResourceBlockCollection(unittest.TestCase):
         self.assertEqual(self.resource_block_collection_mockup, result)
 
     def test_serialize_empty_result(self):
-        expected_result = {
-            "@odata.type": "#ResourceBlockCollection.ResourceBlockCollection",
-            "Name": "Resource Block Collection",
-            "Members@odata.count": 0,
-            "Members": [],
-            "@odata.context": "/redfish/v1/$metadata#ResourceBlockCollection.ResourceBlockCollection",
-            "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks"
-        }
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'ResourceBlockCollectionEmpty.json'
+        ) as f:
+            expected_result = json.load(f)
 
         # Tests the serialize function result against empty list result
         resource_block_collection = ResourceBlockCollection()
