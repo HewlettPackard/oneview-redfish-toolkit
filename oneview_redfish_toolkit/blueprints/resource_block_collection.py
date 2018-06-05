@@ -22,8 +22,6 @@ from flask import g
 from flask import Response
 from flask_api import status
 
-from oneview_redfish_toolkit.api.errors \
-    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.resource_block_collection \
     import ResourceBlockCollection
 
@@ -47,13 +45,10 @@ def get_resource_block_collection():
     try:
         # Gets all server hardware
         server_hardware_list = g.oneview_client.server_hardware.get_all()
-
-        if not server_hardware_list:
-            raise OneViewRedfishResourceNotFoundError(
-                "server-hardware-list", "Resource")
+        server_profile_template_list = g.oneview_client.server_profile_templates.get_all()
 
         # Build ResourceBlockCollection object and validates it
-        cc = ResourceBlockCollection(server_hardware_list)
+        cc = ResourceBlockCollection(server_hardware_list, server_profile_template_list)
 
         # Build redfish json
         json_str = cc.serialize()
@@ -63,10 +58,6 @@ def get_resource_block_collection():
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
-    except OneViewRedfishResourceNotFoundError as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
     except Exception as e:
         # In case of error print exception and abort
         logging.exception('Unexpected error: {}'.format(e))

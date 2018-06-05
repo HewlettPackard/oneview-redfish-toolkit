@@ -18,6 +18,8 @@
  - #249 Redfish Events notification
  - #233 Implement ResourceBlocks
  - #234 Implement ResourceZones
+ - #259 Add ResourceBlocks for each Server Profile Template in the ResourceBlocks collection
+ - #280 Empty collections should not return error message
 
 # New Redfish resources
  - EventService
