@@ -16,17 +16,15 @@
 
 # Python libs
 import json
-import unittest
-from unittest import mock
 
 # 3rd party libs
 
 # Own project libs
 from oneview_redfish_toolkit.api.rack_chassis import RackChassis
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestRackChassis(unittest.TestCase):
+class TestRackChassis(BaseTest):
     """Tests for Chassis class
 
         Tests:
@@ -34,12 +32,8 @@ class TestRackChassis(unittest.TestCase):
             - Rack chassis serialize
     """
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # Loading rack mockup value
         with open(

@@ -22,21 +22,14 @@ import json
 
 from oneview_redfish_toolkit.api.computer_system_collection \
     import ComputerSystemCollection
-from oneview_redfish_toolkit import util
-
-import unittest
-from unittest import mock
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestComputerSystemCollection(unittest.TestCase):
+class TestComputerSystemCollection(BaseTest):
     """Tests for ComputerSystemCollection class"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mock):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # Loading ServerHardware list mockup value
         with open(

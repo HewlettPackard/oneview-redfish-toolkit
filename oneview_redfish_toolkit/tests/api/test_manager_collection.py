@@ -22,21 +22,14 @@ import json
 
 from oneview_redfish_toolkit.api.manager_collection \
     import ManagerCollection
-from oneview_redfish_toolkit import util
-
-import unittest
-from unittest import mock
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestManagerCollection(unittest.TestCase):
+class TestManagerCollection(BaseTest):
     """Tests for ManagerCollection class"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # Loading server_hardware mockup value
         with open(

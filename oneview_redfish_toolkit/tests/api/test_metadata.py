@@ -15,23 +15,16 @@
 # under the License.
 
 import collections
-import unittest
-from unittest import mock
 
 from oneview_redfish_toolkit.api.metadata import Metadata
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestOdata(unittest.TestCase):
+class TestOdata(BaseTest):
     """Tests for Metadata class"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mockup):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
-
         self.schemas = collections.OrderedDict()
         self.schemas["ComputerSystemCollection"] = \
             "ComputerSystemCollection.json"

@@ -15,23 +15,17 @@
 # under the License.
 
 import json
-import unittest
-from unittest import mock
 
 from oneview_redfish_toolkit.api.network_adapter_collection import \
     NetworkAdapterCollection
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestNetworkAdapterCollection(unittest.TestCase):
+class TestNetworkAdapterCollection(BaseTest):
     """Tests for NetworkAdapterCollection class"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mock):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # Loading ServerHardware mockup
         with open(

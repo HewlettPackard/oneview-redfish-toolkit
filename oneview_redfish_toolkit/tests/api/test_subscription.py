@@ -22,21 +22,14 @@ import json
 
 from oneview_redfish_toolkit.api.subscription \
     import Subscription
-from oneview_redfish_toolkit import util
-
-import unittest
-from unittest import mock
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestSubscription(unittest.TestCase):
+class TestSubscription(BaseTest):
     """Tests for Subscription class"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, mock_ov):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # Loading Subscription result mockup
         with open(

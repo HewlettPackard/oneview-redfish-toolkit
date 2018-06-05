@@ -16,24 +16,17 @@
 
 
 import json
-import unittest
-
-from unittest import mock
 
 from oneview_redfish_toolkit.api.resource_block_collection \
     import ResourceBlockCollection
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestResourceBlockCollection(unittest.TestCase):
+class TestResourceBlockCollection(BaseTest):
     """Tests for ResourceBlockCollection class"""
 
-    @mock.patch.object(util, 'OneViewClient')
-    def setUp(self, oneview_client_mock):
+    def setUp(self):
         """Tests preparation"""
-
-        # Loading variable in util module
-        util.load_config('redfish.conf')
 
         # Loading ServerHardware list mockup value
         with open(
