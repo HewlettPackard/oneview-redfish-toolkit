@@ -23,12 +23,12 @@ import logging
 import logging.config
 import OpenSSL
 import os
-import requests
 import socket
+import ssl
 
 # 3rd party libs
 from hpOneView.oneview_client import OneViewClient
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from http.client import HTTPSConnection
 
 # Modules own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
@@ -445,18 +445,39 @@ def dispatch_event(event):
 
 def check_oneview_availability(ov_config):
     """Check OneView availability by doing a GET request to OneView"""
-    # Disable warning for insecure requests
-    requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
-    r = requests.get(
-        'https://' + ov_config['ip'] + '/controller-state.json', verify=False)
+    attempts = 3
 
-    if r.status_code != requests.codes.ok:
-        message = "OneView is unreachable at " + ov_config['ip']
-        logging.error(message)
-        raise OneViewRedfishError(message)
+    for attempt_counter in range(attempts):
+        try:
+            connection = HTTPSConnection(
+                ov_config['ip'], context=ssl._create_unverified_context())
 
-    r = r.json()
-    if r['state'] != 'OK':
-        message = "OneView is unreachable at " + ov_config['ip']
-        logging.error(message)
-        raise OneViewRedfishError(message)
+            connection.request(
+                method='GET', url='/controller-state.json',
+                headers={'Content-Type': 'application/json'})
+
+            response = connection.getresponse()
+
+            if response.status != 200:
+                message = "OneView is unreachable at {}".format(
+                    ov_config['ip'])
+                raise OneViewRedfishError(message)
+
+            text = response.read().decode('UTF-8')
+            status = json.loads(text)
+            if status['state'] != 'OK':
+                message = "OneView state is not OK at {}".format(
+                    ov_config['ip'])
+                raise OneViewRedfishError(message)
+
+            return
+        except Exception as e:
+            logging.exception(
+                'Attempt {} to check OneView availability. '
+                'Error: {}'.format(attempt_counter + 1, e))
+        finally:
+            connection.close()
+
+    message = "After {} attempts OneView is unreachable at {}".format(
+        attempts, ov_config['ip'])
+    raise OneViewRedfishError(message)
