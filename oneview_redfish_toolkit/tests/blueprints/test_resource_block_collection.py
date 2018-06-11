@@ -56,17 +56,6 @@ class TestResourceBlockCollection(BaseTest):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 mimetype="application/json")
 
-        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
-        def not_found(error):
-            """Creates a Not Found Error response"""
-            redfish_error = RedfishError(
-                "GeneralError", error.description)
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_404_NOT_FOUND,
-                mimetype='application/json')
-
         self.app = self.app.test_client()
 
         # propagate the exceptions to the test client
@@ -104,6 +93,12 @@ class TestResourceBlockCollection(BaseTest):
             server_hardware_list = json.load(f)
 
         with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'ServerProfileTemplates.json'
+        ) as f:
+            server_profile_template_list = json.load(f)
+
+        with open(
             'oneview_redfish_toolkit/mockups/redfish/'
             'ResourceBlockCollection.json'
         ) as f:
@@ -112,29 +107,8 @@ class TestResourceBlockCollection(BaseTest):
         g_mock.oneview_client.server_hardware.get_all.return_value = \
             server_hardware_list
 
-        # Get ResourceBlockCollection
-        response = self.app.get(
-            "/redfish/v1/CompositionService/ResourceBlocks/")
-
-        # Gets json from response
-        expected_result = json.loads(response.data.decode("utf-8"))
-
-        # Tests response
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(resource_block_collection_mockup, expected_result)
-
-    @mock.patch.object(resource_block_collection, 'g')
-    def test_get_resource_block_collection_empty(self, g_mock):
-        """Tests ResourceBlockCollection with an empty list"""
-
-        g_mock.oneview_client.server_hardware.get_all.return_value = []
-
-        with open(
-            'oneview_redfish_toolkit/mockups/errors/'
-            'ServerHardwareListNotFound.json'
-        ) as f:
-            server_hardware_list_not_found = json.load(f)
+        g_mock.oneview_client.server_profile_templates.get_all.return_value = \
+            server_profile_template_list
 
         # Get ResourceBlockCollection
         response = self.app.get(
@@ -143,6 +117,31 @@ class TestResourceBlockCollection(BaseTest):
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(server_hardware_list_not_found, result)
+        self.assertEqual(resource_block_collection_mockup, result)
+
+    @mock.patch.object(resource_block_collection, 'g')
+    def test_get_resource_block_collection_empty(self, g_mock):
+        """Tests ResourceBlockCollection with an empty list"""
+
+        g_mock.oneview_client.server_hardware.get_all.return_value = []
+        g_mock.oneview_client.server_profile_template.get_all.return_value = []
+
+        # Get ResourceBlockCollection
+        response = self.app.get(
+            "/redfish/v1/CompositionService/ResourceBlocks/")
+
+        # Gets json from response
+        result = json.loads(response.data.decode("utf-8"))
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'ResourceBlockCollectionEmpty.json'
+        ) as f:
+            expected_result = json.load(f)
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual(expected_result, result)

@@ -35,6 +35,13 @@ class TestResourceBlockCollection(BaseTest):
         ) as f:
             self.server_hardware_list = json.load(f)
 
+        # Loading ServerProfileTemplate list mockup value
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'ServerProfileTemplates.json'
+        ) as f:
+            self.server_profile_template_list = json.load(f)
+
         # Loading ResourceBlockCollection result mockup
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
@@ -46,7 +53,7 @@ class TestResourceBlockCollection(BaseTest):
         # Tests if class is correctly instantiated and validated
         try:
             resource_block_collection = ResourceBlockCollection(
-                self.server_hardware_list)
+                self.server_hardware_list, self.server_profile_template_list)
         except Exception as e:
             self.fail("Failed to instantiate ResourceBlockCollection class."
                       " Error: {}".format(e))
@@ -57,7 +64,7 @@ class TestResourceBlockCollection(BaseTest):
         # Tests the serialize function result against known result
         try:
             resource_block_collection = ResourceBlockCollection(
-                self.server_hardware_list)
+                self.server_hardware_list, self.server_profile_template_list)
         except Exception as e:
             self.fail("Failed to instantiate ResourceBlockCollection class."
                       " Error: {}".format(e))
@@ -68,3 +75,16 @@ class TestResourceBlockCollection(BaseTest):
             self.fail("Failed to serialize. Error: {}".format(e))
 
         self.assertEqual(self.resource_block_collection_mockup, result)
+
+    def test_serialize_empty_result(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'ResourceBlockCollectionEmpty.json'
+        ) as f:
+            expected_result = json.load(f)
+
+        # Tests the serialize function result against empty list result
+        resource_block_collection = ResourceBlockCollection()
+        result = json.loads(resource_block_collection.serialize())
+
+        self.assertEqual(expected_result, result)

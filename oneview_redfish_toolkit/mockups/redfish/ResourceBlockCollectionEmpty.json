@@ -1,0 +1,8 @@
+{
+    "@odata.type": "#ResourceBlockCollection.ResourceBlockCollection",
+    "Name": "Resource Block Collection",
+    "Members@odata.count": 0,
+    "Members": [],
+    "@odata.context": "/redfish/v1/$metadata#ResourceBlockCollection.ResourceBlockCollection",
+    "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks"
+}
