@@ -467,8 +467,9 @@ def check_oneview_availability(ov_config):
                 raise OneViewRedfishError(message)
 
             text = response.read().decode('UTF-8')
-            if status_ov['state'] != 'OK':
             status_ov = json.loads(text)
+
+            if status_ov['state'] != 'OK':
                 message = "OneView state is not OK at {}".format(
                     ov_config['ip'])
                 raise OneViewRedfishError(message)
