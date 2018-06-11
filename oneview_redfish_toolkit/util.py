@@ -24,9 +24,13 @@ import logging.config
 import OpenSSL
 import os
 import socket
+import ssl
+import time
 
 # 3rd party libs
+from flask_api import status
 from hpOneView.oneview_client import OneViewClient
+from http.client import HTTPSConnection
 
 # Modules own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
@@ -35,7 +39,6 @@ from oneview_redfish_toolkit.api.errors \
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.event_dispatcher import EventDispatcher
-
 
 globals()['subscriptions_by_type'] = {
     "StatusChange": {},
@@ -125,11 +128,9 @@ def load_config(conf_file):
 
     load_event_service_info()
 
-    # Load schemas | Store schemas | Connect to OneView
+    # Load schemas | Store schemas
     try:
-        ov_client = OneViewClient(ov_config)
-
-        globals()['ov_client'] = ov_client
+        check_oneview_availability(ov_config)
 
         registry_dict = load_registry(
             config['redfish']['registry_dir'],
@@ -314,19 +315,25 @@ def get_oneview_client(session_id=None, is_service_root=False):
 
     if auth_mode == "conf" or is_service_root:
         # Doing conf based authentication
-        ov_client = globals()['ov_client']
         ov_config = globals()['ov_config']
+        ov_client = None
 
         # Check if connection is ok yet
         try:
+            # Check if OneViewClient already exists
+            if 'ov_client' not in globals():
+                globals()['ov_client'] = OneViewClient(ov_config)
+
+            ov_client = globals()['ov_client']
             ov_client.connection.get('/rest/logindomains')
             return ov_client
         # If expired try to make a new connection
         except Exception:
             try:
                 logging.exception('Re-authenticated')
-                ov_client.connection.login(ov_config['credentials'])
-                return ov_client
+                if ov_client:
+                    ov_client.connection.login(ov_config['credentials'])
+                    return ov_client
             # if failed abort
             except Exception:
                 raise
@@ -436,3 +443,48 @@ def dispatch_event(event):
             globals()['delivery_retry_interval'])
 
         dispatcher.start()
+
+
+def check_oneview_availability(ov_config):
+    """Check OneView availability by doing a GET request to OneView"""
+    attempts = 3
+    retry_interval_sec = 3
+
+    for attempt_counter in range(attempts):
+        try:
+            connection = HTTPSConnection(
+                ov_config['ip'], context=ssl._create_unverified_context())
+
+            connection.request(
+                method='GET', url='/controller-state.json',
+                headers={'Content-Type': 'application/json'})
+
+            response = connection.getresponse()
+
+            if response.status != status.HTTP_200_OK:
+                message = "OneView is unreachable at {}".format(
+                    ov_config['ip'])
+                raise OneViewRedfishError(message)
+
+            text = response.read().decode('UTF-8')
+            status_ov = json.loads(text)
+
+            if status_ov['state'] != 'OK':
+                message = "OneView state is not OK at {}".format(
+                    ov_config['ip'])
+                raise OneViewRedfishError(message)
+
+            return
+        except Exception as e:
+            logging.exception(
+                'Attempt {} to check OneView availability. '
+                'Error: {}'.format(attempt_counter + 1, e))
+
+            if attempt_counter + 1 < attempts:
+                time.sleep(retry_interval_sec)
+        finally:
+            connection.close()
+
+    message = "After {} attempts OneView is unreachable at {}".format(
+        attempts, ov_config['ip'])
+    raise OneViewRedfishError(message)
