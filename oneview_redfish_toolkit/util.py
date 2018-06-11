@@ -25,8 +25,10 @@ import OpenSSL
 import os
 import socket
 import ssl
+import time
 
 # 3rd party libs
+from flask_api import status
 from hpOneView.oneview_client import OneViewClient
 from http.client import HTTPSConnection
 
@@ -446,6 +448,7 @@ def dispatch_event(event):
 def check_oneview_availability(ov_config):
     """Check OneView availability by doing a GET request to OneView"""
     attempts = 3
+    retry_interval_sec = 3
 
     for attempt_counter in range(attempts):
         try:
@@ -458,14 +461,14 @@ def check_oneview_availability(ov_config):
 
             response = connection.getresponse()
 
-            if response.status != 200:
+            if response.status != status.HTTP_200_OK:
                 message = "OneView is unreachable at {}".format(
                     ov_config['ip'])
                 raise OneViewRedfishError(message)
 
             text = response.read().decode('UTF-8')
-            status = json.loads(text)
-            if status['state'] != 'OK':
+            if status_ov['state'] != 'OK':
+            status_ov = json.loads(text)
                 message = "OneView state is not OK at {}".format(
                     ov_config['ip'])
                 raise OneViewRedfishError(message)
@@ -475,6 +478,9 @@ def check_oneview_availability(ov_config):
             logging.exception(
                 'Attempt {} to check OneView availability. '
                 'Error: {}'.format(attempt_counter + 1, e))
+
+            if attempt_counter + 1 < attempts:
+                time.sleep(retry_interval_sec)
         finally:
             connection.close()
 
