@@ -44,6 +44,7 @@ from oneview_redfish_toolkit.blueprints.event_service import event_service
 from oneview_redfish_toolkit.blueprints.manager import manager
 from oneview_redfish_toolkit.blueprints.manager_collection \
     import manager_collection
+from oneview_redfish_toolkit.blueprints.memory import memory
 from oneview_redfish_toolkit.blueprints.metadata import metadata
 from oneview_redfish_toolkit.blueprints.network_adapter \
     import network_adapter
@@ -61,7 +62,9 @@ from oneview_redfish_toolkit.blueprints.network_port import network_port
 from oneview_redfish_toolkit.blueprints.network_port_collection \
     import network_port_collection
 from oneview_redfish_toolkit.blueprints.odata import odata
+from oneview_redfish_toolkit.blueprints.processor import processor
 from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
+from oneview_redfish_toolkit.blueprints.resource_block import resource_block
 from oneview_redfish_toolkit.blueprints.resource_block_collection \
     import resource_block_collection
 from oneview_redfish_toolkit.blueprints.service_root import service_root
@@ -109,6 +112,7 @@ def main(config_file_path, logging_config_file_path):
     app.register_blueprint(chassis)
     app.register_blueprint(manager_collection)
     app.register_blueprint(manager)
+    app.register_blueprint(memory)
     app.register_blueprint(metadata)
     app.register_blueprint(odata)
     app.register_blueprint(storage)
@@ -122,8 +126,10 @@ def main(config_file_path, logging_config_file_path):
     app.register_blueprint(network_interface)
     app.register_blueprint(network_adapter)
     app.register_blueprint(network_port)
+    app.register_blueprint(processor)
     app.register_blueprint(session)
     app.register_blueprint(resource_block_collection)
+    app.register_blueprint(resource_block)
     app.register_blueprint(zone_collection)
 
     if auth_mode == "conf":

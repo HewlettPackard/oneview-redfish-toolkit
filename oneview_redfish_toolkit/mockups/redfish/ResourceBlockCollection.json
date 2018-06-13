@@ -1,7 +1,7 @@
 {
     "@odata.type": "#ResourceBlockCollection.ResourceBlockCollection",
     "Name": "Resource Block Collection",
-    "Members@odata.count": 27,
+    "Members@odata.count": 26,
     "Members": [
         {
             "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/30373737-3237-4D32-3230-313531354752"
@@ -77,9 +77,6 @@
         },
         {
             "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
-        },
-        {
-            "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/71f6210a-6648-439f-bf24-1cecb94fbfde"
         },
         {
             "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/75871d70-789e-4cf9-8bc8-6f4d73193578"
