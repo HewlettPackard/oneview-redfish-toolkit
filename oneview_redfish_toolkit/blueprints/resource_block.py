@@ -60,13 +60,12 @@ def get_resource_block(uuid):
             server_hardware = g.oneview_client.server_hardware.get(uuid)
 
             eTag = server_hardware['eTag']
-            enclosure_group_uri = server_hardware["serverGroupUri"]
-            server_hardware_type_uri = server_hardware["serverHardwareTypeUri"]
+            eg_uri = server_hardware["serverGroupUri"]
+            sht_uri = server_hardware["serverHardwareTypeUri"]
 
             filters = list()
-            filters.append("enclosureGroupUri='" + enclosure_group_uri + "'")
-            filters.append(
-                "serverHardwareTypeUri='" + server_hardware_type_uri + "'")
+            filters.append("enclosureGroupUri='{}'".format(eg_uri))
+            filters.append("serverHardwareTypeUri='{}'".format(sht_uri))
 
             server_profile_templates = g.oneview_client \
                 .server_profile_templates.get_all(filter=filters)

@@ -38,12 +38,11 @@ class ServerProfileTemplateResourceBlock(ResourceBlock):
 
         self.server_profile_template = server_profile_template
 
-        self.redfish["ResouceBlockType"] = ["ComputerSystem"]
+        self.redfish["ResouceBlockType"] = ["Storage", "Network"]
 
         # TODO(svoboda) check how to fill this attribute
-        self.redfish["CompositionStatus"]["CompositionState"] = "Failed"
+        self.redfish["CompositionStatus"]["CompositionState"] = None
 
         self.redfish["CompositionStatus"]["SharingCapable"] = True
-        self.redfish["CompositionStatus"]["SharingEnabled"] = True
 
         self._validate()

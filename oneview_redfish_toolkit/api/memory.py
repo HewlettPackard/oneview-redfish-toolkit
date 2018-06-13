@@ -39,6 +39,8 @@ class Memory(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
+        self.server_hardware = server_hardware
+
         self.redfish["@odata.type"] = "#Memory.v1_2_0.Memory"
         self.redfish["Id"] = "1"
         self.redfish["Name"] = "Memory 1"
@@ -47,6 +49,8 @@ class Memory(RedfishJsonValidator):
         self.redfish["Status"]["Health"] = "OK"
         self.redfish["CapacityMiB"] = server_hardware["memoryMb"]
 
+        self.fill_links()
+
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Memory.Memory"
         self.redfish["@odata.id"] = \
@@ -54,3 +58,10 @@ class Memory(RedfishJsonValidator):
             + uuid + "/Memory/1"
 
         self._validate()
+
+    def fill_links(self):
+        self.redfish["Links"] = dict()
+
+        self.redfish["Links"]["Chassis"] = dict()
+        self.redfish["Links"]["Chassis"]["@odata.id"] = \
+            "/redfish/v1/Chassis/" + self.server_hardware["uuid"]

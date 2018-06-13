@@ -16,6 +16,13 @@
 
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 
+STATE_TO_STATUS_MAPPING = {
+    "NoProfileApplied": "Unused",
+    "ApplyingProfile": "Composing",
+    "ProfileApplied": "Composed",
+    "ProfileError": "Failed"
+}
+
 
 class ServerHardwareResourceBlock(ResourceBlock):
     """Creates a ResourceBlock Redfish dict for Server Hardware
@@ -40,20 +47,22 @@ class ServerHardwareResourceBlock(ResourceBlock):
         self.server_hardware = server_hardware
         self.server_profile_templates = server_profile_templates
 
-        self.redfish["ResourceBlockType"] = ["Compute"]
+        self.redfish["ResourceBlockType"] = ["ComputerSystem"]
 
-        profile_applied = self.server_hardware["state"] == "ProfileApplied"
-
-        self.redfish["CompositionStatus"]["CompositionState"] = \
-            "Composed" if profile_applied else "Unused"
         self.redfish["CompositionStatus"]["SharingCapable"] = False
-        self.redfish["CompositionStatus"]["SharingEnabled"] = False
+        self.redfish["CompositionStatus"]["CompositionState"] = \
+            self.get_composition_state()
 
         self.fill_memory()
         self.fill_processors()
         self.fill_links()
 
         self._validate()
+
+    def get_composition_state(self):
+        sh_state = self.server_hardware["state"]
+
+        return STATE_TO_STATUS_MAPPING.get(sh_state, None)
 
     def fill_memory(self):
         self.redfish["Memory"] = list()
@@ -82,25 +91,29 @@ class ServerHardwareResourceBlock(ResourceBlock):
     def fill_links(self):
         self.redfish["Links"] = dict()
 
-        enclosure_id = self.server_hardware["locationUri"].split("/")[-1]
-
         chassi = dict()
-        chassi["@odata.id"] = "/redfish/v1/Chassis/" + enclosure_id
+        chassi["@odata.id"] = "/redfish/v1/Chassis/" + self.uuid
         self.redfish["Links"]["Chassis"] = list()
         self.redfish["Links"]["Chassis"].append(chassi)
 
-        system = dict()
-        system["@odata.id"] = "/redfish/v1/Systems/" + self.uuid
-        self.redfish["Links"]["ComputerSystems"] = list()
-        self.redfish["Links"]["ComputerSystems"].append(system)
+        # TODO(svoboda) Check which computer system should be included
+        # (server profile or server hardware).
+        if self.server_hardware["serverProfileUri"]:
+            sp_id = self.server_hardware["serverProfileUri"].split("/")[-1]
 
-        self.redfish["Links"]["Zones"] = list()
+            system = dict()
+            system["@odata.id"] = "/redfish/v1/Systems/" + sp_id
+            self.redfish["Links"]["ComputerSystems"] = list()
+            self.redfish["Links"]["ComputerSystems"].append(system)
 
-        for spt in self.server_profile_templates:
-            spt_id = spt["uri"].split("/")[-1]
+        if self.server_profile_templates:
+            self.redfish["Links"]["Zones"] = list()
 
-            zone = dict()
-            zone["@odata.id"] = \
-                "/redfish/v1/CompositionService/ResourceZones/" + spt_id
+            for spt in self.server_profile_templates:
+                spt_id = spt["uri"].split("/")[-1]
 
-            self.redfish["Links"]["Zones"].append(zone)
+                zone = dict()
+                zone["@odata.id"] = \
+                    "/redfish/v1/CompositionService/ResourceZones/" + spt_id
+
+                self.redfish["Links"]["Zones"].append(zone)

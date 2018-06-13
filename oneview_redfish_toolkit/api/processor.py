@@ -66,8 +66,6 @@ class Processor(RedfishJsonValidator):
     def fill_links(self):
         self.redfish["Links"] = dict()
 
-        enclosure_id = self.server_hardware["locationUri"].split("/")[-1]
-
         self.redfish["Links"]["Chassis"] = dict()
         self.redfish["Links"]["Chassis"]["@odata.id"] = \
-            "/redfish/v1/Chassis/" + enclosure_id
+            "/redfish/v1/Chassis/" + self.server_hardware["uuid"]
