@@ -29,5 +29,6 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     scripts=['scripts/oneview-redfish-toolkit'],
     setup_requires=["pbr"],
+    python_requires='>=3.5',
     pbr=True
     )

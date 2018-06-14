@@ -126,7 +126,9 @@ def get_path_redfish_conf():
     return config_path
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Arguments parser')
+    parser = argparse.ArgumentParser(
+        description='This toolkit provides a REST service to answer \
+        DMTF\'s Redfish compliant requests by querying HPE OneView.')
     parser.add_argument('--config', type=str,
                         help='A path to config file')
     parser.add_argument('--log-config', type=str,
