@@ -185,3 +185,28 @@ def change_power_state(uuid):
         # In case of error log exception and abort
         logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@computer_system.route(
+    "/redfish/v1/Systems/<uuid>", methods=["DELETE"])
+def remove_subscription(uuid):
+    """Removes a specific System
+
+        Args:
+            uuid: The System ID.
+    """
+    try:
+        # Deletes server profile for given UUID
+        sucess = g.oneview_client.server_profiles.delete(uuid)
+
+        return Response(
+            status=status.HTTP_200_OK,
+            mimetype="application/json")
+    except HPOneViewException as e:
+        # In case of error log exception and abort
+        logging.exception(e)
+
+        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
+            abort(status.HTTP_404_NOT_FOUND, "Computer Sytem not found")
+        else:
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
