@@ -199,6 +199,9 @@ def remove_subscription(uuid):
         # Deletes server profile for given UUID
         sucess = g.oneview_client.server_profiles.delete(uuid)
 
+        if not sucess:
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         return Response(
             status=status.HTTP_200_OK,
             mimetype="application/json")
