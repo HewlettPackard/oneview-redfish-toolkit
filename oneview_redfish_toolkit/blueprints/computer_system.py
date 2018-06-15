@@ -194,6 +194,13 @@ def remove_subscription(uuid):
 
         Args:
             uuid: The System ID.
+
+        Exceptions:
+            HPOneViewException: When some OneView resource was not found.
+            return abort(404)
+
+            Exception: Unexpected error.
+            return abort(500)
     """
     try:
         # Deletes server profile for given UUID
