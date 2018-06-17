@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -14,38 +14,30 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import unittest
-
-from flask import Flask
 from flask_api import status
 
 from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestRedfishBase(unittest.TestCase):
+class TestRedfishBase(BaseFlaskTest):
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
+        super(TestRedfishBase, self).setUpClass()
 
-        self.app = Flask(__name__)
-        self.app.register_blueprint(
-            redfish_base,
-            url_prefix='/redfish/'
-        )
-        # creates a test client
-        self.app = self.app.test_client()
-        # propagate the exceptions to the test client
-        self.app.testing = True
+        self.app.register_blueprint(redfish_base, url_prefix='/redfish/')
 
     def test_get_redfish_base_status(self):
         # sends HTTP GET request to the application
         # on the specified path
-        result = self.app.get("/redfish/")
+        result = self.client.get("/redfish/")
 
         # assert the status code of the response
         self.assertEqual(result.status_code, status.HTTP_200_OK)
 
     def test_get_redfish_base_response(self):
-        result = self.app.get("/redfish/")
+        result = self.client.get("/redfish/")
 
         json_str = result.data.decode("utf-8")
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -19,48 +19,24 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Flask
-from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import service_root
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 from oneview_redfish_toolkit import util
 
 
-class TestServiceRoot(BaseTest):
+class TestServiceRoot(BaseFlaskTest):
     """Tests from ServiceRoot blueprint"""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
+        super(TestServiceRoot, self).setUpClass()
 
-        # creates a test client
-        self.app = Flask(__name__)
         self.app.register_blueprint(
             service_root.service_root, url_prefix='/redfish/v1/')
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """Creates an Internal Server Error response"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
-
-        # creates a test client
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
     @mock.patch.object(service_root, 'g')
     def test_service_root_oneview_exception(self, g):
@@ -73,7 +49,7 @@ class TestServiceRoot(BaseTest):
 
         g.oneview_client.appliance_node_information.get_version.side_effect = e
 
-        response = self.app.get("/redfish/v1/")
+        response = self.client.get("/redfish/v1/")
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -93,7 +69,7 @@ class TestServiceRoot(BaseTest):
 
         g.oneview_client.appliance_node_information.get_version.side_effect = e
 
-        response = self.app.get("/redfish/v1/")
+        response = self.client.get("/redfish/v1/")
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -117,7 +93,7 @@ class TestServiceRoot(BaseTest):
             {'uuid': '00000000-0000-0000-0000-000000000000'}
         config_mock.get.side_effect = side_effect
 
-        result = self.app.get("/redfish/v1/")
+        result = self.client.get("/redfish/v1/")
 
         result = json.loads(result.data.decode("utf-8"))
 

@@ -19,17 +19,14 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Flask
-from flask import Response
 from flask_api import status
 
 # Module libs
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import composition_service
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestCompositionService(BaseTest):
+class TestCompositionService(BaseFlaskTest):
     """Tests for CompositionService blueprint
 
         Tests:
@@ -37,33 +34,11 @@ class TestCompositionService(BaseTest):
             - known composition service resource
     """
 
-    def setUp(self):
-        """Tests preparation"""
-
-        # creates a test client
-        self.app = Flask(__name__)
+    @classmethod
+    def setUpClass(self):
+        super(TestCompositionService, self).setUpClass()
 
         self.app.register_blueprint(composition_service.composition_service)
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """General InternalServerError handler for the app"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
-
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
     @mock.patch.object(composition_service.CompositionService, 'serialize')
     def test_get_composition_service_unexpected_error(self, mock):
@@ -77,7 +52,7 @@ class TestCompositionService(BaseTest):
         ) as f:
             error_500 = json.load(f)
 
-        response = self.app.get("/redfish/v1/CompositionService/")
+        response = self.client.get("/redfish/v1/CompositionService/")
 
         result = json.loads(response.data.decode("utf-8"))
 
@@ -97,7 +72,7 @@ class TestCompositionService(BaseTest):
             composition_service_mockup = json.load(f)
 
         # Get CompositionService
-        response = self.app.get("/redfish/v1/CompositionService/")
+        response = self.client.get("/redfish/v1/CompositionService/")
 
         # Gets json from response
         expected_result = json.loads(response.data.decode("utf-8"))

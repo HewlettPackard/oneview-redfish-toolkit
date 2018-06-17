@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -19,18 +19,15 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Flask
-from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import computer_system
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestComputerSystem(BaseTest):
+class TestComputerSystem(BaseFlaskTest):
     """Tests for ComputerSystem blueprint
 
         Tests:
@@ -47,76 +44,11 @@ class TestComputerSystem(BaseTest):
             - change power state with SHT not found
     """
 
-    def setUp(self):
-        """Tests preparation"""
-
-        # creates a test client
-        self.app = Flask(__name__)
+    @classmethod
+    def setUpClass(self):
+        super(TestComputerSystem, self).setUpClass()
 
         self.app.register_blueprint(computer_system.computer_system)
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """General InternalServerError handler for the app"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
-
-        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
-        def not_found(error):
-            """Creates a Not Found Error response"""
-            redfish_error = RedfishError(
-                "GeneralError", error.description)
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_404_NOT_FOUND,
-                mimetype='application/json')
-
-        @self.app.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
-        def not_implemented(error):
-            """Creates a Not Implemented Error response"""
-            redfish_error = RedfishError(
-                "ActionNotSupported", error.description)
-            redfish_error.add_extended_info(
-                message_id="ActionNotSupported",
-                message_args=["action"])
-
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_501_NOT_IMPLEMENTED,
-                mimetype='application/json')
-
-        @self.app.errorhandler(status.HTTP_400_BAD_REQUEST)
-        def bad_request(error):
-            """Creates a Bad Request Error response"""
-            redfish_error = RedfishError(
-                "PropertyValueNotInList", error.description)
-
-            redfish_error.add_extended_info(
-                message_id="PropertyValueNotInList",
-                message_args=["VALUE", "PROPERTY"],
-                related_properties=["PROPERTY"])
-
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_400_BAD_REQUEST,
-                mimetype='application/json')
-
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
     @mock.patch.object(computer_system, 'g')
     def test_get_computer_system_sh_not_found(self, g):
@@ -128,7 +60,7 @@ class TestComputerSystem(BaseTest):
         })
         g.oneview_client.server_hardware.get.side_effect = e
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
         )
 
@@ -149,7 +81,7 @@ class TestComputerSystem(BaseTest):
         })
         g.oneview_client.server_hardware_types.get.side_effect = e
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
         )
 
@@ -166,7 +98,7 @@ class TestComputerSystem(BaseTest):
         })
         g.oneview_client.server_hardware.get.side_effect = e
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
         )
 
@@ -188,7 +120,7 @@ class TestComputerSystem(BaseTest):
         })
         g.oneview_client.server_hardware_types.get.side_effect = e
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
         )
 
@@ -206,7 +138,7 @@ class TestComputerSystem(BaseTest):
 
         g.oneview_client.server_hardware.get.side_effect = Exception()
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
         )
 
@@ -243,7 +175,7 @@ class TestComputerSystem(BaseTest):
             server_hardware_types
 
         # Get ComputerSystem
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
         )
 
@@ -293,12 +225,11 @@ class TestComputerSystem(BaseTest):
                        "GracefulRestart", "ForceRestart", "PushPowerButton"]
 
         for reset_type in reset_types:
-            response = self.app.post("/redfish/v1/Systems/30303437-3034"
-                                     "-4D32-3230-313133364752/Actions/"
-                                     "ComputerSystem.Reset",
-                                     data=json.dumps(
-                                         dict(ResetType=reset_type)),
-                                     content_type='application/json')
+            response = self.client.post(
+                "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
+                "/Actions/ComputerSystem.Reset",
+                data=json.dumps(dict(ResetType=reset_type)),
+                content_type='application/json')
 
             # Tests response
             self.assertEqual(status.HTTP_200_OK, response.status_code)
@@ -328,11 +259,11 @@ class TestComputerSystem(BaseTest):
         g.oneview_client.server_hardware.get.return_value = sh_dict
         g.oneview_client.server_hardware_types.get.return_value = sht_dict
 
-        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
-                                 "-313133364752/Actions/ComputerSystem.Reset",
-                                 data=json.dumps(dict(
-                                     ResetType="INVALID_TYPE")),
-                                 content_type='application/json')
+        response = self.client.post(
+            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
+            "/Actions/ComputerSystem.Reset",
+            data=json.dumps(dict(ResetType="INVALID_TYPE")),
+            content_type='application/json')
 
         # Tests response
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -344,10 +275,11 @@ class TestComputerSystem(BaseTest):
 
         g.oneview_client.server_hardware.get.side_effect = Exception()
 
-        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
-                                 "-313133364752/Actions/ComputerSystem.Reset",
-                                 data=json.dumps(dict(ResetType="On")),
-                                 content_type='application/json')
+        response = self.client.post(
+            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
+            "/Actions/ComputerSystem.Reset",
+            data=json.dumps(dict(ResetType="On")),
+            content_type='application/json')
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -365,10 +297,11 @@ class TestComputerSystem(BaseTest):
 
         g.oneview_client.server_hardware.get.side_effect = e
 
-        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
-                                 "-313133364752/Actions/ComputerSystem.Reset",
-                                 data=json.dumps(dict(ResetType="On")),
-                                 content_type='application/json')
+        response = self.client.post(
+            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
+            "/Actions/ComputerSystem.Reset",
+            data=json.dumps(dict(ResetType="On")),
+            content_type='application/json')
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -402,11 +335,11 @@ class TestComputerSystem(BaseTest):
         g.oneview_client.server_hardware_types.get.return_value = sht_dict
         g.oneview_client.server_hardware.update_power_state.side_effect = e
 
-        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
-                                 "-313133364752/Actions/ComputerSystem.Reset",
-                                 data=json.dumps(
-                                     dict(ResetType="ForceRestart")),
-                                 content_type='application/json')
+        response = self.client.post(
+            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
+            "/Actions/ComputerSystem.Reset",
+            data=json.dumps(dict(ResetType="ForceRestart")),
+            content_type='application/json')
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -425,10 +358,11 @@ class TestComputerSystem(BaseTest):
 
         g.oneview_client.server_hardware_types.get.side_effect = e
 
-        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
-                                 "-313133364752/Actions/ComputerSystem.Reset",
-                                 data=json.dumps(dict(ResetType="On")),
-                                 content_type='application/json')
+        response = self.client.post(
+            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
+            "/Actions/ComputerSystem.Reset",
+            data=json.dumps(dict(ResetType="On")),
+            content_type='application/json')
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -439,10 +373,11 @@ class TestComputerSystem(BaseTest):
     def test_change_power_state_invalid_key(self):
         """Tests change SH power state with JSON key different of ResetType"""
 
-        response = self.app.post("/redfish/v1/Systems/30303437-3034-4D32-3230"
-                                 "-313133364752/Actions/ComputerSystem.Reset",
-                                 data=json.dumps(dict(INVALID_KEY="On")),
-                                 content_type='application/json')
+        response = self.client.post(
+            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
+            "/Actions/ComputerSystem.Reset",
+            data=json.dumps(dict(INVALID_KEY="On")),
+            content_type='application/json')
 
         result = json.loads(response.data.decode("utf-8"))
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -19,18 +19,15 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Flask
-from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import thermal
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestChassis(BaseTest):
+class TestChassis(BaseFlaskTest):
     """Tests for Thermal blueprint
 
         Tests:
@@ -39,44 +36,11 @@ class TestChassis(BaseTest):
             - racks
     """
 
-    def setUp(self):
-        """Tests preparation"""
-
-        # creates a test client
-        self.app = Flask(__name__)
+    @classmethod
+    def setUpClass(self):
+        super(TestChassis, self).setUpClass()
 
         self.app.register_blueprint(thermal.thermal)
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """General InternalServerError handler for the app"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
-
-        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
-        def not_found(error):
-            """Creates a Not Found Error response"""
-            redfish_error = RedfishError(
-                "GeneralError", error.description)
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_404_NOT_FOUND,
-                mimetype='application/json')
-
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
     #############
     # Blade     #
@@ -105,7 +69,7 @@ class TestChassis(BaseTest):
             server_hardware_utilization
 
         # Get BladeThermal
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
         )
 
@@ -131,7 +95,7 @@ class TestChassis(BaseTest):
 
         g.oneview_client.server_hardware.get_utilization.side_effect = e
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
         )
 
@@ -147,7 +111,7 @@ class TestChassis(BaseTest):
         g.oneview_client.server_hardware.get_utilization.side_effect = \
             Exception()
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
         )
 
@@ -183,7 +147,7 @@ class TestChassis(BaseTest):
             enclosure_utilization
 
         # Get EnclosureThermal
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Chassis/0000000000A66101/Thermal"
         )
 
@@ -219,7 +183,7 @@ class TestChassis(BaseTest):
         g.oneview_client.racks.get_device_topology.return_value = rack_topology
 
         # Get RackThermal
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Chassis/2AB100LMNB/Thermal"
         )
 

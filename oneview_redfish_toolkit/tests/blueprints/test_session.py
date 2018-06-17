@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -19,7 +19,6 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Flask
 from flask import Response
 from flask_api import status
 from hpOneView import HPOneViewException
@@ -30,35 +29,17 @@ from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import session as session_file
 from oneview_redfish_toolkit.blueprints.session \
     import session as session_blueprint
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestSession(BaseTest):
+class TestSession(BaseFlaskTest):
     """Tests for Session blueprint"""
 
-    @mock.patch.object(session_file, 'OneViewClient')
-    def setUp(self, util_mockup):
-        """Tests preparation"""
-
-        # creates a test client
-        self.app = Flask(__name__)
+    @classmethod
+    def setUpClass(self):
+        super(TestSession, self).setUpClass()
 
         self.app.register_blueprint(session_blueprint)
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """General InternalServerError handler for the app"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
 
         @self.app.errorhandler(status.HTTP_401_UNAUTHORIZED)
         def unauthorized_error(error):
@@ -71,28 +52,6 @@ class TestSession(BaseTest):
                 response=error_str,
                 status=status.HTTP_401_UNAUTHORIZED,
                 mimetype='application/json')
-
-        @self.app.errorhandler(status.HTTP_400_BAD_REQUEST)
-        def bad_request(error):
-            """Creates a Bad Request Error response"""
-            redfish_error = RedfishError(
-                "PropertyValueNotInList", error.description)
-
-            redfish_error.add_extended_info(
-                message_id="PropertyValueNotInList",
-                message_args=["VALUE", "PROPERTY"],
-                related_properties=["PROPERTY"])
-
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_400_BAD_REQUEST,
-                mimetype='application/json')
-
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
     @mock.patch.object(session_file, 'OneViewClient')
     def test_post_session(self, oneview_client_mockup):
@@ -109,11 +68,12 @@ class TestSession(BaseTest):
         oneview_client.connection.get_session_id.return_value = "sessionId"
 
         # POST Session
-        response = self.app.post("/redfish/v1/SessionService/Sessions",
-                                 data=json.dumps(dict(
-                                     UserName="administrator",
-                                     Password="password")),
-                                 content_type='application/json')
+        response = self.client.post(
+            "/redfish/v1/SessionService/Sessions",
+            data=json.dumps(dict(
+                UserName="administrator",
+                Password="password")),
+            content_type='application/json')
 
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
@@ -135,11 +95,12 @@ class TestSession(BaseTest):
         oneview_client.connection.get_session_id.return_value = "sessionId"
 
         # POST Session
-        response = self.app.post("/redfish/v1/SessionService/Sessions",
-                                 data=json.dumps(dict(
-                                     InvalidKey="administrator",
-                                     Password="password")),
-                                 content_type='application/json')
+        response = self.client.post(
+            "/redfish/v1/SessionService/Sessions",
+            data=json.dumps(dict(
+                InvalidKey="administrator",
+                Password="password")),
+            content_type='application/json')
 
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
@@ -171,11 +132,12 @@ class TestSession(BaseTest):
         oneview_client.connection.get_session_id.side_effect = e
 
         # POST Session
-        response = self.app.post("/redfish/v1/SessionService/Sessions",
-                                 data=json.dumps(dict(
-                                     UserName="administrator",
-                                     Password="password")),
-                                 content_type='application/json')
+        response = self.client.post(
+            "/redfish/v1/SessionService/Sessions",
+            data=json.dumps(dict(
+                UserName="administrator",
+                Password="password")),
+            content_type='application/json')
 
         self.assertEqual(
             status.HTTP_401_UNAUTHORIZED,
@@ -192,11 +154,12 @@ class TestSession(BaseTest):
         oneview_client.connection.get_session_id.side_effect = Exception()
 
         # POST Session
-        response = self.app.post("/redfish/v1/SessionService/Sessions",
-                                 data=json.dumps(dict(
-                                     UserName="administrator",
-                                     Password="password")),
-                                 content_type='application/json')
+        response = self.client.post(
+            "/redfish/v1/SessionService/Sessions",
+            data=json.dumps(dict(
+                UserName="administrator",
+                Password="password")),
+            content_type='application/json')
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -19,17 +19,14 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Flask
-from flask import Response
 from flask_api import status
 
 # Module libs
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import manager_collection
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestManagerCollection(BaseTest):
+class TestManagerCollection(BaseFlaskTest):
     """Tests for ManagerCollection blueprint
 
         Tests:
@@ -39,45 +36,12 @@ class TestManagerCollection(BaseTest):
             - know manager collection
     """
 
-    def setUp(self):
-        """Tests preparation"""
-
-        # creates a test client
-        self.app = Flask(__name__)
+    @classmethod
+    def setUpClass(self):
+        super(TestManagerCollection, self).setUpClass()
 
         self.app.register_blueprint(
             manager_collection.manager_collection)
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """General InternalServerError handler for the app"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
-
-        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
-        def not_found(error):
-            """Creates a Not Found Error response"""
-            redfish_error = RedfishError(
-                "GeneralError", error.description)
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_404_NOT_FOUND,
-                mimetype='application/json')
-
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
     @mock.patch.object(manager_collection, 'g')
     def test_get_manager_collection_unexpected_error(
@@ -92,7 +56,7 @@ class TestManagerCollection(BaseTest):
         ) as f:
             error_500 = json.load(f)
 
-        response = self.app.get("/redfish/v1/Managers/")
+        response = self.client.get("/redfish/v1/Managers/")
 
         result = json.loads(response.data.decode("utf-8"))
 
@@ -113,7 +77,7 @@ class TestManagerCollection(BaseTest):
                 'EnclosuresNotFound.json'
         ) as f:
             enclosures_list_not_found = json.load(f)
-        response = self.app.get("/redfish/v1/Managers/")
+        response = self.client.get("/redfish/v1/Managers/")
         result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
@@ -140,7 +104,7 @@ class TestManagerCollection(BaseTest):
         g.oneview_client.enclosures.get_all.return_value = enclosures
         g.oneview_client.server_hardware.get_all.return_value = []
 
-        response = self.app.get("/redfish/v1/Managers/")
+        response = self.client.get("/redfish/v1/Managers/")
 
         result = json.loads(response.data.decode("utf-8"))
 
@@ -178,7 +142,7 @@ class TestManagerCollection(BaseTest):
         g.oneview_client.enclosures.get_all.return_value = enclosures
 
         # Get ManagerCollection
-        response = self.app.get("/redfish/v1/Managers/")
+        response = self.client.get("/redfish/v1/Managers/")
 
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
