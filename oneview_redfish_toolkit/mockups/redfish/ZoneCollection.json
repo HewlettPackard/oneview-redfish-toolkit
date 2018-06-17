@@ -1,13 +1,10 @@
 {
   "@odata.type": "#ZoneCollection.ZoneCollection",
   "Name": "Resource Zone Collection",
-  "Members@odata.count": 3,
+  "Members@odata.count": 2,
   "Members": [
     {
       "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
-    },
-    {
-      "@odata.id": "/redfish/v1/CompositionService/ResourceZones/71f6210a-6648-439f-bf24-1cecb94fbfde"
     },
     {
       "@odata.id": "/redfish/v1/CompositionService/ResourceZones/75871d70-789e-4cf9-8bc8-6f4d73193578"
