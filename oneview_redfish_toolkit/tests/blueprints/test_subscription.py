@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -19,74 +19,21 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Flask
-from flask import Response
 from flask_api import status
 
 # Module libs
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints.subscription import subscription
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestSubscription(BaseTest):
+class TestSubscription(BaseFlaskTest):
     """Tests for Subscription blueprint"""
 
-    def setUp(self):
-        """Tests Subscription blueprint setup"""
+    @classmethod
+    def setUpClass(self):
+        super(TestSubscription, self).setUpClass()
 
-        # creates a test client
-        self.app = Flask(__name__)
         self.app.register_blueprint(subscription)
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """General InternalServerError handler for the app"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
-
-        @self.app.errorhandler(status.HTTP_400_BAD_REQUEST)
-        def bad_request(error):
-            """Creates a Bad Request Error response"""
-            redfish_error = RedfishError(
-                "PropertyValueNotInList", error.description)
-
-            redfish_error.add_extended_info(
-                message_id="PropertyValueNotInList",
-                message_args=["VALUE", "PROPERTY"],
-                related_properties=["PROPERTY"])
-
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_400_BAD_REQUEST,
-                mimetype='application/json')
-
-        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
-        def not_found(error):
-            """Creates a Not Found Error response"""
-            redfish_error = RedfishError(
-                "GeneralError", error.description)
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_404_NOT_FOUND,
-                mimetype='application/json')
-
-        # creates a test client
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
     @mock.patch('uuid.uuid1')
     def test_add_subscription(self, uuid_mockup):
@@ -94,7 +41,7 @@ class TestSubscription(BaseTest):
 
         uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 
-        response = self.app.post(
+        response = self.client.post(
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
@@ -119,7 +66,7 @@ class TestSubscription(BaseTest):
 
         uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 
-        response = self.app.post(
+        response = self.client.post(
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
@@ -144,7 +91,7 @@ class TestSubscription(BaseTest):
 
         uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 
-        response = self.app.post(
+        response = self.client.post(
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 INVALID="http://www.dnsname.com/Destination1",
@@ -160,7 +107,7 @@ class TestSubscription(BaseTest):
 
         uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 
-        response = self.app.post(
+        response = self.client.post(
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
@@ -176,7 +123,7 @@ class TestSubscription(BaseTest):
 
         uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 
-        response = self.app.post(
+        response = self.client.post(
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
@@ -192,7 +139,7 @@ class TestSubscription(BaseTest):
 
         uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 
-        response = self.app.post(
+        response = self.client.post(
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
@@ -208,7 +155,7 @@ class TestSubscription(BaseTest):
 
         uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 
-        response = self.app.post(
+        response = self.client.post(
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
@@ -225,7 +172,7 @@ class TestSubscription(BaseTest):
 
         uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 
-        response = self.app.post(
+        response = self.client.post(
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="INVALID",
@@ -241,20 +188,21 @@ class TestSubscription(BaseTest):
 
         uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36b"
 
-        self.app.post("/redfish/v1/EventService/EventSubscriptions/",
-                      data=json.dumps(dict(
-                          Destination="http://www.dnsname.com/Destination1",
-                          EventTypes=["Alert", "StatusChange"])),
-                      content_type='application/json')
+        self.client.post(
+            "/redfish/v1/EventService/EventSubscriptions/",
+            data=json.dumps(dict(
+                Destination="http://www.dnsname.com/Destination1",
+                EventTypes=["Alert", "StatusChange"])),
+            content_type='application/json')
 
-        delete_response = self.app.delete(
+        delete_response = self.client.delete(
             "/redfish/v1/EventService/EventSubscriptions/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
 
         self.assertEqual(status.HTTP_200_OK, delete_response.status_code)
         self.assertEqual("application/json", delete_response.mimetype)
 
-        get_response = self.app.get(
+        get_response = self.client.get(
             "/redfish/v1/EventService/EventSubscriptions/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
 
@@ -265,7 +213,7 @@ class TestSubscription(BaseTest):
     def test_remove_subscription_invalid_id(self):
         """Test REMOVE Subscription with invalid ID"""
 
-        response = self.app.delete(
+        response = self.client.delete(
             "/redfish/v1/EventService/EventSubscriptions/INVALID")
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
@@ -277,11 +225,12 @@ class TestSubscription(BaseTest):
 
         uuid_mockup.return_value = "e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 
-        self.app.post("/redfish/v1/EventService/EventSubscriptions/",
-                      data=json.dumps(dict(
-                          Destination="http://www.dnsname.com/Destination1",
-                          EventTypes=["Alert", "StatusChange"])),
-                      content_type='application/json')
+        self.client.post(
+            "/redfish/v1/EventService/EventSubscriptions/",
+            data=json.dumps(dict(
+                Destination="http://www.dnsname.com/Destination1",
+                EventTypes=["Alert", "StatusChange"])),
+            content_type='application/json')
 
         with open(
             'oneview_redfish_toolkit/mockups/'
@@ -289,7 +238,7 @@ class TestSubscription(BaseTest):
         ) as f:
             subscription_mockup = json.loads(f.read())
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/EventService/EventSubscriptions/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36a")
 
@@ -302,7 +251,7 @@ class TestSubscription(BaseTest):
     def test_get_invalid_subscription(self):
         """Test GET invalid Subscription"""
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/EventService/EventSubscriptions/INVALID")
 
         self.assertEqual(

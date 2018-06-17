@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -19,59 +19,23 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Flask
-from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import network_interface_collection
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestNetworkInterfaceCollection(BaseTest):
+class TestNetworkInterfaceCollection(BaseFlaskTest):
     """Tests for NetworkInterfaceCollection blueprint"""
 
-    def setUp(self):
-        """Tests preparation"""
-
-        # creates a test client
-        self.app = Flask(__name__)
+    @classmethod
+    def setUpClass(self):
+        super(TestNetworkInterfaceCollection, self).setUpClass()
 
         self.app.register_blueprint(
             network_interface_collection.network_interface_collection)
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """Creates a Internal Server Error response"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
-
-        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
-        def not_found(error):
-            """Creates a Not Found Error response"""
-            redfish_error = RedfishError(
-                "GeneralError", error.description)
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_404_NOT_FOUND,
-                mimetype='application/json')
-
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
     @mock.patch.object(network_interface_collection, 'g')
     def test_get_network_interface_collection(self, g):
@@ -94,7 +58,7 @@ class TestNetworkInterfaceCollection(BaseTest):
         g.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkInterfaceCollection
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
             "NetworkInterfaces/"
         )
@@ -119,7 +83,7 @@ class TestNetworkInterfaceCollection(BaseTest):
         g.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkInterfaceCollection
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
             "NetworkInterfaces/"
         )
@@ -139,7 +103,7 @@ class TestNetworkInterfaceCollection(BaseTest):
         g.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkInterfaceCollection
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
             "NetworkInterfaces/"
         )

@@ -19,47 +19,22 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Flask
-from flask import Response
 from flask_api import status
 
 # Module libs
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import resource_block_collection
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestResourceBlockCollection(BaseTest):
+class TestResourceBlockCollection(BaseFlaskTest):
     """Tests for ResourceBlockCollection blueprint"""
 
-    def setUp(self):
-        """Tests preparation"""
-
-        # creates a test client
-        self.app = Flask(__name__)
+    @classmethod
+    def setUpClass(self):
+        super(TestResourceBlockCollection, self).setUpClass()
 
         self.app.register_blueprint(
             resource_block_collection.resource_block_collection)
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """General InternalServerError handler for the app"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
-
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
     @mock.patch.object(resource_block_collection, 'g')
     def test_get_resource_block_collection_fail(self, g_mock):
@@ -72,7 +47,7 @@ class TestResourceBlockCollection(BaseTest):
         ) as f:
             error_500 = json.load(f)
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks/")
 
         result = json.loads(response.data.decode("utf-8"))
@@ -111,7 +86,7 @@ class TestResourceBlockCollection(BaseTest):
             server_profile_template_list
 
         # Get ResourceBlockCollection
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks/")
 
         # Gets json from response
@@ -130,7 +105,7 @@ class TestResourceBlockCollection(BaseTest):
         g_mock.oneview_client.server_profile_template.get_all.return_value = []
 
         # Get ResourceBlockCollection
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks/")
 
         # Gets json from response

@@ -17,45 +17,20 @@
 import json
 from unittest import mock
 
-from flask import Flask
-from flask import Response
 from flask_api import status
 
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import zone_collection
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestZoneCollection(BaseTest):
+class TestZoneCollection(BaseFlaskTest):
     """Tests for ZoneCollection blueprint"""
 
-    def setUp(self):
-        """Tests preparation"""
-
-        # creates a test client
-        self.app = Flask(__name__)
+    @classmethod
+    def setUpClass(self):
+        super(TestZoneCollection, self).setUpClass()
 
         self.app.register_blueprint(zone_collection.zone_collection)
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """General InternalServerError handler for the app"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
-
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
     @mock.patch.object(zone_collection, 'g')
     def test_get_zone_collection_fail(self, g_mock):
@@ -69,7 +44,7 @@ class TestZoneCollection(BaseTest):
         ) as f:
             error_500 = json.load(f)
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
 
         result = json.loads(response.data.decode("utf-8"))
@@ -99,7 +74,7 @@ class TestZoneCollection(BaseTest):
             server_profile_template_list
 
         # Get ZoneCollection
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
 
         # Gets json from response
@@ -123,7 +98,7 @@ class TestZoneCollection(BaseTest):
             zone_collection_empty_mockup = json.load(f)
 
         # Get ZoneCollection
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
 
         # Gets json from response
