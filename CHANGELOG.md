@@ -22,6 +22,7 @@
  - #258 Check OneView availability
  - #237 Implement base CollectionCapabilities: "@Redfish.CollectionCapabilities" in the ResourceZone
  - #260 Create a ResourceZone for each Server Profile Template
+ - #250 Implement ResourceBlock for Server Hardware
 
 # New Redfish resources
  - EventService
@@ -32,6 +33,7 @@
  - ResourceBlockCollection
  - Zone
  - ZoneCollection
+ - ResourceBlock
 
 
 # 0.2.0
