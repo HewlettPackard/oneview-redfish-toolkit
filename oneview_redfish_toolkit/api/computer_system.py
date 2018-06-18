@@ -55,6 +55,7 @@ class ComputerSystem(RedfishJsonValidator):
     """
 
     SCHEMA_NAME = 'ComputerSystem'
+    BASE_URI = '/redfish/v1/Systems'
 
     def __init__(self, server_hardware, server_hardware_types):
         """ComputerSystem constructor
@@ -98,10 +99,10 @@ class ComputerSystem(RedfishJsonValidator):
             server_hardware["memoryMb"] / 1024
         self.redfish["Storage"] = collections.OrderedDict()
         self.redfish["Storage"]["@odata.id"] = \
-            "/redfish/v1/Systems/" + server_hardware['uuid'] + "/Storage"
+            self.BASE_URI + server_hardware['uuid'] + "/Storage"
         self.redfish["NetworkInterfaces"] = collections.OrderedDict()
         self.redfish["NetworkInterfaces"]["@odata.id"] = \
-            "/redfish/v1/Systems/" + \
+            self.BASE_URI + \
             server_hardware['uuid'] + \
             "/NetworkInterfaces"
         self.redfish["Links"] = collections.OrderedDict()
@@ -117,16 +118,16 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"]["target"] = \
-            "/redfish/v1/Systems/{}/Actions/ComputerSystem.Reset" \
-            .format(server_hardware["uuid"])
+            self.BASE_URI + \
+            server_hardware["uuid"] + \
+            "/Actions/ComputerSystem.Reset"
         self.redfish["Actions"]["#ComputerSystem.Reset"][
             "ResetType@Redfish.AllowableValues"] = \
             ["On", "ForceOff", "GracefulShutdown", "GracefulRestart",
              "ForceRestart", "Nmi", "ForceOn", "PushPowerButton"]
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystem.ComputerSystem"
-        self.redfish["@odata.id"] = \
-            "/redfish/v1/Systems/" + server_hardware["uuid"]
+        self.redfish["@odata.id"] = self.BASE_URI + server_hardware["uuid"]
 
         self._validate()
 

@@ -26,6 +26,7 @@ class ResourceBlockCollection(RedfishJsonValidator):
     """
 
     SCHEMA_NAME = 'ResourceBlockCollection'
+    BASE_URI = '/redfish/v1/CompositionService/ResourceBlocks/'
 
     def __init__(self, server_hardware=[], server_profile_templates=[]):
         """ResourceBlockCollection constructor

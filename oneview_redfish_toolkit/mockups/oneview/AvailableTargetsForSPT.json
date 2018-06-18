@@ -1,0 +1,26 @@
+{
+  "type": "AvailableTargetsV3",
+  "targets": [
+    {
+      "enclosureGroupName": "test_eg1",
+      "enclosureName": "0000A66102",
+      "enclosureUri": "/rest/enclosures/0000000000A66102",
+      "enclosureBay": 5,
+      "serverHardwareName": "0000A66102, bay 5",
+      "serverHardwareUri": "/rest/server-hardware/30303437-3034-4D32-3230-313131324752",
+      "serverHardwareTypeName": "SY 480 Gen9 2",
+      "serverHardwareTypeUri": "/rest/server-hardware-types/0AB36CC2-D424-4C88-9CA5-25DF0B1A2A87",
+      "enclosureGroupUri": "/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
+      "powerState": "Off",
+      "formFactor": [
+        "HalfHeight"
+      ],
+      "serverHardwareStatus": "OK"
+    }
+  ],
+  "uri": "/rest/server-profiles/available-targets",
+  "category": "available-targets",
+  "eTag": "2018-06-13T20:27:14.075Z",
+  "created": "2018-06-13T20:27:14.075Z",
+  "modified": "2018-06-13T20:27:14.075Z"
+}
