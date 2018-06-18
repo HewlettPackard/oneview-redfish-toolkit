@@ -98,7 +98,7 @@ class ComputerSystem(RedfishJsonValidator):
             server_hardware["memoryMb"] / 1024
         self.redfish["Storage"] = collections.OrderedDict()
         self.redfish["Storage"]["@odata.id"] = \
-            self.BASE_URI + "/" +server_hardware['uuid'] + "/Storage"
+            self.BASE_URI + "/" + server_hardware['uuid'] + "/Storage"
         self.redfish["NetworkInterfaces"] = collections.OrderedDict()
         self.redfish["NetworkInterfaces"]["@odata.id"] = \
             self.BASE_URI + "/" + \
@@ -190,7 +190,7 @@ class ComputerSystem(RedfishJsonValidator):
             raise OneViewRedfishError({
                 "errorCode": "INVALID_INFORMATION",
                 "message": "There is no mapping for {} on the OneView"
-                    .format(reset_type)})
+                .format(reset_type)})
 
         if reset_type == "PushPowerButton":
             if self.server_hardware["powerState"] == "On":

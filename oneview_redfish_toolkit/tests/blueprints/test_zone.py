@@ -21,9 +21,9 @@ from flask import Flask
 from flask_api import status
 from hpOneView import HPOneViewException
 
-from oneview_redfish_toolkit.blueprints import zone
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit.blueprints import zone
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 

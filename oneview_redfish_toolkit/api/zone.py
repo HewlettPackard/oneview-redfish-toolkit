@@ -14,12 +14,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oneview_redfish_toolkit.api import status_mapping
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 from oneview_redfish_toolkit.api.resource_block_collection import \
     ResourceBlockCollection
+from oneview_redfish_toolkit.api import status_mapping
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
 
 
@@ -35,8 +35,8 @@ class Zone(RedfishJsonValidator):
     def __init__(self, profile_template, available_targets_obj):
         """Zone constructor
 
-            Populates self.redfish with the contents of server profile template dict
-            from Oneview
+            Populates self.redfish with the contents of
+            server profile template dict from Oneview
 
             Args:
                 profile_template: Oneview's server profile template dict
@@ -84,7 +84,9 @@ class Zone(RedfishJsonValidator):
     def fill_capabilities_collection(self):
         capability = {
             "CapabilitiesObject": {
-                "@odata.id": "/redfish/v1/Systems/Capabilities" # todo update to use a constant when the Capabilities API has be created
+                "@odata.id": "/redfish/v1/Systems/Capabilities"
+                # todo update to use a constant when the
+                # Capabilities API has be created
             },
             "UseCase": "ComputerSystemComposition",
             "Links": {
@@ -94,4 +96,3 @@ class Zone(RedfishJsonValidator):
             }
         }
         self.redfish[self.capabilities_key]["Capabilities"].append(capability)
-
