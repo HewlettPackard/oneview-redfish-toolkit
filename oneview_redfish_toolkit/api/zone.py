@@ -78,7 +78,7 @@ class Zone(RedfishJsonValidator):
     def add_resource_block_item_to_links(self, original_dict, uri_key):
         uuid = original_dict[uri_key].split("/")[-1]
         dict_item = dict()
-        dict_item["@odata.id"] = ResourceBlockCollection.BASE_URI + uuid
+        dict_item["@odata.id"] = ResourceBlockCollection.BASE_URI + "/" + uuid
         self.redfish["Links"]["ResourceBlocks"].append(dict_item)
 
     def fill_capabilities_collection(self):
