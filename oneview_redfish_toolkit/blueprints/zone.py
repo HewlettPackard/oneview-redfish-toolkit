@@ -14,10 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from flask import abort
 from flask import Blueprint
 from flask import g
-from hpOneView import HPOneViewException
 
 from oneview_redfish_toolkit.api.zone import Zone
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
