@@ -21,7 +21,6 @@ from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 
-
 POWER_STATE_MAP = {
     "On": {
         "powerState": "On",
@@ -99,10 +98,10 @@ class ComputerSystem(RedfishJsonValidator):
             server_hardware["memoryMb"] / 1024
         self.redfish["Storage"] = collections.OrderedDict()
         self.redfish["Storage"]["@odata.id"] = \
-            self.BASE_URI + server_hardware['uuid'] + "/Storage"
+            self.BASE_URI + "/" +server_hardware['uuid'] + "/Storage"
         self.redfish["NetworkInterfaces"] = collections.OrderedDict()
         self.redfish["NetworkInterfaces"]["@odata.id"] = \
-            self.BASE_URI + \
+            self.BASE_URI + "/" + \
             server_hardware['uuid'] + \
             "/NetworkInterfaces"
         self.redfish["Links"] = collections.OrderedDict()
@@ -118,7 +117,7 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"]["target"] = \
-            self.BASE_URI + \
+            self.BASE_URI + "/" + \
             server_hardware["uuid"] + \
             "/Actions/ComputerSystem.Reset"
         self.redfish["Actions"]["#ComputerSystem.Reset"][
@@ -127,7 +126,8 @@ class ComputerSystem(RedfishJsonValidator):
              "ForceRestart", "Nmi", "ForceOn", "PushPowerButton"]
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystem.ComputerSystem"
-        self.redfish["@odata.id"] = self.BASE_URI + server_hardware["uuid"]
+        self.redfish["@odata.id"] = self.BASE_URI + "/" \
+            + server_hardware["uuid"]
 
         self._validate()
 
@@ -190,7 +190,7 @@ class ComputerSystem(RedfishJsonValidator):
             raise OneViewRedfishError({
                 "errorCode": "INVALID_INFORMATION",
                 "message": "There is no mapping for {} on the OneView"
-                .format(reset_type)})
+                    .format(reset_type)})
 
         if reset_type == "PushPowerButton":
             if self.server_hardware["powerState"] == "On":
