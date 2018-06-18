@@ -26,6 +26,7 @@ class ZoneCollection(RedfishJsonValidator):
     """
 
     SCHEMA_NAME = 'ZoneCollection'
+    BASE_URI = '/redfish/v1/CompositionService/ResourceZones'
 
     def __init__(self, server_profile_templates):
         """ZoneCollection constructor

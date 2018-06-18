@@ -30,6 +30,8 @@ from flask import Response
 from flask_api import status
 
 # own libs
+from hpOneView import HPOneViewException
+
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.blueprints.chassis import chassis
@@ -74,6 +76,9 @@ from oneview_redfish_toolkit.blueprints.subscription\
 from oneview_redfish_toolkit.blueprints.subscription_collection \
     import subscription_collection
 from oneview_redfish_toolkit.blueprints.thermal import thermal
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
+from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
 from oneview_redfish_toolkit import util
 
@@ -125,6 +130,7 @@ def main(config_file_path, logging_config_file_path):
     app.register_blueprint(session)
     app.register_blueprint(resource_block_collection)
     app.register_blueprint(zone_collection)
+    app.register_blueprint(zone)
 
     if auth_mode == "conf":
         app.register_blueprint(event_service)
@@ -215,28 +221,12 @@ def main(config_file_path, logging_config_file_path):
     @app.errorhandler(status.HTTP_404_NOT_FOUND)
     def not_found(error):
         """Creates a Not Found Error response"""
-        redfish_error = RedfishError(
-            "GeneralError", error.description)
-        error_str = redfish_error.serialize()
-        return Response(
-            response=error_str,
-            status=status.HTTP_404_NOT_FOUND,
-            mimetype='application/json')
+        return ResponseBuilder.error_404(error)
 
     @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
     def internal_server_error(error):
         """Creates an Internal Server Error response"""
-
-        redfish_error = RedfishError(
-            "InternalError",
-            "The request failed due to an internal service error.  "
-            "The service is still operational.")
-        redfish_error.add_extended_info("InternalError")
-        error_str = redfish_error.serialize()
-        return Response(
-            response=error_str,
-            status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            mimetype="application/json")
+        return ResponseBuilder.error_500(error)
 
     @app.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
     def not_implemented(error):
@@ -252,6 +242,10 @@ def main(config_file_path, logging_config_file_path):
             response=error_str,
             status=status.HTTP_501_NOT_IMPLEMENTED,
             mimetype='application/json')
+
+    @app.errorhandler(HPOneViewException)
+    def hp_oneview_client_exception(exception):
+        return ResponseBuilder.error_by_hp_oneview_exception(exception)
 
     if util.config['redfish']['authentication_mode'] == 'conf':
         # Loading scmb connection
