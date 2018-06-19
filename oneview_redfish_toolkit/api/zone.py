@@ -84,7 +84,8 @@ class Zone(RedfishJsonValidator):
     def fill_capabilities_collection(self):
         capability = {
             "CapabilitiesObject": {
-                "@odata.id": "/redfish/v1/Systems/Capabilities"
+                "@odata.id": "/redfish/v1/Systems/Capabilities/" +
+                             self.redfish["Id"]
                 # todo update to use a constant when the
                 # Capabilities API has be created
             },
