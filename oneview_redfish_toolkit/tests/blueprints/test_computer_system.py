@@ -426,3 +426,39 @@ class TestComputerSystem(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(computer_system, 'g')
+    def test_remove_computer_system_exception(
+            self,
+            g):
+        """Tests remove ComputerSystem with ServerProfile exception"""
+
+        e = HPOneViewException({
+            'errorCode': 'ANOTHER_ERROR',
+            'message': 'server-profile error',
+        })
+        g.oneview_client.server_profiles.delete.side_effect = e
+
+        response = self.app.delete(
+            "/redfish/v1/Systems/"
+            "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(computer_system, 'g')
+    def test_remove_computer_system_not_deleted(
+            self,
+            g):
+        """Tests remove ComputerSystem with ServerProfile not deleted"""
+
+        g.oneview_client.server_profiles.delete.return_value = False
+
+        response = self.app.delete(
+            "/redfish/v1/Systems/"
+            "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
