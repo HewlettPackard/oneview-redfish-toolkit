@@ -23,25 +23,16 @@ from oneview_redfish_toolkit.tests.base_test import BaseTest
 class TestZone(BaseTest):
     """Tests for Zone class"""
 
-    def setUp(self):
-        """Tests preparation"""
+    with open('oneview_redfish_toolkit/mockups/oneview/'
+              'ServerProfileTemplate.json') as f:
+        server_profile_template = json.load(f)
 
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerProfileTemplate.json'
-        ) as f:
-            self.server_profile_template = json.load(f)
+    with open('oneview_redfish_toolkit/mockups/oneview/'
+              'AvailableTargetsForSPT.json') as f:
+        available_targets = json.load(f)
 
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'AvailableTargetsForSPT.json'
-        ) as f:
-            self.available_targets = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/Zone.json'
-        ) as f:
-            self.zone_mockup = json.load(f)
+    with open('oneview_redfish_toolkit/mockups/redfish/Zone.json') as f:
+        zone_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
