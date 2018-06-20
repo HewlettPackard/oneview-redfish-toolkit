@@ -87,8 +87,8 @@ class Zone(RedfishJsonValidator):
             "CapabilitiesObject": {
                 "@odata.id": "/redfish/v1/Systems/Capabilities/" +
                              self.redfish["Id"]
-                # TODO When the Capabilities API is created, replace
-                # the URI string with a constant
+                # TODO(@ricardogpsf) When the Capabilities API is created,
+                # replace the URI string with a constant
             },
             "UseCase": "ComputerSystemComposition",
             "Links": {
