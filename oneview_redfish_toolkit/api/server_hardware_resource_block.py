@@ -68,9 +68,8 @@ class ServerHardwareResourceBlock(ResourceBlock):
         self.redfish["ComputerSystems"] = list()
 
         computer_system = dict()
-        computer_system["@odata.id"] = "/redfish/v1/CompositionService" \
-            "/ResourceBlocks/{}/Systems/{}".format(
-                self.uuid, self.server_hardware["serialNumber"])
+        computer_system["@odata.id"] = self.BASE_URI + "/" + self.uuid \
+            + "/Systems/" + self.server_hardware["serialNumber"]
 
         self.redfish["ComputerSystems"].append(computer_system)
 
