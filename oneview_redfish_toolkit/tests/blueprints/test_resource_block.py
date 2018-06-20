@@ -19,62 +19,33 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Flask
-from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints import resource_block
-from oneview_redfish_toolkit.tests.base_test import BaseTest
+from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestResourceBlock(BaseTest):
+class TestResourceBlock(BaseFlaskTest):
     """Tests for ResourceBlock blueprint"""
 
     @classmethod
     def setUpClass(self):
-        # creates a test client
-        self.app = Flask(__name__)
+        super(TestResourceBlock, self).setUpClass()
 
         self.app.register_blueprint(resource_block.resource_block)
-
-        @self.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        def internal_server_error(error):
-            """General InternalServerError handler for the app"""
-
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
-
-        @self.app.errorhandler(status.HTTP_404_NOT_FOUND)
-        def not_found(error):
-            """Creates a Not Found Error response"""
-            redfish_error = RedfishError(
-                "GeneralError", error.description)
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_404_NOT_FOUND,
-                mimetype='application/json')
-
-        self.app = self.app.test_client()
-
-        # propagate the exceptions to the test client
-        self.app.testing = True
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             self.server_hardware = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview'
+            '/ServerProfileTemplate.json'
+        ) as f:
+            self.server_profile_template = json.load(f)
 
     @mock.patch.object(resource_block, 'g')
     def test_get_resource_block_not_found(self, g):
@@ -87,7 +58,7 @@ class TestResourceBlock(BaseTest):
         ]
         g.oneview_client.server_hardware.get.side_effect = error
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
             "/30303437-3034-4D32-3230-313133364752")
 
@@ -104,7 +75,7 @@ class TestResourceBlock(BaseTest):
         ]
         g.oneview_client.server_hardware.get.side_effect = Exception()
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
             "/30303437-3034-4D32-3230-313133364752")
 
@@ -116,7 +87,7 @@ class TestResourceBlock(BaseTest):
         self.assertEqual(error_500, result)
 
     @mock.patch.object(resource_block, 'g')
-    def test_get_resource_block(self, g):
+    def test_get_server_hardware_resource_block(self, g):
         with open(
             'oneview_redfish_toolkit/mockups/oneview'
             '/ServerProfileTemplates.json'
@@ -129,17 +100,37 @@ class TestResourceBlock(BaseTest):
         ) as f:
             expected_resource_block = json.load(f)
 
-        g.oneview_client.index_resources.get_all.return_value = [
-            {"category": "server-hardware"}
-        ]
         g.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
         g.oneview_client.server_profile_templates.get_all.return_value = \
             server_profile_templates
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
             "/30303437-3034-4D32-3230-313133364752")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual(expected_resource_block, result)
+
+    @mock.patch.object(resource_block, 'g')
+    def test_get_spt_resource_block(self, g):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish'
+            '/ServerProfileTemplateResourceBlock.json'
+        ) as f:
+            expected_resource_block = json.load(f)
+
+        g.oneview_client.server_hardware.get.side_effect = \
+            HPOneViewException(None)
+        g.oneview_client.server_profile_templates.get.return_value = \
+            self.server_profile_template
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
 
         result = json.loads(response.data.decode("utf-8"))
 
@@ -155,7 +146,7 @@ class TestResourceBlock(BaseTest):
         })
         g.oneview_client.server_hardware.get.side_effect = error
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
             "/30303437-3034-4D32-3230-313133364752/Systems/2M201136GR")
 
@@ -170,7 +161,7 @@ class TestResourceBlock(BaseTest):
         })
         g.oneview_client.server_hardware.get.side_effect = error
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
             "/30303437-3034-4D32-3230-313133364752/Systems/2M201136GR")
 
@@ -182,7 +173,7 @@ class TestResourceBlock(BaseTest):
         g.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
             "/30303437-3034-4D32-3230-313133364752/Systems/1234567890")
 
@@ -200,7 +191,7 @@ class TestResourceBlock(BaseTest):
         g.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
             "/30303437-3034-4D32-3230-313133364752/Systems/2M201136GR")
 
@@ -209,3 +200,60 @@ class TestResourceBlock(BaseTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(expected_computer_system, result)
+
+    @mock.patch.object(resource_block, 'g')
+    def test_get_ethernet_interface(self, g):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish'
+            '/ResourceBlockEthernetInterface.json'
+        ) as f:
+            expected_ethernet_interface = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/EthernetNetwork.json'
+        ) as f:
+            ethernet_network = json.load(f)
+
+        g.oneview_client.server_hardware.get.side_effect = \
+            HPOneViewException(None)
+        g.oneview_client.server_profile_templates.get.return_value = \
+            self.server_profile_template
+        g.oneview_client.ethernet_networks.get.return_value = \
+            ethernet_network
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0/EthernetInterfaces/1")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual(expected_ethernet_interface, result)
+
+    @mock.patch.object(resource_block, 'g')
+    def test_get_ethernet_interface_not_found(self, g):
+        error = HPOneViewException({
+            'errorCode': 'RESOURCE_NOT_FOUND',
+            'message': 'server-profile-template not found'
+        })
+        g.oneview_client.server_profile_templates.get.side_effect = error
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0/EthernetInterfaces/1")
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(resource_block, 'g')
+    def test_get_ethernet_interface_invalid_id(self, g):
+        g.oneview_client.server_profile_templates.get.return_value = \
+            self.server_profile_template
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0/EthernetInterfaces/999")
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)

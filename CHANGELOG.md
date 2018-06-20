@@ -24,6 +24,8 @@
  - #260 Create a ResourceZone for each Server Profile Template
  - #250 Implement ResourceBlock for Server Hardware
  - #300 Include Storage Resource Blocks into Resource Blocks collection
+ - #261 Implement Network Resource Block
+ - #298 Include Network Resource Blocks into Resource Blocks collection
 
 # New Redfish resources
  - EventService
@@ -35,6 +37,7 @@
  - Zone
  - ZoneCollection
  - ResourceBlock
+ - EthernetInterface
 
 
 # 0.2.0

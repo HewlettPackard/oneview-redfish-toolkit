@@ -47,29 +47,29 @@ class ResourceBlockCollection(RedfishJsonValidator):
         self.redfish["@odata.type"] = \
             "#ResourceBlockCollection.ResourceBlockCollection"
         self.redfish["Name"] = "Resource Block Collection"
-        self.redfish["Members@odata.count"] = len(self.members)
+
         self.redfish["Members"] = list()
-        self._set_redfish_members()
+        self._fill_resource_block_list()
+        self.redfish["Members@odata.count"] = len(self.redfish["Members"])
+
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ResourceBlockCollection" \
             ".ResourceBlockCollection"
-        self.redfish["@odata.id"] = "/redfish/v1/CompositionService" \
-            "/ResourceBlocks"
+        self.redfish["@odata.id"] = self.BASE_URI
 
         self._validate()
 
-    def _set_redfish_members(self):
+    def _fill_resource_block_list(self):
         """Mounts the list of the ResourceBlock members
 
-            Populates self.redfish["Members"] with the links to each Redfish
-            ResourceBlock.
+            Populates self.redfish["Members"] with the links to ResourceBlocks.
         """
 
-        for item in self.members:
+        for block in self.members:
+            block_id = block.get("uuid", block["uri"].split("/")[-1])
+
             resource_block = dict()
 
-            uuid = item.get('uuid') or item["uri"].split("/")[-1]
-            resource_block["@odata.id"] = "/redfish/v1/CompositionService/" \
-                "ResourceBlocks/" + uuid
+            resource_block["@odata.id"] = self.BASE_URI + "/" + block_id
 
             self.redfish["Members"].append(resource_block)
