@@ -1,7 +1,7 @@
 {
     "@odata.type": "#Zone.v1_1_0.Zone",
     "Id": "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0",
-    "Name": "Resource Zone Apache_Template",
+    "Name": "Apache_Template",
     "Status": {
         "State": "Enabled",
         "Health": "OK"
@@ -10,9 +10,6 @@
         "ResourceBlocks": [
             {
                 "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/30303437-3034-4D32-3230-313131324752"
-            },
-            {
-                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
             }
         ]
     },
