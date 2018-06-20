@@ -33,7 +33,8 @@ from oneview_redfish_toolkit.tests.base_test import BaseTest
 class TestResourceBlock(BaseTest):
     """Tests for ResourceBlock blueprint"""
 
-    def setUp(self):
+    @classmethod
+    def setUpClass(self):
         # creates a test client
         self.app = Flask(__name__)
 
@@ -69,6 +70,11 @@ class TestResourceBlock(BaseTest):
 
         # propagate the exceptions to the test client
         self.app.testing = True
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
+        ) as f:
+            self.server_hardware = json.load(f)
 
     @mock.patch.object(resource_block, 'g')
     def test_get_resource_block_not_found(self, g):
@@ -112,11 +118,6 @@ class TestResourceBlock(BaseTest):
     @mock.patch.object(resource_block, 'g')
     def test_get_resource_block(self, g):
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            server_hardware = json.load(f)
-
-        with open(
             'oneview_redfish_toolkit/mockups/oneview'
             '/ServerProfileTemplates.json'
         ) as f:
@@ -131,7 +132,8 @@ class TestResourceBlock(BaseTest):
         g.oneview_client.index_resources.get_all.return_value = [
             {"category": "server-hardware"}
         ]
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
         g.oneview_client.server_profile_templates.get_all.return_value = \
             server_profile_templates
 
@@ -177,13 +179,8 @@ class TestResourceBlock(BaseTest):
 
     @mock.patch.object(resource_block, 'g')
     def test_get_computer_system_invalid_serial(self, g):
-
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            server_hardware = json.load(f)
-
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
 
         response = self.app.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -195,17 +192,13 @@ class TestResourceBlock(BaseTest):
     @mock.patch.object(resource_block, 'g')
     def test_get_computer_system(self, g):
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            server_hardware = json.load(f)
-
-        with open(
             'oneview_redfish_toolkit/mockups/redfish'
             '/ResourceBlockComputerSystem.json'
         ) as f:
             expected_computer_system = json.load(f)
 
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
 
         response = self.app.get(
             "/redfish/v1/CompositionService/ResourceBlocks"

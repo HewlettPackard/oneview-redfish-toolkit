@@ -24,18 +24,17 @@ from flask_api import status
 
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 from oneview_redfish_toolkit.api.resource_block_computer_system \
     import ResourceBlockComputerSystem
 from oneview_redfish_toolkit.api.server_hardware_resource_block \
     import ServerHardwareResourceBlock
 
 
-RESOURCE_BLOCK_URI = "/redfish/v1/CompositionService/ResourceBlocks"
-
 resource_block = Blueprint("resource_block", __name__)
 
 
-@resource_block.route(RESOURCE_BLOCK_URI + "/<uuid>", methods=["GET"])
+@resource_block.route(ResourceBlock.BASE_URI + "/<uuid>", methods=["GET"])
 def get_resource_block(uuid):
     """Get the Redfish ResourceBlock for a given UUID.
 
@@ -106,7 +105,7 @@ def get_resource_block(uuid):
 
 
 @resource_block.route(
-    RESOURCE_BLOCK_URI + "/<uuid>/Systems/<serial>", methods=["GET"])
+    ResourceBlock.BASE_URI + "/<uuid>/Systems/<serial>", methods=["GET"])
 def get_resource_block_computer_system(uuid, serial):
     """Get Computer System of a Resource Block
 

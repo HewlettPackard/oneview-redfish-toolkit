@@ -26,6 +26,7 @@ class ResourceBlock(RedfishJsonValidator):
     """
 
     SCHEMA_NAME = 'ResourceBlock'
+    BASE_URI = '/redfish/v1/CompositionService/ResourceBlocks'
 
     def __init__(self, uuid, oneview_resource):
         """ResourceBlock constructor
@@ -50,5 +51,4 @@ class ResourceBlock(RedfishJsonValidator):
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ResourceBlock.ResourceBlock"
-        self.redfish["@odata.id"] = \
-            "/redfish/v1/CompositionService/ResourceBlocks/" + uuid
+        self.redfish["@odata.id"] = self.BASE_URI + "/" + uuid
