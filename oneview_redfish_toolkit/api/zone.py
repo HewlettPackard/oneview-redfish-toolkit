@@ -36,10 +36,12 @@ class Zone(RedfishJsonValidator):
         """Zone constructor
 
             Populates self.redfish with the contents of
-            server profile template dict from Oneview
+            server profile template and available targets dict from Oneview
 
             Args:
                 profile_template: Oneview's server profile template dict
+                available_targets_obj: Oneview's available targets dict
+                (servers and empty bays) for assignment to a server profile
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -47,8 +49,9 @@ class Zone(RedfishJsonValidator):
 
         self.redfish["@odata.type"] = "#Zone.v1_1_0.Zone"
         self.redfish["Id"] = profile_template["uri"].split("/")[-1]
-        self.redfish["Name"] = "Resource Zone " + profile_template["name"]
-        self.redfish["Status"] = status_mapping.STATUS_MAP["OK"]
+        self.redfish["Name"] = profile_template["name"]
+        status_from_ov = profile_template["status"]
+        self.redfish["Status"] = status_mapping.STATUS_MAP[status_from_ov]
 
         self.redfish["Links"] = dict()
         self.redfish["Links"]["ResourceBlocks"] = list()
@@ -73,8 +76,6 @@ class Zone(RedfishJsonValidator):
         for item in available_targets:
             self.add_resource_block_item_to_links(item, "serverHardwareUri")
 
-        self.add_resource_block_item_to_links(profile_template, "uri")
-
     def add_resource_block_item_to_links(self, original_dict, uri_key):
         uuid = original_dict[uri_key].split("/")[-1]
         dict_item = dict()
@@ -86,8 +87,8 @@ class Zone(RedfishJsonValidator):
             "CapabilitiesObject": {
                 "@odata.id": "/redfish/v1/Systems/Capabilities/" +
                              self.redfish["Id"]
-                # todo update to use a constant when the
-                # Capabilities API has be created
+                # TODO When the Capabilities API is created, replace
+                # the URI string with a constant
             },
             "UseCase": "ComputerSystemComposition",
             "Links": {
