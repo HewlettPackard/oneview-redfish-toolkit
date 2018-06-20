@@ -44,8 +44,8 @@ class ResponseBuilder(object):
     @staticmethod
     def error_by_hp_oneview_exception(exception):
         error_code = exception.oneview_response['errorCode']
-        http_error_code = HP_ONEVIEW_ERROR_CODE_MAP.get(error_code)\
-            or status.HTTP_500_INTERNAL_SERVER_ERROR
+        http_error_code = HP_ONEVIEW_ERROR_CODE_MAP\
+            .get(error_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         method_name = 'error_' + str(http_error_code)
         handler_method_to_call = getattr(ResponseBuilder, method_name)
