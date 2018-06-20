@@ -27,6 +27,7 @@ from flask_api import status
 
 # own libs
 from hpOneView.exceptions import HPOneViewException
+from hpOneView.resources.task_monitor import TASK_ERROR_STATES
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 
@@ -189,7 +190,7 @@ def change_power_state(uuid):
 
 @computer_system.route(
     "/redfish/v1/Systems/<uuid>", methods=["DELETE"])
-def remove_subscription(uuid):
+def remove_computer_system(uuid):
     """Removes a specific System
 
         Args:
@@ -204,14 +205,26 @@ def remove_subscription(uuid):
     """
     try:
         # Deletes server profile for given UUID
-        sucess = g.oneview_client.server_profiles.delete(uuid)
+        response = g.oneview_client.server_profiles.delete(uuid)
 
-        if not sucess:
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if response is True:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
-        return Response(
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
+        # Check if returned a task
+        if type(response) is dict:
+            # Check if task is completed
+            if response['taskState'] == 'Completed':
+                return Response(status=status.HTTP_204_NO_CONTENT)
+
+            # Log task error message if it has one
+            if response['taskState'] in TASK_ERROR_STATES:
+                if 'taskErrors' in response and \
+                    len(response['taskErrors']) > 0:
+                    err = response['taskErrors'][0]
+                    if 'message' in err:
+                        logging.exception(err['message'])
+
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except HPOneViewException as e:
         # In case of error log exception and abort
         logging.exception(e)

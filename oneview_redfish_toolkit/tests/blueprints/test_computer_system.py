@@ -398,15 +398,16 @@ class TestComputerSystem(BaseFlaskTest):
     def test_remove_computer_system(self, g):
         """Tests delete computer system"""
 
+        g.oneview_client.server_profiles.delete.return_value = True
+
         response = self.app.delete(
             "/redfish/v1/Systems/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
 
         self.assertEqual(
-            status.HTTP_200_OK,
+            status.HTTP_204_NO_CONTENT,
             response.status_code
         )
-        self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(computer_system, 'g')
     def test_remove_computer_system_sp_not_found(
@@ -454,6 +455,43 @@ class TestComputerSystem(BaseFlaskTest):
         """Tests remove ComputerSystem with ServerProfile not deleted"""
 
         g.oneview_client.server_profiles.delete.return_value = False
+
+        response = self.app.delete(
+            "/redfish/v1/Systems/"
+            "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(computer_system, 'g')
+    def test_remove_computer_system_task_completed(
+            self,
+            g):
+        """Tests remove ComputerSystem with task completed"""
+
+        task = {'taskState': 'Completed'}
+
+        g.oneview_client.server_profiles.delete.return_value = task
+
+        response = self.app.delete(
+            "/redfish/v1/Systems/"
+            "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
+
+        self.assertEqual(
+            status.HTTP_204_NO_CONTENT,
+            response.status_code
+        )
+
+    @mock.patch.object(computer_system, 'g')
+    def test_remove_computer_system_task_error(
+            self,
+            g):
+        """Tests remove ComputerSystem with task completed"""
+
+        task = {'taskState': 'Error'}
+
+        g.oneview_client.server_profiles.delete.return_value = task
 
         response = self.app.delete(
             "/redfish/v1/Systems/"
