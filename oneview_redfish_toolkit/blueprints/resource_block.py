@@ -27,8 +27,12 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 from oneview_redfish_toolkit.api.resource_block_computer_system \
     import ResourceBlockComputerSystem
+from oneview_redfish_toolkit.api.resource_block_ethernet_interface \
+    import ResourceBlockEthernetInteface
 from oneview_redfish_toolkit.api.server_hardware_resource_block \
     import ServerHardwareResourceBlock
+from oneview_redfish_toolkit.api.server_profile_template_resource_block \
+    import ServerProfileTemplateResourceBlock
 
 
 resource_block = Blueprint("resource_block", __name__)
@@ -47,33 +51,21 @@ def get_resource_block(uuid):
     """
 
     try:
-        resource_index = g.oneview_client.index_resources.get_all(
-            filter='uuid=' + uuid
-        )
+        resource = _get_oneview_resource(uuid)
+        category = resource["category"]
 
-        if resource_index:
-            category = resource_index[0]["category"]
-        else:
-            raise OneViewRedfishError('Cannot find resource')
+        if category == "server-hardware":
+            resource_block = _build_computer_system_resource_block(
+                uuid, resource)
 
-        if category == 'server-hardware':
-            # Get server hardware for given UUID
-            server_hardware = g.oneview_client.server_hardware.get(uuid)
+        elif category == "server-profile-templates":
+            resource_block = \
+                ServerProfileTemplateResourceBlock(uuid, resource)
 
-            eTag = server_hardware['eTag']
-            eg_uri = server_hardware["serverGroupUri"]
-            sht_uri = server_hardware["serverHardwareTypeUri"]
+        elif category == "drives":
+            # TODO(galeno) Add support for storage resource blocks (OV drives)
+            raise OneViewRedfishError('Resource block type not found')
 
-            filters = list()
-            filters.append("enclosureGroupUri='{}'".format(eg_uri))
-            filters.append("serverHardwareTypeUri='{}'".format(sht_uri))
-
-            server_profile_templates = g.oneview_client \
-                .server_profile_templates.get_all(filter=filters)
-
-            # Build ResourceBlock object and validates it
-            resource_block = ServerHardwareResourceBlock(
-                uuid, server_hardware, server_profile_templates)
         else:
             raise OneViewRedfishError('Resource block type not found')
 
@@ -85,7 +77,7 @@ def get_resource_block(uuid):
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
-        response.headers.add("ETag", "W/" + eTag)
+        response.headers.add("ETag", "W/" + resource["eTag"])
 
         return response
     except HPOneViewException as e:
@@ -149,3 +141,98 @@ def get_resource_block_computer_system(uuid, serial):
         # In case of error log exception and abort
         logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@resource_block.route(
+    ResourceBlock.BASE_URI + "/<uuid>/EthernetInterfaces/<id>",
+    methods=["GET"])
+def get_resource_block_ethernet_interface(uuid, id):
+    """Get the Redfish ResourceBlock of type Network for the given UUID and ID.
+
+        Return ResourceBlock redfish JSON for a given UUID and ID.
+        Logs exception of any error and return Internal Server
+        Error or Not Found.
+
+        Returns:
+            JSON: Redfish json with ResourceBlock.
+    """
+
+    try:
+        server_profile_template = \
+            g.oneview_client.server_profile_templates.get(uuid)
+
+        connSettings = server_profile_template["connectionSettings"]
+        connection = None
+
+        for conn in connSettings["connections"]:
+            if str(conn["id"]) == id:
+                connection = conn
+                break
+
+        if not connection:
+            raise OneViewRedfishError("Ethernet interface not found")
+
+        network = g.oneview_client.ethernet_networks.get(conn["networkUri"])
+
+        ethernet_interface = ResourceBlockEthernetInteface(
+            server_profile_template, connection, network)
+
+        json_str = ethernet_interface.serialize()
+
+        # Build response and returns
+        response = Response(
+            response=json_str,
+            status=status.HTTP_200_OK,
+            mimetype="application/json")
+        response.headers.add("ETag", "W/" + server_profile_template["eTag"])
+
+        return response
+    except HPOneViewException as e:
+        # In case of error log exception and abort
+        logging.exception(e)
+        abort(status.HTTP_404_NOT_FOUND, "Resource block not found")
+
+    except OneViewRedfishError as e:
+        # In case of error log exception and abort
+        logging.exception('Unexpected error: {}'.format(e))
+        abort(status.HTTP_404_NOT_FOUND, e.msg)
+
+    except Exception as e:
+        # In case of error print exception and abort
+        logging.exception('Unexpected error: {}'.format(e))
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def _get_oneview_resource(uuid):
+    drives_param = "/rest/drives/" + uuid
+    categories = [
+        {"func": g.oneview_client.server_hardware.get, "param": uuid},
+        {"func": g.oneview_client.server_profile_templates.get, "param": uuid},
+        {"func": g.oneview_client.index_resources.get, "param": drives_param}
+    ]
+
+    for category in categories:
+        try:
+            resource = category["func"](category["param"])
+
+            return resource
+        except HPOneViewException:
+            pass
+
+    raise OneViewRedfishError("Could not find resource block with id " + uuid)
+
+
+def _build_computer_system_resource_block(uuid, server_hardware):
+    eg_uri = server_hardware["serverGroupUri"]
+    sht_uri = server_hardware["serverHardwareTypeUri"]
+
+    filters = list()
+    filters.append("enclosureGroupUri='{}'".format(eg_uri))
+    filters.append("serverHardwareTypeUri='{}'".format(sht_uri))
+
+    server_profile_templates = g.oneview_client \
+        .server_profile_templates.get_all(filter=filters)
+
+    # Build ResourceBlock object and validates it
+    return ServerHardwareResourceBlock(
+        uuid, server_hardware, server_profile_templates)
