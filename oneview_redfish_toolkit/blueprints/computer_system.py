@@ -195,41 +195,24 @@ def remove_computer_system(uuid):
 
         Args:
             uuid: The System ID.
-
-        Exceptions:
-            HPOneViewException: When some OneView resource was not found.
-            return abort(404)
-
-            Exception: Unexpected error.
-            return abort(500)
     """
-    try:
-        # Deletes server profile for given UUID
-        response = g.oneview_client.server_profiles.delete(uuid)
+    # Deletes server profile for given UUID
+    response = g.oneview_client.server_profiles.delete(uuid)
 
-        if response is True:
+    if response is True:
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    # Check if returned a task
+    if type(response) is dict:
+        # Check if task is completed
+        if response['taskState'] == 'Completed':
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-        # Check if returned a task
-        if type(response) is dict:
-            # Check if task is completed
-            if response['taskState'] == 'Completed':
-                return Response(status=status.HTTP_204_NO_CONTENT)
+        # Log task error messages if it has
+        if response['taskState'] in TASK_ERROR_STATES and \
+            'taskErrors' in response and len(response['taskErrors']) > 0:
+            for err in response['taskErrors']:
+                if 'message' in err:
+                    logging.exception(err['message'])
 
-            # Log task error message if it has one
-            if response['taskState'] in TASK_ERROR_STATES:
-                if 'taskErrors' in response and \
-                    len(response['taskErrors']) > 0:
-                    err = response['taskErrors'][0]
-                    if 'message' in err:
-                        logging.exception(err['message'])
-
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except HPOneViewException as e:
-        # In case of error log exception and abort
-        logging.exception(e)
-
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            abort(status.HTTP_404_NOT_FOUND, "Computer Sytem not found")
-        else:
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -18,7 +18,11 @@ from flask import Flask
 from flask import Response
 from flask_api import status
 
+from hpOneView import HPOneViewException
+
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
@@ -74,6 +78,10 @@ class BaseFlaskTest(BaseTest):
                 response=error_str,
                 status=status.HTTP_400_BAD_REQUEST,
                 mimetype='application/json')
+
+        @cls.app.errorhandler(HPOneViewException)
+        def hp_oneview_client_exception(exception):
+            return ResponseBuilder.error_by_hp_oneview_exception(exception)
 
         cls.client = cls.app.test_client()
 

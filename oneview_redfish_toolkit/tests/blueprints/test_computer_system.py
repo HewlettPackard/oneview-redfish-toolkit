@@ -400,7 +400,7 @@ class TestComputerSystem(BaseFlaskTest):
 
         g.oneview_client.server_profiles.delete.return_value = True
 
-        response = self.app.delete(
+        response = self.client.delete(
             "/redfish/v1/Systems/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
 
@@ -421,7 +421,7 @@ class TestComputerSystem(BaseFlaskTest):
         })
         g.oneview_client.server_profiles.delete.side_effect = e
 
-        response = self.app.delete(
+        response = self.client.delete(
             "/redfish/v1/Systems/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
 
@@ -440,7 +440,7 @@ class TestComputerSystem(BaseFlaskTest):
         })
         g.oneview_client.server_profiles.delete.side_effect = e
 
-        response = self.app.delete(
+        response = self.client.delete(
             "/redfish/v1/Systems/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
 
@@ -456,7 +456,7 @@ class TestComputerSystem(BaseFlaskTest):
 
         g.oneview_client.server_profiles.delete.return_value = False
 
-        response = self.app.delete(
+        response = self.client.delete(
             "/redfish/v1/Systems/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
 
@@ -474,7 +474,7 @@ class TestComputerSystem(BaseFlaskTest):
 
         g.oneview_client.server_profiles.delete.return_value = task
 
-        response = self.app.delete(
+        response = self.client.delete(
             "/redfish/v1/Systems/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
 
@@ -493,7 +493,7 @@ class TestComputerSystem(BaseFlaskTest):
 
         g.oneview_client.server_profiles.delete.return_value = task
 
-        response = self.app.delete(
+        response = self.client.delete(
             "/redfish/v1/Systems/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
 
