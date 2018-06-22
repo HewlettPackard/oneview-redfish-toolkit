@@ -200,13 +200,15 @@ def remove_computer_system(uuid):
     response = g.oneview_client.server_profiles.delete(uuid)
 
     if response is True:
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_204_NO_CONTENT,
+                        mimetype="application/json")
 
     # Check if returned a task
     if type(response) is dict:
         # Check if task is completed
         if response['taskState'] == 'Completed':
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            return Response(status=status.HTTP_204_NO_CONTENT,
+                            mimetype="application/json")
 
         # Log task error messages if it has
         if response['taskState'] in TASK_ERROR_STATES and \
