@@ -28,7 +28,10 @@ class ResourceBlockCollection(RedfishJsonValidator):
     SCHEMA_NAME = 'ResourceBlockCollection'
     BASE_URI = '/redfish/v1/CompositionService/ResourceBlocks'
 
-    def __init__(self, server_hardware=[], server_profile_templates=[]):
+    def __init__(self,
+                 server_hardware=[],
+                 server_profile_templates=[],
+                 drives=[]):
         """ResourceBlockCollection constructor
 
             Populates self.redfish with a hardcoded ResourceBlockCollection
@@ -37,7 +40,9 @@ class ResourceBlockCollection(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        self.members = server_hardware + server_profile_templates
+        self.members = server_hardware \
+            + server_profile_templates \
+            + drives
 
         self.redfish["@odata.type"] = \
             "#ResourceBlockCollection.ResourceBlockCollection"

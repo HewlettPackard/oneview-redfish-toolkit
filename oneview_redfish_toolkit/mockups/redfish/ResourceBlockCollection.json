@@ -1,7 +1,7 @@
 {
     "@odata.type": "#ResourceBlockCollection.ResourceBlockCollection",
     "Name": "Resource Block Collection",
-    "Members@odata.count": 26,
+    "Members@odata.count": 31,
     "Members": [
         {
             "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/30373737-3237-4D32-3230-313531354752"
@@ -80,6 +80,21 @@
         },
         {
             "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/75871d70-789e-4cf9-8bc8-6f4d73193578"
+        },
+        {
+            "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/84d382aa-33fd-4447-a0ef-5d96bb34b345"
+        },
+        {
+            "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/53bd734f-19fe-42fe-a8ef-3f1a83b4e5c1"
+        },
+        {
+            "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/b102f715-84b1-4157-ba8d-639574e0aedc"
+        },
+        {
+            "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/ebd096fe-c036-40a4-bbff-5397ed0c2e6a"
+        },
+        {
+            "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/d8b142ba-6762-470d-9082-0e53d0499303"
         }
     ],
     "@odata.context": "/redfish/v1/$metadata#ResourceBlockCollection.ResourceBlockCollection",

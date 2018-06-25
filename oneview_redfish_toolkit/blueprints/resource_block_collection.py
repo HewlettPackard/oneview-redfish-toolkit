@@ -14,23 +14,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
-
-from flask import abort
 from flask import Blueprint
 from flask import g
-from flask import Response
-from flask_api import status
 
 from oneview_redfish_toolkit.api.resource_block_collection \
     import ResourceBlockCollection
-
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
 resource_block_collection = Blueprint("resource_block_collection", __name__)
 
 
 @resource_block_collection.route(
-    "/redfish/v1/CompositionService/ResourceBlocks/", methods=["GET"])
+    "/redfish/v1/CompositionService/ResourceBlocks", methods=["GET"])
 def get_resource_block_collection():
     """Get the Redfish ResourceBlock Collection.
 
@@ -42,25 +38,16 @@ def get_resource_block_collection():
             JSON: Redfish json with ResourceBlockCollection.
     """
 
-    try:
-        # Gets all server hardware
-        server_hardware_list = g.oneview_client.server_hardware.get_all()
-        server_profile_template_list = g.oneview_client.\
-            server_profile_templates.get_all()
+    # Gets all server hardware
+    server_hardware_list = g.oneview_client.server_hardware.get_all()
+    server_profile_template_list = g.oneview_client.\
+        server_profile_templates.get_all()
+    drives_list = g.oneview_client.index_resources \
+        .get_all(category="drives", count=10000)
 
-        # Build ResourceBlockCollection object and validates it
-        cc = ResourceBlockCollection(server_hardware_list,
-                                     server_profile_template_list)
+    # Build ResourceBlockCollection object and validates it
+    cc = ResourceBlockCollection(server_hardware_list,
+                                 server_profile_template_list,
+                                 drives_list)
 
-        # Build redfish json
-        json_str = cc.serialize()
-
-        # Build response and returns
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return ResponseBuilder.success(cc)
