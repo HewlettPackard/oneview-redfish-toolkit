@@ -23,6 +23,7 @@
  - #237 Implement base CollectionCapabilities: "@Redfish.CollectionCapabilities" in the ResourceZone
  - #260 Create a ResourceZone for each Server Profile Template
  - #250 Implement ResourceBlock for Server Hardware
+ - #300 Include Storage Resource Blocks into Resource Blocks collection
 
 # New Redfish resources
  - EventService
