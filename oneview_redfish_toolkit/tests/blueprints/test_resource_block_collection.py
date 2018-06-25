@@ -47,8 +47,8 @@ class TestResourceBlockCollection(BaseFlaskTest):
         ) as f:
             error_500 = json.load(f)
 
-        response = self.client.get(
-            "/redfish/v1/CompositionService/ResourceBlocks/")
+        response = self.app.get(
+            "/redfish/v1/CompositionService/ResourceBlocks")
 
         result = json.loads(response.data.decode("utf-8"))
 
@@ -74,6 +74,11 @@ class TestResourceBlockCollection(BaseFlaskTest):
             server_profile_template_list = json.load(f)
 
         with open(
+            'oneview_redfish_toolkit/mockups/oneview/Drives.json'
+        ) as f:
+            drives_list = json.load(f)
+
+        with open(
             'oneview_redfish_toolkit/mockups/redfish/'
             'ResourceBlockCollection.json'
         ) as f:
@@ -85,9 +90,12 @@ class TestResourceBlockCollection(BaseFlaskTest):
         g_mock.oneview_client.server_profile_templates.get_all.return_value = \
             server_profile_template_list
 
+        g_mock.oneview_client.index_resources.get_all.return_value = \
+            drives_list
+
         # Get ResourceBlockCollection
-        response = self.client.get(
-            "/redfish/v1/CompositionService/ResourceBlocks/")
+        response = self.app.get(
+            "/redfish/v1/CompositionService/ResourceBlocks")
 
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
@@ -103,10 +111,11 @@ class TestResourceBlockCollection(BaseFlaskTest):
 
         g_mock.oneview_client.server_hardware.get_all.return_value = []
         g_mock.oneview_client.server_profile_template.get_all.return_value = []
+        g_mock.oneview_client.index_resources.get_all.return_value = []
 
         # Get ResourceBlockCollection
-        response = self.client.get(
-            "/redfish/v1/CompositionService/ResourceBlocks/")
+        response = self.app.get(
+            "/redfish/v1/CompositionService/ResourceBlocks")
 
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))

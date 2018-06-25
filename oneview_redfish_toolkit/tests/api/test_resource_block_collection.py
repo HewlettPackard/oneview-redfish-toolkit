@@ -42,6 +42,12 @@ class TestResourceBlockCollection(BaseTest):
         ) as f:
             self.server_profile_template_list = json.load(f)
 
+        # Loading Drives list mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/Drives.json'
+        ) as f:
+            self.drives_list = json.load(f)
+
         # Loading ResourceBlockCollection result mockup
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
@@ -53,7 +59,9 @@ class TestResourceBlockCollection(BaseTest):
         # Tests if class is correctly instantiated and validated
         try:
             resource_block_collection = ResourceBlockCollection(
-                self.server_hardware_list, self.server_profile_template_list)
+                self.server_hardware_list,
+                self.server_profile_template_list,
+                self.drives_list)
         except Exception as e:
             self.fail("Failed to instantiate ResourceBlockCollection class."
                       " Error: {}".format(e))
@@ -64,7 +72,9 @@ class TestResourceBlockCollection(BaseTest):
         # Tests the serialize function result against known result
         try:
             resource_block_collection = ResourceBlockCollection(
-                self.server_hardware_list, self.server_profile_template_list)
+                self.server_hardware_list,
+                self.server_profile_template_list,
+                self.drives_list)
         except Exception as e:
             self.fail("Failed to instantiate ResourceBlockCollection class."
                       " Error: {}".format(e))
