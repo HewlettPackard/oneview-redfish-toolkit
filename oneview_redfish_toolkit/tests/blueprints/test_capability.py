@@ -52,7 +52,7 @@ class TestCapability(BaseFlaskTest):
             .return_value = server_profile_template
 
         response = self.client.get(
-            "/redfish/v1/System/Capabilities/1f0ca9ef-7f81-45e3"
+            "/redfish/v1/System/1f0ca9ef-7f81-45e3"
             "-9d64-341b46cf87e0")
 
         # Gets json from response
@@ -74,7 +74,7 @@ class TestCapability(BaseFlaskTest):
             })
 
         response = self.client.get(
-            "/redfish/v1/System/Capabilities/1f0ca9ef-7f81-45e3"
+            "/redfish/v1/System/1f0ca9ef-7f81-45e3"
             "-9d64-341b46cf87e0")
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
