@@ -1,0 +1,14 @@
+{
+    "@odata.type": "#ComputerSystem.v1_4_0.ComputerSystem",
+    "Name": "Capabilities for the Zone",
+    "Id@Redfish.RequiredOnCreate": true,
+    "Name@Redfish.RequiredOnCreate": true,
+    "Name@Redfish.SetOnlyOnCreate": true,
+    "Links@Redfish.RequiredOnCreate": true,
+    "Links": {
+        "ResourceBlocks@Redfish.RequiredOnCreate": true,
+        "ResourceBlocks@Redfish.UpdatableAfterCreate": true
+    },
+    "@odata.context": "/redfish/v1/$metadata#ComputerSystem.ComputerSystem",
+    "@odata.id": "/redfish/v1/System/Capabilities/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
+}
