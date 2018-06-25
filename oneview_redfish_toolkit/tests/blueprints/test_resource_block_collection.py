@@ -37,28 +37,6 @@ class TestResourceBlockCollection(BaseFlaskTest):
             resource_block_collection.resource_block_collection)
 
     @mock.patch.object(resource_block_collection, 'g')
-    def test_get_resource_block_collection_fail(self, g_mock):
-        """Tests ResourceBlockCollection with an error"""
-
-        g_mock.oneview_client.server_hardware.get_all.side_effect = Exception()
-
-        with open(
-            'oneview_redfish_toolkit/mockups/errors/Error500.json'
-        ) as f:
-            error_500 = json.load(f)
-
-        response = self.app.get(
-            "/redfish/v1/CompositionService/ResourceBlocks")
-
-        result = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-            response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(error_500, result)
-
-    @mock.patch.object(resource_block_collection, 'g')
     def test_get_resource_block_collection(self, g_mock):
         """Tests ResourceBlockCollection"""
 
@@ -94,7 +72,7 @@ class TestResourceBlockCollection(BaseFlaskTest):
             drives_list
 
         # Get ResourceBlockCollection
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks")
 
         # Gets json from response
@@ -114,7 +92,7 @@ class TestResourceBlockCollection(BaseFlaskTest):
         g_mock.oneview_client.index_resources.get_all.return_value = []
 
         # Get ResourceBlockCollection
-        response = self.app.get(
+        response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks")
 
         # Gets json from response
