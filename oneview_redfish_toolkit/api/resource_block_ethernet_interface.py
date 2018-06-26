@@ -16,18 +16,33 @@
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit.api.resource_block_collection \
+    import ResourceBlockCollection
 
 
-class ResourceBlockEthernetInteface(RedfishJsonValidator):
+class ResourceBlockEthernetInterface(RedfishJsonValidator):
     """Creates a Ethernet Interface Redfish dict
 
-        Populates self.redfish with EthernetInterface data retrieved
+        Populates self.redfish with ethernet interface data retrieved
         from OneView
     """
 
     SCHEMA_NAME = 'EthernetInterface'
 
     def __init__(self, server_profile_template, connection, network):
+        """ResourceBlockEthernetInterface constructor
+
+            Populates self.redfish with some hardcoded Resource Block
+            values and with Server Profile Template and Ethernet Network
+            data retrieved from OneView.
+
+            Args:
+                server_profile_template: Server Profile Template dict
+                from OneView
+                connection: Server Profile Template Connection dict
+                from OneView
+                network: Ethernet network dict from OneView
+        """
 
         super().__init__(self.SCHEMA_NAME)
 
@@ -46,7 +61,7 @@ class ResourceBlockEthernetInteface(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#EthernetInterface.EthernetInterface"
         self.redfish["@odata.id"] = \
-            "/redfish/v1/CompositionService/ResourceBlocks/" \
+            ResourceBlockCollection.BASE_URI + "/" \
             + server_profile_template_id \
             + "/EthernetInterfaces/" \
             + str(connection["id"])

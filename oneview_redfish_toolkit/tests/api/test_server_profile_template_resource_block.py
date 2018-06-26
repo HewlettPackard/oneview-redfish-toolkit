@@ -43,31 +43,19 @@ class TestServerProfileTemplateResourceBlock(BaseTest):
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
-        try:
-            resource_block = ServerProfileTemplateResourceBlock(
-                '1f0ca9ef-7f81-45e3-9d64-341b46cf87e0',
-                self.server_profile_template)
-        except Exception as e:
-            self.fail(
-                "Failed to instantiate ServerProfileTemplateResourceBlock"
-                " class. Error: {}".format(e))
+        resource_block = ServerProfileTemplateResourceBlock(
+            '1f0ca9ef-7f81-45e3-9d64-341b46cf87e0',
+            self.server_profile_template)
 
         self.assertIsInstance(
             resource_block, ServerProfileTemplateResourceBlock)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
-        try:
-            resource_block = ServerProfileTemplateResourceBlock(
-                '1f0ca9ef-7f81-45e3-9d64-341b46cf87e0',
-                self.server_profile_template)
-        except Exception as e:
-            self.fail(
-                "Failed to instantiate ServerProfileTemplateResourceBlock"
-                "  class. Error: {}".format(e))
-        try:
-            result = json.loads(resource_block.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: {}".format(e))
+        resource_block = ServerProfileTemplateResourceBlock(
+            '1f0ca9ef-7f81-45e3-9d64-341b46cf87e0',
+            self.server_profile_template)
+
+        result = json.loads(resource_block.serialize())
 
         self.assertEqual(self.resource_block_mockup, result)

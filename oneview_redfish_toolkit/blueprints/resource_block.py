@@ -19,7 +19,6 @@ import logging
 from flask import abort
 from flask import Blueprint
 from flask import g
-from flask import Response
 from flask_api import status
 
 from hpOneView.exceptions import HPOneViewException
@@ -28,12 +27,13 @@ from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 from oneview_redfish_toolkit.api.resource_block_computer_system \
     import ResourceBlockComputerSystem
 from oneview_redfish_toolkit.api.resource_block_ethernet_interface \
-    import ResourceBlockEthernetInteface
+    import ResourceBlockEthernetInterface
 from oneview_redfish_toolkit.api.server_hardware_resource_block \
     import ServerHardwareResourceBlock
 from oneview_redfish_toolkit.api.server_profile_template_resource_block \
     import ServerProfileTemplateResourceBlock
-
+from oneview_redfish_toolkit.blueprints.util.response_builder \
+    import ResponseBuilder
 
 resource_block = Blueprint("resource_block", __name__)
 
@@ -49,7 +49,6 @@ def get_resource_block(uuid):
         Returns:
             JSON: Redfish json with ResourceBlock.
     """
-
     try:
         resource = _get_oneview_resource(uuid)
         category = resource["category"]
@@ -69,31 +68,14 @@ def get_resource_block(uuid):
         else:
             raise OneViewRedfishError('Resource block type not found')
 
-        # Build redfish json
-        json_str = resource_block.serialize()
-
-        # Build response and returns
-        response = Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-        response.headers.add("ETag", "W/" + resource["eTag"])
-
-        return response
-    except HPOneViewException as e:
-        # In case of error log exception and abort
-        logging.exception(e)
-        abort(status.HTTP_404_NOT_FOUND, "Resource block not found")
+        return ResponseBuilder.success(
+            resource_block,
+            {"ETag": "W/" + resource["eTag"]})
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
         logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_404_NOT_FOUND, e.msg)
-
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @resource_block.route(
@@ -118,29 +100,14 @@ def get_resource_block_computer_system(uuid, serial):
 
         computer_system = ResourceBlockComputerSystem(server_hardware)
 
-        json_str = computer_system.serialize()
-
-        response = Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-        response.headers.add("ETag", "W/" + server_hardware["eTag"])
-        return response
-    except HPOneViewException as e:
-        # In case of error log exception and abort
-        logging.exception(e)
-        abort(status.HTTP_404_NOT_FOUND,
-              "Computer system of resource block not found")
+        return ResponseBuilder.success(
+            computer_system,
+            {"ETag": "W/" + server_hardware["eTag"]})
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
         logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_404_NOT_FOUND, e.msg)
-
-    except Exception as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @resource_block.route(
@@ -174,33 +141,17 @@ def get_resource_block_ethernet_interface(uuid, id):
 
         network = g.oneview_client.ethernet_networks.get(conn["networkUri"])
 
-        ethernet_interface = ResourceBlockEthernetInteface(
+        ethernet_interface = ResourceBlockEthernetInterface(
             server_profile_template, connection, network)
 
-        json_str = ethernet_interface.serialize()
-
-        # Build response and returns
-        response = Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-        response.headers.add("ETag", "W/" + server_profile_template["eTag"])
-
-        return response
-    except HPOneViewException as e:
-        # In case of error log exception and abort
-        logging.exception(e)
-        abort(status.HTTP_404_NOT_FOUND, "Resource block not found")
+        return ResponseBuilder.success(
+            ethernet_interface,
+            {"ETag": "W/" + server_profile_template["eTag"]})
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
         logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_404_NOT_FOUND, e.msg)
-
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def _get_oneview_resource(uuid):
@@ -216,8 +167,11 @@ def _get_oneview_resource(uuid):
             resource = category["func"](category["param"])
 
             return resource
-        except HPOneViewException:
-            pass
+        except HPOneViewException as e:
+            if e.oneview_response["errorCode"] == 'RESOURCE_NOT_FOUND':
+                pass
+            else:
+                raise  # Raise any unexpected errors
 
     raise OneViewRedfishError("Could not find resource block with id " + uuid)
 

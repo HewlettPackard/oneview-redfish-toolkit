@@ -86,4 +86,4 @@ class BaseFlaskTest(BaseTest):
         cls.client = cls.app.test_client()
 
         # propagate the exceptions to the test client
-        cls.app.testing = True
+        cls.app.testing = False

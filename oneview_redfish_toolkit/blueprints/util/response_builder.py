@@ -31,15 +31,16 @@ ErrorDescription = namedtuple('ErrorDescription', ['description'])
 class ResponseBuilder(object):
 
     @staticmethod
-    def response(serializable_data, http_status):
+    def response(serializable_data, http_status, headers={}):
         return Response(
             response=serializable_data.serialize(),
             status=http_status,
-            mimetype="application/json")
+            mimetype="application/json",
+            headers=headers)
 
     @staticmethod
-    def success(api_data):
-        return ResponseBuilder.response(api_data, status.HTTP_200_OK)
+    def success(api_data, headers={}):
+        return ResponseBuilder.response(api_data, status.HTTP_200_OK, headers)
 
     @staticmethod
     def error_by_hp_oneview_exception(exception):

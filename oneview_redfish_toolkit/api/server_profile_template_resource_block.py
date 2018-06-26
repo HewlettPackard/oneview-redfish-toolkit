@@ -15,6 +15,7 @@
 # under the License.
 
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
+from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
 
 
 class ServerProfileTemplateResourceBlock(ResourceBlock):
@@ -49,7 +50,7 @@ class ServerProfileTemplateResourceBlock(ResourceBlock):
 
         zone = dict()
         zone["@odata.id"] = \
-            "/redfish/v1/CompositionService/ResourceZones/" + uuid
+            ZoneCollection.BASE_URI + "/" + uuid
 
         self.redfish["Links"]["Zones"].append(zone)
 
