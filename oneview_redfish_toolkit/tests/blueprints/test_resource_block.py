@@ -70,9 +70,6 @@ class TestResourceBlock(BaseFlaskTest):
         with open('oneview_redfish_toolkit/mockups/errors/Error500.json') as f:
             error_500 = json.load(f)
 
-        g.oneview_client.index_resources.get_all.return_value = [
-            {"category": "server-hardware"}
-        ]
         g.oneview_client.server_hardware.get.side_effect = Exception()
 
         response = self.client.get(
@@ -124,7 +121,7 @@ class TestResourceBlock(BaseFlaskTest):
             expected_resource_block = json.load(f)
 
         g.oneview_client.server_hardware.get.side_effect = \
-            HPOneViewException(None)
+            HPOneViewException({"errorCode": "RESOURCE_NOT_FOUND"})
         g.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
 

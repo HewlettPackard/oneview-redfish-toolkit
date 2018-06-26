@@ -17,17 +17,17 @@
 import json
 
 from oneview_redfish_toolkit.api.resource_block_ethernet_interface \
-    import ResourceBlockEthernetInteface
+    import ResourceBlockEthernetInterface
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestResourceBlockEthernetInteface(BaseTest):
-    """Tests for ResourceBlockEthernetInteface class"""
+class TestResourceBlockEthernetInterface(BaseTest):
+    """Tests for ResourceBlockEthernetInterface class"""
 
     def setUp(self):
         """Tests preparation"""
 
-        # Loading ResourceBlockEthernetInteface mockup result
+        # Loading ResourceBlockEthernetInterface mockup result
         with open(
             'oneview_redfish_toolkit/mockups/redfish'
             '/ResourceBlockEthernetInterface.json'
@@ -54,34 +54,22 @@ class TestResourceBlockEthernetInteface(BaseTest):
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
-        try:
-            ethernet_interface = ResourceBlockEthernetInteface(
-                self.spt_mockup,
-                self.connection_mockup,
-                self.ethernet_network_mockup)
-        except Exception as e:
-            self.fail(
-                "Failed to instantiate ResourceBlockEthernetInteface class."
-                " Error: {}".format(e))
+
+        ethernet_interface = ResourceBlockEthernetInterface(
+            self.spt_mockup,
+            self.connection_mockup,
+            self.ethernet_network_mockup)
 
         self.assertIsInstance(
-            ethernet_interface,
-            ResourceBlockEthernetInteface)
+            ethernet_interface, ResourceBlockEthernetInterface)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
-        try:
-            ethernet_interface = ResourceBlockEthernetInteface(
-                self.spt_mockup,
-                self.connection_mockup,
-                self.ethernet_network_mockup)
-        except Exception as e:
-            self.fail(
-                "Failed to instantiate ResourceBlockEthernetInteface class."
-                " Error: {}".format(e))
-        try:
-            result = json.loads(ethernet_interface.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: {}".format(e))
+        ethernet_interface = ResourceBlockEthernetInterface(
+            self.spt_mockup,
+            self.connection_mockup,
+            self.ethernet_network_mockup)
+
+        result = json.loads(ethernet_interface.serialize())
 
         self.assertEqual(self.ethernet_interface_mockup, result)
