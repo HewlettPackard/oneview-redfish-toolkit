@@ -39,6 +39,7 @@ class Capability(RedfishJsonValidator):
         self.profile_template = profile_template
 
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
+        self.redfish["Id"] = profile_template["uri"].split("/")[-1]
         self.redfish["Name"] = "Capabilities for the Zone"
 
         self.redfish["Id@Redfish.RequiredOnCreate"] = True
