@@ -27,6 +27,7 @@
  - #261 Implement Network Resource Block
  - #298 Include Network Resource Blocks into Resource Blocks collection
  - #293 Implement Storage ResourceBlock
+ - #307 Add support for Processor resource in ComputerSystem
 
 # New Redfish resources
  - EventService
@@ -39,6 +40,8 @@
  - ZoneCollection
  - ResourceBlock
  - EthernetInterface
+ - ProcessorCollection
+ - Processor
 
 
 # 0.2.0

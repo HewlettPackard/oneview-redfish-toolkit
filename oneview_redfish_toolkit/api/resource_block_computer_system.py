@@ -18,6 +18,8 @@ import collections
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit.api.resource_block_collection \
+    import ResourceBlockCollection
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 
 
@@ -63,24 +65,27 @@ class ResourceBlockComputerSystem(RedfishJsonValidator):
             server_hardware["processorCount"]
         self.redfish["ProcessorSummary"]["Model"] = \
             server_hardware["processorType"]
+        self.redfish["Processors"] = dict()
+        self.redfish["Processors"]["@odata.id"] = \
+            ResourceBlockCollection.BASE_URI + "/" \
+            + server_hardware["uuid"] + "/Systems/1/Processors"
 
         self.redfish["MemorySummary"] = collections.OrderedDict()
         self.redfish["MemorySummary"]["TotalSystemMemoryGiB"] = \
             server_hardware["memoryMb"] / 1024
 
-        self.fill_links()
+        self._fill_links()
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystem.ComputerSystem"
         self.redfish["@odata.id"] = \
-            "/redfish/v1/CompositionService/ResourceBlocks/" \
+            ResourceBlockCollection.BASE_URI + "/" \
             + server_hardware["uuid"] \
-            + "/ComputerSystem/" \
-            + server_hardware["serialNumber"]
+            + "/Systems/1"
 
         self._validate()
 
-    def fill_links(self):
+    def _fill_links(self):
         self.redfish["Links"] = collections.OrderedDict()
 
         self.redfish["Links"]["Chassis"] = list()

@@ -80,35 +80,25 @@ def get_resource_block(uuid):
 
 
 @resource_block.route(
-    ResourceBlock.BASE_URI + "/<uuid>/Systems/<serial>", methods=["GET"])
-def get_resource_block_computer_system(uuid, serial):
+    ResourceBlock.BASE_URI + "/<uuid>/Systems/1", methods=["GET"])
+def get_resource_block_computer_system(uuid):
     """Get Computer System of a Resource Block
 
         Return ResourceBlock Computer System redfish JSON for a given
-        UUID and serial number. Logs exception of any error and return
-        Internal Server Error or Not Found.
+        UUID. Logs exception of any error and return Internal Server
+        Error or Not Found.
 
         Returns:
             JSON: Redfish json with ResourceBlock Computer System.
     """
 
-    try:
-        server_hardware = g.oneview_client.server_hardware.get(uuid)
+    server_hardware = g.oneview_client.server_hardware.get(uuid)
 
-        if server_hardware["serialNumber"] != serial:
-            raise OneViewRedfishError(
-                "Computer system of resource block {} not found".format(uuid))
+    computer_system = ResourceBlockComputerSystem(server_hardware)
 
-        computer_system = ResourceBlockComputerSystem(server_hardware)
-
-        return ResponseBuilder.success(
-            computer_system,
-            {"ETag": "W/" + server_hardware["eTag"]})
-
-    except OneViewRedfishError as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
+    return ResponseBuilder.success(
+        computer_system,
+        {"ETag": "W/" + server_hardware["eTag"]})
 
 
 @resource_block.route(
