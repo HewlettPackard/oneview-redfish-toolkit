@@ -73,7 +73,7 @@ class TestResourceBlockCollection(BaseFlaskTest):
 
         # Get ResourceBlockCollection
         response = self.client.get(
-            "/redfish/v1/CompositionService/ResourceBlocks")
+            "/redfish/v1/CompositionService/ResourceBlocks/")
 
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
@@ -93,7 +93,7 @@ class TestResourceBlockCollection(BaseFlaskTest):
 
         # Get ResourceBlockCollection
         response = self.client.get(
-            "/redfish/v1/CompositionService/ResourceBlocks")
+            "/redfish/v1/CompositionService/ResourceBlocks/")
 
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
