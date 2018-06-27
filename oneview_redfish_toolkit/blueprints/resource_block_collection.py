@@ -26,7 +26,7 @@ resource_block_collection = Blueprint("resource_block_collection", __name__)
 
 
 @resource_block_collection.route(
-    "/redfish/v1/CompositionService/ResourceBlocks", methods=["GET"])
+    "/redfish/v1/CompositionService/ResourceBlocks/", methods=["GET"])
 def get_resource_block_collection():
     """Get the Redfish ResourceBlock Collection.
 
