@@ -1,6 +1,6 @@
 {
     "type": "IndexResourceV300",
-    "name": "Drive 1",
+    "name": "Drive 40",
     "description": null,
     "attributes": {
         "capacityInGB": "100",
