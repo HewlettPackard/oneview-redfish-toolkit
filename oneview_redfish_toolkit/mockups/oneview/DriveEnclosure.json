@@ -1,0 +1,3094 @@
+{
+    "type": "DriveEnclosureV2",
+    "uri": "/rest/drive-enclosures/SN123100",
+    "category": "drive-enclosures",
+    "eTag": "2018-06-20T07:31:44.940Z",
+    "created": "2018-04-10T19:48:26.080Z",
+    "modified": "2018-06-20T07:31:44.940Z",
+    "refreshState": "NotRefreshing",
+    "stateReason": null,
+    "driveEnclosureLocation": {
+        "locationEntries": [
+            {
+                "type": "SasPort",
+                "value": "1"
+            },
+            {
+                "type": "Enclosure",
+                "value": "/rest/enclosures/0000000000A66101"
+            },
+            {
+                "type": "Bay",
+                "value": "1"
+            }
+        ]
+    },
+    "productName": "Storage Enclosure 500143803110029D",
+    "model": "Synergy D3940 Storage Module",
+    "serialNumber": "SN123100",
+    "partNumber": "755984-B21",
+    "manufacturer": "HPE",
+    "powerState": "On",
+    "hardResetState": "Normal",
+    "wwid": "500143803110029D",
+    "interconnectUri": [
+        "/rest/sas-interconnects/2M220100SL",
+        "/rest/sas-interconnects/2M220101SL"
+    ],
+    "driveBayCount": 40,
+    "driveBays": [
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/5c3e5214-e9fb-469d-a8d5-2159fe2d97d8",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:29:45.496Z",
+            "created": "2018-04-10T19:51:24.894Z",
+            "modified": "2018-06-20T07:29:45.496Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "1"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SATA",
+            "attachedDeviceWWID": "5000CCA03C610000",
+            "model": "SATA 100",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/5c3e5214-e9fb-469d-a8d5-2159fe2d97d8/drives/c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e",
+                "category": "drives",
+                "eTag": "2018-06-20T07:29:45.410Z",
+                "created": "2018-04-10T19:51:24.894Z",
+                "modified": "2018-06-20T07:29:45.410Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610000",
+                "serialNumber": "S46016710000J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SATA",
+                "driveMedia": "SSD",
+                "capacity": "100",
+                "authentic": "yes",
+                "temperature": 25,
+                "drivePaths": [
+                    "1:1:1"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 1"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/b96fe89f-8156-4d3b-8d2b-1b48faca2bc1",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:29:46.213Z",
+            "created": "2018-04-10T19:51:25.048Z",
+            "modified": "2018-06-20T07:29:46.213Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "2"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SATA",
+            "attachedDeviceWWID": "5000CCA03C610001",
+            "model": "SATA 200",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/b96fe89f-8156-4d3b-8d2b-1b48faca2bc1/drives/c09b7065-ed9a-45c2-88e3-1745e2506808",
+                "category": "drives",
+                "eTag": "2018-06-20T07:29:46.194Z",
+                "created": "2018-04-10T19:51:25.049Z",
+                "modified": "2018-06-20T07:29:46.194Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "2"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610001",
+                "serialNumber": "S46016710001J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SATA",
+                "driveMedia": "SSD",
+                "capacity": "200",
+                "authentic": "yes",
+                "temperature": 27,
+                "drivePaths": [
+                    "1:1:2"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 2"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/3fe09c64-72e2-41f6-ba30-38416478e361",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:29:47.134Z",
+            "created": "2018-04-10T19:51:25.233Z",
+            "modified": "2018-06-20T07:29:47.134Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "3"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SATA",
+            "attachedDeviceWWID": "5000CCA03C610002",
+            "model": "SATA 400",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/3fe09c64-72e2-41f6-ba30-38416478e361/drives/44393d3e-207d-4e1a-8bc6-8c8213950b68",
+                "category": "drives",
+                "eTag": "2018-06-20T07:29:47.069Z",
+                "created": "2018-04-10T19:51:25.233Z",
+                "modified": "2018-06-20T07:29:47.069Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "3"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610002",
+                "serialNumber": "S46016710002J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SATA",
+                "driveMedia": "SSD",
+                "capacity": "400",
+                "authentic": "yes",
+                "temperature": 11,
+                "drivePaths": [
+                    "1:1:3"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 3"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/c233909f-88b3-402f-b56b-796515015f91",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:29:51.205Z",
+            "created": "2018-04-10T19:51:25.415Z",
+            "modified": "2018-06-20T07:29:51.205Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "4"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SATA",
+            "attachedDeviceWWID": "5000CCA03C610003",
+            "model": "SATA 500",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/c233909f-88b3-402f-b56b-796515015f91/drives/f3aa9659-66aa-4618-9837-f66ccf837b2c",
+                "category": "drives",
+                "eTag": "2018-06-20T07:29:50.826Z",
+                "created": "2018-04-10T19:51:25.415Z",
+                "modified": "2018-06-20T07:29:50.826Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "4"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610003",
+                "serialNumber": "S46016710003J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SATA",
+                "driveMedia": "HDD",
+                "capacity": "500",
+                "authentic": "yes",
+                "temperature": 13,
+                "drivePaths": [
+                    "1:1:4"
+                ],
+                "eraseSupport": "NotSupported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 4"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/b5b0e409-9573-4446-a4b3-8bd1ac058474",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:29:55.898Z",
+            "created": "2018-04-10T19:51:25.505Z",
+            "modified": "2018-06-20T07:29:55.898Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "5"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SATA",
+            "attachedDeviceWWID": "5000CCA03C610004",
+            "model": "SATA 500",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/b5b0e409-9573-4446-a4b3-8bd1ac058474/drives/a068bfb3-0e85-41bf-a892-d192b5dd1dcf",
+                "category": "drives",
+                "eTag": "2018-06-20T07:29:55.685Z",
+                "created": "2018-04-10T19:51:25.506Z",
+                "modified": "2018-06-20T07:29:55.685Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "5"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610004",
+                "serialNumber": "S46016710004J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SATA",
+                "driveMedia": "HDD",
+                "capacity": "500",
+                "authentic": "yes",
+                "temperature": 15,
+                "drivePaths": [
+                    "1:1:5"
+                ],
+                "eraseSupport": "NotSupported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 5"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/e35bbf7b-a438-4552-9a66-974b685762a7",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:29:59.113Z",
+            "created": "2018-04-10T19:51:26.280Z",
+            "modified": "2018-06-20T07:29:59.113Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "6"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SATA",
+            "attachedDeviceWWID": "5000CCA03C610005",
+            "model": "SATA 500",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/e35bbf7b-a438-4552-9a66-974b685762a7/drives/6a10b278-ccda-4e40-ad06-20f02e6bda3c",
+                "category": "drives",
+                "eTag": "2018-06-20T07:29:58.907Z",
+                "created": "2018-04-10T19:51:26.281Z",
+                "modified": "2018-06-20T07:29:58.907Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "6"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610005",
+                "serialNumber": "S46016710005J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SATA",
+                "driveMedia": "HDD",
+                "capacity": "500",
+                "authentic": "yes",
+                "temperature": 17,
+                "drivePaths": [
+                    "1:1:6"
+                ],
+                "eraseSupport": "NotSupported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 6"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/1c649313-ad82-4fea-ae22-1323248cc91d",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:00.524Z",
+            "created": "2018-04-10T19:51:26.535Z",
+            "modified": "2018-06-20T07:30:00.524Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "7"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610006",
+            "model": "SAS 600",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/1c649313-ad82-4fea-ae22-1323248cc91d/drives/118d601b-cff5-487b-bb0d-f5ebac703f94",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:00.395Z",
+                "created": "2018-04-10T19:51:26.535Z",
+                "modified": "2018-06-20T07:30:00.395Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "7"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610006",
+                "serialNumber": "S46016710006J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "600",
+                "authentic": "yes",
+                "temperature": 19,
+                "drivePaths": [
+                    "1:4:7",
+                    "1:1:7"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 7"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/7aeec8c0-2f88-4484-81a0-43941b359291",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:02.586Z",
+            "created": "2018-04-10T19:51:26.843Z",
+            "modified": "2018-06-20T07:30:02.586Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "8"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610007",
+            "model": "SAS 600",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/7aeec8c0-2f88-4484-81a0-43941b359291/drives/7138d335-57ea-4a97-acd4-eaac76a8b7b0",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:01.977Z",
+                "created": "2018-04-10T19:51:26.843Z",
+                "modified": "2018-06-20T07:30:01.977Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "8"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610007",
+                "serialNumber": "S46016710007J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "600",
+                "authentic": "yes",
+                "temperature": 20,
+                "drivePaths": [
+                    "1:4:8",
+                    "1:1:8"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 8"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/04b9083a-802f-4558-9334-38a22bdb4e86",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:13.064Z",
+            "created": "2018-04-10T19:51:27.168Z",
+            "modified": "2018-06-20T07:30:13.064Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "9"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610008",
+            "model": "SAS 600",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/04b9083a-802f-4558-9334-38a22bdb4e86/drives/7259ffdb-2b89-4280-84f1-c0bf74665cb1",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:12.961Z",
+                "created": "2018-04-10T19:51:27.168Z",
+                "modified": "2018-06-20T07:30:12.961Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "9"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610008",
+                "serialNumber": "S46016710008J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "600",
+                "authentic": "yes",
+                "temperature": 21,
+                "drivePaths": [
+                    "1:4:9",
+                    "1:1:9"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 9"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/e633e365-778a-481b-b974-291c0fa83a29",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:16.003Z",
+            "created": "2018-04-10T19:51:27.286Z",
+            "modified": "2018-06-20T07:30:16.003Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "10"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610009",
+            "model": "SAS 800",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/e633e365-778a-481b-b974-291c0fa83a29/drives/1259c705-5617-421a-a560-1131b23fca75",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:15.870Z",
+                "created": "2018-04-10T19:51:27.286Z",
+                "modified": "2018-06-20T07:30:15.870Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "10"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610009",
+                "serialNumber": "S46016710009J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "800",
+                "authentic": "yes",
+                "temperature": 23,
+                "drivePaths": [
+                    "1:1:10",
+                    "1:4:10"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 10"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/41ce270c-20b2-4cc3-85a9-83ee752294a5",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:19.933Z",
+            "created": "2018-04-10T19:51:27.472Z",
+            "modified": "2018-06-20T07:30:19.933Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "11"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610010",
+            "model": "SAS 800",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/41ce270c-20b2-4cc3-85a9-83ee752294a5/drives/b7ad2f02-6550-4ee4-a1bf-3298cf8dc342",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:19.723Z",
+                "created": "2018-04-10T19:51:27.472Z",
+                "modified": "2018-06-20T07:30:19.723Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "11"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610010",
+                "serialNumber": "S46016710010J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "800",
+                "authentic": "yes",
+                "temperature": 25,
+                "drivePaths": [
+                    "1:1:11",
+                    "1:4:11"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 11"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/21428ebe-cfce-4f69-9c3b-9f859155d611",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:26.611Z",
+            "created": "2018-04-10T19:51:27.582Z",
+            "modified": "2018-06-20T07:30:26.611Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "12"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610011",
+            "model": "SAS 800",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/21428ebe-cfce-4f69-9c3b-9f859155d611/drives/e70dfa04-d8c3-4b3d-8759-b949cb76ebf6",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:26.200Z",
+                "created": "2018-04-10T19:51:27.582Z",
+                "modified": "2018-06-20T07:30:26.200Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "12"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610011",
+                "serialNumber": "S46016710011J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "800",
+                "authentic": "yes",
+                "temperature": 27,
+                "drivePaths": [
+                    "1:1:12",
+                    "1:4:12"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 12"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/d108e5cb-19d6-4160-980a-994e07fb91d4",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:30.908Z",
+            "created": "2018-04-10T19:51:27.842Z",
+            "modified": "2018-06-20T07:30:30.908Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "13"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610012",
+            "model": "SAS 900",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/d108e5cb-19d6-4160-980a-994e07fb91d4/drives/3b31260b-c5d5-425d-9253-79060906b41b",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:30.734Z",
+                "created": "2018-04-10T19:51:27.843Z",
+                "modified": "2018-06-20T07:30:30.734Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "13"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610012",
+                "serialNumber": "S46016710012J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "900",
+                "authentic": "yes",
+                "temperature": 11,
+                "drivePaths": [
+                    "1:1:13",
+                    "1:4:13"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 13"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/9472f251-4f96-432d-afb0-6720032b8bad",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:34.073Z",
+            "created": "2018-04-10T19:51:28.121Z",
+            "modified": "2018-06-20T07:30:34.073Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "14"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610013",
+            "model": "SAS 900",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/9472f251-4f96-432d-afb0-6720032b8bad/drives/ffd1e7c0-5e25-452d-aa37-4100f4efc9c5",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:33.901Z",
+                "created": "2018-04-10T19:51:28.121Z",
+                "modified": "2018-06-20T07:30:33.901Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "14"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610013",
+                "serialNumber": "S46016710013J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "900",
+                "authentic": "yes",
+                "temperature": 13,
+                "drivePaths": [
+                    "1:1:14",
+                    "1:4:14"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 14"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/07b5c28a-1b67-4741-b22d-855af02ffae2",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:37.357Z",
+            "created": "2018-04-10T19:51:28.242Z",
+            "modified": "2018-06-20T07:30:37.357Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "15"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610014",
+            "model": "SAS 900",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/07b5c28a-1b67-4741-b22d-855af02ffae2/drives/7dc9e10d-c5de-47bc-b93b-c2172087f67e",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:37.197Z",
+                "created": "2018-04-10T19:51:28.242Z",
+                "modified": "2018-06-20T07:30:37.197Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "15"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610014",
+                "serialNumber": "S46016710014J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "900",
+                "authentic": "yes",
+                "temperature": 15,
+                "drivePaths": [
+                    "1:1:15",
+                    "1:4:15"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 15"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/43136fdb-d17f-4324-9d60-a00b6bde7121",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:49.205Z",
+            "created": "2018-04-10T19:51:28.376Z",
+            "modified": "2018-06-20T07:30:49.205Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "16"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610015",
+            "model": "SAS 971",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/43136fdb-d17f-4324-9d60-a00b6bde7121/drives/15d078bb-3de7-43ec-8d4f-33eee27bf1d5",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:48.956Z",
+                "created": "2018-04-10T19:51:28.377Z",
+                "modified": "2018-06-20T07:30:48.956Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "16"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610015",
+                "serialNumber": "S46016710015J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "971",
+                "authentic": "yes",
+                "temperature": 17,
+                "drivePaths": [
+                    "1:1:16",
+                    "1:4:16"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 16"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/911fa6d1-a31a-44bd-84db-ebb78950745d",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:55.565Z",
+            "created": "2018-04-10T19:51:28.535Z",
+            "modified": "2018-06-20T07:30:55.565Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "17"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610016",
+            "model": "SAS 971",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/911fa6d1-a31a-44bd-84db-ebb78950745d/drives/8c85d8cc-185b-4479-ba70-71785eef7ac6",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:55.469Z",
+                "created": "2018-04-10T19:51:28.536Z",
+                "modified": "2018-06-20T07:30:55.469Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "17"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610016",
+                "serialNumber": "S46016710016J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "971",
+                "authentic": "yes",
+                "temperature": 19,
+                "drivePaths": [
+                    "1:4:17",
+                    "1:1:17"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 17"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/c9197854-9fd5-429b-8fbd-5103fad160ab",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:57.180Z",
+            "created": "2018-04-10T19:51:28.664Z",
+            "modified": "2018-06-20T07:30:57.180Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "18"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610017",
+            "model": "SAS 971",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/c9197854-9fd5-429b-8fbd-5103fad160ab/drives/ae3c6dd0-c618-4545-be03-3bcf84ef0dba",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:57.140Z",
+                "created": "2018-04-10T19:51:28.664Z",
+                "modified": "2018-06-20T07:30:57.140Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "18"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610017",
+                "serialNumber": "S46016710017J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "971",
+                "authentic": "yes",
+                "temperature": 20,
+                "drivePaths": [
+                    "1:4:18",
+                    "1:1:18"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 18"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/37ec3395-3a9f-44dc-a03d-034c4011d3bf",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:30:58.645Z",
+            "created": "2018-04-10T19:51:28.895Z",
+            "modified": "2018-06-20T07:30:58.645Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "19"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610018",
+            "model": "SAS 1200",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/37ec3395-3a9f-44dc-a03d-034c4011d3bf/drives/ec5a0811-2bf2-4a98-9d0e-4cfe422b22db",
+                "category": "drives",
+                "eTag": "2018-06-20T07:30:58.584Z",
+                "created": "2018-04-10T19:51:28.895Z",
+                "modified": "2018-06-20T07:30:58.584Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "19"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610018",
+                "serialNumber": "S46016710018J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "1200",
+                "authentic": "yes",
+                "temperature": 21,
+                "drivePaths": [
+                    "1:4:19",
+                    "1:1:19"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 19"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/cc7b3237-82c2-40c3-b5cf-9eecf3fbf3e2",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:00.764Z",
+            "created": "2018-04-10T19:51:29.019Z",
+            "modified": "2018-06-20T07:31:00.764Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "20"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610019",
+            "model": "SAS 1200",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/cc7b3237-82c2-40c3-b5cf-9eecf3fbf3e2/drives/2cf27057-2ecd-420d-8682-65751f5eae86",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:00.718Z",
+                "created": "2018-04-10T19:51:29.019Z",
+                "modified": "2018-06-20T07:31:00.718Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "20"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610019",
+                "serialNumber": "S46016710019J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "1200",
+                "authentic": "yes",
+                "temperature": 23,
+                "drivePaths": [
+                    "1:1:20",
+                    "1:4:20"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 20"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/975f2720-e08b-4966-9379-74667b268b50",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:02.104Z",
+            "created": "2018-04-10T19:51:29.152Z",
+            "modified": "2018-06-20T07:31:02.104Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "21"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610020",
+            "model": "SAS 1200",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/975f2720-e08b-4966-9379-74667b268b50/drives/f7e1339f-9323-44aa-a34e-55a9b5f65e9a",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:02.035Z",
+                "created": "2018-04-10T19:51:29.152Z",
+                "modified": "2018-06-20T07:31:02.035Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "21"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610020",
+                "serialNumber": "S46016710020J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "1200",
+                "authentic": "yes",
+                "temperature": 25,
+                "drivePaths": [
+                    "1:1:21",
+                    "1:4:21"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 21"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/039dc659-087d-4a99-88af-a5293a1170ad",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:04.634Z",
+            "created": "2018-04-10T19:51:29.230Z",
+            "modified": "2018-06-20T07:31:04.634Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "22"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610021",
+            "model": "SAS 1662",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/039dc659-087d-4a99-88af-a5293a1170ad/drives/197a62e4-f2c7-4097-a098-9ade31a4a353",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:04.469Z",
+                "created": "2018-04-10T19:51:29.230Z",
+                "modified": "2018-06-20T07:31:04.469Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "22"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610021",
+                "serialNumber": "S46016710021J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "1662",
+                "authentic": "yes",
+                "temperature": 27,
+                "drivePaths": [
+                    "1:1:22",
+                    "1:4:22"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 22"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/452357fa-62c0-4620-837a-83899cc2d257",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:07.285Z",
+            "created": "2018-04-10T19:51:29.330Z",
+            "modified": "2018-06-20T07:31:07.285Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "23"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610022",
+            "model": "SAS 1662",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/452357fa-62c0-4620-837a-83899cc2d257/drives/78cade62-430c-4802-8f0b-109587f6ce9d",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:07.241Z",
+                "created": "2018-04-10T19:51:29.330Z",
+                "modified": "2018-06-20T07:31:07.241Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "23"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610022",
+                "serialNumber": "S46016710022J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "1662",
+                "authentic": "yes",
+                "temperature": 11,
+                "drivePaths": [
+                    "1:1:23",
+                    "1:4:23"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 23"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/84be9ccd-4d95-440c-91bd-10d8e8b2030a",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:10.472Z",
+            "created": "2018-04-10T19:51:29.444Z",
+            "modified": "2018-06-20T07:31:10.472Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "24"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610023",
+            "model": "SAS 1662",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/84be9ccd-4d95-440c-91bd-10d8e8b2030a/drives/cdf4a3e2-570b-4daf-a056-f77f28114887",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:10.358Z",
+                "created": "2018-04-10T19:51:29.444Z",
+                "modified": "2018-06-20T07:31:10.358Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "24"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610023",
+                "serialNumber": "S46016710023J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "1662",
+                "authentic": "yes",
+                "temperature": 13,
+                "drivePaths": [
+                    "1:1:24",
+                    "1:4:24"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 24"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/b3fcb50c-7959-4dca-97f4-56c2839a55af",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:12.297Z",
+            "created": "2018-04-10T19:51:29.607Z",
+            "modified": "2018-06-20T07:31:12.297Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "25"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610024",
+            "model": "SAS 1864",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/b3fcb50c-7959-4dca-97f4-56c2839a55af/drives/40483dcb-f177-4272-b4b6-0718ee2ef433",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:12.263Z",
+                "created": "2018-04-10T19:51:29.666Z",
+                "modified": "2018-06-20T07:31:12.263Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "25"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610024",
+                "serialNumber": "S46016710024J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "1864",
+                "authentic": "yes",
+                "temperature": 15,
+                "drivePaths": [
+                    "1:1:25",
+                    "1:4:25"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "EraseCompleted",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 25"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/4741c419-f496-48b4-b5ca-d49defce22b2",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:12.894Z",
+            "created": "2018-04-10T19:51:29.769Z",
+            "modified": "2018-06-20T07:31:12.894Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "26"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610025",
+            "model": "SAS 1864",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/4741c419-f496-48b4-b5ca-d49defce22b2/drives/d123bb8e-babe-4526-8056-32b910918f7a",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:12.851Z",
+                "created": "2018-04-10T19:51:29.769Z",
+                "modified": "2018-06-20T07:31:12.851Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "26"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610025",
+                "serialNumber": "S46016710025J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "1864",
+                "authentic": "yes",
+                "temperature": 17,
+                "drivePaths": [
+                    "1:1:26",
+                    "1:4:26"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "EraseCompleted",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 26"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/2af468c4-c5dd-497a-be2f-a351c2d55a5f",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:13.714Z",
+            "created": "2018-04-10T19:51:29.942Z",
+            "modified": "2018-06-20T07:31:13.714Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "27"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610026",
+            "model": "SAS 1864",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/2af468c4-c5dd-497a-be2f-a351c2d55a5f/drives/982bf475-af75-48dc-96b2-d8a38d0c2bc0",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:13.667Z",
+                "created": "2018-04-10T19:51:29.942Z",
+                "modified": "2018-06-20T07:31:13.667Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "27"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610026",
+                "serialNumber": "S46016710026J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "1864",
+                "authentic": "yes",
+                "temperature": 19,
+                "drivePaths": [
+                    "1:1:27",
+                    "1:4:27"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 27"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/2075374b-8b44-454c-bf31-de8805cd0052",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:16.972Z",
+            "created": "2018-04-10T19:51:30.163Z",
+            "modified": "2018-06-20T07:31:16.972Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "28"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610027",
+            "model": "SAS 1864",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/2075374b-8b44-454c-bf31-de8805cd0052/drives/5d5f4d94-078c-4126-8133-f036ef9c3686",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:16.756Z",
+                "created": "2018-04-10T19:51:30.163Z",
+                "modified": "2018-06-20T07:31:16.756Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "28"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610027",
+                "serialNumber": "S46016710027J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "HDD",
+                "capacity": "1864",
+                "authentic": "yes",
+                "temperature": 20,
+                "drivePaths": [
+                    "1:4:28",
+                    "1:1:28"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 28"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/2a24e7b4-ba67-43f5-b9a3-eea687b30a53",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:20.035Z",
+            "created": "2018-04-10T19:51:30.326Z",
+            "modified": "2018-06-20T07:31:20.035Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "29"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610028",
+            "model": "SAS 1988",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/2a24e7b4-ba67-43f5-b9a3-eea687b30a53/drives/40710b98-db57-4a5e-b2e7-8f675a833532",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:19.985Z",
+                "created": "2018-04-10T19:51:30.326Z",
+                "modified": "2018-06-20T07:31:19.985Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "29"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610028",
+                "serialNumber": "S46016710028J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "1988",
+                "authentic": "yes",
+                "temperature": 21,
+                "drivePaths": [
+                    "1:4:29",
+                    "1:1:29"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 29"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/df94b7d8-4d65-4ec7-919f-b1b627dbb0b7",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:20.754Z",
+            "created": "2018-04-10T19:51:30.420Z",
+            "modified": "2018-06-20T07:31:20.754Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "30"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610029",
+            "model": "SAS 1988",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/df94b7d8-4d65-4ec7-919f-b1b627dbb0b7/drives/57c5647d-542b-4c47-b334-14c9aabd854e",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:20.722Z",
+                "created": "2018-04-10T19:51:30.420Z",
+                "modified": "2018-06-20T07:31:20.722Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "30"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610029",
+                "serialNumber": "S46016710029J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "1988",
+                "authentic": "yes",
+                "temperature": 23,
+                "drivePaths": [
+                    "1:1:30",
+                    "1:4:30"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 30"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/dc9163c7-e9bd-47a7-8a32-0b3f2182aff3",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:21.325Z",
+            "created": "2018-04-10T19:51:30.507Z",
+            "modified": "2018-06-20T07:31:21.325Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "31"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610030",
+            "model": "SAS 1988",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/dc9163c7-e9bd-47a7-8a32-0b3f2182aff3/drives/a06c1ffa-0a21-4a47-a3d3-df431890ecbc",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:21.294Z",
+                "created": "2018-04-10T19:51:30.507Z",
+                "modified": "2018-06-20T07:31:21.294Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "31"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610030",
+                "serialNumber": "S46016710030J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "1988",
+                "authentic": "yes",
+                "temperature": 25,
+                "drivePaths": [
+                    "1:1:31",
+                    "1:4:31"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 31"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/a1848ac9-3deb-4d4e-a726-4c022aa5163e",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:21.884Z",
+            "created": "2018-04-10T19:51:30.610Z",
+            "modified": "2018-06-20T07:31:21.884Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "32"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610031",
+            "model": "SAS 1988",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/a1848ac9-3deb-4d4e-a726-4c022aa5163e/drives/f82fc544-4c1e-4c6a-8ea4-15e7c1fea83a",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:21.858Z",
+                "created": "2018-04-10T19:51:30.610Z",
+                "modified": "2018-06-20T07:31:21.858Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "32"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610031",
+                "serialNumber": "S46016710031J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "1988",
+                "authentic": "yes",
+                "temperature": 27,
+                "drivePaths": [
+                    "1:1:32",
+                    "1:4:32"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 32"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/16dbdfb2-6741-4aca-9a41-7d7deb44fb32",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:22.374Z",
+            "created": "2018-04-10T19:51:30.711Z",
+            "modified": "2018-06-20T07:31:22.374Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "33"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SATA",
+            "attachedDeviceWWID": "5000CCA03C610032",
+            "model": "SATA 2048",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/16dbdfb2-6741-4aca-9a41-7d7deb44fb32/drives/af0e20a4-943a-4fbc-b29b-6fb4e8ca2b9e",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:22.338Z",
+                "created": "2018-04-10T19:51:30.711Z",
+                "modified": "2018-06-20T07:31:22.338Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "33"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610032",
+                "serialNumber": "S46016710032J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SATA",
+                "driveMedia": "HDD",
+                "capacity": "2048",
+                "authentic": "yes",
+                "temperature": 11,
+                "drivePaths": [
+                    "1:1:33"
+                ],
+                "eraseSupport": "NotSupported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 33"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/60438c39-6ac1-4736-b733-0865bc31f2b9",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:22.891Z",
+            "created": "2018-04-10T19:51:30.787Z",
+            "modified": "2018-06-20T07:31:22.891Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "34"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SATA",
+            "attachedDeviceWWID": "5000CCA03C610033",
+            "model": "SATA 2048",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/60438c39-6ac1-4736-b733-0865bc31f2b9/drives/57c46abc-4170-4f7f-877a-6aa0e24a8c63",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:22.866Z",
+                "created": "2018-04-10T19:51:30.787Z",
+                "modified": "2018-06-20T07:31:22.866Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "34"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610033",
+                "serialNumber": "S46016710033J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SATA",
+                "driveMedia": "HDD",
+                "capacity": "2048",
+                "authentic": "yes",
+                "temperature": 13,
+                "drivePaths": [
+                    "1:1:34"
+                ],
+                "eraseSupport": "NotSupported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 34"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/6cdbe6a7-69e6-4835-8ba0-f70767f5aea8",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:23.502Z",
+            "created": "2018-04-10T19:51:30.869Z",
+            "modified": "2018-06-20T07:31:23.502Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "35"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SATA",
+            "attachedDeviceWWID": "5000CCA03C610034",
+            "model": "SATA 2048",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/6cdbe6a7-69e6-4835-8ba0-f70767f5aea8/drives/b7b2f950-f52c-422b-a6ab-f6d035324ed7",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:23.465Z",
+                "created": "2018-04-10T19:51:30.870Z",
+                "modified": "2018-06-20T07:31:23.465Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "35"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610034",
+                "serialNumber": "S46016710034J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SATA",
+                "driveMedia": "HDD",
+                "capacity": "2048",
+                "authentic": "yes",
+                "temperature": 15,
+                "drivePaths": [
+                    "1:1:35"
+                ],
+                "eraseSupport": "NotSupported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 35"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/f75b9375-1209-41b7-ba02-3faa44d5a028",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:24.070Z",
+            "created": "2018-04-10T19:51:30.960Z",
+            "modified": "2018-06-20T07:31:24.070Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "36"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SATA",
+            "attachedDeviceWWID": "5000CCA03C610035",
+            "model": "SATA 2048",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/f75b9375-1209-41b7-ba02-3faa44d5a028/drives/a4e1f3c5-da36-4169-b66d-f6b0d8699d3a",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:24.030Z",
+                "created": "2018-04-10T19:51:30.960Z",
+                "modified": "2018-06-20T07:31:24.030Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "36"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610035",
+                "serialNumber": "S46016710035J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SATA",
+                "driveMedia": "HDD",
+                "capacity": "2048",
+                "authentic": "yes",
+                "temperature": 17,
+                "drivePaths": [
+                    "1:1:36"
+                ],
+                "eraseSupport": "NotSupported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 36"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/9be205e9-b793-4d71-a45e-01c3f4904583",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:25.288Z",
+            "created": "2018-04-10T19:51:31.099Z",
+            "modified": "2018-06-20T07:31:25.288Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "37"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610036",
+            "model": "SAS 3276",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/9be205e9-b793-4d71-a45e-01c3f4904583/drives/6cdbcee0-cc5c-4e1c-8f0c-56013111c526",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:25.255Z",
+                "created": "2018-04-10T19:51:31.099Z",
+                "modified": "2018-06-20T07:31:25.255Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "37"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610036",
+                "serialNumber": "S46016710036J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "3276",
+                "authentic": "yes",
+                "temperature": 19,
+                "drivePaths": [
+                    "1:1:37",
+                    "1:4:37"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 37"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/a72eb8f7-fe4a-4feb-849a-947928606a6c",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:27.176Z",
+            "created": "2018-04-10T19:51:31.217Z",
+            "modified": "2018-06-20T07:31:27.176Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "38"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610037",
+            "model": "SAS 3276",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/a72eb8f7-fe4a-4feb-849a-947928606a6c/drives/b0d3c273-b322-42c9-a2fd-daec13269000",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:27.151Z",
+                "created": "2018-04-10T19:51:31.218Z",
+                "modified": "2018-06-20T07:31:27.151Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "38"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610037",
+                "serialNumber": "S46016710037J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "3276",
+                "authentic": "yes",
+                "temperature": 20,
+                "drivePaths": [
+                    "1:1:38",
+                    "1:4:38"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 38"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/5e352a12-ba97-4d67-a6bb-5a08aa0c8925",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:27.937Z",
+            "created": "2018-04-10T19:51:31.323Z",
+            "modified": "2018-06-20T07:31:27.937Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "39"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610038",
+            "model": "SAS 3276",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/5e352a12-ba97-4d67-a6bb-5a08aa0c8925/drives/b6aea782-7e79-401b-9327-ef2b4c63beec",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:27.907Z",
+                "created": "2018-04-10T19:51:31.323Z",
+                "modified": "2018-06-20T07:31:27.907Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "39"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610038",
+                "serialNumber": "S46016710038J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "3276",
+                "authentic": "yes",
+                "temperature": 21,
+                "drivePaths": [
+                    "1:4:39",
+                    "1:1:39"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 39"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        },
+        {
+            "type": "DriveBayV2",
+            "uri": "/rest/drive-enclosures/SN123100/drive-bays/56416cbb-e4a6-44da-a85d-4134619fe564",
+            "category": "drive-bays",
+            "eTag": "2018-06-20T07:31:28.584Z",
+            "created": "2018-04-10T19:51:31.483Z",
+            "modified": "2018-06-20T07:31:28.584Z",
+            "name": null,
+            "driveBayLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Bay",
+                        "value": "40"
+                    }
+                ]
+            },
+            "attachedDeviceInterface": "SAS",
+            "attachedDeviceWWID": "5000CCA03C610039",
+            "model": "SAS 3276",
+            "drive": {
+                "type": "DriveV2",
+                "uri": "/rest/drive-enclosures/SN123100/drive-bays/56416cbb-e4a6-44da-a85d-4134619fe564/drives/a9bf5f6b-fd8f-420a-99e1-1de4835f9d05",
+                "category": "drives",
+                "eTag": "2018-06-20T07:31:28.546Z",
+                "created": "2018-04-10T19:51:31.483Z",
+                "modified": "2018-06-20T07:31:28.546Z",
+                "refreshState": "NotRefreshing",
+                "stateReason": null,
+                "driveLocation": {
+                    "locationEntries": [
+                        {
+                            "type": "SasPort",
+                            "value": "1"
+                        },
+                        {
+                            "type": "Bay",
+                            "value": "40"
+                        },
+                        {
+                            "type": "Box",
+                            "value": "1"
+                        }
+                    ]
+                },
+                "wwid": "5000CCA03C610039",
+                "serialNumber": "S46016710039J4524YPT",
+                "firmwareVersion": "HP01",
+                "linkRateInGbs": 6,
+                "blockSize": 512,
+                "rotationalRpms": 7200,
+                "model": "MM2000JEFRC",
+                "deviceInterface": "SAS",
+                "driveMedia": "SSD",
+                "capacity": "3276",
+                "authentic": "yes",
+                "temperature": 23,
+                "drivePaths": [
+                    "1:1:40",
+                    "1:4:40"
+                ],
+                "eraseSupport": "Supported",
+                "eraseStatus": "Not_Available",
+                "description": "",
+                "state": "Enabled",
+                "status": "OK",
+                "name": "Drive 40"
+            },
+            "description": null,
+            "state": "UnConfigured",
+            "status": null
+        }
+    ],
+    "ioAdapterCount": 2,
+    "ioAdapters": [
+        {
+            "type": "drive-enclosure-ioadapter",
+            "uri": "/rest/drive-enclosures/SN123100/ioadapters/336abf92-e324-485e-97da-5bc08d042b3b",
+            "category": "",
+            "eTag": "",
+            "created": "2018-04-10T19:51:23.738Z",
+            "modified": "2018-06-20T07:28:18.049Z",
+            "manufacturer": "HPE",
+            "model": "Synergy D3940 Storage Module IO Adapter",
+            "serialNumber": "50454e5445305100",
+            "partNumber": "755872-001",
+            "firmwareVersion": "2.07",
+            "wwid": "5001438031100200",
+            "ioAdapterLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Slot",
+                        "value": "1"
+                    }
+                ]
+            },
+            "portCount": 2,
+            "ports": [
+                {
+                    "type": "sas-port",
+                    "uri": "/rest/drive-enclosures/SN123100/ioadapters/336abf92-e324-485e-97da-5bc08d042b3b/sas-ports/5e05d9b7-70b1-4e33-8e45-e4af048d4198",
+                    "category": "sas-ports",
+                    "eTag": "2018-06-20T07:28:18.352Z",
+                    "created": "2018-04-10T19:51:24.050Z",
+                    "modified": "2018-06-20T07:28:18.352Z",
+                    "portIdentifier": "2",
+                    "phyCount": 4,
+                    "portName": "2",
+                    "portType": "Downlink",
+                    "portLocation": "2",
+                    "enabled": true,
+                    "portStatusReason": "None",
+                    "linkedPortUri": "/rest/sas-interconnects/2M220100SL/sas-ports/4211439e-14bb-4b3f-8b43-2d59952efda2",
+                    "containerDeviceUri": "/rest/drive-enclosures/SN123100/ioadapters/336abf92-e324-485e-97da-5bc08d042b3b",
+                    "description": null,
+                    "state": "Linked",
+                    "status": "OK",
+                    "name": "2"
+                },
+                {
+                    "type": "sas-port",
+                    "uri": "/rest/drive-enclosures/SN123100/ioadapters/336abf92-e324-485e-97da-5bc08d042b3b/sas-ports/72800a20-441d-4879-817e-2a9e46816732",
+                    "category": "sas-ports",
+                    "eTag": "2018-06-20T07:28:18.050Z",
+                    "created": "2018-04-10T19:51:23.738Z",
+                    "modified": "2018-06-20T07:28:18.050Z",
+                    "portIdentifier": "1",
+                    "phyCount": 4,
+                    "portName": "1",
+                    "portType": "Downlink",
+                    "portLocation": "1",
+                    "enabled": true,
+                    "portStatusReason": "None",
+                    "linkedPortUri": "/rest/sas-interconnects/2M220100SL/sas-ports/4ffa59b0-7bb9-4168-a474-4844959cc6b7",
+                    "containerDeviceUri": "/rest/drive-enclosures/SN123100/ioadapters/336abf92-e324-485e-97da-5bc08d042b3b",
+                    "description": null,
+                    "state": "Linked",
+                    "status": "OK",
+                    "name": "1"
+                }
+            ],
+            "redundantIoModule": "Installed",
+            "description": "",
+            "state": "Linked",
+            "status": "OK",
+            "name": null
+        },
+        {
+            "type": "drive-enclosure-ioadapter",
+            "uri": "/rest/drive-enclosures/SN123100/ioadapters/b6653159-3155-42e1-97dc-ed11f1d1245e",
+            "category": "",
+            "eTag": "",
+            "created": "2018-04-10T19:51:24.254Z",
+            "modified": "2018-06-20T07:29:41.042Z",
+            "manufacturer": "HPE",
+            "model": "Synergy D3940 Storage Module IO Adapter",
+            "serialNumber": "50454e5445305101",
+            "partNumber": "755872-001",
+            "firmwareVersion": "2.07",
+            "wwid": "5001438031100201",
+            "ioAdapterLocation": {
+                "locationEntries": [
+                    {
+                        "type": "Slot",
+                        "value": "2"
+                    }
+                ]
+            },
+            "portCount": 2,
+            "ports": [
+                {
+                    "type": "sas-port",
+                    "uri": "/rest/drive-enclosures/SN123100/ioadapters/b6653159-3155-42e1-97dc-ed11f1d1245e/sas-ports/5e61e100-f149-45cf-88f1-3898eecb5417",
+                    "category": "sas-ports",
+                    "eTag": "2018-06-20T07:29:41.155Z",
+                    "created": "2018-04-10T19:53:01.319Z",
+                    "modified": "2018-06-20T07:29:41.155Z",
+                    "portIdentifier": "2",
+                    "phyCount": 4,
+                    "portName": "2",
+                    "portType": "Downlink",
+                    "portLocation": "2",
+                    "enabled": true,
+                    "portStatusReason": "None",
+                    "linkedPortUri": "/rest/sas-interconnects/2M220101SL/sas-ports/3d1ac4ac-2e73-48c5-9d68-b81de95f9b3e",
+                    "containerDeviceUri": "/rest/drive-enclosures/SN123100/ioadapters/b6653159-3155-42e1-97dc-ed11f1d1245e",
+                    "description": null,
+                    "state": "Linked",
+                    "status": "OK",
+                    "name": "2"
+                },
+                {
+                    "type": "sas-port",
+                    "uri": "/rest/drive-enclosures/SN123100/ioadapters/b6653159-3155-42e1-97dc-ed11f1d1245e/sas-ports/b7bdae88-9e16-4827-86d2-1ae76af4bc01",
+                    "category": "sas-ports",
+                    "eTag": "2018-06-20T07:29:41.042Z",
+                    "created": "2018-04-10T19:53:00.969Z",
+                    "modified": "2018-06-20T07:29:41.042Z",
+                    "portIdentifier": "1",
+                    "phyCount": 4,
+                    "portName": "1",
+                    "portType": "Downlink",
+                    "portLocation": "1",
+                    "enabled": true,
+                    "portStatusReason": "None",
+                    "linkedPortUri": "/rest/sas-interconnects/2M220101SL/sas-ports/5322b7d6-4be2-4cb9-8ddd-e55c5020890a",
+                    "containerDeviceUri": "/rest/drive-enclosures/SN123100/ioadapters/b6653159-3155-42e1-97dc-ed11f1d1245e",
+                    "description": null,
+                    "state": "Linked",
+                    "status": "OK",
+                    "name": "1"
+                }
+            ],
+            "redundantIoModule": "Installed",
+            "description": "",
+            "state": "Linked",
+            "status": "OK",
+            "name": null
+        }
+    ],
+    "enclosureUri": "/rest/enclosures/0000000000A66101",
+    "enclosureName": "0000A66101",
+    "firmwareVersion": "0.18",
+    "interconnectBaySet": 1,
+    "temperature": 11,
+    "uidState": "Off",
+    "bay": 1,
+    "driveEnclosurePortMap": {
+        "type": "DriveEnclosurePortMap",
+        "deviceSlots": [
+            {
+                "deviceName": null,
+                "location": "IO Adapter",
+                "slotNumber": "1",
+                "physicalPorts": [
+                    {
+                        "physicalInterconnectUri": "/rest/sas-interconnects/2M220100SL",
+                        "physicalInterconnectPortNumber": "1",
+                        "physicalInterconnectName": "0000A66101, interconnect 1",
+                        "interconnectName": "0000A66101, interconnect 1",
+                        "interconnectUri": "/rest/sas-interconnects/2M220100SL",
+                        "interconnectPortNumber": "1",
+                        "type": "SAS"
+                    },
+                    {
+                        "physicalInterconnectUri": "/rest/sas-interconnects/2M220100SL",
+                        "physicalInterconnectPortNumber": "2",
+                        "physicalInterconnectName": "0000A66101, interconnect 1",
+                        "interconnectName": "0000A66101, interconnect 1",
+                        "interconnectUri": "/rest/sas-interconnects/2M220100SL",
+                        "interconnectPortNumber": "2",
+                        "type": "SAS"
+                    }
+                ]
+            },
+            {
+                "deviceName": null,
+                "location": "IO Adapter",
+                "slotNumber": "2",
+                "physicalPorts": [
+                    {
+                        "physicalInterconnectUri": "/rest/sas-interconnects/2M220101SL",
+                        "physicalInterconnectPortNumber": "1",
+                        "physicalInterconnectName": "0000A66101, interconnect 4",
+                        "interconnectName": "0000A66101, interconnect 4",
+                        "interconnectUri": "/rest/sas-interconnects/2M220101SL",
+                        "interconnectPortNumber": "1",
+                        "type": "SAS"
+                    },
+                    {
+                        "physicalInterconnectUri": "/rest/sas-interconnects/2M220101SL",
+                        "physicalInterconnectPortNumber": "2",
+                        "physicalInterconnectName": "0000A66101, interconnect 4",
+                        "interconnectName": "0000A66101, interconnect 4",
+                        "interconnectUri": "/rest/sas-interconnects/2M220101SL",
+                        "interconnectPortNumber": "2",
+                        "type": "SAS"
+                    }
+                ]
+            }
+        ]
+    },
+    "remoteSupportSettings": {
+        "remoteSupportUri": "/rest/support/drive-enclosures/SN123100",
+        "supportDataCollectionsUri": "/rest/support/data-collections?deviceID=SN123100&category=drive-enclosures",
+        "destination": "",
+        "remoteSupportCurrentState": "Unregistered",
+        "supportDataCollectionState": null,
+        "supportDataCollectionType": null,
+        "supportState": "Disabled"
+    },
+    "scopesUri": "/rest/scopes/resources/rest/drive-enclosures/SN123100",
+    "description": "",
+    "state": "Configured",
+    "status": "OK",
+    "name": "0000A66101, bay 1"
+}

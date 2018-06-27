@@ -1,0 +1,19 @@
+{
+    "@odata.type": "#Drive.v1_2_0.Drive",
+    "Id": "1",
+    "Name": "Drive 40",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "CapacityBytes": 107374182400.0,
+    "Protocol": "SATA",
+    "MediaType": "SSD",
+    "Links": {
+        "Chassis": {
+            "@odata.id": "/redfish/v1/Chassis/0000000000A66101"
+        }
+    },
+    "@odata.context": "/redfish/v1/$metadata#Drive.Drive",
+    "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e/Storage/1/Drives/1"
+}
