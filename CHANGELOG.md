@@ -26,6 +26,7 @@
  - #300 Include Storage Resource Blocks into Resource Blocks collection
  - #261 Implement Network Resource Block
  - #298 Include Network Resource Blocks into Resource Blocks collection
+ - #293 Implement Storage ResourceBlock
 
 # New Redfish resources
  - EventService

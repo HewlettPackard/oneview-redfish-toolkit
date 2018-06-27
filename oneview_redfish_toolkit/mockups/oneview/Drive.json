@@ -1,0 +1,25 @@
+{
+    "type": "IndexResourceV300",
+    "name": "Drive 1",
+    "description": null,
+    "attributes": {
+        "capacityInGB": "100",
+        "isSanitizable": "Supported",
+        "interfaceType": "SATA",
+        "driveEnclosureUri": "/rest/drive-enclosures/SN123100",
+        "available": "yes",
+        "mediaType": "SSD",
+        "isPredictiveFailDrive": "no"
+    },
+    "multiAttributes": {},
+    "ownerId": "dfrm",
+    "state": null,
+    "status": "OK",
+    "created": "2018-04-10T19:51:24.894Z",
+    "modified": "2018-06-20T07:29:45.410Z",
+    "eTag": "2018-06-20T07:29:45.410Z",
+    "category": "drives",
+    "uri": "/rest/drives/c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e",
+    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+    "scopeUris": null
+}
