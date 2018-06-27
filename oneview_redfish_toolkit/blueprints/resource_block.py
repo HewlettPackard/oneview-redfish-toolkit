@@ -32,6 +32,8 @@ from oneview_redfish_toolkit.api.server_hardware_resource_block \
     import ServerHardwareResourceBlock
 from oneview_redfish_toolkit.api.server_profile_template_resource_block \
     import ServerProfileTemplateResourceBlock
+from oneview_redfish_toolkit.api.storage_resource_block \
+    import StorageResourceBlock
 from oneview_redfish_toolkit.blueprints.util.response_builder \
     import ResponseBuilder
 
@@ -62,11 +64,10 @@ def get_resource_block(uuid):
                 ServerProfileTemplateResourceBlock(uuid, resource)
 
         elif category == "drives":
-            # TODO(galeno) Add support for storage resource blocks (OV drives)
-            raise OneViewRedfishError('Resource block type not found')
+            resource_block = StorageResourceBlock(resource)
 
         else:
-            raise OneViewRedfishError('Resource block type not found')
+            raise OneViewRedfishError('Resource block not found')
 
         return ResponseBuilder.success(
             resource_block,

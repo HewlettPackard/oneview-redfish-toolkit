@@ -1,0 +1,22 @@
+{
+    "@odata.type": "#ResourceBlock.v1_1_0.ResourceBlock",
+    "Id": "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e",
+    "Name": "Drive 1",
+    "ResourceBlockType": [
+        "Storage"
+    ],
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "CompositionStatus": {
+        "CompositionState": "Unused"
+    },
+    "Storage": [
+        {
+            "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e/Storage/1"
+        }
+    ],
+    "@odata.context": "/redfish/v1/$metadata#ResourceBlock.ResourceBlock",
+    "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e"
+}
