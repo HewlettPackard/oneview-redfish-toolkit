@@ -152,23 +152,11 @@ class TestResourceBlock(BaseFlaskTest):
     @mock.patch.object(resource_block, 'g')
     def test_get_computer_system_not_found(self, g):
         g.oneview_client.server_hardware.get.side_effect = \
-            self.resource_not_found
+            HPOneViewException({"errorCode": "RESOURCE_NOT_FOUND"})
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
-            "/30303437-3034-4D32-3230-313133364752/Systems/2M201136GR")
-
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-
-    @mock.patch.object(resource_block, 'g')
-    def test_get_computer_system_invalid_serial(self, g):
-        g.oneview_client.server_hardware.get.return_value = \
-            self.server_hardware
-
-        response = self.client.get(
-            "/redfish/v1/CompositionService/ResourceBlocks"
-            "/30303437-3034-4D32-3230-313133364752/Systems/1234567890")
+            "/30303437-3034-4D32-3230-313133364752/Systems/1")
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
@@ -186,7 +174,7 @@ class TestResourceBlock(BaseFlaskTest):
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
-            "/30303437-3034-4D32-3230-313133364752/Systems/2M201136GR")
+            "/30303437-3034-4D32-3230-313133364752/Systems/1")
 
         result = json.loads(response.data.decode("utf-8"))
 

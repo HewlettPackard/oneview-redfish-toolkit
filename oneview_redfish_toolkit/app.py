@@ -63,6 +63,9 @@ from oneview_redfish_toolkit.blueprints.network_port import network_port
 from oneview_redfish_toolkit.blueprints.network_port_collection \
     import network_port_collection
 from oneview_redfish_toolkit.blueprints.odata import odata
+from oneview_redfish_toolkit.blueprints.processor import processor
+from oneview_redfish_toolkit.blueprints.processor_collection \
+    import processor_collection
 from oneview_redfish_toolkit.blueprints.redfish_base import redfish_base
 from oneview_redfish_toolkit.blueprints.resource_block import resource_block
 from oneview_redfish_toolkit.blueprints.resource_block_collection \
@@ -130,6 +133,8 @@ def main(config_file_path, logging_config_file_path):
     app.register_blueprint(network_interface)
     app.register_blueprint(network_adapter)
     app.register_blueprint(network_port)
+    app.register_blueprint(processor)
+    app.register_blueprint(processor_collection)
     app.register_blueprint(session)
     app.register_blueprint(storage_composition_details)
     app.register_blueprint(resource_block_collection)

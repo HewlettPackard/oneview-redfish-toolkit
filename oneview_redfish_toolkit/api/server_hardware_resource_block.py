@@ -52,28 +52,28 @@ class ServerHardwareResourceBlock(ResourceBlock):
 
         self.redfish["CompositionStatus"]["SharingCapable"] = False
         self.redfish["CompositionStatus"]["CompositionState"] = \
-            self.get_composition_state()
+            self._get_composition_state()
 
-        self.fill_computer_system()
-        self.fill_links()
+        self._fill_computer_system()
+        self._fill_links()
 
         self._validate()
 
-    def get_composition_state(self):
+    def _get_composition_state(self):
         sh_state = self.server_hardware["state"]
 
         return STATE_TO_STATUS_MAPPING.get(sh_state, None)
 
-    def fill_computer_system(self):
+    def _fill_computer_system(self):
         self.redfish["ComputerSystems"] = list()
 
         computer_system = dict()
-        computer_system["@odata.id"] = self.BASE_URI + "/" + self.uuid \
-            + "/Systems/" + self.server_hardware["serialNumber"]
+        computer_system["@odata.id"] = \
+            self.BASE_URI + "/" + self.uuid + "/Systems/1"
 
         self.redfish["ComputerSystems"].append(computer_system)
 
-    def fill_links(self):
+    def _fill_links(self):
         self.redfish["Links"] = dict()
 
         chassi = dict()
