@@ -33,24 +33,13 @@ class TestCapabilitiesObject(BaseTest):
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
-        try:
-            capabilities_obj = CapabilitiesObject(self.server_profile_template)
-        except Exception as e:
-            self.fail("Failed to instantiate Capability class."
-                      " Error: {}".format(e))
+        capabilities_obj = CapabilitiesObject(self.server_profile_template)
+
         self.assertIsInstance(capabilities_obj, CapabilitiesObject)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
-        try:
-            capabilities_obj = CapabilitiesObject(self.server_profile_template)
-        except Exception as e:
-            self.fail("Failed to instantiate CapabilitiesObject class."
-                      " Error: {}".format(e))
-
-        try:
-            result = json.loads(capabilities_obj.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: {}".format(e))
+        capabilities_obj = CapabilitiesObject(self.server_profile_template)
+        result = json.loads(capabilities_obj.serialize())
 
         self.assertEqual(self.capabilities_mockup, result)
