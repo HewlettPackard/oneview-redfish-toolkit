@@ -18,14 +18,14 @@ from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 
 
-class Capability(RedfishJsonValidator):
-    """Creates a Capability Redfish dict
+class CapabilitiesObject(RedfishJsonValidator):
+    """Creates a CapabilitiesObject Redfish dict
 
         Populates self.redfish with some hardcoded Capability
         values and with the response of OneView.
     """
 
-    SCHEMA_NAME = 'CollectionCapabilities'
+    SCHEMA_NAME = 'ComputerSystem'
     BASE_URI = '/redfish/v1/System'
 
     def __init__(self, profile_template):
@@ -37,12 +37,14 @@ class Capability(RedfishJsonValidator):
         super().__init__(self.SCHEMA_NAME)
 
         self.profile_template = profile_template
+        uuid = profile_template["uri"].split("/")[-1]
 
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
-        self.redfish["Id"] = profile_template["uri"].split("/")[-1]
+        self.redfish["Id"] = uuid
         self.redfish["Name"] = "Capabilities for the Zone"
 
         self.redfish["Id@Redfish.RequiredOnCreate"] = True
+        self.redfish["Id@Redfish.AllowableValues"] = [uuid]
         self.redfish["Name@Redfish.RequiredOnCreate"] = True
         self.redfish["Name@Redfish.SetOnlyOnCreate"] = True
         self.redfish["Links@Redfish.RequiredOnCreate"] = True
@@ -55,7 +57,6 @@ class Capability(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystem.ComputerSystem"
         self.redfish["@odata.id"] = "{}/{}".format(
-            self.BASE_URI,
-            profile_template["uri"].split("/")[-1])
+            self.BASE_URI, uuid)
 
         self._validate()

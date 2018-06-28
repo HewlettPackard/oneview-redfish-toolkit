@@ -28,6 +28,7 @@ from flask_api import status
 # own libs
 from hpOneView.exceptions import HPOneViewException
 from hpOneView.resources.task_monitor import TASK_ERROR_STATES
+from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 
@@ -40,28 +41,27 @@ def get_computer_system(uuid):
     """Get the Redfish Computer System for a given UUID.
 
         Return ComputerSystem redfish JSON for a given
-        server hardware UUID.
-        Logs exception of any error and return abort(500)
-        Internal Server Error.
+        server hardware or server profile templates UUID.
+        Logs exception of OneViewRedfishError and abort(404).
 
         Returns:
             JSON: Redfish json with ComputerSystem
-            When Server hardware is not found calls abort(404)
-
-        Exceptions:
-            Logs the exception and call abort(500)
+            When Server hardware or Server profilte templates
+            is not found calls abort(404)
     """
+
     try:
-        # Gets server hardware for given UUID
-        server_hardware = g.oneview_client.server_hardware.get(uuid)
+        resource = _get_oneview_resource(uuid)
+        category = resource["category"]
+        headers = ()
 
-        # Gets the server hardware type of the given server hardware
-        server_hardware_types = g.oneview_client.server_hardware_types.get(
-            server_hardware['serverHardwareTypeUri']
-        )
-
-        # Build Computer System object and validates it
-        cs = ComputerSystem(server_hardware, server_hardware_types)
+        if category == 'server-hardware':
+            cs = _build_computer_system_server_hardware(resource)
+            headers = ("ETag", "W/" + resource['eTag'])
+        elif category == 'server-profile-templates':
+            cs = CapabilitiesObject(resource)
+        else:
+            raise OneViewRedfishError('Computer System type not found')
 
         # Build redfish json
         json_str = cs.serialize()
@@ -71,44 +71,15 @@ def get_computer_system(uuid):
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
-        response.headers.add("ETag", "W/" + server_hardware['eTag'])
-        return response
-    except HPOneViewException as e:
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            if e.msg.find("server-hardware-types") >= 0:
-                logging.warning(
-                    'ServerHardwareTypes ID {} not found'.
-                    format(server_hardware['serverHardwareTypeUri']))
-                abort(
-                    status.HTTP_404_NOT_FOUND,
-                    "Server hardware types not found")
-            else:
-                logging.warning(
-                    'Server hardware UUID {} not found'.
-                    format(uuid))
-                abort(
-                    status.HTTP_404_NOT_FOUND,
-                    "Server hardware not found")
 
-        elif e.msg.find("server-hardware-types") >= 0:
-            logging.exception(
-                'OneView Exception while looking for server hardware type'
-                ' {}'.format(e)
-            )
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif e.msg.find("server-hardware") >= 0:
-            logging.exception(
-                'OneView Exception while looking for '
-                'server hardware: {}'.format(e)
-            )
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            logging.exception('Unexpected OneView Exception: {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        # In case of error print exception and abort
+        if headers:
+            response.headers.add(*headers)
+
+        return response
+    except OneViewRedfishError as e:
+        # In case of error log exception and abort
         logging.exception('Unexpected error: {}'.format(e))
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        abort(status.HTTP_404_NOT_FOUND, e.msg)
 
 
 @computer_system.route("/redfish/v1/Systems/<uuid>/"
@@ -218,3 +189,42 @@ def remove_computer_system(uuid):
                     logging.exception(err['message'])
 
     abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def _get_oneview_resource(uuid):
+    """Gets a Server hardware or Server profile templates"""
+    categories = [
+        {"func": g.oneview_client.server_hardware.get, "param": uuid},
+        {"func": g.oneview_client.server_profile_templates.get, "param": uuid},
+    ]
+
+    for category in categories:
+        try:
+            resource = category["func"](category["param"])
+
+            return resource
+        except HPOneViewException as e:
+            if e.oneview_response["errorCode"] == 'RESOURCE_NOT_FOUND':
+                pass
+            else:
+                raise  # Raise any unexpected errors
+
+    raise OneViewRedfishError("Could not find computer system with id " + uuid)
+
+
+def _build_computer_system_server_hardware(server_hardware):
+    try:
+        # Gets the server hardware type of the given server hardware
+        server_hardware_types = g.oneview_client.server_hardware_types.get(
+            server_hardware['serverHardwareTypeUri']
+        )
+
+        # Build Computer System object and validates it
+        return ComputerSystem(server_hardware, server_hardware_types)
+    except HPOneViewException as e:
+        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
+            raise OneViewRedfishError(
+                'ServerHardwareTypes ID {} not found'.
+                format(server_hardware['serverHardwareTypeUri']))
+
+        raise e

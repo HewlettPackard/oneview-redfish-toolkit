@@ -28,6 +28,7 @@
  - #298 Include Network Resource Blocks into Resource Blocks collection
  - #293 Implement Storage ResourceBlock
  - #307 Add support for Processor resource in ComputerSystem
+ - #262 Implement Capabilities endpoint
 
 # New Redfish resources
  - EventService
