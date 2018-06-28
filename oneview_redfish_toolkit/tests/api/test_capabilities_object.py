@@ -16,40 +16,41 @@
 
 import json
 
-from oneview_redfish_toolkit.api.capability import Capability
+from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestCapability(BaseTest):
-    """Tests for Capability class"""
+class TestCapabilitiesObject(BaseTest):
+    """Tests for CapabilitiesObject class"""
 
     with open('oneview_redfish_toolkit/mockups/oneview/'
               'ServerProfileTemplate.json') as f:
         server_profile_template = json.load(f)
 
-    with open('oneview_redfish_toolkit/mockups/redfish/Capability.json') as f:
-        capability_mockup = json.load(f)
+    with open('oneview_redfish_toolkit/mockups/redfish/'
+              'CapabilitiesObject.json') as f:
+        capabilities_mockup = json.load(f)
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
         try:
-            capability = Capability(self.server_profile_template)
+            capabilities_obj = CapabilitiesObject(self.server_profile_template)
         except Exception as e:
             self.fail("Failed to instantiate Capability class."
                       " Error: {}".format(e))
-        self.assertIsInstance(capability, Capability)
+        self.assertIsInstance(capabilities_obj, CapabilitiesObject)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
         try:
-            capability = Capability(self.server_profile_template)
+            capabilities_obj = CapabilitiesObject(self.server_profile_template)
         except Exception as e:
-            self.fail("Failed to instantiate Capability class."
+            self.fail("Failed to instantiate CapabilitiesObject class."
                       " Error: {}".format(e))
 
         try:
-            result = json.loads(capability.serialize())
+            result = json.loads(capabilities_obj.serialize())
         except Exception as e:
             self.fail("Failed to serialize. Error: {}".format(e))
 
-        self.assertEqual(self.capability_mockup, result)
+        self.assertEqual(self.capabilities_mockup, result)

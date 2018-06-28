@@ -34,7 +34,6 @@ from hpOneView import HPOneViewException
 
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.api import scmb
-from oneview_redfish_toolkit.blueprints.capability import capability
 from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.chassis_collection \
     import chassis_collection
@@ -114,7 +113,6 @@ def main(config_file_path, logging_config_file_path):
     # Register blueprints
     app.register_blueprint(redfish_base, url_prefix="/redfish/")
     app.register_blueprint(service_root, url_prefix='/redfish/v1/')
-    app.register_blueprint(capability)
     app.register_blueprint(chassis_collection)
     app.register_blueprint(computer_system_collection)
     app.register_blueprint(computer_system)
