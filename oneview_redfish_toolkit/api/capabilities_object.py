@@ -33,6 +33,9 @@ class CapabilitiesObject(RedfishJsonValidator):
 
             Populates self.redfish with some hardcoded Capability
             values and with the response of OneView.
+
+            Args:
+                profile_template: Oneview's Server profile templates dict
         """
         super().__init__(self.SCHEMA_NAME)
 
