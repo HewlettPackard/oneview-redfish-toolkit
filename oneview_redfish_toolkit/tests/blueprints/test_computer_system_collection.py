@@ -82,7 +82,8 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         # Read mock values
         with open(
-                'oneview_redfish_toolkit/mockups/oneview/ServerHardwares.json'
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerHardwaresProfiledApplied.json'
         ) as f:
             server_hardware_list = json.load(f)
 

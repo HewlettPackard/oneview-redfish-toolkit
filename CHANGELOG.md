@@ -29,6 +29,8 @@
  - #293 Implement Storage ResourceBlock
  - #307 Add support for Processor resource in ComputerSystem
  - #262 Implement Capabilities endpoint
+ - #295 Update Systems collection
+
 
 # New Redfish resources
  - EventService

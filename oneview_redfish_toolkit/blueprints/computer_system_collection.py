@@ -48,8 +48,15 @@ def get_computer_system_collection():
             raise OneViewRedfishResourceNotFoundError(
                 "server-hardware-list", "Resource")
 
+        # Filter server profiles that has a profile applied
+        server_profiles_applied_list = list()
+        for server_hardware_item, index in \
+                zip(server_hardware_list, range(len(server_hardware_list))):
+            if server_hardware_item["state"] == "ProfileApplied":
+                server_profiles_applied_list.append(server_hardware_item)
+
         # Build Computer System Collection object and validates it
-        csc = ComputerSystemCollection(server_hardware_list)
+        csc = ComputerSystemCollection(server_profiles_applied_list)
 
         # Build redfish json
         json_str = csc.serialize()
