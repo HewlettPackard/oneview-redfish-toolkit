@@ -63,6 +63,10 @@ class TestZone(BaseTest):
         ) as f:
             available_targets = json.load(f)
 
+        with open('oneview_redfish_toolkit/mockups/oneview/'
+                  'Drives.json') as f:
+            drives = json.load(f)
+
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Zone.json'
         ) as f:
@@ -72,6 +76,8 @@ class TestZone(BaseTest):
             .return_value = server_profile_template
         g_mock.oneview_client.server_profiles.get_available_targets\
             .return_value = available_targets
+        g_mock.oneview_client.index_resources.get_all\
+            .return_value = drives
 
         response = self.app.get(
             "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3"

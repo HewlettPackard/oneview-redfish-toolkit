@@ -48,6 +48,9 @@ def get_zone(uuid):
         .get_available_targets(enclosureGroupUri=encl_group_uri,
                                serverHardwareTypeUri=sh_type_uri)
 
-    zone_data = Zone(profile_template, available_targets)
+    drives = g.oneview_client.index_resources \
+        .get_all(category="drives", count=10000)
+
+    zone_data = Zone(profile_template, available_targets, drives)
 
     return ResponseBuilder.success(zone_data)

@@ -1,6 +1,21 @@
 {
   "localStorage": {
-    "controllers": [],
+    "controllers": [
+      {
+        "deviceSlot": "Mezz 1",
+        "mode":"HBA",
+        "initialize": true,
+        "driveWriteCache": "Unmanaged",
+        "logicalDrives": null
+      },
+      {
+        "deviceSlot": "Embedded",
+        "mode": "HBA",
+        "initialize": true,
+        "driveWriteCache": "Unmanaged",
+        "logicalDrives": null
+      }
+    ],
     "sasLogicalJBODs": [
       {
         "deviceSlot": "Mezz 1",
