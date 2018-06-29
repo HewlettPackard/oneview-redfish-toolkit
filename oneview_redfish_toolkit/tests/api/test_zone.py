@@ -13,7 +13,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import copy
 import json
 
 from oneview_redfish_toolkit.api.zone import Zone
@@ -31,29 +31,50 @@ class TestZone(BaseTest):
               'AvailableTargetsForSPT.json') as f:
         available_targets = json.load(f)
 
+    with open('oneview_redfish_toolkit/mockups/oneview/'
+              'Drives.json') as f:
+        drives = json.load(f)
+
     with open('oneview_redfish_toolkit/mockups/redfish/Zone.json') as f:
         zone_mockup = json.load(f)
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
-        try:
-            zone = Zone(self.server_profile_template, self.available_targets)
-        except Exception as e:
-            self.fail("Failed to instantiate Zone class."
-                      " Error: {}".format(e))
-        self.assertIsInstance(zone, Zone)
+    with open('oneview_redfish_toolkit/mockups/redfish/'
+              'ZoneWithoutDrives.json') as f:
+        zone_without_drives_mockup = json.load(f)
 
     def test_serialize(self):
-        # Tests the serialize function result against known result
-        try:
-            zone = Zone(self.server_profile_template, self.available_targets)
-        except Exception as e:
-            self.fail("Failed to instantiate Zone class."
-                      " Error: {}".format(e))
-
-        try:
-            result = json.loads(zone.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: {}".format(e))
+        zone = Zone(self.server_profile_template,
+                    self.available_targets,
+                    self.drives)
+        result = json.loads(zone.serialize())
 
         self.assertEqual(self.zone_mockup, result)
+
+    def test_drives_as_links_when_storage_controllers_are_not_configured(
+            self):
+        profile_template = copy.deepcopy(self.server_profile_template)
+        profile_template["localStorage"]["controllers"] = []
+
+        zone = Zone(profile_template,
+                    self.available_targets,
+                    self.drives)
+        result = json.loads(zone.serialize())
+
+        self.assertEqual(self.zone_without_drives_mockup, result)
+
+    def test_drives_as_links_when_storage_controller_is_embedded(self):
+        profile_template = copy.deepcopy(self.server_profile_template)
+        profile_template["localStorage"]["controllers"] = [{
+            "deviceSlot": "Embedded",
+            "mode": "HBA",
+            "initialize": True,
+            "driveWriteCache": "Unmanaged",
+            "logicalDrives": None
+        }]
+
+        zone = Zone(profile_template,
+                    self.available_targets,
+                    self.drives)
+        result = json.loads(zone.serialize())
+
+        self.assertEqual(self.zone_without_drives_mockup, result)

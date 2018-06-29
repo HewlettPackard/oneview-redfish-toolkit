@@ -32,7 +32,7 @@ class Zone(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Zone'
 
-    def __init__(self, profile_template, available_targets_obj):
+    def __init__(self, profile_template, available_targets_obj, drives):
         """Zone constructor
 
             Populates self.redfish with the contents of
@@ -45,7 +45,15 @@ class Zone(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        available_targets = available_targets_obj["targets"]
+        self.available_targets = available_targets_obj["targets"]
+        self.drives = []
+
+        controllers = profile_template["localStorage"]["controllers"]
+        has_not_embedded = \
+            [i for i in controllers if i["deviceSlot"] != "Embedded"]
+
+        if has_not_embedded:
+            self.drives = drives
 
         self.redfish["@odata.type"] = "#Zone.v1_1_0.Zone"
         self.redfish["Id"] = profile_template["uri"].split("/")[-1]
@@ -56,7 +64,7 @@ class Zone(RedfishJsonValidator):
         self.redfish["Links"] = dict()
         self.redfish["Links"]["ResourceBlocks"] = list()
 
-        self.fill_resource_blocks(profile_template, available_targets)
+        self.fill_resource_blocks()
 
         self.capabilities_key = "@Redfish.CollectionCapabilities"
         self.redfish[self.capabilities_key] = dict()
@@ -72,9 +80,12 @@ class Zone(RedfishJsonValidator):
 
         self._validate()
 
-    def fill_resource_blocks(self, profile_template, available_targets):
-        for item in available_targets:
+    def fill_resource_blocks(self):
+        for item in self.available_targets:
             self.add_resource_block_item_to_links(item, "serverHardwareUri")
+
+        for item in self.drives:
+            self.add_resource_block_item_to_links(item, "uri")
 
     def add_resource_block_item_to_links(self, original_dict, uri_key):
         uuid = original_dict[uri_key].split("/")[-1]
