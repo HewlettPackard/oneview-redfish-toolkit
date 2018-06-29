@@ -38,20 +38,20 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         g.oneview_client.server_hardware.get_all.return_value = []
 
-        with open(
-                'oneview_redfish_toolkit/mockups/errors/'
-                'ServerHardwareListNotFound.json'
-        ) as f:
-            server_hardware_list_not_found = json.load(f)
-
         response = self.client.get("/redfish/v1/Systems/")
 
         # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'ServerProfilesAppliedCollectionEmpty.json'
+        ) as f:
+            expected_result = json.load(f)
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(server_hardware_list_not_found, result)
+        self.assertEqual(expected_result, result)
 
     @mock.patch.object(computer_system_collection, 'g')
     def test_get_computer_system_collection_fail(self, g):
@@ -83,7 +83,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
         # Read mock values
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
-                'ServerHardwaresProfiledApplied.json'
+                'ServerProfilesApplied.json'
         ) as f:
             server_hardware_list = json.load(f)
 

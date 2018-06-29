@@ -14,7 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import collections
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 
@@ -29,24 +28,24 @@ class ComputerSystemCollection(RedfishJsonValidator):
 
     SCHEMA_NAME = 'ComputerSystemCollection'
 
-    def __init__(self, server_profiles):
+    def __init__(self, server_hardware):
         """ComputerSystemCollection constructor
 
             Populates self.redfish with a hardcoded ComputerSystemCollection
-            values and with the response of Oneview with all servers profiled
-            applied.
+            values and with the response of Oneview with all servers with
+            Server Profile applied.
 
             Args:
-                server_profiles: A list of dicts of servers profiled applied.
+                server_hardware: A list of dicts of server hardware.
         """
         super().__init__(self.SCHEMA_NAME)
 
-        self.server_profiles = server_profiles
+        self.server_profiles = server_hardware
 
         self.redfish["@odata.type"] = \
             "#ComputerSystemCollection.ComputerSystemCollection"
         self.redfish["Name"] = "Computer System Collection"
-        self.redfish["Members@odata.count"] = len(server_profiles)
+        self.redfish["Members@odata.count"] = len(server_hardware)
         self.redfish["Members"] = list()
         self._set_redfish_members()
         self.redfish["@odata.context"] = \
@@ -61,10 +60,9 @@ class ComputerSystemCollection(RedfishJsonValidator):
             Populates self.redfish["Members"] with the links to Redfish
             ComputerSystems.
         """
-        for server_profile, index in \
-                zip(self.server_profiles, range(len(self.server_profiles))):
-            self.redfish["Members"].append(collections.OrderedDict())
+        for server_profile in self.server_profiles:
             server_profile_uuid = \
                 server_profile["serverProfileUri"].split("/")[-1]
-            self.redfish["Members"][index]["@odata.id"] = \
-                "/redfish/v1/Systems/" + server_profile_uuid
+            server_profile_dict = {"@odata.id": "/redfish/v1/Systems/" +
+                                   server_profile_uuid}
+            self.redfish["Members"].append(server_profile_dict)
