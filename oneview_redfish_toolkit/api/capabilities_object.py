@@ -44,7 +44,7 @@ class CapabilitiesObject(RedfishJsonValidator):
 
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
         self.redfish["Id"] = uuid
-        self.redfish["Name"] = "Capabilities for the Zone"
+        self.redfish["Name"] = profile_template["name"]
 
         self.redfish["Id@Redfish.RequiredOnCreate"] = True
         self.redfish["Id@Redfish.AllowableValues"] = [uuid]
