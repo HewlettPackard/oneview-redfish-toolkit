@@ -14,18 +14,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from flask import abort
 from flask import Blueprint
 from flask import g
-from flask import Response
-from flask_api import status
 
 from oneview_redfish_toolkit.api.computer_system_collection \
     import ComputerSystemCollection
-from oneview_redfish_toolkit.api.errors \
-    import OneViewRedfishResourceNotFoundError
-
-import logging
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
 
 computer_system_collection = Blueprint("computer_system_collection", __name__)
@@ -41,36 +36,17 @@ def get_computer_system_collection():
         Returns:
                 JSON: JSON with ComputerSystemCollection.
     """
-    try:
-        # Gets all server hardware
-        server_hardware_list = g.oneview_client.server_hardware.get_all()
-        if not server_hardware_list:
-            raise OneViewRedfishResourceNotFoundError(
-                "server-hardware-list", "Resource")
+    # Gets all server hardware
+    server_hardware_list = g.oneview_client.server_hardware.get_all()
 
-        # Filter server profiles that has a profile applied
-        server_profiles_applied_list = list()
-        for server_hardware_item, index in \
-                zip(server_hardware_list, range(len(server_hardware_list))):
-            if server_hardware_item["state"] == "ProfileApplied":
-                server_profiles_applied_list.append(server_hardware_item)
+    # Filter servers that have a profile applied
+    servers_profiled_list = list()
+    for server_hardware_item in server_hardware_list:
+        if server_hardware_item["state"] == "ProfileApplied":
+            servers_profiled_list.append(server_hardware_item)
 
-        # Build Computer System Collection object and validates it
-        csc = ComputerSystemCollection(server_profiles_applied_list)
+    # Build Computer System Collection object and validates it
+    csc = ComputerSystemCollection(servers_profiled_list)
 
-        # Build redfish json
-        json_str = csc.serialize()
-
-        # Build response and returns
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-    except OneViewRedfishResourceNotFoundError as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception(e)
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    # Build response and returns it
+    return ResponseBuilder.success(csc)

@@ -34,7 +34,7 @@ class TestComputerSystemCollection(BaseTest):
         # Loading ServerHardware list mockup value
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerHardwaresProfiledApplied.json'
+            'ServerProfilesApplied.json'
         ) as f:
             self.server_hardware_list = json.load(f)
 
