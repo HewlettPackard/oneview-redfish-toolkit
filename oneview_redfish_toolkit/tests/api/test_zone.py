@@ -43,6 +43,7 @@ class TestZone(BaseTest):
         zone_without_drives_mockup = json.load(f)
 
     def test_serialize(self):
+        """Tests if after serialize Zone the result is as expected"""
         zone = Zone(self.server_profile_template,
                     self.available_targets,
                     self.drives)
@@ -52,6 +53,7 @@ class TestZone(BaseTest):
 
     def test_drives_as_links_when_storage_controllers_are_not_configured(
             self):
+        """Tests if Drive Resource blocks is empty when Storage Controllers are not configured"""
         profile_template = copy.deepcopy(self.server_profile_template)
         profile_template["localStorage"]["controllers"] = []
 
@@ -63,6 +65,7 @@ class TestZone(BaseTest):
         self.assertEqual(self.zone_without_drives_mockup, result)
 
     def test_drives_as_links_when_storage_controller_is_embedded(self):
+        """Tests if Drive Resource blocks is empty when Storage Controllers are not configured properly for Redfish"""
         profile_template = copy.deepcopy(self.server_profile_template)
         profile_template["localStorage"]["controllers"] = [{
             "deviceSlot": "Embedded",

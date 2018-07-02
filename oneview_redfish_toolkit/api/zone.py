@@ -32,7 +32,7 @@ class Zone(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Zone'
 
-    def __init__(self, profile_template, available_targets_obj, drives):
+    def __init__(self, profile_template, available_targets_obj, drives=[]):
         """Zone constructor
 
             Populates self.redfish with the contents of
@@ -42,18 +42,18 @@ class Zone(RedfishJsonValidator):
                 profile_template: Oneview's server profile template dict
                 available_targets_obj: Oneview's available targets dict
                 (servers and empty bays) for assignment to a server profile
+                drives: Oneview's dict drives list
         """
         super().__init__(self.SCHEMA_NAME)
 
-        self.available_targets = available_targets_obj["targets"]
-        self.drives = []
+        available_targets = available_targets_obj["targets"]
 
         controllers = profile_template["localStorage"]["controllers"]
-        has_not_embedded = \
+        has_valid_drive_config = \
             [i for i in controllers if i["deviceSlot"] != "Embedded"]
 
-        if has_not_embedded:
-            self.drives = drives
+        if not has_valid_drive_config:
+            drives = []
 
         self.redfish["@odata.type"] = "#Zone.v1_1_0.Zone"
         self.redfish["Id"] = profile_template["uri"].split("/")[-1]
@@ -64,7 +64,7 @@ class Zone(RedfishJsonValidator):
         self.redfish["Links"] = dict()
         self.redfish["Links"]["ResourceBlocks"] = list()
 
-        self.fill_resource_blocks()
+        self.fill_resource_blocks(available_targets, drives)
 
         self.capabilities_key = "@Redfish.CollectionCapabilities"
         self.redfish[self.capabilities_key] = dict()
@@ -80,11 +80,11 @@ class Zone(RedfishJsonValidator):
 
         self._validate()
 
-    def fill_resource_blocks(self):
-        for item in self.available_targets:
+    def fill_resource_blocks(self, available_targets, drives):
+        for item in available_targets:
             self.add_resource_block_item_to_links(item, "serverHardwareUri")
 
-        for item in self.drives:
+        for item in drives:
             self.add_resource_block_item_to_links(item, "uri")
 
     def add_resource_block_item_to_links(self, original_dict, uri_key):
