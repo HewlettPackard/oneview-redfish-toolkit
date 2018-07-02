@@ -42,8 +42,6 @@ class Processor(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        self.server_hardware = server_hardware
-
         self.redfish["@odata.type"] = "#Processor.v1_1_0.Processor"
         self.redfish["Id"] = processor_id
         self.redfish["Name"] = "Processor " + processor_id
@@ -57,7 +55,7 @@ class Processor(RedfishJsonValidator):
         self.redfish["MaxSpeedMHz"] = server_hardware["processorSpeedMhz"]
         self.redfish["TotalCores"] = server_hardware["processorCoreCount"]
 
-        self.fill_links()
+        self._fill_links(server_hardware)
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Processor.Processor"
@@ -67,9 +65,9 @@ class Processor(RedfishJsonValidator):
 
         self._validate()
 
-    def fill_links(self):
+    def _fill_links(self, server_hardware):
         self.redfish["Links"] = dict()
 
         self.redfish["Links"]["Chassis"] = dict()
         self.redfish["Links"]["Chassis"]["@odata.id"] = \
-            "/redfish/v1/Chassis/" + self.server_hardware["uuid"]
+            "/redfish/v1/Chassis/" + server_hardware["uuid"]

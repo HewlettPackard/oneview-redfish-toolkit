@@ -41,13 +41,11 @@ class ProcessorCollection(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        self.server_hardware = server_hardware
-
         self.redfish["@odata.type"] = \
             "#ProcessorCollection.ProcessorCollection"
         self.redfish["Name"] = "Processors Collection"
 
-        self._fill_members()
+        self._fill_members(server_hardware)
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ProcessorCollection.ProcessorCollection"
@@ -57,8 +55,8 @@ class ProcessorCollection(RedfishJsonValidator):
 
         self._validate()
 
-    def _fill_members(self):
-        processor_count = self.server_hardware["processorCount"]
+    def _fill_members(self, server_hardware):
+        processor_count = server_hardware["processorCount"]
 
         self.redfish["Members@odata.count"] = processor_count
         self.redfish["Members"] = list()
@@ -67,7 +65,7 @@ class ProcessorCollection(RedfishJsonValidator):
             processor = dict()
             processor["@odata.id"] = \
                 ResourceBlockCollection.BASE_URI + "/" \
-                + self.server_hardware["uuid"] \
+                + server_hardware["uuid"] \
                 + "/Systems/1/Processors/" + str(processor_id + 1)
 
             self.redfish["Members"].append(processor)
