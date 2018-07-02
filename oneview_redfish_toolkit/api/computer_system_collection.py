@@ -40,7 +40,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        self.server_profiles = server_hardware
+        self.server_hardware_list = server_hardware
 
         self.redfish["@odata.type"] = \
             "#ComputerSystemCollection.ComputerSystemCollection"
@@ -60,7 +60,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
             Populates self.redfish["Members"] with the links to Redfish
             ComputerSystems.
         """
-        for server_profile in self.server_profiles:
+        for server_profile in self.server_hardware_list:
             server_profile_uuid = \
                 server_profile["serverProfileUri"].split("/")[-1]
             server_profile_dict = {"@odata.id": "/redfish/v1/Systems/" +
