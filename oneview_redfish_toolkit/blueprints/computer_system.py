@@ -24,6 +24,7 @@ from flask import g
 from flask import request
 from flask import Response
 from flask_api import status
+from jsonschema import ValidationError
 
 # own libs
 from hpOneView.exceptions import HPOneViewException
@@ -32,9 +33,10 @@ from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
+from oneview_redfish_toolkit.api.redfish_json_validator \
+    import RedfishJsonValidator
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
-
 
 computer_system = Blueprint("computer_system", __name__)
 
@@ -200,3 +202,65 @@ def _get_oneview_resource(uuid):
                 raise  # Raise any unexpected errors
 
     raise OneViewRedfishError("Could not find computer system with id " + uuid)
+
+def _build_computer_system_server_hardware(server_hardware):
+    try:
+        # Gets the server hardware type of the given server hardware
+        server_hardware_types = g.oneview_client.server_hardware_types.get(
+            server_hardware['serverHardwareTypeUri']
+        )
+
+        # Build Computer System object and validates it
+        return ComputerSystem(server_hardware, server_hardware_types)
+    except HPOneViewException as e:
+        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
+            raise OneViewRedfishError(
+                'ServerHardwareTypes ID {} not found'.
+                format(server_hardware['serverHardwareTypeUri']))
+
+        raise e
+
+
+@computer_system.route("/redfish/v1/Systems/", methods=["POST"])
+def create_composed_system():
+    if not request.is_json:
+        abort(status.HTTP_400_BAD_REQUEST)
+
+    body = request.get_json()
+
+    class ComposedSystem(RedfishJsonValidator):
+        SCHEMA_NAME = 'ComputerSystem'
+
+        def __init__(self, composed_system):
+            super().__init__(self.SCHEMA_NAME)
+
+            self.redfish = composed_system
+
+        def validate(self):
+            self._validate()
+
+    try:
+        resource = ComposedSystem(body)
+        resource.validate()
+    except ValidationError as e:
+        print(e)
+
+    spt = g.oneview_client.server_profile_templates.get(body["Id"])
+
+    del spt["uri"]
+    del spt["serverProfileDescription"]
+    del spt["created"]
+    del spt["modified"]
+    del spt["status"]
+    del spt["state"]
+    del spt["scopesUri"]
+    del spt["eTag"]
+    del spt["connectionSettings"]["manageConnections"]
+
+    spt["type"] = "ServerProfileV8"
+    spt["category"] = "server-profiles"
+    spt["serverHardwareUri"] = "/rest/server-hardware/<SH_UUID>" #Resource block computer system
+
+    print(spt)
+
+    return Response(status=status.HTTP_200_OK)
