@@ -22,8 +22,8 @@ class ComputerSystemCollection(RedfishJsonValidator):
     """Creates a Computer System Collection Redfish dict
 
         Populates self.redfish with some hardcoded ComputerSystemCollection
-        values and with the response of Oneview with all servers profiled
-        applied.
+        values and with the response of Oneview with all servers with
+        Server Profile applied.
     """
 
     SCHEMA_NAME = 'ComputerSystemCollection'
