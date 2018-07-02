@@ -99,7 +99,7 @@ class TestComputerSystem(BaseFlaskTest):
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server-hardware-types not found',
+            'message': 'resource not found',
         })
 
         g.oneview_client.server_hardware.get.side_effect = e
@@ -172,7 +172,7 @@ class TestComputerSystem(BaseFlaskTest):
         })
         not_fount = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server-hardware-types not found',
+            'message': 'server-hardware not found',
         })
 
         g.oneview_client.server_hardware.get.side_effect = not_fount

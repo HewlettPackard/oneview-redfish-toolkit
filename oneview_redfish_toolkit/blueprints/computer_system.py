@@ -31,6 +31,8 @@ from hpOneView.resources.task_monitor import TASK_ERROR_STATES
 from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
 
 computer_system = Blueprint("computer_system", __name__)
@@ -53,29 +55,17 @@ def get_computer_system(uuid):
     try:
         resource = _get_oneview_resource(uuid)
         category = resource["category"]
-        headers = ()
 
         if category == 'server-hardware':
-            cs = _build_computer_system_server_hardware(resource)
-            headers = ("ETag", "W/" + resource['eTag'])
+            computer_system = _build_computer_system_server_hardware(resource)
         elif category == 'server-profile-templates':
-            cs = CapabilitiesObject(resource)
+            computer_system = CapabilitiesObject(resource)
         else:
             raise OneViewRedfishError('Computer System type not found')
 
-        # Build redfish json
-        json_str = cs.serialize()
-
-        # Build response and returns
-        response = Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-
-        if headers:
-            response.headers.add(*headers)
-
-        return response
+        return ResponseBuilder.success(
+            computer_system,
+            {"ETag": "W/" + resource["eTag"]})
     except OneViewRedfishError as e:
         # In case of error log exception and abort
         logging.exception('Unexpected error: {}'.format(e))
