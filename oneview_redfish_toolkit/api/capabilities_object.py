@@ -26,7 +26,7 @@ class CapabilitiesObject(RedfishJsonValidator):
     """
 
     SCHEMA_NAME = 'ComputerSystem'
-    BASE_URI = '/redfish/v1/System'
+    BASE_URI = '/redfish/v1/Systems'
 
     def __init__(self, profile_template):
         """Capability constructor
