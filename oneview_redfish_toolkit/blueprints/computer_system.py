@@ -61,7 +61,8 @@ def get_computer_system(uuid):
         elif category == 'server-profile-templates':
             computer_system = CapabilitiesObject(resource)
         else:
-            raise OneViewRedfishError('Computer System type not found')
+            raise OneViewRedfishError(
+                'Computer System UUID {} not found'.format(uuid))
 
         return ResponseBuilder.success(
             computer_system,
