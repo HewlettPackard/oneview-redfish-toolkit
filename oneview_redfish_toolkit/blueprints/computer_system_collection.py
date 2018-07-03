@@ -39,14 +39,8 @@ def get_computer_system_collection():
     # Gets all server hardware
     server_hardware_list = g.oneview_client.server_hardware.get_all()
 
-    # Filter servers that have a profile applied
-    servers_profiled_list = list()
-    for server_hardware_item in server_hardware_list:
-        if server_hardware_item["state"] == "ProfileApplied":
-            servers_profiled_list.append(server_hardware_item)
-
     # Build Computer System Collection object and validates it
-    csc = ComputerSystemCollection(servers_profiled_list)
+    csc = ComputerSystemCollection(server_hardware_list)
 
     # Build response and returns it
     return ResponseBuilder.success(csc)
