@@ -27,9 +27,9 @@ from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit import util
 
 
-ONEVIEW_CA = "certs/oneview_ca.pem"
-SCMB_CERT = "certs/oneview_scmb.pem"
-SCMB_KEY = "certs/oneview_scmb.key"
+ONEVIEW_CA = "oneview_redfish_toolkit/certs/oneview_ca.pem"
+SCMB_CERT = "oneview_redfish_toolkit/certs/oneview_scmb.pem"
+SCMB_KEY = "oneview_redfish_toolkit/certs/oneview_scmb.key"
 SCMB_PORT = 5671
 SCMB_SOCKET_TIMEOUT = 5  # seconds
 SCMB_RESOURCE_LIST = [
