@@ -91,7 +91,7 @@ class Zone(RedfishJsonValidator):
     def _fill_network_resource_block(self, profile_template):
         conn_settings = profile_template["connectionSettings"]
 
-        if len(conn_settings["connections"]):
+        if conn_settings["connections"]:
             dict_item = dict()
             dict_item["@odata.id"] = ResourceBlockCollection.BASE_URI + \
                 "/" + profile_template["uri"].split("/")[-1]
