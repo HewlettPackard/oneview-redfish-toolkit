@@ -14,6 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from oneview_redfish_toolkit.api.capabilities_object import \
+    CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
@@ -96,10 +98,8 @@ class Zone(RedfishJsonValidator):
     def fill_capabilities_collection(self):
         capability = {
             "CapabilitiesObject": {
-                "@odata.id": "/redfish/v1/Systems/Capabilities/" +
-                             self.redfish["Id"]
-                # TODO(@ricardogpsf) When the Capabilities API is created,
-                # replace the URI string with a constant
+                "@odata.id":
+                    CapabilitiesObject.BASE_URI + "/" + self.redfish["Id"]
             },
             "UseCase": "ComputerSystemComposition",
             "Links": {
