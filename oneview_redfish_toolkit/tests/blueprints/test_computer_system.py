@@ -50,15 +50,48 @@ class TestComputerSystem(BaseFlaskTest):
 
         self.app.register_blueprint(computer_system.computer_system)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_sh_not_found(self, g):
-        """Tests ComputerSystem with ServerHardware Not Found"""
-
-        e = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server-hardware not found',
+        self.internal_error = HPOneViewException({
+            'errorCode': 'ANOTHER_ERROR',
+            'message': 'some internal error',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+
+        self.not_found_error = HPOneViewException({
+            'errorCode': 'RESOURCE_NOT_FOUND',
+            'message': 'resource not found',
+        })
+
+        # Loading server_profile mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/ServerProfile.json'
+        ) as f:
+            self.server_profile = json.load(f)
+
+        # Loading server_hardware mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
+        ) as f:
+            self.server_hardware = json.load(f)
+
+        # Loading ServerHardwareTypes mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview'
+                '/ServerHardwareTypes.json'
+        ) as f:
+            self.server_hardware_types = json.load(f)
+
+        # Loading ComputerSystem mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/ComputerSystem.json'
+        ) as f:
+            self.computer_system_mockup = json.load(f)
+
+    @mock.patch.object(computer_system, 'g')
+    def test_get_computer_system_not_found(self, g):
+        """Tests ComputerSystem with ServerProfileTemplates not found"""
+
+        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
+        g.oneview_client.server_profile_templates.get.side_effect = \
+            self.not_found_error
 
         response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -66,23 +99,47 @@ class TestComputerSystem(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_profiles.get \
+            .assert_called_with("0303437-3034-4D32-3230-313133364752")
+        g.oneview_client.server_profile_templates.get \
+            .assert_called_with("0303437-3034-4D32-3230-313133364752")
+
+    @mock.patch.object(computer_system, 'g')
+    def test_get_computer_system_sh_not_found(
+            self,
+            g):
+        """Tests ComputerSystem with Server Hardware not found"""
+
+        g.oneview_client.server_profiles.get.return_value = {
+            "category": "server-profiles",
+            "serverHardwareUri": "notFoundUri"
+        }
+        g.oneview_client.server_hardware.get.side_effect = \
+            self.not_found_error
+
+        response = self.client.get(
+            "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
+        )
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_hardware.get.assert_called_with('notFoundUri')
+        g.oneview_client.server_hardware_types.get.assert_not_called()
 
     @mock.patch.object(computer_system, 'g')
     def test_get_computer_system_sht_not_found(
             self,
             g):
-        """Tests ComputerSystem with ServerHardwareTypes not found"""
+        """Tests ComputerSystem with ServerHardwareType not found"""
 
-        g.oneview_client.server_hardware.get.return_value = \
-            {
-                'serverHardwareTypeUri': 'invalidUri',
-                'category': 'server-hardware'
-            }
-        e = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server-hardware-types not found',
-        })
-        g.oneview_client.server_hardware_types.get.side_effect = e
+        g.oneview_client.server_profiles.get.return_value = {
+            "category": "server-profiles",
+            "serverHardwareUri": "validURI",
+            "serverHardwareTypeUri": "notFoundURI"
+        }
+        g.oneview_client.server_hardware.get.return_value = {}
+        g.oneview_client.server_hardware_types.get.side_effect = \
+            self.not_found_error
 
         response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -90,37 +147,19 @@ class TestComputerSystem(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_spt_not_found(
-            self,
-            g):
-        """Tests ComputerSystem with ServerProfileTemplates not found"""
-
-        e = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'resource not found',
-        })
-
-        g.oneview_client.server_hardware.get.side_effect = e
-        g.oneview_client.server_profile_templates.get.side_effect = e
-
-        response = self.client.get(
-            "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
-        )
-
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_hardware.get.assert_called_with("validURI")
+        g.oneview_client.server_hardware_types.get\
+            .assert_called_with("notFoundURI")
 
     @mock.patch.object(computer_system, 'g')
     def test_get_computer_system_sh_exception(self, g):
         """Tests ComputerSystem with ServerHardware exception"""
 
-        e = HPOneViewException({
-            'errorCode': 'ANOTHER_ERROR',
-            'message': 'server-hardware error',
-        })
-        g.oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_profiles.get.return_value = {
+            "category": "server-profiles",
+            "serverHardwareUri": "someURI"
+        }
+        g.oneview_client.server_hardware.get.side_effect = self.internal_error
 
         response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -136,19 +175,17 @@ class TestComputerSystem(BaseFlaskTest):
     def test_get_computer_system_sht_exception(
             self,
             g):
-        """Tests ComputerSystem with  ServerHardwareTypes exception"""
+        """Tests ComputerSystem with ServerHardwareTypes exception"""
 
-        e = HPOneViewException({
-            'errorCode': 'ANOTHER_ERROR',
-            'message': 'server-hardware-types error',
-        })
-
-        g.oneview_client.server_hardware.get.return_value = \
+        g.oneview_client.server_profiles.get.return_value = \
             {
                 'serverHardwareTypeUri': 'invalidUri',
-                'category': 'server-hardware'
+                'serverHardwareUri': 'validUri',
+                'category': 'server-profiles'
             }
-        g.oneview_client.server_hardware_types.get.side_effect = e
+        g.oneview_client.server_hardware.get.return_value = {}  # some object
+        g.oneview_client.server_hardware_types.get.side_effect = \
+            self.internal_error
 
         response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -159,6 +196,8 @@ class TestComputerSystem(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_profiles.get \
+            .assert_called_with("0303437-3034-4D32-3230-313133364752")
 
     @mock.patch.object(computer_system, 'g')
     def test_get_computer_system_spt_exception(
@@ -166,17 +205,9 @@ class TestComputerSystem(BaseFlaskTest):
             g):
         """Tests ComputerSystem with ServerProfileTemplates exception"""
 
-        e = HPOneViewException({
-            'errorCode': 'ANOTHER_ERROR',
-            'message': 'server-profile-templates error',
-        })
-        not_fount = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server-hardware not found',
-        })
-
-        g.oneview_client.server_hardware.get.side_effect = not_fount
-        g.oneview_client.server_profile_templates.get.side_effect = e
+        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
+        g.oneview_client.server_profile_templates.get.side_effect = \
+            self.internal_error
 
         response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -194,7 +225,8 @@ class TestComputerSystem(BaseFlaskTest):
             g):
         """Tests ComputerSystem with an unexpected error"""
 
-        g.oneview_client.server_hardware.get.side_effect = Exception()
+        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
+        g.oneview_client.server_profile_templates.get.side_effect = Exception()
 
         response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -206,31 +238,15 @@ class TestComputerSystem(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_server_hardware(self, g):
-        """Tests ComputerSystem with a known Server Hardware"""
-
-        # Loading server_hardware mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            server_hardware = json.load(f)
-
-        # Loading ServerHardwareTypes mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardwareTypes.json'
-        ) as f:
-            server_hardware_types = json.load(f)
-
-        # Loading ComputerSystem mockup result
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/ComputerSystem.json'
-        ) as f:
-            computer_system_mockup = json.load(f)
+    def test_get_computer_system_server_profile(self, g):
+        """Tests ComputerSystem with a known Server Profile"""
 
         # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
         g.oneview_client.server_hardware_types.get.return_value = \
-            server_hardware_types
+            self.server_hardware_types
 
         # Get ComputerSystem
         response = self.client.get(
@@ -243,20 +259,18 @@ class TestComputerSystem(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(computer_system_mockup, result)
+        self.assertEqual(self.computer_system_mockup, result)
         self.assertEqual(
-            "{}{}".format("W/", server_hardware["eTag"]),
+            "{}{}".format("W/", self.server_profile["eTag"]),
             response.headers["ETag"])
+        g.oneview_client.server_profiles.get \
+            .assert_called_with("0303437-3034-4D32-3230-313133364752")
+        g.oneview_client.server_profile_templates.get \
+            .assert_not_called()
 
     @mock.patch.object(computer_system, 'g')
     def test_get_computer_system_spt(self, g):
         """Tests ComputerSystem with a known Server Profile Templates"""
-
-        # Loading server_hardware mockup value
-        e = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server-hardware not found',
-        })
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
@@ -270,8 +284,7 @@ class TestComputerSystem(BaseFlaskTest):
             capabilities_obj_mockup = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_hardware.get.side_effect = e
-
+        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
         g.oneview_client.server_profile_templates.get.return_value = \
             server_profile_template
 
@@ -287,6 +300,10 @@ class TestComputerSystem(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(capabilities_obj_mockup, result)
+        g.oneview_client.server_profiles.get \
+            .assert_called_with("1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
+        g.oneview_client.server_profile_templates.get \
+            .assert_called_with("1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
 
     @mock.patch.object(computer_system, 'g')
     def test_change_power_state(self, g):
@@ -301,21 +318,11 @@ class TestComputerSystem(BaseFlaskTest):
                 - PushPowerButton
         """
 
-        # Loading server_hardware mockup value
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            sh_dict = json.load(f)
-
-        # Loading ServerHardwareTypes mockup value
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/'
-                'ServerHardwareTypes.json'
-        ) as f:
-            sht_dict = json.load(f)
-
-        g.oneview_client.server_hardware.get.return_value = sh_dict
-        g.oneview_client.server_hardware_types.get.return_value = sht_dict
+        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
+        g.oneview_client.server_hardware_types.get.return_value = \
+            self.server_hardware_types
         g.oneview_client.server_hardware.update_power_state.return_value = \
             {"status": "OK"}
 
@@ -324,7 +331,7 @@ class TestComputerSystem(BaseFlaskTest):
 
         for reset_type in reset_types:
             response = self.client.post(
-                "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
+                "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
                 "/Actions/ComputerSystem.Reset",
                 data=json.dumps(dict(ResetType=reset_type)),
                 content_type='application/json')
@@ -341,24 +348,14 @@ class TestComputerSystem(BaseFlaskTest):
     def test_change_power_state_invalid_value(self, g):
         """Tests change SH power state with invalid power value"""
 
-        # Loading server_hardware mockup value
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            sh_dict = json.load(f)
-
-        # Loading ServerHardwareTypes mockup value
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/'
-                'ServerHardwareTypes.json'
-        ) as f:
-            sht_dict = json.load(f)
-
-        g.oneview_client.server_hardware.get.return_value = sh_dict
-        g.oneview_client.server_hardware_types.get.return_value = sht_dict
+        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
+        g.oneview_client.server_hardware_types.get.return_value = \
+            self.server_hardware_types
 
         response = self.client.post(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
             "/Actions/ComputerSystem.Reset",
             data=json.dumps(dict(ResetType="INVALID_TYPE")),
             content_type='application/json')
@@ -388,12 +385,7 @@ class TestComputerSystem(BaseFlaskTest):
     def test_change_power_state_sh_exception(self, g):
         """Tests change SH power state with SH exception"""
 
-        e = HPOneViewException({
-            'errorCode': 'ANOTHER_ERROR',
-            'message': 'server-hardware error',
-        })
-
-        g.oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_hardware.get.side_effect = self.internal_error
 
         response = self.client.post(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
@@ -410,28 +402,14 @@ class TestComputerSystem(BaseFlaskTest):
     @mock.patch.object(computer_system, 'g')
     def test_change_power_state_unable_reset(self, g):
         """Tests change SH power state with SH unable to reset"""
-        # Loading server_hardware mockup value
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            sh_dict = json.load(f)
 
-        # Loading ServerHardwareTypes mockup value
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/'
-                'ServerHardwareTypes.json'
-        ) as f:
-            sht_dict = json.load(f)
-
-        e = HPOneViewException({
-            'errorCode': 'INVALID_POWER_CONTROL_REQUEST_POWER_COLDBOOT_OFF',
-            'message': 'Unable to cold boot because the server is '
-                       'currently off.'
-        })
-
-        g.oneview_client.server_hardware.get.return_value = sh_dict
-        g.oneview_client.server_hardware_types.get.return_value = sht_dict
-        g.oneview_client.server_hardware.update_power_state.side_effect = e
+        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
+        g.oneview_client.server_hardware_types.get.return_value = \
+            self.server_hardware_types
+        g.oneview_client.server_hardware.update_power_state.side_effect = \
+            self.internal_error
 
         response = self.client.post(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
@@ -449,12 +427,8 @@ class TestComputerSystem(BaseFlaskTest):
     def test_change_power_state_sht_exception(self, g):
         """Tests change SH power state with SHT exception"""
 
-        e = HPOneViewException({
-            'errorCode': 'ANOTHER_ERROR',
-            'message': 'server-hardware-types error',
-        })
-
-        g.oneview_client.server_hardware_types.get.side_effect = e
+        g.oneview_client.server_hardware_types.get.side_effect = \
+            self.internal_error
 
         response = self.client.post(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
