@@ -45,10 +45,9 @@ class ComputerSystemCollection(RedfishJsonValidator):
         self.redfish["Name"] = "Computer System Collection"
         server_profile_members_list = \
             self._get_server_profile_members_list(server_hardware_list)
-        self.redfish["Members@odata.count"] = len(server_profile_members_list)
+        self.redfish["Members@odata.count"] = \
+            len(server_profile_members_list)
         self.redfish["Members"] = server_profile_members_list
-
-
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystemCollection" \
             ".ComputerSystemCollection"
