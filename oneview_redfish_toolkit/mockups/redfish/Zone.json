@@ -25,6 +25,9 @@
             },
             {
                 "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/d8b142ba-6762-470d-9082-0e53d0499303"
+            },
+            {
+                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
             }
         ]
     },
