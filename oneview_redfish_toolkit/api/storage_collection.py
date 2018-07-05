@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -35,7 +35,7 @@ class StorageCollection(RedfishJsonValidator):
             values
 
             Args:
-                UUID of server hardware
+                UUID of server profile
         """
         super().__init__(self.SCHEMA_NAME)
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -32,30 +32,12 @@ class TestStorageCollection(BaseTest):
         ) as f:
             self.storage_collection_mockup = json.load(f)
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
-
-        try:
-            storage_collection = \
-                StorageCollection('30303437-3034-4D32-3230-313133364752')
-        except Exception as e:
-            self.fail("Failed to instantiate StorageCollection class."
-                      " Error: {}".format(e))
-        self.assertIsInstance(storage_collection, StorageCollection)
-
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            storage_collection = \
-                StorageCollection('30303437-3034-4D32-3230-313133364752')
-        except Exception as e:
-            self.fail("Failed to instantiate StorageCollection class."
-                      " Error: {}".format(e))
+        storage_collection = \
+            StorageCollection('b425802b-a6a5-4941-8885-aab68dfa2ee2')
 
-        try:
-            result = json.loads(storage_collection.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(storage_collection.serialize())
 
         self.assertEqual(self.storage_collection_mockup, result)

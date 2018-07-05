@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -16,16 +16,21 @@
 
 import json
 
-from oneview_redfish_toolkit.api.network_interface_collection import \
-    NetworkInterfaceCollection
+from oneview_redfish_toolkit.api.storage_drive_composed_details import \
+    StorageDriveComposedDetails
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestNetworkInterfaceCollection(BaseTest):
-    """Tests for NetworkInterfaceCollection class"""
+class TestStorageComposedDetails(BaseTest):
+    """Tests for TestStorageComposedDetails class"""
 
     def setUp(self):
         """Tests preparation"""
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/Drive.json'
+        ) as f:
+            self.drive = json.load(f)
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/ServerProfile.json'
@@ -34,23 +39,20 @@ class TestNetworkInterfaceCollection(BaseTest):
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerHardware.json'
+            'SASLogicalJBODListForStorage.json'
         ) as f:
-            self.server_hardware = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/'
-            'NetworkInterfaceCollection.json'
-        ) as f:
-            self.network_interface_collection_mockup = json.load(f)
+            self.sas_logical_jbods = json.load(f)
 
     def test_serialize(self):
-        # Tests the serialize function result against known result
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/Drive.json'
+        ) as f:
+            expected_result = json.load(f)
 
-        network_interface_collection = \
-            NetworkInterfaceCollection(self.server_profile,
-                                       self.server_hardware)
+        target = StorageDriveComposedDetails(4,
+                                             self.server_profile,
+                                             self.sas_logical_jbods[1])
 
-        result = json.loads(network_interface_collection.serialize())
+        result = json.loads(target.serialize())
 
-        self.assertEqual(self.network_interface_collection_mockup, result)
+        self.assertEqual(expected_result, result)

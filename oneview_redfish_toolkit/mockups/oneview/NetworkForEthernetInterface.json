@@ -1,0 +1,26 @@
+{
+  "type": "IndexResourceV300",
+  "name": "test_eth1",
+  "description": null,
+  "attributes": {
+    "vlan_id": "10",
+    "ethernetNetworkType": "Tagged",
+    "default_connection_type": "51208222-c357-4777-86f2-ce0c2aabdff1",
+    "subnet_uri": null,
+    "privateNetwork": "false",
+    "purpose": "General",
+    "network_name": "test_eth1",
+    "object_id": "19638712-679d-4232-9743-c7cb6c7bf718"
+  },
+  "multiAttributes": {},
+  "ownerId": "cd",
+  "state": null,
+  "status": "OK",
+  "created": "2018-05-10T18:51:11.129Z",
+  "modified": "2018-05-10T18:51:11.129Z",
+  "eTag": "2018-05-10T18:51:11.129Z",
+  "category": "ethernet-networks",
+  "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+  "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+  "scopeUris": null
+}

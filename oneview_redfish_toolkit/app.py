@@ -13,8 +13,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 # Python libs
+
 import argparse
 import ipaddress
 import logging
@@ -42,6 +42,10 @@ from oneview_redfish_toolkit.blueprints.composition_service \
 from oneview_redfish_toolkit.blueprints.computer_system import computer_system
 from oneview_redfish_toolkit.blueprints.computer_system_collection \
     import computer_system_collection
+from oneview_redfish_toolkit.blueprints.ethernet_interface import \
+    ethernet_interface
+from oneview_redfish_toolkit.blueprints.ethernet_interface_collection import \
+    ethernet_interface_collection
 from oneview_redfish_toolkit.blueprints.event_service import event_service
 from oneview_redfish_toolkit.blueprints.manager import manager
 from oneview_redfish_toolkit.blueprints.manager_collection \
@@ -118,6 +122,8 @@ def main(config_file_path, logging_config_file_path):
     app.register_blueprint(computer_system)
     app.register_blueprint(composition_service)
     app.register_blueprint(chassis)
+    app.register_blueprint(ethernet_interface)
+    app.register_blueprint(ethernet_interface_collection)
     app.register_blueprint(manager_collection)
     app.register_blueprint(manager)
     app.register_blueprint(metadata)

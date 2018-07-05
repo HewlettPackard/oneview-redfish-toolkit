@@ -37,74 +37,102 @@ class TestNetworkInterfaceCollection(BaseFlaskTest):
         self.app.register_blueprint(
             network_interface_collection.network_interface_collection)
 
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/ServerProfile.json'
+        ) as f:
+            self.server_profile = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
+        ) as f:
+            self.server_hardware = json.load(f)
+
     @mock.patch.object(network_interface_collection, 'g')
     def test_get_network_interface_collection(self, g):
         """Tests NetworkInterfaceCollection"""
 
-        # Loading server_hardware mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            server_hardware = json.load(f)
-
-        # Loading NetworkInterfaceCollection mockup result
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
             'NetworkInterfaceCollection.json'
         ) as f:
             network_interface_collection_mockup = json.load(f)
 
-        # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
 
-        # Get NetworkInterfaceCollection
         response = self.client.get(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
             "NetworkInterfaces/"
         )
 
-        # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
 
-        # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(network_interface_collection_mockup, result)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.server_hardware.get.assert_called_with(
+            self.server_profile["serverHardwareUri"])
 
     @mock.patch.object(network_interface_collection, 'g')
-    def test_get_network_interface_collection_sh_not_found(
+    def test_get_network_interface_collection_when_profile_not_found(
         self, g):
-        """Tests NetworkInterfaceCollection"""
+        """Tests when the searching a server profile returns not found"""
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_profiles.get.side_effect = e
 
-        # Get NetworkInterfaceCollection
         response = self.client.get(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
             "NetworkInterfaces/"
         )
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.server_hardware.get.assert_not_called()
 
     @mock.patch.object(network_interface_collection, 'g')
-    def test_get_network_interface_collection_sh_exception(
+    def test_get_network_interface_collection_when_server_hardware_not_found(
+            self, g):
+        """Tests when the searching a server hardware returns not found"""
+
+        e = HPOneViewException({
+            'errorCode': 'RESOURCE_NOT_FOUND',
+            'message': 'server-hardware not found',
+        })
+        g.oneview_client.server_profiles.get.side_effect = e
+
+        response = self.client.get(
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
+            "NetworkInterfaces/"
+        )
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.server_hardware.get.assert_not_called()
+
+    @mock.patch.object(network_interface_collection, 'g')
+    def test_get_network_interface_collection_when_profile_raise_any_exception(
         self, g):
-        """Tests NetworkInterfaceCollection"""
+        """Tests when the searching a server profile raises any exception"""
 
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware-types error',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_profiles.get.side_effect = e
 
-        # Get NetworkInterfaceCollection
         response = self.client.get(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752/"
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
             "NetworkInterfaces/"
         )
 
@@ -113,3 +141,6 @@ class TestNetworkInterfaceCollection(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.server_hardware.get.assert_not_called()

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -23,50 +23,54 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
-from oneview_redfish_toolkit.blueprints import storage_collection
+from oneview_redfish_toolkit.blueprints import ethernet_interface_collection
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestStorageCollection(BaseFlaskTest):
-    """Tests for StorageCollection blueprint"""
+class TestEthernetInterfaceCollection(BaseFlaskTest):
+    """Tests for EthernetInterfaceCollection blueprint"""
 
     @classmethod
     def setUpClass(self):
-        super(TestStorageCollection, self).setUpClass()
+        super(TestEthernetInterfaceCollection, self).setUpClass()
 
-        self.app.register_blueprint(storage_collection.storage_collection)
+        self.app.register_blueprint(
+            ethernet_interface_collection.ethernet_interface_collection)
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/ServerProfile.json'
         ) as f:
             self.server_profile = json.load(f)
 
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/StorageCollection.json'
-        ) as f:
-            self.storage_collection_mockup = json.load(f)
+    @mock.patch.object(ethernet_interface_collection, 'g')
+    def test_get_ethernet_interface_collection(self, g):
+        """Tests EthernetInterfaceCollection"""
 
-    @mock.patch.object(storage_collection, 'g')
-    def test_get_storage_collection(self, g):
-        """Tests StorageCollection"""
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'EthernetInterfaceCollection.json'
+        ) as f:
+            ethernet_interface_collection_mockup = json.load(f)
 
         g.oneview_client.server_profiles.get.return_value = self.server_profile
 
         response = self.client.get(
-            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage"
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
+            "EthernetInterfaces/"
         )
 
         result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.storage_collection_mockup, result)
+        self.assertEqual(ethernet_interface_collection_mockup, result)
         g.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
 
-    @mock.patch.object(storage_collection, 'g')
-    def test_get_storage_collection_when_profile_not_found(self, g):
-        """Tests StorageCollection"""
+    @mock.patch.object(ethernet_interface_collection, 'g')
+    def test_get_ethernet_interface_collection_when_profile_not_found(
+        self, g):
+        """Tests EthernetInterfaceCollection when server profile not found"""
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
@@ -75,32 +79,11 @@ class TestStorageCollection(BaseFlaskTest):
         g.oneview_client.server_profiles.get.side_effect = e
 
         response = self.client.get(
-            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage"
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
+            "EthernetInterfaces/"
         )
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
-            self.server_profile["uuid"])
-
-    @mock.patch.object(storage_collection, 'g')
-    def test_get_storage_collection_when_profile_raises_any_exception(self, g):
-        """Tests StorageCollection"""
-
-        e = HPOneViewException({
-            'errorCode': 'ANOTHER_ERROR',
-            'message': 'server-hardware-types error',
-        })
-        g.oneview_client.server_profiles.get.side_effect = e
-
-        response = self.client.get(
-            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage"
-        )
-
-        self.assertEqual(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-            response.status_code
-        )
         self.assertEqual("application/json", response.mimetype)
         g.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])

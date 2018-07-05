@@ -31,6 +31,9 @@
     "Storage": {
         "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage"
     },
+    "EthernetInterfaces": {
+        "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/EthernetInterfaces"
+    },
     "NetworkInterfaces": {
         "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/NetworkInterfaces"
     },

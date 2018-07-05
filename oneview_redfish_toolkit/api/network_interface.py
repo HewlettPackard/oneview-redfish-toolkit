@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -26,13 +26,15 @@ class NetworkInterface(RedfishJsonValidator):
 
     SCHEMA_NAME = 'NetworkInterface'
 
-    def __init__(self, device_id, server_hardware):
+    def __init__(self, device_id, server_profile, server_hardware):
         """NetworkInterface constructor
 
             Populates self.redfish with the contents of server hardware dict
             from Oneview
 
             Args:
+                device_id: The Network Interface ID
+                server_profile: Oneview's server profile dict
                 server_hardware: Oneview's server hardware dict
         """
         super().__init__(self.SCHEMA_NAME)
@@ -63,6 +65,6 @@ class NetworkInterface(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#NetworkInterface.NetworkInterface"
         self.redfish["@odata.id"] = "/redfish/v1/Systems/" + \
-            server_hardware["uuid"] + "/NetworkInterfaces/" + device_id
+            server_profile["uuid"] + "/NetworkInterfaces/" + device_id
 
         self._validate()

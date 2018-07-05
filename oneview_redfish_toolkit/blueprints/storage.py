@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -14,19 +14,19 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# Python libs
-import logging
-
 # 3rd party libs
-from flask import abort
 from flask import Blueprint
 from flask import g
-from flask import Response
-from flask_api import status
 
 # own libs
-from hpOneView.exceptions import HPOneViewException
+from flask_api import status
+from werkzeug.exceptions import abort
+
 from oneview_redfish_toolkit.api.storage import Storage
+from oneview_redfish_toolkit.api.storage_drive_composed_details import \
+    StorageDriveComposedDetails
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
 storage = Blueprint("storage", __name__)
 
@@ -35,66 +35,84 @@ storage = Blueprint("storage", __name__)
 def get_storage(uuid):
     """Get the Redfish Storage for a given UUID.
 
-        Return Storage Redfish JSON for a given hardware UUID.
+        Return Storage Redfish JSON for a given server profile UUID.
         Logs exception of any error and return abort(500)
         Internal Server Error.
 
         Returns:
             JSON: Redfish json with Storage
-            When hardware or hardware type is not found calls abort(404)
+            When server profile or hardware or hardware type is not found
+            calls abort(404)
 
         Exceptions:
             Logs the exception and call abort(500)
 
     """
+    server_profile = g.oneview_client.server_profiles.get(uuid)
+    sht_uri = server_profile['serverHardwareTypeUri']
+    server_hardware_type = \
+        g.oneview_client.server_hardware_types.get(sht_uri)
+    sas_logical_jbods = _find_sas_logical_jbods_by(server_profile)
+
+    st = Storage(server_profile, server_hardware_type, sas_logical_jbods)
+
+    return ResponseBuilder.success(st)
+
+
+@storage.route("/redfish/v1/Systems/<profile_id>/Storage/1/Drives/<drive_id>",
+               methods=["GET"])
+def get_drive(profile_id, drive_id):
+    """Get the Redfish Storage for a given UUID.
+
+        Return Drive Redfish JSON for a given server profile UUID and Drive ID.
+        Logs exception of any error and return abort(500)
+        Internal Server Error.
+
+        Returns:
+            JSON: Redfish json with Storage
+            When server profile is not found calls abort(404)
+
+        Exceptions:
+            Logs the exception and call abort(500)
+
+    """
+
+    drive_id_int = None
+    logical_jbod = None
     try:
-        server_hardware = g.oneview_client.server_hardware. \
-            get(uuid)
+        drive_id_int = int(drive_id)
+    except ValueError:
+        abort(status.HTTP_400_BAD_REQUEST, "Drive id should be a integer")
 
-        sht_uri = server_hardware['serverHardwareTypeUri']
-        server_hardware_type = \
-            g.oneview_client.server_hardware_types.get(sht_uri)
+    server_profile = g.oneview_client.server_profiles.get(profile_id)
+    sas_logical_jbods = _find_sas_logical_jbods_by(server_profile)
 
-        st = Storage(uuid, server_hardware_type)
+    count_drives = 0
+    for log_jbod in sas_logical_jbods:
+        next_count = count_drives + int(log_jbod["numPhysicalDrives"])
 
-        json_str = st.serialize()
+        if drive_id_int in range(count_drives + 1, next_count + 1):
+            logical_jbod = log_jbod
+            break
 
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-    except HPOneViewException as e:
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            if e.msg.find("server-hardware-types") >= 0:
-                logging.warning(
-                    'Server hardware type ID {} not found'.
-                    format(server_hardware['serverHardwareTypeUri']))
-                abort(
-                    status.HTTP_404_NOT_FOUND,
-                    "Server hardware types not found")
-            else:
-                logging.warning(
-                    'Server hardware UUID {} not found'.
-                    format(uuid))
-                abort(
-                    status.HTTP_404_NOT_FOUND,
-                    "Server hardware not found")
-        elif e.msg.find("server-hardware-types") >= 0:
-            logging.exception(
-                'OneView Exception while looking for server hardware type'
-                ' {}'.format(e)
-            )
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        elif e.msg.find("server-hardware") >= 0:
-            logging.exception(
-                'OneView Exception while looking for '
-                'server hardware: {}'.format(e)
-            )
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            logging.exception('Unexpected OneView Exception: {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        count_drives = next_count
+
+    if logical_jbod is None:
+        abort(status.HTTP_404_NOT_FOUND, "Drive {} not found"
+              .format(drive_id))
+
+    drive_details = StorageDriveComposedDetails(drive_id_int,
+                                                server_profile,
+                                                logical_jbod)
+
+    return ResponseBuilder.success(drive_details)
+
+
+def _find_sas_logical_jbods_by(server_profile):
+    sas_logical_jbods = []
+    for logical_jbod in server_profile["localStorage"]["sasLogicalJBODs"]:
+        item = g.oneview_client.sas_logical_jbods\
+            .get(logical_jbod["sasLogicalJBODUri"])
+        sas_logical_jbods.append(item)
+
+    return sas_logical_jbods

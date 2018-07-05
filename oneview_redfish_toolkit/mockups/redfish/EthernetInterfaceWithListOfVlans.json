@@ -1,0 +1,16 @@
+{
+  "@odata.type": "#EthernetInterface.v1_3_0.EthernetInterface",
+  "Id": "2",
+  "Name": "test_conn_using_network_set",
+  "Status": {
+    "Health": "OK",
+    "State": "Enabled"
+  },
+  "MACAddress": "9A:A0:22:90:00:20",
+  "SpeedMbps": 2500,
+  "VLANs": {
+    "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/EthernetInterfaces/2/VLANs"
+  },
+  "@odata.context": "/redfish/v1/$metadata#EthernetInterface.EthernetInterface",
+  "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/EthernetInterfaces/2"
+}

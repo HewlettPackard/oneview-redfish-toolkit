@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -26,42 +26,34 @@ class TestStorage(BaseTest):
     def setUp(self):
         """Tests preparation"""
 
-        # Loading Storage mockup result
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Storage.json'
         ) as f:
             self.storage_mockup = json.load(f)
 
-        # Loading ServerHardwareTypes mockup value
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/ServerProfile.json'
+        ) as f:
+            self.server_profile = json.load(f)
+
         with open(
             'oneview_redfish_toolkit/mockups/oneview/ServerHardwareTypes.json'
         ) as f:
             self.server_hardware_types = json.load(f)
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
-
-        try:
-            storage = Storage('30303437-3034-4D32-3230-313133364752',
-                              self.server_hardware_types)
-        except Exception as e:
-            self.fail("Failed to instantiate Storage class."
-                      " Error: {}".format(e))
-        self.assertIsInstance(storage, Storage)
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'SASLogicalJBODListForStorage.json'
+        ) as f:
+            self.sas_logical_jbods = json.load(f)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            storage = Storage('30303437-3034-4D32-3230-313133364752',
-                              self.server_hardware_types)
-        except Exception as e:
-            self.fail("Failed to instantiate Storage class."
-                      " Error: {}".format(e))
+        storage = Storage(self.server_profile,
+                          self.server_hardware_types,
+                          self.sas_logical_jbods)
 
-        try:
-            result = json.loads(storage.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(storage.serialize())
 
         self.assertEqual(self.storage_mockup, result)

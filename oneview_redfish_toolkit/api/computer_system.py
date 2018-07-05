@@ -101,6 +101,11 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Storage"] = collections.OrderedDict()
         self.redfish["Storage"]["@odata.id"] = \
             self.BASE_URI + "/" + base_resource['uuid'] + "/Storage"
+        self.redfish["EthernetInterfaces"] = collections.OrderedDict()
+        self.redfish["EthernetInterfaces"]["@odata.id"] = \
+            self.BASE_URI + "/" + \
+            base_resource['uuid'] + \
+            "/EthernetInterfaces"
         self.redfish["NetworkInterfaces"] = collections.OrderedDict()
         self.redfish["NetworkInterfaces"]["@odata.id"] = \
             self.BASE_URI + "/" + \
