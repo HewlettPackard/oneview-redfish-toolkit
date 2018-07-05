@@ -42,6 +42,10 @@ class TestZone(BaseTest):
               'ZoneWithoutDrives.json') as f:
         zone_without_drives_mockup = json.load(f)
 
+    with open('oneview_redfish_toolkit/mockups/redfish/'
+              'ZoneWithoutNetwork.json') as f:
+        zone_without_network_mockup = json.load(f)
+
     def test_serialize(self):
         """Tests if after serialize Zone the result is as expected"""
 
@@ -92,3 +96,21 @@ class TestZone(BaseTest):
         result = json.loads(zone.serialize())
 
         self.assertEqual(self.zone_without_drives_mockup, result)
+
+    def test_spt_when_connections_are_not_configured(
+            self):
+        """Tests Zone with no resource block for network
+
+            Tests Zone with no resource block for network when handling
+            a Server profile template with no connections configured
+        """
+
+        profile_template = copy.deepcopy(self.server_profile_template)
+        profile_template["connectionSettings"]["connections"] = []
+
+        zone = Zone(profile_template,
+                    self.available_targets,
+                    self.drives)
+        result = json.loads(zone.serialize())
+
+        self.assertEqual(self.zone_without_network_mockup, result)

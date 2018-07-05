@@ -64,7 +64,7 @@ class Zone(RedfishJsonValidator):
         self.redfish["Links"] = dict()
         self.redfish["Links"]["ResourceBlocks"] = list()
 
-        self.fill_resource_blocks(available_targets, drives)
+        self.fill_resource_blocks(profile_template, available_targets, drives)
 
         self.capabilities_key = "@Redfish.CollectionCapabilities"
         self.redfish[self.capabilities_key] = dict()
@@ -80,18 +80,27 @@ class Zone(RedfishJsonValidator):
 
         self._validate()
 
-    def fill_resource_blocks(self, available_targets, drives):
+    def fill_resource_blocks(self, profile_template, available_targets,
+                             drives):
         for item in available_targets:
             self.add_resource_block_item_to_links(item, "serverHardwareUri")
 
         for item in drives:
             self.add_resource_block_item_to_links(item, "uri")
 
+        self._fill_network_resource_block(profile_template)
+
     def add_resource_block_item_to_links(self, original_dict, uri_key):
         uuid = original_dict[uri_key].split("/")[-1]
         dict_item = dict()
         dict_item["@odata.id"] = ResourceBlockCollection.BASE_URI + "/" + uuid
         self.redfish["Links"]["ResourceBlocks"].append(dict_item)
+
+    def _fill_network_resource_block(self, profile_template):
+        conn_settings = profile_template["connectionSettings"]
+
+        if conn_settings["connections"]:
+            self.add_resource_block_item_to_links(profile_template, "uri")
 
     def fill_capabilities_collection(self):
         capability = {
