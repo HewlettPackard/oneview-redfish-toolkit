@@ -89,6 +89,13 @@ class TestChassis(BaseFlaskTest):
         ) as f:
             self.rack_chassis_mockup = json.load(f)
 
+        # Loading Invalid Json Key mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/errors/'
+                'InvalidJsonKey.json'
+        ) as f:
+            self.invalid_json_key = json.load(f)
+
     #############
     # Enclosure #
     #############
@@ -326,3 +333,145 @@ class TestChassis(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(chassis, 'g')
+    def test_change_power_state(self, g):
+        """Tests changes a SH chassi type with valid reset options
+
+            Valid Reset Values:
+                - On
+                - ForceOff
+                - GracefulShutdown
+                - GracefulRestart
+                - ForceRestart
+                - PushPowerButton
+        """
+        g.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
+        g.oneview_client.server_hardware.update_power_state.return_value = \
+            {"status": "OK"}
+
+        reset_types = ["On", "ForceOff", "GracefulShutdown",
+                       "GracefulRestart", "ForceRestart", "PushPowerButton"]
+
+        for reset_type in reset_types:
+            response = self.client.post(
+                "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+                "/Actions/Chassis.Reset",
+                data=json.dumps(dict(ResetType=reset_type)),
+                content_type='application/json')
+
+            json_str = response.data.decode("utf-8")
+
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual("application/json", response.mimetype)
+            self.assertEqual(json_str, '{"ResetType": "%s"}' % reset_type)
+
+    @mock.patch.object(chassis, 'g')
+    def test_change_power_state_invalid_value(self, g):
+        """Tests changes a SH chassi type with invalid power value"""
+
+        g.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
+
+        response = self.client.post(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+            "/Actions/Chassis.Reset",
+            data=json.dumps(dict(ResetType="INVALID_TYPE")),
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(chassis, 'g')
+    def test_change_power_state_unexpected_error(self, g):
+        """Tests changes a SH chassi type with OneView unexpected error"""
+
+        g.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        g.oneview_client.server_hardware.get.side_effect = Exception()
+
+        response = self.client.post(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+            "/Actions/Chassis.Reset",
+            data=json.dumps(dict(ResetType="On")),
+            content_type='application/json')
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(chassis, 'g')
+    def test_change_power_state_oneview_exception(self, g):
+        """Tests changes a SH chassi type with OneView unexpected error"""
+
+        e = HPOneViewException({
+            'errorCode': 'ANOTHER_ERROR',
+            'message': 'server-hardware error',
+        })
+
+        g.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        g.oneview_client.server_hardware.get.side_effect = e
+
+        response = self.client.post(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+            "/Actions/Chassis.Reset",
+            data=json.dumps(dict(ResetType="On")),
+            content_type='application/json')
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(chassis, 'g')
+    def test_change_power_state_unable_reset(self, g):
+        """Tests changes a SH chassi type with SH unable to reset"""
+
+        e = HPOneViewException({
+            'errorCode': 'INVALID_POWER_CONTROL_REQUEST_POWER_COLDBOOT_OFF',
+            'message': 'Unable to cold boot because the server is '
+                       'currently off.'
+        })
+
+        g.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        g.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
+        g.oneview_client.server_hardware.update_power_state.side_effect = e
+
+        response = self.client.post(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+            "/Actions/Chassis.Reset",
+            data=json.dumps(dict(ResetType="ForceRestart")),
+            content_type='application/json')
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code
+        )
+        self.assertEqual("application/json", response.mimetype)
+
+    def test_change_power_state_invalid_key(self):
+        """Tests a SH chassi type with JSON key different of ResetType"""
+
+        response = self.client.post(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+            "/Actions/Chassis.Reset",
+            data=json.dumps(dict(INVALID_KEY="On")),
+            content_type='application/json')
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(
+            status.HTTP_400_BAD_REQUEST,
+            response.status_code
+        )
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual(result, self.invalid_json_key)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -18,7 +18,6 @@ import json
 from jsonschema.exceptions import ValidationError
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
@@ -85,14 +84,3 @@ class TestComputerSystem(BaseTest):
             self.fail("Failed to serialize. Error: ".format(e))
 
         self.assertEqual(self.computer_system_mockup, result)
-
-    def test_get_oneview_power_configuration(self):
-        # Tests invalid mapping values of power state
-        #
-        obj = ComputerSystem(self.server_hardware, self.server_hardware_types)
-
-        self.assertRaises(OneViewRedfishError, obj.
-                          get_oneview_power_configuration, "ForceOn")
-
-        self.assertRaises(OneViewRedfishError, obj.
-                          get_oneview_power_configuration, "INVALID")
