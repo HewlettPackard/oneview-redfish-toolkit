@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -56,7 +56,7 @@ class ComputerSystem(RedfishJsonValidator):
     SCHEMA_NAME = 'ComputerSystem'
     BASE_URI = '/redfish/v1/Systems'
 
-    def __init__(self, server_hardware, server_hardware_types):
+    def __init__(self, server_hardware, server_hardware_types, server_profile):
         """ComputerSystem constructor
 
             Populates self.redfish with the contents of ServerHardware and
@@ -65,21 +65,23 @@ class ComputerSystem(RedfishJsonValidator):
             Args:
                 server_hardware: ServerHardware dict from OneView
                 server_hardware_types: ServerHardwareTypes dict from OneView
+                server_profile: ServerProfile dict from OneView.
         """
         super().__init__(self.SCHEMA_NAME)
 
+        base_resource = server_profile
         self.server_hardware = server_hardware
 
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
-        self.redfish["Id"] = server_hardware["uuid"]
-        self.redfish["Name"] = server_hardware["name"]
-        self.redfish["SystemType"] = "Physical"
+        self.redfish["Id"] = base_resource["uuid"]
+        self.redfish["Name"] = base_resource["name"]
+        self.redfish["SystemType"] = "Composed"
         self.redfish["Manufacturer"] = "HPE"
         self.redfish["Model"] = server_hardware["model"]
         self.redfish["SerialNumber"] = server_hardware["serialNumber"]
         self.redfish["Status"] = collections.OrderedDict()
         self.redfish["Status"]["State"] = \
-            status_mapping.get_redfish_state(server_hardware["status"])
+            status_mapping.get_redfish_state(base_resource["status"])
         self.redfish["Status"]["Health"] = \
             status_mapping.get_redfish_health(server_hardware["status"])
         self.redfish["PowerState"] = server_hardware["powerState"]
@@ -98,11 +100,11 @@ class ComputerSystem(RedfishJsonValidator):
             server_hardware["memoryMb"] / 1024
         self.redfish["Storage"] = collections.OrderedDict()
         self.redfish["Storage"]["@odata.id"] = \
-            self.BASE_URI + "/" + server_hardware['uuid'] + "/Storage"
+            self.BASE_URI + "/" + base_resource['uuid'] + "/Storage"
         self.redfish["NetworkInterfaces"] = collections.OrderedDict()
         self.redfish["NetworkInterfaces"]["@odata.id"] = \
             self.BASE_URI + "/" + \
-            server_hardware['uuid'] + \
+            base_resource['uuid'] + \
             "/NetworkInterfaces"
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["Chassis"] = list()
@@ -118,7 +120,7 @@ class ComputerSystem(RedfishJsonValidator):
             collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"]["target"] = \
             self.BASE_URI + "/" + \
-            server_hardware["uuid"] + \
+            base_resource["uuid"] + \
             "/Actions/ComputerSystem.Reset"
         self.redfish["Actions"]["#ComputerSystem.Reset"][
             "ResetType@Redfish.AllowableValues"] = \
@@ -127,7 +129,7 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystem.ComputerSystem"
         self.redfish["@odata.id"] = self.BASE_URI + "/" \
-            + server_hardware["uuid"]
+            + base_resource["uuid"]
 
         self._validate()
 
