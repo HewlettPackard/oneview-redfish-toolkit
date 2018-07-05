@@ -30,7 +30,7 @@
  - #307 Add support for Processor resource in ComputerSystem
  - #262 Implement Capabilities endpoint
  - #295 Update Systems collection
-
+ - #311 Resource Zone: update link to CapabilitiesObject
 
 # New Redfish resources
  - EventService
