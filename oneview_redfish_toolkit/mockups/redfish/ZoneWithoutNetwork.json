@@ -33,7 +33,7 @@
         "Capabilities": [
             {
                 "CapabilitiesObject": {
-                    "@odata.id": "/redfish/v1/Systems/Capabilities/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
+                    "@odata.id": "/redfish/v1/Systems/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
                 },
                 "UseCase": "ComputerSystemComposition",
                 "Links": {
