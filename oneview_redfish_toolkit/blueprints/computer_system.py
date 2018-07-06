@@ -128,7 +128,7 @@ def change_power_state(uuid):
 
         # Changes the ServerHardware power state
         g.oneview_client.server_hardware.update_power_state(
-            oneview_power_configuration, uuid)
+            oneview_power_configuration, sh["uuid"])
 
         return Response(
             response='{"ResetType": "%s"}' % reset_type,

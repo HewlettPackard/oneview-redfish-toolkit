@@ -344,6 +344,12 @@ class TestComputerSystem(BaseFlaskTest):
 
             self.assertEqual(json_str, '{"ResetType": "%s"}' % reset_type)
 
+        g.oneview_client.server_hardware.update_power_state \
+            .assert_called_with({
+                'powerControl': 'MomentaryPress',
+                'powerState': 'Off'
+            }, "30303437-3034-4D32-3230-313133364752")
+
     @mock.patch.object(computer_system, 'g')
     def test_change_power_state_invalid_value(self, g):
         """Tests change SH power state with invalid power value"""
