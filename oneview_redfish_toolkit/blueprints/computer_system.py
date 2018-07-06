@@ -190,7 +190,8 @@ def _get_oneview_resource(uuid):
 
             return resource
         except HPOneViewException as e:
-            if e.oneview_response["errorCode"] == 'RESOURCE_NOT_FOUND':
+            if e.oneview_response["errorCode"] in \
+                    ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException']:
                 pass
             else:
                 raise  # Raise any unexpected errors
