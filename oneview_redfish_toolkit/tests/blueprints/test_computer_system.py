@@ -60,6 +60,11 @@ class TestComputerSystem(BaseFlaskTest):
             'message': 'resource not found',
         })
 
+        self.not_found_server_profile = HPOneViewException({
+            'errorCode': 'ProfileNotFoundException',
+            'message': 'The requested profile cannot be retrieved',
+        })
+
         # Loading server_profile mockup value
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/ServerProfile.json'
@@ -89,7 +94,8 @@ class TestComputerSystem(BaseFlaskTest):
     def test_get_computer_system_not_found(self, g):
         """Tests ComputerSystem with ServerProfileTemplates not found"""
 
-        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
+        g.oneview_client.server_profiles.get.side_effect = \
+            self.not_found_server_profile
         g.oneview_client.server_profile_templates.get.side_effect = \
             self.not_found_error
 
@@ -487,11 +493,8 @@ class TestComputerSystem(BaseFlaskTest):
             g):
         """Tests remove ComputerSystem with ServerProfile not found"""
 
-        e = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server-profile not found',
-        })
-        g.oneview_client.server_profiles.delete.side_effect = e
+        g.oneview_client.server_profiles.delete.side_effect = \
+            self.not_found_error
 
         response = self.client.delete(
             "/redfish/v1/Systems/"
