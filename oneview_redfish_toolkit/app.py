@@ -255,6 +255,7 @@ def main(config_file_path, logging_config_file_path):
 
     @app.errorhandler(HPOneViewException)
     def hp_oneview_client_exception(exception):
+        logging.exception(exception)
         return ResponseBuilder.error_by_hp_oneview_exception(exception)
 
     if util.config['redfish']['authentication_mode'] == 'conf':

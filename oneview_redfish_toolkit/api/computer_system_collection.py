@@ -43,29 +43,39 @@ class ComputerSystemCollection(RedfishJsonValidator):
         self.redfish["@odata.type"] = \
             "#ComputerSystemCollection.ComputerSystemCollection"
         self.redfish["Name"] = "Computer System Collection"
-        self.redfish["Members@odata.count"] = len(server_hardware_list)
-        self.redfish["Members"] = list()
-
-        self._set_redfish_members(server_hardware_list)
-
+        server_profile_members_list = \
+            self._get_server_profile_members_list(server_hardware_list)
+        self.redfish["Members@odata.count"] = \
+            len(server_profile_members_list)
+        self.redfish["Members"] = server_profile_members_list
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystemCollection" \
             ".ComputerSystemCollection"
         self.redfish["@odata.id"] = "/redfish/v1/Systems"
         self._validate()
 
-    def _set_redfish_members(self, server_hardware_list):
-        """Mounts the list of Redfish members
+    def _get_server_profile_members_list(self, server_hardware_list):
+        """Returns a redfish members list with all server profiles applied
 
-            Populates self.redfish["Members"] with the links to Redfish
-            ComputerSystems.
+            Iterate over the server hardware list, filter the
+            UUIDs of server profiles that are applied and mounts
+            the member item to be filled on Redfish Members.
+
+            Args:
+                server_hardware_list: list of Oneview's server
+                hardwares information.
+
+            Returns:
+                list: list of Server Profile applied to be filled on
+                Redfish Members.
         """
+        server_profile_members_list = list()
         for server_hardware in server_hardware_list:
-            # Filter servers that have a profile applied
             if server_hardware["state"] == "ProfileApplied":
                 server_profile_uuid = \
                     server_hardware["serverProfileUri"].split("/")[-1]
-                server_profile_dict = \
-                    {"@odata.id": "/redfish/v1/Systems/" + server_profile_uuid}
+                server_profile_members_list.append({
+                    "@odata.id": "/redfish/v1/Systems/" + server_profile_uuid
+                })
 
-                self.redfish["Members"].append(server_profile_dict)
+        return server_profile_members_list

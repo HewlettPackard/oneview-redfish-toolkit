@@ -44,7 +44,7 @@ def get_computer_system(uuid):
     """Get the Redfish Computer System for a given UUID.
 
         Return ComputerSystem redfish JSON for a given
-        server hardware or server profile templates UUID.
+        server profile or server profile template UUID.
         Logs exception of OneViewRedfishError and abort(404).
 
         Returns:
@@ -57,10 +57,18 @@ def get_computer_system(uuid):
         resource = _get_oneview_resource(uuid)
         category = resource["category"]
 
-        if category == 'server-hardware':
-            computer_system = _build_computer_system_server_hardware(resource)
-        elif category == 'server-profile-templates':
+        if category == 'server-profile-templates':
             computer_system = CapabilitiesObject(resource)
+        elif category == 'server-profiles':
+            server_hardware = g.oneview_client.server_hardware\
+                .get(resource["serverHardwareUri"])
+            server_hardware_type = g.oneview_client.server_hardware_types\
+                .get(resource['serverHardwareTypeUri'])
+
+            # Build Computer System object and validates it
+            computer_system = ComputerSystem(server_hardware,
+                                             server_hardware_type,
+                                             resource)
         else:
             raise OneViewRedfishError(
                 'Computer System UUID {} not found'.format(uuid))
@@ -80,7 +88,7 @@ def change_power_state(uuid):
     """Change the Oneview power state for a specific Server hardware.
 
         Return ResetType Computer System redfish JSON for a
-        given server hardware UUID.
+        given server profile UUID.
         Logs exception of any error and return abort.
 
         Returns:
@@ -106,14 +114,15 @@ def change_power_state(uuid):
                  "message": "Invalid JSON key"})
 
         # Gets ServerHardware for given UUID
-        sh = g.oneview_client.server_hardware.get(uuid)
+        profile = g.oneview_client.server_profiles.get(uuid)
+        sh = g.oneview_client.server_hardware.get(profile["serverHardwareUri"])
 
         # Gets the ServerHardwareType of the given server hardware
         sht = g.oneview_client.server_hardware_types. \
-            get(sh['serverHardwareTypeUri'])
+            get(profile["serverHardwareTypeUri"])
 
         # Build Computer System object and validates it
-        cs = ComputerSystem(sh, sht)
+        cs = ComputerSystem(sh, sht, profile)
 
         oneview_power_configuration = \
             OneViewPowerOption.get_oneview_power_configuration(
@@ -121,21 +130,12 @@ def change_power_state(uuid):
 
         # Changes the ServerHardware power state
         g.oneview_client.server_hardware.update_power_state(
-            oneview_power_configuration, uuid)
+            oneview_power_configuration, sh["uuid"])
 
         return Response(
             response='{"ResetType": "%s"}' % reset_type,
             status=status.HTTP_200_OK,
             mimetype='application/json')
-
-    except HPOneViewException as e:
-        # In case of error log exception and abort
-        logging.exception(e)
-
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
-        else:
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
@@ -145,11 +145,6 @@ def change_power_state(uuid):
             abort(status.HTTP_501_NOT_IMPLEMENTED, e.msg['message'])
         else:
             abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
-
-    except Exception as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @computer_system.route(
@@ -187,8 +182,8 @@ def remove_computer_system(uuid):
 def _get_oneview_resource(uuid):
     """Gets a Server hardware or Server profile templates"""
     categories = [
-        {"func": g.oneview_client.server_hardware.get, "param": uuid},
-        {"func": g.oneview_client.server_profile_templates.get, "param": uuid},
+        {"func": g.oneview_client.server_profiles.get, "param": uuid},
+        {"func": g.oneview_client.server_profile_templates.get, "param": uuid}
     ]
 
     for category in categories:
@@ -197,27 +192,10 @@ def _get_oneview_resource(uuid):
 
             return resource
         except HPOneViewException as e:
-            if e.oneview_response["errorCode"] == 'RESOURCE_NOT_FOUND':
+            if e.oneview_response["errorCode"] in \
+                    ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException']:
                 pass
             else:
                 raise  # Raise any unexpected errors
 
     raise OneViewRedfishError("Could not find computer system with id " + uuid)
-
-
-def _build_computer_system_server_hardware(server_hardware):
-    try:
-        # Gets the server hardware type of the given server hardware
-        server_hardware_types = g.oneview_client.server_hardware_types.get(
-            server_hardware['serverHardwareTypeUri']
-        )
-
-        # Build Computer System object and validates it
-        return ComputerSystem(server_hardware, server_hardware_types)
-    except HPOneViewException as e:
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            raise OneViewRedfishError(
-                'ServerHardwareTypes ID {} not found'.
-                format(server_hardware['serverHardwareTypeUri']))
-
-        raise e
