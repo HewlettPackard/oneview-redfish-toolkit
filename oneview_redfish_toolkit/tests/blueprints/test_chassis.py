@@ -92,7 +92,7 @@ class TestChassis(BaseFlaskTest):
         # Loading Invalid Json Key mockup result
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
-                'InvalidJsonKey.json'
+                'InvalidPowerOptionKey.json'
         ) as f:
             self.invalid_json_key = json.load(f)
 

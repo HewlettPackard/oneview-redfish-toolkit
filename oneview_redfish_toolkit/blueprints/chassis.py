@@ -24,7 +24,6 @@ from flask import g
 from flask import request
 from flask import Response
 from flask_api import status
-from hpOneView.exceptions import HPOneViewException
 
 # Own libs
 from oneview_redfish_toolkit.api.blade_chassis import BladeChassis
@@ -99,10 +98,11 @@ def change_server_hardware_power_state(uuid):
     try:
         try:
             reset_type = request.get_json()["ResetType"]
-        except Exception:
+        except KeyError:
+            invalid_key = list(request.get_json())[0]  # gets invalid key name
             raise OneViewRedfishError(
                 {"errorCode": "INVALID_INFORMATION",
-                 "message": "Invalid JSON key"})
+                 "message": "Invalid JSON key: {}".format(invalid_key)})
 
         resource_index = g.oneview_client.index_resources.get_all(
             filter='uuid=' + uuid
@@ -127,14 +127,6 @@ def change_server_hardware_power_state(uuid):
                 response='{"ResetType": "%s"}' % reset_type,
                 status=status.HTTP_200_OK,
                 mimetype='application/json')
-    except HPOneViewException as e:
-        # In case of error log exception and abort
-        logging.exception(e)
-
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
-        else:
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     except OneViewRedfishError as e:
         # In case of error log exception and abort
@@ -144,8 +136,3 @@ def change_server_hardware_power_state(uuid):
             abort(status.HTTP_501_NOT_IMPLEMENTED, e.msg['message'])
         else:
             abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
-
-    except Exception as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

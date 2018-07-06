@@ -14,6 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import copy
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 
@@ -58,7 +59,7 @@ class OneViewPowerOption(object):
 
             Args:
                 server_hardware: List containing all Oneview's server
-                hardwares.
+                hardware.
                 reset_type: Redfish power option.
 
             Returns:
@@ -75,7 +76,7 @@ class OneViewPowerOption(object):
                 "message": "{} not mapped to OneView".format(reset_type)})
 
         try:
-            power_state_map = POWER_STATE_MAP[reset_type]
+            power_state_map = copy.copy(POWER_STATE_MAP[reset_type])
         except Exception:
             raise OneViewRedfishError({
                 "errorCode": "INVALID_INFORMATION",
