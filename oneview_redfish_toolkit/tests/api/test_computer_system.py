@@ -15,10 +15,8 @@
 # under the License.
 
 import json
-from jsonschema.exceptions import ValidationError
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
@@ -63,16 +61,3 @@ class TestComputerSystem(BaseTest):
         result = json.loads(computer_system.serialize())
 
         self.assertEqual(self.computer_system_mockup, result)
-
-    def test_get_oneview_power_configuration(self):
-        # Tests invalid mapping values of power state
-        #
-        obj = ComputerSystem(self.server_hardware,
-                             self.server_hardware_types,
-                             self.server_profile)
-
-        self.assertRaises(OneViewRedfishError, obj.
-                          get_oneview_power_configuration, "ForceOn")
-
-        self.assertRaises(OneViewRedfishError, obj.
-                          get_oneview_power_configuration, "INVALID")
