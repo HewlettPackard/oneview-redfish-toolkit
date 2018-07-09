@@ -89,13 +89,6 @@ class TestChassis(BaseFlaskTest):
         ) as f:
             self.rack_chassis_mockup = json.load(f)
 
-        # Loading Invalid Json Key mockup result
-        with open(
-                'oneview_redfish_toolkit/mockups/errors/'
-                'InvalidPowerOptionKey.json'
-        ) as f:
-            self.invalid_json_key = json.load(f)
-
     #############
     # Enclosure #
     #############
@@ -466,6 +459,7 @@ class TestChassis(BaseFlaskTest):
             "/Actions/Chassis.Reset",
             data=json.dumps(dict(INVALID_KEY="On")),
             content_type='application/json')
+        error_msg = "Invalid JSON key: {}".format("INVALID_KEY")
 
         result = json.loads(response.data.decode("utf-8"))
 
@@ -474,4 +468,4 @@ class TestChassis(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(result, self.invalid_json_key)
+        self.assertEqual(error_msg, result["error"]["message"])

@@ -22,6 +22,7 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 RESET_ALLOWABLE_VALUES_LIST = ["On", "ForceOff", "GracefulShutdown",
                                "GracefulRestart", "ForceRestart", "Nmi",
                                "ForceOn", "PushPowerButton"]
+RESET_INVALID_VALUES_LIST = ["ForceOn", "Nmi"]
 POWER_STATE_MAP = {
     "On": {
         "powerState": "On",
@@ -69,12 +70,10 @@ class OneViewPowerOption(object):
                 OneViewRedfishError: raises an exception if
                 reset_type is an unmapped value.
         """
-
-        if reset_type == "ForceOn" or reset_type == "Nmi":
+        if reset_type in RESET_INVALID_VALUES_LIST:
             raise OneViewRedfishError({
                 "errorCode": "NOT_IMPLEMENTED",
                 "message": "{} not mapped to OneView".format(reset_type)})
-
         try:
             power_state_map = copy.copy(POWER_STATE_MAP[reset_type])
         except Exception:
