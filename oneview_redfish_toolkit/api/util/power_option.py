@@ -20,8 +20,8 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 
 
 RESET_ALLOWABLE_VALUES_LIST = ["On", "ForceOff", "GracefulShutdown",
-                               "GracefulRestart", "ForceRestart", "Nmi",
-                               "ForceOn", "PushPowerButton"]
+                               "GracefulRestart", "ForceRestart",
+                               "PushPowerButton"]
 RESET_INVALID_VALUES_LIST = ["ForceOn", "Nmi"]
 POWER_STATE_MAP = {
     "On": {

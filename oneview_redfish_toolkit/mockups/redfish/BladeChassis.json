@@ -44,8 +44,6 @@
                 "GracefulShutdown",
                 "GracefulRestart",
                 "ForceRestart",
-                "Nmi",
-                "ForceOn",
                 "PushPowerButton"
             ]
         }
