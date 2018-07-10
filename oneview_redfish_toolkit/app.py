@@ -28,6 +28,8 @@ from flask import g
 from flask import request
 from flask import Response
 from flask_api import status
+import cherrypy
+from paste.translogger import TransLogger
 
 # own libs
 from hpOneView import HPOneViewException
@@ -370,7 +372,33 @@ def main(config_file_path, logging_config_file_path):
                 format(ssl_cert_file, ssl_key_file))
 
         ssl_context = (ssl_cert_file, ssl_key_file)
-        app.run(host=host, port=port, debug=debug, ssl_context=ssl_context)
+        # app.run(host=host, port=port, debug=debug, ssl_context=ssl_context)
+        run_server(app, host, port, ssl_cert_file, ssl_key_file)
+
+
+def run_server(app, host, port, ssl_cert_file, ssl_key_file):
+    # Enable WSGI access logging via Paste
+    app_logged = TransLogger(app)
+
+    # Mount the WSGI callable object (app) on the root directory
+    cherrypy.tree.graft(app_logged, '/')
+
+    # Set the configuration of the web server
+    cherrypy.config.update({
+        # 'engine.autoreload_on': True,
+        'log.screen': True,
+        'server.socket_port': port,
+        'server.socket_host': host,
+        # 'server.ssl_module':'bultin',
+        # 'server.ssl_certificate':ssl_cert_file,
+        # 'server.ssl_private_key':ssl_key_file,
+        'log.error_file': './error.log',
+        'log.access_file': './access.log'
+    })
+
+    # Start the CherryPy WSGI web server
+    cherrypy.engine.start()
+    cherrypy.engine.block()
 
 
 if __name__ == '__main__':
