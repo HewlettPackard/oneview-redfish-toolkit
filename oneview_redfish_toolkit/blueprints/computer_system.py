@@ -31,6 +31,7 @@ from hpOneView.resources.task_monitor import TASK_ERROR_STATES
 from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 
@@ -124,7 +125,8 @@ def change_power_state(uuid):
         cs = ComputerSystem(sh, sht, profile)
 
         oneview_power_configuration = \
-            cs.get_oneview_power_configuration(reset_type)
+            OneViewPowerOption.get_oneview_power_configuration(
+                cs.server_hardware, reset_type)
 
         # Changes the ServerHardware power state
         g.oneview_client.server_hardware.update_power_state(
