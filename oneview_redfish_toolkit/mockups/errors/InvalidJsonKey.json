@@ -1,7 +1,7 @@
 {
     "error": {
         "code": "Base.1.1.PropertyValueNotInList",
-        "message": "Invalid JSON key",
+        "message": "Invalid JSON key: INVALID_KEY",
         "@Message.ExtendedInfo": [
             {
                 "@odata.type": "#Message.v1_0_5.Message",
