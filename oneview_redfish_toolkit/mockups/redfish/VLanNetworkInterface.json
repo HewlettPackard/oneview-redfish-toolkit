@@ -1,0 +1,9 @@
+{
+    "@odata.type": "#VLanNetworkInterface.v1_1_0.VLanNetworkInterface",
+    "Id": "19638712-679d-4232-9743-c7cb6c7bf718",
+    "Name": "test_eth2",
+    "VLANEnable": true,
+    "VLANId": 20,
+    "@odata.context": "/redfish/v1/$metadata#VLanNetworkInterface",
+    "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0/EthernetInterfaces/1/VLANs/19638712-679d-4232-9743-c7cb6c7bf718"
+}

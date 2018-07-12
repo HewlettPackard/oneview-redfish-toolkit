@@ -130,7 +130,8 @@ def get_resource_block_ethernet_interface(uuid, id):
         if not connection:
             raise OneViewRedfishError("Ethernet interface not found")
 
-        network = g.oneview_client.ethernet_networks.get(conn["networkUri"])
+        network = \
+            g.oneview_client.index_resources.get(connection["networkUri"])
 
         ethernet_interface = ResourceBlockEthernetInterface(
             server_profile_template, connection, network)
