@@ -37,6 +37,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
         """Tests ComputerSystemCollection with an empty list"""
 
         g.oneview_client.server_hardware.get_all.return_value = []
+        g.oneview_client.server_profile_templates.get_all.return_value = []
 
         response = self.client.get("/redfish/v1/Systems/")
 
@@ -88,6 +89,12 @@ class TestComputerSystemCollection(BaseFlaskTest):
             server_hardware_list = json.load(f)
 
         with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'ServerProfileTemplates.json'
+        ) as f:
+            server_profile_template_list = json.load(f)
+
+        with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
                 'ComputerSystemCollection.json'
         ) as f:
@@ -96,6 +103,9 @@ class TestComputerSystemCollection(BaseFlaskTest):
         # Create mock response
         g.oneview_client.server_hardware.get_all.return_value = \
             server_hardware_list
+
+        g.oneview_client.server_profile_templates.get_all.return_value = \
+            server_profile_template_list
 
         # Get ComputerSystemCollection
         response = self.client.get("/redfish/v1/Systems/")

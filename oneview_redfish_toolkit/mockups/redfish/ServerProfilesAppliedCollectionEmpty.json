@@ -3,6 +3,10 @@
     "Name": "Computer System Collection",
     "Members@odata.count": 0,
     "Members": [],
+    "@Redfish.CollectionCapabilities": {
+        "Capabilities": [],
+        "@odata.type": "#CollectionCapabilities.v1_0_0.CollectionCapabilities"
+    },
     "@odata.context": "/redfish/v1/$metadata#ComputerSystemCollection.ComputerSystemCollection",
     "@odata.id": "/redfish/v1/Systems"
 }
