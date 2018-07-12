@@ -244,7 +244,7 @@ def main(config_file_path, logging_config_file_path):
         redfish_error.add_extended_info(
             message_id="ActionNotSupported",
             message_args=["action"])
-        
+
         error_str = redfish_error.serialize()
         return Response(
             response=error_str,
