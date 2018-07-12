@@ -48,7 +48,7 @@ class ResourceBlockEthernetInterface(RedfishJsonValidator):
 
         server_profile_template_id = \
             server_profile_template["uri"].split("/")[-1]
-        data_id = ResourceBlockCollection.BASE_URI + "/" \
+        odata_id = ResourceBlockCollection.BASE_URI + "/" \
             + server_profile_template_id \
             + "/EthernetInterfaces/" \
             + str(connection["id"])
@@ -65,12 +65,12 @@ class ResourceBlockEthernetInterface(RedfishJsonValidator):
         elif network["category"] == "network-sets":
             self.redfish["VLANs"] = dict()
             self.redfish["VLANs"]["@odata.id"] = \
-                data_id \
+                odata_id \
                 + "/VLANs"
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#EthernetInterface.EthernetInterface"
-        self.redfish["@odata.id"] = data_id
+        self.redfish["@odata.id"] = odata_id
 
         self._validate()
 
