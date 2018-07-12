@@ -13,9 +13,126 @@
             "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
         },
         {
-            "@odata.id": "/redfish/v1/Systems/ad04475c-94aa-4843-b8fc-3c78f4e6c2e8"
+            "@odata.id": "/redfish/v1/Systems/b65fc5c1-6d05-47d0-9f36-7d5067164f10"
         }
     ],
+    "@Redfish.CollectionCapabilities": {
+        "Capabilities": [
+            {
+                "CapabilitiesObject": {
+                    "@odata.id": "/redfish/v1/Systems/13d6739e-2856-4744-8a10-63ccbda0268e"
+                },
+                "UseCase": "ComputerSystemComposition",
+                "Links": {
+                    "RelatedItem": [
+                        {
+                            "@odata.id": "/redfish/v1/CompositionService/ResourceZones/13d6739e-2856-4744-8a10-63ccbda0268e"
+                        }
+                    ],
+                    "TargetCollection": {
+                        "@odata.id": "/redfish/v1/Systems"
+                    }
+                }
+            },
+            {
+                "CapabilitiesObject": {
+                    "@odata.id": "/redfish/v1/Systems/1cb81bc9-61e3-439a-b18e-1f42ba7428b9"
+                },
+                "UseCase": "ComputerSystemComposition",
+                "Links": {
+                    "RelatedItem": [
+                        {
+                            "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1cb81bc9-61e3-439a-b18e-1f42ba7428b9"
+                        }
+                    ],
+                    "TargetCollection": {
+                        "@odata.id": "/redfish/v1/Systems"
+                    }
+                }
+            },
+            {
+                "CapabilitiesObject": {
+                    "@odata.id": "/redfish/v1/Systems/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
+                },
+                "UseCase": "ComputerSystemComposition",
+                "Links": {
+                    "RelatedItem": [
+                        {
+                            "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
+                        }
+                    ],
+                    "TargetCollection": {
+                        "@odata.id": "/redfish/v1/Systems"
+                    }
+                }
+            },
+            {
+                "CapabilitiesObject": {
+                    "@odata.id": "/redfish/v1/Systems/71f6210a-6648-439f-bf24-1cecb94fbfde"
+                },
+                "UseCase": "ComputerSystemComposition",
+                "Links": {
+                    "RelatedItem": [
+                        {
+                            "@odata.id": "/redfish/v1/CompositionService/ResourceZones/71f6210a-6648-439f-bf24-1cecb94fbfde"
+                        }
+                    ],
+                    "TargetCollection": {
+                        "@odata.id": "/redfish/v1/Systems"
+                    }
+                }
+            },
+            {
+                "CapabilitiesObject": {
+                    "@odata.id": "/redfish/v1/Systems/75871d70-789e-4cf9-8bc8-6f4d73193578"
+                },
+                "UseCase": "ComputerSystemComposition",
+                "Links": {
+                    "RelatedItem": [
+                        {
+                            "@odata.id": "/redfish/v1/CompositionService/ResourceZones/75871d70-789e-4cf9-8bc8-6f4d73193578"
+                        }
+                    ],
+                    "TargetCollection": {
+                        "@odata.id": "/redfish/v1/Systems"
+                    }
+                }
+            },
+            {
+                "CapabilitiesObject": {
+                    "@odata.id": "/redfish/v1/Systems/9cb0cc21-4329-4578-b729-16e779d020ce"
+                },
+                "UseCase": "ComputerSystemComposition",
+                "Links": {
+                    "RelatedItem": [
+                        {
+                            "@odata.id": "/redfish/v1/CompositionService/ResourceZones/9cb0cc21-4329-4578-b729-16e779d020ce"
+                        }
+                    ],
+                    "TargetCollection": {
+                        "@odata.id": "/redfish/v1/Systems"
+                    }
+                }
+            },
+            {
+                "CapabilitiesObject": {
+                    "@odata.id": "/redfish/v1/Systems/e68bfad8-6024-4b8e-b23d-fbb94e1614e2"
+                },
+                "UseCase": "ComputerSystemComposition",
+                "Links": {
+                    "RelatedItem": [
+                        {
+                            "@odata.id": "/redfish/v1/CompositionService/ResourceZones/e68bfad8-6024-4b8e-b23d-fbb94e1614e2"
+                        }
+                    ],
+                    "TargetCollection": {
+                        "@odata.id": "/redfish/v1/Systems"
+                    }
+                }
+            }
+        ],
+        "@odata.type": "#CollectionCapabilities.v1_0_0.CollectionCapabilities"
+    },
     "@odata.context": "/redfish/v1/$metadata#ComputerSystemCollection.ComputerSystemCollection",
     "@odata.id": "/redfish/v1/Systems"
 }

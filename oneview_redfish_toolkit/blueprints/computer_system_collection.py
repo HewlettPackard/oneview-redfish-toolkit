@@ -39,8 +39,13 @@ def get_computer_system_collection():
     # Gets all server hardware
     server_hardware_list = g.oneview_client.server_hardware.get_all()
 
+    # Gets all server profile template
+    server_profile_templates = \
+        g.oneview_client.server_profile_templates.get_all()
+
     # Build Computer System Collection object and validates it
-    csc = ComputerSystemCollection(server_hardware_list)
+    csc = ComputerSystemCollection(server_hardware_list,
+                                   server_profile_templates)
 
     # Build response and returns it
     return ResponseBuilder.success(csc)

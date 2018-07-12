@@ -14,8 +14,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from collections import OrderedDict
+
+from oneview_redfish_toolkit.api.computer_system \
+    import ComputerSystem
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit.api.zone_collection \
+    import ZoneCollection
 
 
 class ComputerSystemCollection(RedfishJsonValidator):
@@ -28,7 +34,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
 
     SCHEMA_NAME = 'ComputerSystemCollection'
 
-    def __init__(self, server_hardware_list):
+    def __init__(self, server_hardware_list, server_profile_templates):
         """ComputerSystemCollection constructor
 
             Populates self.redfish with a hardcoded ComputerSystemCollection
@@ -48,10 +54,14 @@ class ComputerSystemCollection(RedfishJsonValidator):
         self.redfish["Members@odata.count"] = \
             len(server_profile_members_list)
         self.redfish["Members"] = server_profile_members_list
+
+        self._set_collection_capabilities(server_profile_templates)
+
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystemCollection" \
             ".ComputerSystemCollection"
         self.redfish["@odata.id"] = "/redfish/v1/Systems"
+
         self._validate()
 
     def _get_server_profile_members_list(self, server_hardware_list):
@@ -79,3 +89,35 @@ class ComputerSystemCollection(RedfishJsonValidator):
                 })
 
         return server_profile_members_list
+
+    def _set_collection_capabilities(self, server_profile_templates):
+        self.capabilities_key = "@Redfish.CollectionCapabilities"
+        self.redfish[self.capabilities_key] = dict()
+        self.redfish[self.capabilities_key]["@odata.type"] = \
+            "#CollectionCapabilities.v1_0_0.CollectionCapabilities"
+        self.redfish[self.capabilities_key]["Capabilities"] = list()
+
+        for server_profile_template in server_profile_templates:
+            zone_id = server_profile_template["uri"].split("/")[-1]
+
+            capability = self._get_capability_object(zone_id)
+
+            self.redfish[self.capabilities_key]["Capabilities"].\
+                append(capability)
+
+    def _get_capability_object(self, zone_id):
+        capability = OrderedDict()
+        capability["CapabilitiesObject"] = dict()
+        capability["CapabilitiesObject"]["@odata.id"] = \
+            ComputerSystem.BASE_URI + "/" + zone_id
+        capability["UseCase"] = "ComputerSystemComposition"
+        capability["Links"] = dict()
+        capability["Links"]["TargetCollection"] = dict()
+        capability["Links"]["TargetCollection"]["@odata.id"] = \
+            ComputerSystem.BASE_URI
+        capability["Links"]["RelatedItem"] = list()
+        related_item = dict()
+        related_item["@odata.id"] = ZoneCollection.BASE_URI + "/" + zone_id
+        capability["Links"]["RelatedItem"].append(related_item)
+
+        return capability
