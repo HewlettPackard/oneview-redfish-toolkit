@@ -45,12 +45,19 @@ class TestComputerSystemCollection(BaseTest):
         ) as f:
             self.computer_system_collection_mockup = json.load(f)
 
+        # Loading ServerProfileTemplates result mockup
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'ServerProfileTemplates.json'
+        ) as f:
+            self.server_profile_template_list = json.load(f)
+
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
             computer_system_collection = ComputerSystemCollection(
-                self.server_hardware_list
+                self.server_hardware_list, self.server_profile_template_list
             )
         except Exception as e:
             self.fail("Failed to instantiate ComputerSystemCollection class."
@@ -65,7 +72,7 @@ class TestComputerSystemCollection(BaseTest):
 
         try:
             computer_system_collection = ComputerSystemCollection(
-                self.server_hardware_list
+                self.server_hardware_list, self.server_profile_template_list
             )
         except Exception as e:
             self.fail("Failed to instantiate ComputerSystemCollection class."
