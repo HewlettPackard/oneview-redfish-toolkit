@@ -1,0 +1,21 @@
+{
+  "type": "ethernet-networkV4",
+  "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+  "category": "ethernet-networks",
+  "eTag": "2b1a13a8-f176-4122-9e2d-bf6c913e652d",
+  "created": "2018-05-10T18:51:24.187Z",
+  "modified": "2018-05-10T18:51:24.189Z",
+  "scopesUri": "/rest/scopes/resources/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+  "vlanId": 20,
+  "subnetUri": null,
+  "connectionTemplateUri": "/rest/connection-templates/8eab0304-bc44-44db-b39a-be30de03b428",
+  "privateNetwork": false,
+  "smartLink": true,
+  "purpose": "General",
+  "ethernetNetworkType": "Tagged",
+  "fabricUri": "/rest/fabrics/71843a3b-90ca-47b3-8c06-d778b2236557",
+  "description": null,
+  "state": "Active",
+  "status": "OK",
+  "name": "test_eth2"
+}

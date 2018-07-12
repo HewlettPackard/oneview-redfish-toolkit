@@ -88,6 +88,8 @@ from oneview_redfish_toolkit.blueprints.subscription_collection \
 from oneview_redfish_toolkit.blueprints.thermal import thermal
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit.blueprints.vlan_network_interface import \
+    vlan_network_interface
 from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
 from oneview_redfish_toolkit import util
@@ -145,6 +147,7 @@ def main(config_file_path, logging_config_file_path):
     app.register_blueprint(storage_composition_details)
     app.register_blueprint(resource_block_collection)
     app.register_blueprint(resource_block)
+    app.register_blueprint(vlan_network_interface)
     app.register_blueprint(zone_collection)
     app.register_blueprint(zone)
 

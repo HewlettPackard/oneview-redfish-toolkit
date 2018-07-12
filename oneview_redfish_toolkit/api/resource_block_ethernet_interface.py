@@ -48,22 +48,34 @@ class ResourceBlockEthernetInterface(RedfishJsonValidator):
 
         server_profile_template_id = \
             server_profile_template["uri"].split("/")[-1]
+        data_id = ResourceBlockCollection.BASE_URI + "/" \
+            + server_profile_template_id \
+            + "/EthernetInterfaces/" \
+            + str(connection["id"])
 
         self.redfish["@odata.type"] = \
             "#EthernetInterface.v1_3_0.EthernetInterface"
         self.redfish["Id"] = server_profile_template_id
         self.redfish["Name"] = network["name"]
         self.redfish["SpeedMbps"] = int(connection["requestedMbps"])
-        self.redfish["VLAN"] = dict()
-        self.redfish["VLAN"]["VLANEnable"] = True
-        self.redfish["VLAN"]["VLANId"] = network["vlanId"]
+
+        if network["category"] == "ethernet-networks":
+            self.redfish["VLAN"] = \
+                self._create_vlan(network["attributes"]["vlan_id"])
+        elif network["category"] == "network-sets":
+            self.redfish["VLANs"] = dict()
+            self.redfish["VLANs"]["@odata.id"] = \
+                data_id \
+                + "/VLANs"
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#EthernetInterface.EthernetInterface"
-        self.redfish["@odata.id"] = \
-            ResourceBlockCollection.BASE_URI + "/" \
-            + server_profile_template_id \
-            + "/EthernetInterfaces/" \
-            + str(connection["id"])
+        self.redfish["@odata.id"] = data_id
 
         self._validate()
+
+    def _create_vlan(self, vlan_id):
+        vlan = dict()
+        vlan["VLANEnable"] = True
+        vlan["VLANId"] = int(vlan_id)
+        return vlan

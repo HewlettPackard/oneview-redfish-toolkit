@@ -197,7 +197,7 @@ class TestResourceBlock(BaseFlaskTest):
 
         g.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
-        g.oneview_client.ethernet_networks.get.return_value = \
+        g.oneview_client.index_resources.get.return_value = \
             ethernet_network
 
         response = self.client.get(
