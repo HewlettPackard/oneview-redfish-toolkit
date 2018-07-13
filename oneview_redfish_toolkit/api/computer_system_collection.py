@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -43,6 +43,8 @@ class ComputerSystemCollection(RedfishJsonValidator):
 
             Args:
                 server_hardware: A list of dicts of server hardware.
+                server_profile_templates: A list of dicts of server profile
+                templates
         """
         super().__init__(self.SCHEMA_NAME)
 
