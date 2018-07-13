@@ -39,7 +39,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
 
             Populates self.redfish with a hardcoded ComputerSystemCollection
             values and with the response of Oneview with all servers with
-            Server Profile applied.
+            Server Profile applied and all server profile templates.
 
             Args:
                 server_hardware: A list of dicts of server hardware.
