@@ -15,6 +15,7 @@
 # under the License.
 
 import collections
+from copy import deepcopy
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
@@ -143,3 +144,61 @@ class ComputerSystem(RedfishJsonValidator):
             redfish_boot_list.append('None')
 
         return redfish_boot_list
+
+    @staticmethod
+    def build_server_profile(profile_name,
+                             server_profile_template,
+                             system_blocks,
+                             network_blocks,
+                             storage_blocks):
+        server_profile = deepcopy(server_profile_template)
+
+        server_profile.pop("uri", None)
+        server_profile.pop("serverProfileDescription", None)
+        server_profile.pop("created", None)
+        server_profile.pop("modified", None)
+        server_profile.pop("status", None)
+        server_profile.pop("state", None)
+        server_profile.pop("scopesUri", None)
+        server_profile.pop("eTag", None)
+        if isinstance(server_profile.get("connectionSettings"), dict):
+            server_profile["connectionSettings"].pop('manageConnections', None)
+
+        server_profile["name"] = profile_name
+        server_profile["description"] = server_profile_template["uri"]
+        server_profile["type"] = "ServerProfileV8"
+        server_profile["category"] = "server-profiles"
+        server_profile["serverHardwareUri"] = \
+            "/rest/server-hardware/" + system_blocks[0]["uuid"]
+        server_profile["localStorage"]["sasLogicalJBODs"] = []
+
+        # Configure storage
+        controller = ComputerSystem._get_storage_controller(
+            server_profile_template)
+
+        for index, storage_block in enumerate(storage_blocks):
+            storage_id = index + 1
+            attributes = storage_block["attributes"]
+
+            storage = {
+                "id": storage_id,
+                "name": "Storage " + str(storage_id),
+                "deviceSlot": controller["deviceSlot"],
+                "numPhysicalDrives": 1,
+                "driveMinSizeGB": attributes["capacityInGB"],
+                "driveMaxSizeGB": attributes["capacityInGB"],
+                "driveTechnology": attributes["interfaceType"].capitalize()
+                                   + attributes["mediaType"].capitalize()
+            }
+
+            server_profile["localStorage"]["sasLogicalJBODs"].append(storage)
+
+        return server_profile
+
+    @staticmethod
+    def _get_storage_controller(server_profile_tmpl):
+        for controller in server_profile_tmpl["localStorage"]["controllers"]:
+            if controller["deviceSlot"] != "Embedded":
+                return controller
+
+        return None

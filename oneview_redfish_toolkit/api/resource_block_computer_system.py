@@ -45,7 +45,7 @@ class ResourceBlockComputerSystem(RedfishJsonValidator):
         self.server_hardware = server_hardware
 
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
-        self.redfish["Id"] = "1"
+        self.redfish["Id"] = server_hardware["uuid"]
         self.redfish["Name"] = server_hardware["name"]
         self.redfish["SystemType"] = "Physical"
         self.redfish["Manufacturer"] = "HPE"

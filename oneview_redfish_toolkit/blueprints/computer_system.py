@@ -16,39 +16,28 @@
 
 # Python libs
 import logging
-import json
 
 # 3rd party libs
-from copy import deepcopy
 from flask import abort
 from flask import Blueprint
 from flask import g
 from flask import request
 from flask import Response
 from flask_api import status
-from jsonschema import ValidationError
 
 # own libs
 from hpOneView.exceptions import HPOneViewException
 from hpOneView.resources.task_monitor import TASK_ERROR_STATES
+from jsonschema import ValidationError
+
 from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
-
-STORAGE_TEMPLATE = {
-    "id": None, # Numeric (int)
-    "deviceSlot": None, # String
-    "name": None, # String
-    "numPhysicalDrives": 1,
-    "driveMinSizeGB": None, # Numeric (int)
-    "driveMaxSizeGB": None, # Numeric (int)
-    "driveTechnology": None, # String
-}
 
 computer_system = Blueprint("computer_system", __name__)
 
@@ -215,31 +204,16 @@ def _get_oneview_resource(uuid):
 
     raise OneViewRedfishError("Could not find computer system with id " + uuid)
 
-def _build_computer_system_server_hardware(server_hardware):
-    try:
-        # Gets the server hardware type of the given server hardware
-        server_hardware_types = g.oneview_client.server_hardware_types.get(
-            server_hardware['serverHardwareTypeUri']
-        )
 
-        # Build Computer System object and validates it
-        return ComputerSystem(server_hardware, server_hardware_types)
-    except HPOneViewException as e:
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            raise OneViewRedfishError(
-                'ServerHardwareTypes ID {} not found'.
-                format(server_hardware['serverHardwareTypeUri']))
-
-        raise e
-
-
-@computer_system.route("/redfish/v1/Systems/", methods=["POST"])
+@computer_system.route(ComputerSystem.BASE_URI + "/", methods=["POST"])
 def create_composed_system():
     if not request.is_json:
-        abort(status.HTTP_400_BAD_REQUEST)
+        abort(status.HTTP_400_BAD_REQUEST,
+              "The request content should be a valida JSON")
 
     body = request.get_json()
 
+    #  TODO(@ricardogpsf) use redfish validation instead of this intern class
     class ComposedSystem(RedfishJsonValidator):
         SCHEMA_NAME = 'ComputerSystem'
 
@@ -261,76 +235,37 @@ def create_composed_system():
 
         # Should contain only one computer system entry
         system_blocks = _get_system_resource_blocks(block_ids)
+        if not system_blocks:
+            raise ValidationError(
+                "Should have a Compute Resource Block")
+
         # Check network block id with the Id attribute in the request
         network_blocks = _get_network_resource_blocks(block_ids)
-        # Check which disks are available ('available' attribute)
+        if not (network_blocks and body["Id"] in network_blocks[0]["uri"]):
+            raise ValidationError(
+                "Should have a valid Network Resource Block")
+
+        # It can contain zero or more Storage Block
         storage_blocks = _get_storage_resource_blocks(block_ids)
 
         spt = g.oneview_client.server_profile_templates.get(body["Id"])
 
-        server_profile = _build_server_profile(
-            spt, system_blocks, network_blocks, storage_blocks)
+        server_profile = ComputerSystem.build_server_profile(
+            body["Name"], spt, system_blocks, network_blocks, storage_blocks)
 
-        print(json.dumps(server_profile))
+        result = g.oneview_client.server_profiles.create(server_profile)
 
     except ValidationError as e:
         abort(status.HTTP_400_BAD_REQUEST, e.message)
-    except KeyError:
-        abort(status.HTTP_400_BAD_REQUEST)
+    except KeyError as e:
+        abort(status.HTTP_400_BAD_REQUEST,
+              "Trying access an invalid key {}".format(e.args))
 
-    return Response(status=status.HTTP_200_OK)
+    location_uri = ComputerSystem.BASE_URI + "/" + result["uuid"]
 
-
-def _build_server_profile(spt, system_blocks, network_blocks, storage_blocks):
-    server_profile = deepcopy(spt)
-
-    # Remove attributes
-    del server_profile["uri"]
-    del server_profile["serverProfileDescription"]
-    del server_profile["created"]
-    del server_profile["modified"]
-    del server_profile["status"]
-    del server_profile["state"]
-    del server_profile["scopesUri"]
-    del server_profile["eTag"]
-    del server_profile["connectionSettings"]["manageConnections"]
-
-    # Set attributes with different value
-    server_profile["type"] = "ServerProfileV8"
-    server_profile["category"] = "server-profiles"
-    server_profile["serverHardwareUri"] = \
-        "/rest/server-hardware/" + system_blocks[0]["uuid"]
-
-    # Configure storage
-    controller = _get_storage_controller(spt)
-
-    storage_id = 1
-
-    for storage_block in storage_blocks:
-        storage = dict()
-
-        storage["id"] = storage_id
-        storage["name"] = "Storage " + storage_id
-        storage["deviceSlot"] = controller["deviceSlot"]
-        storage["numPhysicalDrives"] = 1,
-        storage["driveMinSizeGB"] = storage_block["capacityInGB"]
-        storage["driveMaxSizeGB"] = storage_block["capacityInGB"]
-        storage["driveTechnology"] = \
-            storage_block["interfaceType"].capitalize() \
-            + storage_block["mediaType"].capitalize()
-
-        storage_id += 1
-
-        server_profile["localStorage"]["sasLogicalJBODs"].append(storage)
-
-    return server_profile
-
-def _get_storage_controller(server_profile_template):
-    for controller in server_profile_template["localStorage"]["controllers"]:
-        if controller["deviceSlot"] != "Embedded":
-            return controller
-
-    return None
+    return Response(status=status.HTTP_201_CREATED,
+                    headers={"Location": location_uri},
+                    mimetype="application/json")
 
 
 def _get_system_resource_blocks(ids):
@@ -344,7 +279,7 @@ def _get_network_resource_blocks(ids):
 
 
 def _get_storage_resource_blocks(ids):
-    drive_ids = list(map(lambda v: "/rest/drives/" + v, ids))
+    drive_ids = ["/rest/drives/" + i for i in ids]
 
     return _get_resource_block_data(
         g.oneview_client.index_resources.get, drive_ids)
