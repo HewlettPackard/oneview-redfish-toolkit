@@ -205,10 +205,8 @@ def main(config_file_path, logging_config_file_path):
         redfish_error = RedfishError(
             "PropertyValueNotInList", error.description)
 
-        redfish_error.add_extended_info(
-            message_id="PropertyValueNotInList",
-            message_args=["VALUE", "PROPERTY"],
-            related_properties=["PROPERTY"])
+        # TODO(karolcatunda) Improve args passed to add_extended_info method
+        # redfish_error.add_extended_info()
 
         error_str = redfish_error.serialize()
         return Response(

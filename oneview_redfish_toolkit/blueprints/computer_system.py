@@ -108,10 +108,11 @@ def change_power_state(uuid):
     try:
         try:
             reset_type = request.get_json()["ResetType"]
-        except Exception:
+        except KeyError:
+            invalid_key = list(request.get_json())[0]  # gets invalid key name
             raise OneViewRedfishError(
                 {"errorCode": "INVALID_INFORMATION",
-                 "message": "Invalid JSON key"})
+                 "message": "Invalid JSON key: {}".format(invalid_key)})
 
         # Gets ServerHardware for given UUID
         profile = g.oneview_client.server_profiles.get(uuid)
