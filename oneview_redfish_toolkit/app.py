@@ -13,8 +13,8 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-# Python libs
 
+# Python libs
 import argparse
 import ipaddress
 import logging
@@ -208,6 +208,8 @@ def main(config_file_path, logging_config_file_path):
     @app.errorhandler(status.HTTP_400_BAD_REQUEST)
     def bad_request(error):
         """Creates a Bad Request Error response"""
+        logging.error(error.description)
+
         redfish_error = RedfishError(
             "PropertyValueNotInList", error.description)
 

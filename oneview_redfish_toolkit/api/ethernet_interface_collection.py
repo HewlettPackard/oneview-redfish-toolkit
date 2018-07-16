@@ -22,7 +22,7 @@ class EthernetInterfaceCollection(RedfishJsonValidator):
     """Creates a Ethernet Interface Collection Redfish dict
 
         Populates self.redfish with some hardcoded EthernetInterfaceCollection
-        values and Oneview Server Profile, Server Hardware results
+        values and Oneview Server Profile information
     """
 
     SCHEMA_NAME = 'EthernetInterfaceCollection'

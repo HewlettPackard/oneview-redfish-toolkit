@@ -17,6 +17,7 @@
 from flask import Blueprint
 from flask import g
 
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.ethernet_interface_collection import \
     EthernetInterfaceCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
@@ -27,7 +28,7 @@ ethernet_interface_collection = Blueprint(
 
 
 @ethernet_interface_collection.route(
-    "/redfish/v1/Systems/<server_profile_uuid>/EthernetInterfaces/",
+    ComputerSystem.BASE_URI + "/<server_profile_uuid>/EthernetInterfaces/",
     methods=["GET"])
 def get_ethernet_interface_collection(server_profile_uuid):
     """Get the Redfish Ethernet Interfaces Collection.

@@ -17,6 +17,7 @@
 from flask import Blueprint
 from flask import g
 
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.network_interface_collection \
     import NetworkInterfaceCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
@@ -27,7 +28,7 @@ network_interface_collection = Blueprint(
 
 
 @network_interface_collection.route(
-    "/redfish/v1/Systems/<server_profile_uuid>/NetworkInterfaces/",
+    ComputerSystem.BASE_URI + "/<server_profile_uuid>/NetworkInterfaces/",
     methods=["GET"])
 def get_network_interface_collection(server_profile_uuid):
     """Get the Redfish Network Interfaces Collection.

@@ -24,6 +24,7 @@ from flask import g
 from flask_api import status
 
 # own libs
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import \
     OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.network_interface import NetworkInterface
@@ -34,7 +35,8 @@ network_interface = Blueprint("network_interface", __name__)
 
 
 @network_interface.route(
-    "/redfish/v1/Systems/<server_profile_uuid>/NetworkInterfaces/<device_id>",
+    ComputerSystem.BASE_URI +
+    "/<server_profile_uuid>/NetworkInterfaces/<device_id>",
     methods=["GET"])
 def get_network_interface(server_profile_uuid, device_id):
     """Get the Redfish NetworkInterface for a given UUID and device_id.

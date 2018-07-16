@@ -47,12 +47,14 @@ class Storage(RedfishJsonValidator):
                  sas_logical_jbods):
         """Storage constructor
 
-            Populates self.redfish with the contents of server hardware type
+            Populates self.redfish with the contents of Storage using
+            Server Profile, Server Hardware Type and SAS Logical JBODs
+            to do that
 
             Args:
-                uuid: server profile UUID
-                server_hardware_type: Server hardware type
-                storage: Storage info by Oneview
+                server_profile: Server Profile from Oneview
+                server_hardware_type: Server Hardware Type from Oneview
+                sas_logical_jbods: SAS Logical JBODs info from Oneview
         """
         super().__init__(self.SCHEMA_NAME)
 

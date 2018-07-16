@@ -19,6 +19,7 @@ from flask import g
 from flask_api import status
 from werkzeug.exceptions import abort
 
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.ethernet_interface import EthernetInterface
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
@@ -27,7 +28,8 @@ ethernet_interface = Blueprint("ethernet_interface", __name__)
 
 
 @ethernet_interface.route(
-    "/redfish/v1/Systems/<server_profile_uuid>/EthernetInterfaces/<eth_id>",
+    ComputerSystem.BASE_URI +
+    "/<server_profile_uuid>/EthernetInterfaces/<eth_id>",
     methods=["GET"])
 def get_ethernet_interface(server_profile_uuid, eth_id):
     """Get the Redfish Ethernet Interface.

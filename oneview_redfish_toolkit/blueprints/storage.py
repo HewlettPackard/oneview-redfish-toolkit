@@ -22,6 +22,7 @@ from flask import g
 from flask_api import status
 from werkzeug.exceptions import abort
 
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.storage import Storage
 from oneview_redfish_toolkit.api.storage_drive_composed_details import \
     StorageDriveComposedDetails
@@ -31,7 +32,7 @@ from oneview_redfish_toolkit.blueprints.util.response_builder import \
 storage = Blueprint("storage", __name__)
 
 
-@storage.route("/redfish/v1/Systems/<uuid>/Storage/1", methods=["GET"])
+@storage.route(ComputerSystem.BASE_URI + "/<uuid>/Storage/1", methods=["GET"])
 def get_storage(uuid):
     """Get the Redfish Storage for a given UUID.
 
@@ -41,7 +42,7 @@ def get_storage(uuid):
 
         Returns:
             JSON: Redfish json with Storage
-            When server profile or hardware or hardware type is not found
+            When server profile or server hardware type is not found
             calls abort(404)
 
         Exceptions:
@@ -59,7 +60,8 @@ def get_storage(uuid):
     return ResponseBuilder.success(st)
 
 
-@storage.route("/redfish/v1/Systems/<profile_id>/Storage/1/Drives/<drive_id>",
+@storage.route(ComputerSystem.BASE_URI +
+               "/<profile_id>/Storage/1/Drives/<drive_id>",
                methods=["GET"])
 def get_drive(profile_id, drive_id):
     """Get the Redfish Storage for a given UUID.
@@ -87,15 +89,8 @@ def get_drive(profile_id, drive_id):
     server_profile = g.oneview_client.server_profiles.get(profile_id)
     sas_logical_jbods = _find_sas_logical_jbods_by(server_profile)
 
-    count_drives = 0
-    for log_jbod in sas_logical_jbods:
-        next_count = count_drives + int(log_jbod["numPhysicalDrives"])
-
-        if drive_id_int in range(count_drives + 1, next_count + 1):
-            logical_jbod = log_jbod
-            break
-
-        count_drives = next_count
+    logical_jbod = _get_logical_jbod(drive_id_int, logical_jbod,
+                                     sas_logical_jbods)
 
     if logical_jbod is None:
         abort(status.HTTP_404_NOT_FOUND, "Drive {} not found"
@@ -106,6 +101,22 @@ def get_drive(profile_id, drive_id):
                                                 logical_jbod)
 
     return ResponseBuilder.success(drive_details)
+
+
+def _get_logical_jbod(drive_id_int, logical_jbod, sas_logical_jbods):
+    logical_jbods_sorted = sorted(sas_logical_jbods, key=lambda i: i["uri"])
+
+    count_drives = 0
+    for log_jbod in logical_jbods_sorted:
+        next_count = count_drives + int(log_jbod["numPhysicalDrives"])
+
+        if drive_id_int in range(count_drives + 1, next_count + 1):
+            logical_jbod = log_jbod
+            break
+
+        count_drives = next_count
+
+    return logical_jbod
 
 
 def _find_sas_logical_jbods_by(server_profile):
