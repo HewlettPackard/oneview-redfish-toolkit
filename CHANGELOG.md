@@ -32,6 +32,7 @@
  - #295 Update Systems collection
  - #311 Resource Zone: update link to CapabilitiesObject
  - #329 Fix count on Computer System Collection
+ - #339 Network Resource Block: add support for network sets
 
 # New Redfish resources
  - EventService
