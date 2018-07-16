@@ -100,15 +100,9 @@ def get_vlan_network_interface(uuid, id, vlan_id):
             JSON: Redfish json with ResourceBlock.
     """
 
-    try:
-        ethernet_network = \
-            g.oneview_client.ethernet_networks.get(vlan_id)
+    ethernet_network = \
+        g.oneview_client.ethernet_networks.get(vlan_id)
 
-        vlan = VLanNetworkInterface(ethernet_network, request.path)
+    vlan = VLanNetworkInterface(ethernet_network, request.path)
 
-        return ResponseBuilder.success(vlan)
-
-    except OneViewRedfishError as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
+    return ResponseBuilder.success(vlan)
