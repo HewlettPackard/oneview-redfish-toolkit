@@ -51,6 +51,10 @@ class ComputerSystem(RedfishJsonValidator):
 
         base_resource = server_profile
         self.server_hardware = server_hardware
+        resource_block_uuids = list()
+        resource_block_uuids.append(self.server_hardware["uuid"])
+        if base_resource["description"]:
+            resource_block_uuids.append(base_resource["description"])
 
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
         self.redfish["Id"] = base_resource["uuid"]
@@ -100,6 +104,9 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
             "/redfish/v1/Managers/" + server_hardware['uuid']
+        self.redfish["Links"]["ResourceBlocks"] = list()
+        self.redfish["Links"]["ResourceBlocks"] = \
+            self._fill_resource_block_members(resource_block_uuids)
         self.redfish["Actions"] = collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
@@ -217,3 +224,15 @@ class ComputerSystem(RedfishJsonValidator):
                 return controller
 
         return None
+
+    def _fill_resource_block_members(self, resource_block_uuids):
+        import pdb; pdb.set_trace()
+        resource_block_members = list()
+        resource_block_dict = dict()
+        base_uri_composition_service = "/redfish/v1/CompositionService/ResourceBlocks/{}"
+        for resource_block_uuid in resource_block_uuids:
+            resource_block_dict["@odata.id"] = \
+                base_uri_composition_service.format(resource_block_uuid)
+            resource_block_members.append(resource_block_dict)
+
+        return resource_block_members
