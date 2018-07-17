@@ -37,7 +37,7 @@ class TestVLanNetworkInterfaceCollection(BaseTest):
         # Loading VLanNetworkInterfaceCollection mockup value
         with open(
             'oneview_redfish_toolkit/mockups/redfish'
-            '/VLanNetworkInterfaceCollection.json'
+            '/VLanNetworkInterfaceCollectionSPT.json'
         ) as f:
             self.vlan_network_interface_collection = json.load(f)
 
