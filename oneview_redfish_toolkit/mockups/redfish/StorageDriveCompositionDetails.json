@@ -6,7 +6,7 @@
         "State": "Enabled",
         "Health": "OK"
     },
-    "CapacityBytes": 107374182400.0,
+    "CapacityBytes": 107374182400,
     "Protocol": "SATA",
     "MediaType": "SSD",
     "Links": {

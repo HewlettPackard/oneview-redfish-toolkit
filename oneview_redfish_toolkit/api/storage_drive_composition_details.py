@@ -51,9 +51,9 @@ class StorageDriveCompositionDetails(RedfishJsonValidator):
         self.redfish["Status"] = status_mapping.STATUS_MAP.get(drive["status"])
 
         attributes = drive["attributes"]
-        sizeInBytes = float(attributes["capacityInGB"]) \
+        size_in_bytes = float(attributes["capacityInGB"]) \
             * 1024 * 1024 * 1024
-        self.redfish["CapacityBytes"] = sizeInBytes
+        self.redfish["CapacityBytes"] = int(size_in_bytes)
         self.redfish["Protocol"] = attributes["interfaceType"]
         self.redfish["MediaType"] = attributes["mediaType"]
         self.redfish["Links"] = {

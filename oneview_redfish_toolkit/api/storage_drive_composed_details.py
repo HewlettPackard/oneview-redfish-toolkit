@@ -50,9 +50,9 @@ class StorageDriveComposedDetails(RedfishJsonValidator):
         self.redfish["Status"] = status_mapping\
             .STATUS_MAP.get(logical_jbod["status"])
 
-        sizeInBytes = float(logical_jbod["maxSizeGB"]) \
+        size_in_bytes = float(logical_jbod["maxSizeGB"]) \
             * 1024 * 1024 * 1024
-        self.redfish["CapacityBytes"] = sizeInBytes
+        self.redfish["CapacityBytes"] = int(size_in_bytes)
         self.redfish["Protocol"] = \
             logical_jbod["driveTechnology"]["deviceInterface"]
         self.redfish["MediaType"] = \

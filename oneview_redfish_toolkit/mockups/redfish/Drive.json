@@ -6,7 +6,7 @@
         "State": "Enabled",
         "Health": "OK"
     },
-    "CapacityBytes": 2001454759936.0,
+    "CapacityBytes": 2001454759936,
     "Protocol": "SAS",
     "MediaType": "HDD",
     "Links": {
