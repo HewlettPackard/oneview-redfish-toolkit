@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -27,48 +27,31 @@ class TestNetworkInterface(BaseTest):
     def setUp(self):
         """Tests preparation"""
 
-        # Loading ServerHardware mockup
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerHardware.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             self.server_hardware = json.load(f)
 
-        # Loading NetworkInterface mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/redfish/'
-            'NetworkInterface3.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerProfile.json'
+        ) as f:
+            self.server_profile = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/NetworkInterface3.json'
         ) as f:
             self.network_interface_mockup = json.load(f)
-
-        self.device_id = "3"
-
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
-
-        try:
-            network_interface = \
-                NetworkInterface(self.device_id, self.server_hardware)
-        except Exception as e:
-            self.fail("Failed to instantiate NetworkInterface class."
-                      " Error: {}".format(e))
-        self.assertIsInstance(
-            network_interface,
-            NetworkInterface)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            network_interface = \
-                NetworkInterface(self.device_id, self.server_hardware)
-        except Exception as e:
-            self.fail("Failed to instantiate NetworkInterfaceCollection class."
-                      " Error: {}".format(e))
+        device_id = "3"
 
-        try:
-            result = json.loads(network_interface.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        network_interface = \
+            NetworkInterface(device_id,
+                             self.server_profile,
+                             self.server_hardware)
+
+        result = json.loads(network_interface.serialize())
 
         self.assertEqual(self.network_interface_mockup, result)

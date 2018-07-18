@@ -42,6 +42,10 @@ from oneview_redfish_toolkit.blueprints.composition_service \
 from oneview_redfish_toolkit.blueprints.computer_system import computer_system
 from oneview_redfish_toolkit.blueprints.computer_system_collection \
     import computer_system_collection
+from oneview_redfish_toolkit.blueprints.ethernet_interface import \
+    ethernet_interface
+from oneview_redfish_toolkit.blueprints.ethernet_interface_collection import \
+    ethernet_interface_collection
 from oneview_redfish_toolkit.blueprints.event_service import event_service
 from oneview_redfish_toolkit.blueprints.manager import manager
 from oneview_redfish_toolkit.blueprints.manager_collection \
@@ -118,6 +122,8 @@ def main(config_file_path, logging_config_file_path):
     app.register_blueprint(computer_system)
     app.register_blueprint(composition_service)
     app.register_blueprint(chassis)
+    app.register_blueprint(ethernet_interface)
+    app.register_blueprint(ethernet_interface_collection)
     app.register_blueprint(manager_collection)
     app.register_blueprint(manager)
     app.register_blueprint(metadata)
@@ -202,6 +208,8 @@ def main(config_file_path, logging_config_file_path):
     @app.errorhandler(status.HTTP_400_BAD_REQUEST)
     def bad_request(error):
         """Creates a Bad Request Error response"""
+        logging.error(error.description)
+
         redfish_error = RedfishError(
             "PropertyValueNotInList", error.description)
 

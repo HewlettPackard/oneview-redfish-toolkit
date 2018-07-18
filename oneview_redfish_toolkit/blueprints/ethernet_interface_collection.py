@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -18,27 +18,25 @@ from flask import Blueprint
 from flask import g
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
-from oneview_redfish_toolkit.api.network_interface_collection \
-    import NetworkInterfaceCollection
+from oneview_redfish_toolkit.api.ethernet_interface_collection import \
+    EthernetInterfaceCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 
-network_interface_collection = Blueprint(
-    "network_interface_collection", __name__)
+ethernet_interface_collection = Blueprint(
+    "ethernet_interface_collection", __name__)
 
 
-@network_interface_collection.route(
-    ComputerSystem.BASE_URI + "/<server_profile_uuid>/NetworkInterfaces/",
+@ethernet_interface_collection.route(
+    ComputerSystem.BASE_URI + "/<server_profile_uuid>/EthernetInterfaces/",
     methods=["GET"])
-def get_network_interface_collection(server_profile_uuid):
-    """Get the Redfish Network Interfaces Collection.
+def get_ethernet_interface_collection(server_profile_uuid):
+    """Get the Redfish Ethernet Interfaces Collection.
 
-    Return NetworkInterfaceCollection Redfish JSON.
+    Return EthernetInterfaceCollection Redfish JSON.
     """
     profile = g.oneview_client.server_profiles.get(server_profile_uuid)
-    server_hardware = g.oneview_client.server_hardware\
-        .get(profile["serverHardwareUri"])
 
-    nic = NetworkInterfaceCollection(profile, server_hardware)
+    ethernet_collection = EthernetInterfaceCollection(profile)
 
-    return ResponseBuilder.success(nic)
+    return ResponseBuilder.success(ethernet_collection)

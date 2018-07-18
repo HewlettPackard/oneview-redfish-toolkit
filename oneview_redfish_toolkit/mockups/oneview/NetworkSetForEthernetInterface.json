@@ -1,0 +1,26 @@
+{
+  "type": "IndexResourceV300",
+  "name": "set_example",
+  "description": null,
+  "attributes": {
+    "name": "set_example",
+    "native_network_id": "/rest/ethernet-networks/null",
+    "id": "/rest/network-sets/76f584da-1f9d-40b8-9b9d-5ccb09810142"
+  },
+  "multiAttributes": {
+    "network_ids": [
+      "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+      "/rest/ethernet-networks/44e9e767-9a1a-4d6e-b4f3-888dca7d6233"
+    ]
+  },
+  "ownerId": "cd",
+  "state": null,
+  "status": "OK",
+  "created": "2018-06-20T13:15:24.571Z",
+  "modified": "2018-06-20T13:15:24.571Z",
+  "eTag": "2018-06-20T13:15:24.571Z",
+  "category": "network-sets",
+  "uri": "/rest/network-sets/76f584da-1f9d-40b8-9b9d-5ccb09810142",
+  "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+  "scopeUris": null
+}

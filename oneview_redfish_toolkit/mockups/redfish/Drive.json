@@ -1,0 +1,17 @@
+{
+    "@odata.type": "#Drive.v1_2_0.Drive",
+    "Id": "4",
+    "Name": "RAID_HDD_storage",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "CapacityBytes": 2001454759936,
+    "Protocol": "SAS",
+    "MediaType": "HDD",
+    "Links": {
+        "Chassis": {"@odata.id": "/redfish/v1/Chassis/0000000000A66101"}
+    },
+    "@odata.context": "/redfish/v1/$metadata#Drive.Drive",
+    "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/4"
+}

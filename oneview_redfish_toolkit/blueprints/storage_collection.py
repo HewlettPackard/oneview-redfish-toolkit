@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -14,17 +14,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from flask import abort
 from flask import Blueprint
 from flask import g
-from flask import Response
-from flask_api import status
 
-from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.storage_collection \
     import StorageCollection
 
-import logging
+
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
 storage_collection = Blueprint("storage_collection", __name__)
 
@@ -36,32 +34,9 @@ def get_storage_collection(uuid):
 
     Return StorageCollection Redfish JSON.
     """
-    try:
-        g.oneview_client.server_hardware.get(uuid)
+    # It just verifies if server profile there is in Oneview
+    g.oneview_client.server_profiles.get(uuid)
 
-        storage = StorageCollection(uuid)
+    storage = StorageCollection(uuid)
 
-        json_str = storage.serialize()
-
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-
-    except HPOneViewException as e:
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            logging.warning('Server hardware UUID {} not found'.format(uuid))
-            abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
-        elif e.msg.find("server-hardware") >= 0:
-            logging.exception(
-                'OneView Exception while looking for '
-                'server hardware: {}'.format(e)
-            )
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            logging.exception('Unexpected OneView Exception: {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return ResponseBuilder.success(storage)

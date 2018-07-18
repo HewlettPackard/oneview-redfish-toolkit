@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -16,13 +16,13 @@
 
 import json
 
-from oneview_redfish_toolkit.api.network_interface_collection import \
-    NetworkInterfaceCollection
+from oneview_redfish_toolkit.api.ethernet_interface_collection import \
+    EthernetInterfaceCollection
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestNetworkInterfaceCollection(BaseTest):
-    """Tests for NetworkInterfaceCollection class"""
+class TestEthernetInterfaceCollection(BaseTest):
+    """Tests for EthernetInterfaceCollection class"""
 
     def setUp(self):
         """Tests preparation"""
@@ -33,24 +33,17 @@ class TestNetworkInterfaceCollection(BaseTest):
             self.server_profile = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerHardware.json'
-        ) as f:
-            self.server_hardware = json.load(f)
-
-        with open(
             'oneview_redfish_toolkit/mockups/redfish/'
-            'NetworkInterfaceCollection.json'
+            'EthernetInterfaceCollection.json'
         ) as f:
-            self.network_interface_collection_mockup = json.load(f)
+            self.ethernet_interface_collection_mockup = json.load(f)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        network_interface_collection = \
-            NetworkInterfaceCollection(self.server_profile,
-                                       self.server_hardware)
+        ethernet_interface_collection = \
+            EthernetInterfaceCollection(self.server_profile)
 
-        result = json.loads(network_interface_collection.serialize())
+        result = json.loads(ethernet_interface_collection.serialize())
 
-        self.assertEqual(self.network_interface_collection_mockup, result)
+        self.assertEqual(self.ethernet_interface_collection_mockup, result)

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -27,12 +27,13 @@ class NetworkInterfaceCollection(RedfishJsonValidator):
 
     SCHEMA_NAME = 'NetworkInterfaceCollection'
 
-    def __init__(self, server_hardware):
+    def __init__(self, server_profile, server_hardware):
         """NetworkInterfaceCollection constructor
 
             Populates self.redfish and calls _validate()
 
             Args:
+                server_profile: a server profile dict from OneView
                 server_hardware: a server hardware dict from OneView
         """
         super().__init__(self.SCHEMA_NAME)
@@ -47,7 +48,7 @@ class NetworkInterfaceCollection(RedfishJsonValidator):
                     members_count += 1
                     device_link = dict()
                     device_link["@odata.id"] = \
-                        "/redfish/v1/Systems/" + server_hardware["uuid"] + \
+                        "/redfish/v1/Systems/" + server_profile["uuid"] + \
                         "/NetworkInterfaces/" + str(device["deviceNumber"])
                     self.redfish["Members"].append(device_link)
                     break
@@ -56,6 +57,6 @@ class NetworkInterfaceCollection(RedfishJsonValidator):
             "/redfish/v1/$metadata#NetworkInterfaceCollection" \
             ".NetworkInterfaceCollection"
         self.redfish["@odata.id"] = "/redfish/v1/Systems/" + \
-            server_hardware["uuid"] + "/NetworkInterfaces"
+            server_profile["uuid"] + "/NetworkInterfaces"
 
         self._validate()

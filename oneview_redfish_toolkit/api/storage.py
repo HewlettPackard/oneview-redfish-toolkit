@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -15,6 +15,10 @@
 # under the License.
 
 import collections
+from functools import reduce
+import operator
+
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
@@ -37,13 +41,20 @@ class Storage(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Storage'
 
-    def __init__(self, uuid, server_hardware_type):
+    def __init__(self,
+                 server_profile,
+                 server_hardware_type,
+                 sas_logical_jbods):
         """Storage constructor
 
-            Populates self.redfish with the contents of server hardware type
+            Populates self.redfish with the contents of Storage using
+            Server Profile, Server Hardware Type and SAS Logical JBODs
+            to do that
 
             Args:
-                server_hardware_type: Server hardware type
+                server_profile: Server Profile from Oneview
+                server_hardware_type: Server Hardware Type from Oneview
+                sas_logical_jbods: SAS Logical JBODs info from Oneview
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -51,7 +62,8 @@ class Storage(RedfishJsonValidator):
             server_hardware_type['storageCapabilities']['driveTechnologies']
 
         self.redfish["@odata.id"] = \
-            "/redfish/v1/Systems/" + uuid + "/Storage/1"
+            ComputerSystem.BASE_URI + "/" \
+            + server_profile["uuid"] + "/Storage/1"
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Storage.Storage"
         self.redfish["@odata.type"] = "#Storage.v1_2_0.Storage"
@@ -79,6 +91,18 @@ class Storage(RedfishJsonValidator):
         storage_controllers["SupportedDeviceProtocols"] = \
             sorted(self.map_supported_device_protos(drive_technologies))
         self.redfish["StorageControllers"].append(storage_controllers)
+
+        count_drives_by_jbod = \
+            [int(item["numPhysicalDrives"]) for item in sas_logical_jbods]
+        count_drives = reduce(operator.add, count_drives_by_jbod)
+
+        self.redfish["Drives@odata.count"] = count_drives
+        self.redfish["Drives"] = list()
+        for i in range(count_drives):
+            drive_id = str(i + 1)
+            self.redfish["Drives"].append({
+                "@odata.id": self.redfish["@odata.id"] + "/Drives/" + drive_id
+            })
 
         self._validate()
 

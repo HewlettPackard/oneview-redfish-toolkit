@@ -19,6 +19,8 @@ import json
 from unittest import mock
 
 # 3rd party libs
+from unittest.mock import call
+
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
@@ -36,37 +38,49 @@ class TestStorage(BaseFlaskTest):
 
         self.app.register_blueprint(storage.storage)
 
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/ServerProfile.json'
+        ) as f:
+            self.server_profile = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardwareTypes.json'
+        ) as f:
+            self.server_hardware_type = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'SASLogicalJBODListForStorage.json'
+        ) as f:
+            self.logical_jbods = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/Storage.json'
+        ) as f:
+            self.storage_mockup = json.load(f)
+
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/Drive.json'
+        ) as f:
+            self.drive_mockup = json.load(f)
+
+        self.not_found_error = HPOneViewException({
+            'errorCode': 'RESOURCE_NOT_FOUND',
+            'message': 'some message not found',
+        })
+
     @mock.patch.object(storage, 'g')
     def test_get_storage(self, g):
         """Tests Storage"""
 
-        # Loading server hardware mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            server_hardware = json.load(f)
-
-        # Loading server hardware types mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardwareTypes.json'
-        ) as f:
-            server_hardware_types = json.load(f)
-
-        # Loading Storage mockup result
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/Storage.json'
-        ) as f:
-            storage_mockup = json.load(f)
-
-        # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        g.oneview_client.server_profiles.get.return_value = self.server_profile
         g.oneview_client.server_hardware_types.get.return_value \
-            = server_hardware_types
+            = self.server_hardware_type
+        g.oneview_client.sas_logical_jbods.get.side_effect = self.logical_jbods
 
-        # Get Storage
         response = self.client.get(
             "/redfish/v1/Systems/"
-            "30303437-3034-4D32-3230-313133364752/Storage/1"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1"
         )
 
         # Gets json from response
@@ -75,41 +89,43 @@ class TestStorage(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(storage_mockup, result)
+        self.assertEqual(self.storage_mockup, result)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.server_hardware_types.get.assert_called_with(
+            self.server_hardware_type["uri"])
+        g.oneview_client.sas_logical_jbods.get.assert_has_calls(
+            [
+                call(self.logical_jbods[0]["uri"]),
+                call(self.logical_jbods[1]["uri"])
+            ]
+        )
 
     @mock.patch.object(storage, 'g')
-    def test_get_storage_sh_not_found(self, g):
-        """Tests Storage"""
+    def test_get_storage_when_profile_not_found(self, g):
+        """Tests when server profile not found"""
 
-        e = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server-hardware not found',
-        })
-        g.oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
 
         # Get Storage
         response = self.client.get(
             "/redfish/v1/Systems/"
-            "30303437-3034-4D32-3230-313133364752/Storage/1"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1"
         )
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(storage, 'g')
-    def test_get_storage_sh_exception(self, g):
-        """Tests Storage"""
+    def test_get_storage_when_get_profile_raises_any_exception(self, g):
+        """Tests when the searching of server profile raises an error"""
 
-        e = HPOneViewException({
-            'errorCode': 'ANOTHER_ERROR',
-            'message': 'server-hardware error',
-        })
-        g.oneview_client.server_hardware.get.side_effect = e
+        g.oneview_client.server_profiles.get.side_effect = Exception
 
         # Get Storage
         response = self.client.get(
             "/redfish/v1/Systems/"
-            "30303437-3034-4D32-3230-313133364752/Storage/1"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1"
         )
 
         self.assertEqual(
@@ -119,40 +135,159 @@ class TestStorage(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(storage, 'g')
-    def test_get_storage_sht_not_found(self, g):
-        """Tests Storage"""
+    def test_get_storage_when_hardware_type_not_found(self, g):
+        """Tests when server hardware type not found"""
 
-        e = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server-hardware-type not found',
-        })
-        g.oneview_client.server_hardware_types.get.side_effect = e
+        g.oneview_client.server_hardware_types.get.side_effect = \
+            self.not_found_error
 
         # Get Storage
         response = self.client.get(
             "/redfish/v1/Systems/"
-            "30303437-3034-4D32-3230-313133364752/Storage/1"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1"
         )
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(storage, 'g')
-    def test_get_storage_sht_exception(self, g):
-        """Tests Storage"""
+    def test_get_storage_when_hardware_type_raises_any_exception(self, g):
+        """Tests when the searching of server hardware type raises an error"""
 
-        e = HPOneViewException({
-            'errorCode': 'ANOTHER_ERROR',
-            'message': 'server-hardware-type error',
-        })
-        g.oneview_client.server_hardware_types.get.side_effect = e
+        g.oneview_client.server_hardware_types.get.side_effect = Exception
 
         # Get Storage
         response = self.client.get(
             "/redfish/v1/Systems/"
-            "30303437-3034-4D32-3230-313133364752/Storage/1"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1"
         )
 
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(storage, 'g')
+    def test_get_drive(self, g):
+        """Tests get a valid Drive"""
+
+        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.sas_logical_jbods.get.side_effect = self.logical_jbods
+
+        response = self.client.get(
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/4"
+        )
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual(self.drive_mockup, result)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.sas_logical_jbods.get.assert_has_calls(
+            [
+                call(self.logical_jbods[0]["uri"]),
+                call(self.logical_jbods[1]["uri"])
+            ]
+        )
+
+    @mock.patch.object(storage, 'g')
+    def test_get_drive_when_profile_not_found(self, g):
+        """Tests when server profile not found"""
+
+        g.oneview_client.server_profiles.get.side_effect = \
+            self.not_found_error
+
+        response = self.client.get(
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/4"
+        )
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.sas_logical_jbods.get.assert_not_called()
+
+    @mock.patch.object(storage, 'g')
+    def test_get_drive_when_profile_raises_any_exception(self, g):
+        """Tests when the searching of server profile raises any error"""
+
+        g.oneview_client.server_profiles.get.side_effect = Exception
+
+        response = self.client.get(
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/4"
+        )
+
+        self.assertEqual(status.HTTP_500_INTERNAL_SERVER_ERROR,
+                         response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.sas_logical_jbods.get.assert_not_called()
+
+    @mock.patch.object(storage, 'g')
+    def test_get_drive_when_sas_logical_jbod_not_found(self, g):
+        """Tests when sas logical jbod not found"""
+
+        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.sas_logical_jbods.get.side_effect = \
+            self.not_found_error
+
+        response = self.client.get(
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/4"
+        )
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.sas_logical_jbods.get.assert_called_with(
+            self.logical_jbods[0]["uri"]
+        )
+
+    @mock.patch.object(storage, 'g')
+    def test_get_drive_when_drive_not_found(self, g):
+        """Tests when drive id can't be found"""
+
+        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.sas_logical_jbods.get.side_effect = self.logical_jbods
+
+        # we have the 4 drives, so id '5' is invalid
+        response = self.client.get(
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/5"
+        )
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertIn("Drive 5 not found", str(response.data))
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.sas_logical_jbods.get.assert_has_calls(
+            [
+                call(self.logical_jbods[0]["uri"]),
+                call(self.logical_jbods[1]["uri"])
+            ]
+        )
+
+    @mock.patch.object(storage, 'g')
+    def test_get_drive_when_drive_id_is_invalid(self, g):
+        """Tests when drive id is not a number"""
+
+        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.sas_logical_jbods.get.side_effect = self.logical_jbods
+
+        response = self.client.get(
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/abc"
+        )
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertIn("Drive id should be a integer", str(response.data))
+        g.oneview_client.server_profiles.get.assert_not_called()
+        g.oneview_client.sas_logical_jbods.get.assert_not_called()

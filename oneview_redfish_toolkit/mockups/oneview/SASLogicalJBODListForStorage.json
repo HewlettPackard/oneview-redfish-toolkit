@@ -1,0 +1,58 @@
+[
+  {
+    "type": "sas-logical-jbodV2",
+    "uri": "/rest/sas-logical-jbods/473db373-2d9c-4e7f-adca-a3649df5425d",
+    "category": "sas-logical-jbods",
+    "eTag": "2018-07-09T08:19:18.524Z",
+    "created": "2018-06-15T13:44:26.456Z",
+    "modified": "2018-07-09T08:19:18.524Z",
+    "refreshState": "NotRefreshing",
+    "stateReason": null,
+    "numPhysicalDrives": 2,
+    "driveTechnology": {
+      "deviceInterface": "SAS",
+      "driveMedia": "SSD"
+    },
+    "minSizeGB": 3276,
+    "maxSizeGB": 3276,
+    "clearMetaData": false,
+    "sasLogicalInterconnectUri": "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636",
+    "logicalDriveBayUris": [
+      "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636/logical-drive-enclosures/0d1d9142-f5fe-4256-aff2-d2dd95a0ce8f/logical-drive-bays/cef5316d-e5ab-4d46-83bc-caba10d954a8",
+      "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636/logical-drive-enclosures/0d1d9142-f5fe-4256-aff2-d2dd95a0ce8f/logical-drive-bays/3918cd02-7c70-4ef4-9936-ef6bad38c534"
+    ],
+    "eraseData": false,
+    "description": null,
+    "state": "Configured",
+    "status": "OK",
+    "name": "SSD_storage"
+  },
+  {
+    "type": "sas-logical-jbodV2",
+    "uri": "/rest/sas-logical-jbods/9e83a03d-7a84-4f0d-a8d7-bd05a30c3175",
+    "category": "sas-logical-jbods",
+    "eTag": "2018-07-09T08:18:43.619Z",
+    "created": "2018-06-15T13:44:43.058Z",
+    "modified": "2018-07-09T08:18:43.619Z",
+    "refreshState": "NotRefreshing",
+    "stateReason": null,
+    "numPhysicalDrives": 2,
+    "driveTechnology": {
+      "deviceInterface": "SAS",
+      "driveMedia": "HDD"
+    },
+    "minSizeGB": 1864,
+    "maxSizeGB": 1864,
+    "clearMetaData": false,
+    "sasLogicalInterconnectUri": "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636",
+    "logicalDriveBayUris": [
+      "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636/logical-drive-enclosures/0d1d9142-f5fe-4256-aff2-d2dd95a0ce8f/logical-drive-bays/26fc5b8e-5968-4aec-b4cc-9dcbd11546d2",
+      "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636/logical-drive-enclosures/0d1d9142-f5fe-4256-aff2-d2dd95a0ce8f/logical-drive-bays/7d8cd55d-8694-4176-ba85-c503d76eb7fd"
+    ],
+    "eraseData": false,
+    "description": null,
+    "state": "Configured",
+    "status": "OK",
+    "name": "RAID_HDD_storage"
+  }
+]

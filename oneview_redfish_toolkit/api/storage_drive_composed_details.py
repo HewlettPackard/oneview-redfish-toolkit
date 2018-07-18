@@ -13,16 +13,14 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
-from oneview_redfish_toolkit.api.resource_block_collection import \
-    ResourceBlockCollection
 from oneview_redfish_toolkit.api import status_mapping
 
 
-class StorageDriveCompositionDetails(RedfishJsonValidator):
-    """Creates a StorageDriveCompositionDetails dict
+class StorageDriveComposedDetails(RedfishJsonValidator):
+    """Creates a Drive dict for a storage of a composed system
 
             Populates self.redfish with data retrieved from
             an OneView's Drive
@@ -30,32 +28,35 @@ class StorageDriveCompositionDetails(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Drive'
 
-    def __init__(self, drive, drive_enclosure):
-        """StorageDriveCompositionDetails constructor
+    def __init__(self, drive_id, server_profile, logical_jbod):
+        """StorageDriveComposedDetails constructor
 
             Populates self.redfish with the contents of drive from an
-            Oneview's Drive
+            Oneview's sas logical jbod and an Oneview's server profile
 
             Args:
-                drive: Oneview's Drive dict
-                drive_enclosure: Oneview's Drive Enclosure dict
+                drive_id: id of redfish Drive
+                server_profile: Oneview's server profile dict
+                logical_jbod: Oneview's sas logical jbod dict
         """
         super().__init__(self.SCHEMA_NAME)
 
-        enclosure_id = drive_enclosure["enclosureUri"].split("/")[-1]
-        drive_uuid = drive["uri"].split("/")[-1]
+        enclosure_id = server_profile["enclosureUri"].split("/")[-1]
+        profile_uuid = server_profile["uri"].split("/")[-1]
 
         self.redfish["@odata.type"] = "#Drive.v1_2_0.Drive"
-        self.redfish["Id"] = "1"
-        self.redfish["Name"] = drive["name"]
-        self.redfish["Status"] = status_mapping.STATUS_MAP.get(drive["status"])
+        self.redfish["Id"] = str(drive_id)
+        self.redfish["Name"] = logical_jbod["name"]
+        self.redfish["Status"] = status_mapping\
+            .STATUS_MAP.get(logical_jbod["status"])
 
-        attributes = drive["attributes"]
-        size_in_bytes = float(attributes["capacityInGB"]) \
+        size_in_bytes = float(logical_jbod["maxSizeGB"]) \
             * 1024 * 1024 * 1024
         self.redfish["CapacityBytes"] = int(size_in_bytes)
-        self.redfish["Protocol"] = attributes["interfaceType"]
-        self.redfish["MediaType"] = attributes["mediaType"]
+        self.redfish["Protocol"] = \
+            logical_jbod["driveTechnology"]["deviceInterface"]
+        self.redfish["MediaType"] = \
+            logical_jbod["driveTechnology"]["driveMedia"]
         self.redfish["Links"] = {
             "Chassis": {
                 "@odata.id": "/redfish/v1/Chassis/" + enclosure_id
@@ -63,7 +64,7 @@ class StorageDriveCompositionDetails(RedfishJsonValidator):
         }
         self.redfish["@odata.context"] = "/redfish/v1/$metadata#Drive.Drive"
 
-        self.redfish["@odata.id"] = "{}/{}/Storage/1/Drives/1"\
-            .format(ResourceBlockCollection.BASE_URI, drive_uuid)
+        self.redfish["@odata.id"] = "{}/{}/Storage/1/Drives/{}"\
+            .format(ComputerSystem.BASE_URI, profile_uuid, drive_id)
 
         self._validate()
