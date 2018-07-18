@@ -60,6 +60,7 @@ def get_computer_system(uuid):
     try:
         resource = _get_oneview_resource(uuid)
         category = resource["category"]
+        jbods_drives = list()
 
         if category == 'server-profile-templates':
             computer_system = CapabilitiesObject(resource)
@@ -69,10 +70,17 @@ def get_computer_system(uuid):
             server_hardware_type = g.oneview_client.server_hardware_types\
                 .get(resource['serverHardwareTypeUri'])
 
+            for sas_logical_jbod in resource["localStorage"]["sasLogicalJBODs"]:
+                sas_logical_uuid = sas_logical_jbod["sasLogicalJBODUri"].split("/")[-1]
+                drives_by_sas_logical_uuid = g.oneview_client.sas_logical_jbods.\
+                    get_drives(sas_logical_uuid)
+                jbods_drives.extend(drives_by_sas_logical_uuid)
+
             # Build Computer System object and validates it
             computer_system = ComputerSystem(server_hardware,
                                              server_hardware_type,
-                                             resource)
+                                             resource,
+                                             jbods_drives)
         else:
             raise OneViewRedfishError(
                 'Computer System UUID {} not found'.format(uuid))
