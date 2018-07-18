@@ -90,6 +90,12 @@ class TestComputerSystem(BaseFlaskTest):
         ) as f:
             self.computer_system_mockup = json.load(f)
 
+        # Loading Drives mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/DrivesBySasLogicalUUID.json'
+        ) as f:
+            self.drives = json.load(f)
+
     @mock.patch.object(computer_system, 'g')
     def test_get_computer_system_not_found(self, g):
         """Tests ComputerSystem with ServerProfileTemplates not found"""
@@ -253,6 +259,9 @@ class TestComputerSystem(BaseFlaskTest):
             self.server_hardware
         g.oneview_client.server_hardware_types.get.return_value = \
             self.server_hardware_types
+        g.oneview_client.sas_logical_jbods.get_drives.return_value = \
+            self.drives
+
 
         # Get ComputerSystem
         response = self.client.get(
@@ -329,6 +338,9 @@ class TestComputerSystem(BaseFlaskTest):
             self.server_hardware
         g.oneview_client.server_hardware_types.get.return_value = \
             self.server_hardware_types
+        import pdb; pdb.set_trace()
+        g.oneview_client.sas_logical_jbods.get_drives.return_value = \
+            self.drives
         g.oneview_client.server_hardware.update_power_state.return_value = \
             {"status": "OK"}
 
@@ -365,6 +377,8 @@ class TestComputerSystem(BaseFlaskTest):
             self.server_hardware
         g.oneview_client.server_hardware_types.get.return_value = \
             self.server_hardware_types
+        g.oneview_client.sas_logical_jbods.get_drives.return_value = \
+            self.drives
 
         response = self.client.post(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
