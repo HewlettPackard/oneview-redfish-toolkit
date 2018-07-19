@@ -59,7 +59,6 @@
                 "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/d8b142ba-6762-470d-9082-0e53d0499303"
             }
         ]
-
     },
     "Actions": {
         "#ComputerSystem.Reset": {
