@@ -60,7 +60,6 @@ def get_computer_system(uuid):
     try:
         resource = _get_oneview_resource(uuid)
         category = resource["category"]
-        jbods_drives = list()
 
         if category == 'server-profile-templates':
             computer_system = CapabilitiesObject(resource)
@@ -70,17 +69,13 @@ def get_computer_system(uuid):
             server_hardware_type = g.oneview_client.server_hardware_types\
                 .get(resource['serverHardwareTypeUri'])
 
-            for sas_logical_jbod in resource["localStorage"]["sasLogicalJBODs"]:
-                sas_logical_uuid = sas_logical_jbod["sasLogicalJBODUri"].split("/")[-1]
-                drives_by_sas_logical_uuid = g.oneview_client.sas_logical_jbods.\
-                    get_drives(sas_logical_uuid)
-                jbods_drives.extend(drives_by_sas_logical_uuid)
+            drives = _get_drives_from_spt(resource)
 
             # Build Computer System object and validates it
             computer_system = ComputerSystem(server_hardware,
                                              server_hardware_type,
                                              resource,
-                                             jbods_drives)
+                                             drives)
         else:
             raise OneViewRedfishError(
                 'Computer System UUID {} not found'.format(uuid))
@@ -134,8 +129,10 @@ def change_power_state(uuid):
         sht = g.oneview_client.server_hardware_types. \
             get(profile["serverHardwareTypeUri"])
 
+        drives = _get_drives_from_spt(profile)
+
         # Build Computer System object and validates it
-        cs = ComputerSystem(sh, sht, profile)
+        cs = ComputerSystem(sh, sht, profile, drives)
 
         oneview_power_configuration = \
             OneViewPowerOption.get_oneview_power_configuration(
@@ -313,3 +310,14 @@ def _get_resource_block_data(func, uuids):
                 raise  # Raise any unexpected errors
 
     return resources
+
+
+def _get_drives_from_spt(spt):
+    """Gets Drives from Server profile template"""
+    jbods_drives = list()
+    for sas_logical_jbod in spt["localStorage"]["sasLogicalJBODs"]:
+        drives_by_sas_logical_uuid = g.oneview_client.sas_logical_jbods. \
+            get_drives(sas_logical_jbod["sasLogicalJBODUri"])
+        jbods_drives.extend(drives_by_sas_logical_uuid)
+
+    return jbods_drives

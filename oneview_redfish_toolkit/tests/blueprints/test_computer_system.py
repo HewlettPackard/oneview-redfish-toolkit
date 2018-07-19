@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 from unittest import mock
 
@@ -92,7 +93,7 @@ class TestComputerSystem(BaseFlaskTest):
 
         # Loading Drives mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/oneview/DrivesBySasLogicalUUID.json'
+                'oneview_redfish_toolkit/mockups/oneview/Drives.json'
         ) as f:
             self.drives = json.load(f)
 
@@ -253,15 +254,17 @@ class TestComputerSystem(BaseFlaskTest):
     def test_get_computer_system_server_profile(self, g):
         """Tests ComputerSystem with a known Server Profile"""
 
+        server_profile = copy.deepcopy(self.server_profile)
+        server_profile["localStorage"]["sasLogicalJBODs"].pop(0)
+
         # Create mock response
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.server_profiles.get.return_value = server_profile
         g.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
         g.oneview_client.server_hardware_types.get.return_value = \
             self.server_hardware_types
         g.oneview_client.sas_logical_jbods.get_drives.return_value = \
-            self.drives
-
+            [self.drives[4]]
 
         # Get ComputerSystem
         response = self.client.get(
@@ -338,7 +341,6 @@ class TestComputerSystem(BaseFlaskTest):
             self.server_hardware
         g.oneview_client.server_hardware_types.get.return_value = \
             self.server_hardware_types
-        import pdb; pdb.set_trace()
         g.oneview_client.sas_logical_jbods.get_drives.return_value = \
             self.drives
         g.oneview_client.server_hardware.update_power_state.return_value = \

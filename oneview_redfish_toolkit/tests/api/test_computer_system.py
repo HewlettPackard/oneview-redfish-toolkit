@@ -46,7 +46,7 @@ class TestComputerSystem(BaseTest):
 
         # Loading Drives mockup value
         with open(
-                'oneview_redfish_toolkit/mockups/oneview/DrivesBySasLogicalUUID.json'
+                'oneview_redfish_toolkit/mockups/oneview/Drives.json'
         ) as f:
             self.drives = json.load(f)
 
@@ -62,7 +62,7 @@ class TestComputerSystem(BaseTest):
             self.server_hardware,
             self.server_hardware_types,
             self.server_profile,
-            self.drives
+            [self.drives[4]]
         )
 
         result = json.loads(computer_system.serialize())

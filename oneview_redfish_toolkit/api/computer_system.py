@@ -36,7 +36,8 @@ class ComputerSystem(RedfishJsonValidator):
     SCHEMA_NAME = 'ComputerSystem'
     BASE_URI = '/redfish/v1/Systems'
 
-    def __init__(self, server_hardware, server_hardware_types, server_profile, drives):
+    def __init__(self, server_hardware, server_hardware_types,
+                 server_profile, drives):
         """ComputerSystem constructor
 
             Populates self.redfish with the contents of ServerHardware and
@@ -54,7 +55,8 @@ class ComputerSystem(RedfishJsonValidator):
         self.server_hardware = server_hardware
         self.resource_block_uuids = list()
         self.resource_block_uuids.append(self.server_hardware["uuid"])
-        self._fill_spt_on_resource_blocks_uuids_list(base_resource["description"])
+        self._fill_spt_on_resource_blocks_uuids_list(
+            base_resource["description"])
         self._fill_drives_on_resource_blocks_uuids_list(drives)
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
         self.redfish["Id"] = base_resource["uuid"]
@@ -225,10 +227,13 @@ class ComputerSystem(RedfishJsonValidator):
         return None
 
     def _fill_resource_block_members(self, resource_block_uuids):
-        resource_blocks_base_uri = "/redfish/v1/CompositionService/ResourceBlocks/{}"
+        resource_blocks_base_uri = \
+            "/redfish/v1/CompositionService/ResourceBlocks/{}"
         for resource_block_uuid in resource_block_uuids:
             self.redfish["Links"]["ResourceBlocks"].append({
-                "@odata.id": resource_blocks_base_uri.format(resource_block_uuid)
+                "@odata.id": resource_blocks_base_uri.format(
+                    resource_block_uuid
+                )
             })
 
     def _fill_spt_on_resource_blocks_uuids_list(self, spt_uuid):
