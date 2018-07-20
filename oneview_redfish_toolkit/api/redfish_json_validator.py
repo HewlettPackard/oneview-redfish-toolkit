@@ -21,6 +21,7 @@ import jsonschema
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
+from oneview_redfish_toolkit.api import schemas
 from oneview_redfish_toolkit import util
 
 
@@ -66,7 +67,7 @@ class RedfishJsonValidator(object):
                 OneViewRedfishError: Raises this exception if
                 schema is not found.
         """
-        schema_version = util.schemas[self.schema_name]
+        schema_version = schemas.SCHEMAS[self.schema_name]
         stored_schemas = util.stored_schemas
 
         try:
