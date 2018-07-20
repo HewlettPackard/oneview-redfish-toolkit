@@ -26,6 +26,12 @@ from oneview_redfish_toolkit.blueprints.metadata import metadata
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
+schemas_dict = collections.OrderedDict()
+schemas_dict["ComputerSystemCollection"] = \
+    "ComputerSystemCollection.json"
+schemas_dict["ComputerSystem"] = "ComputerSystem.v1_4_0.json"
+
+
 class Metadata(BaseFlaskTest):
     """Tests for Metadata blueprint"""
 
@@ -36,14 +42,9 @@ class Metadata(BaseFlaskTest):
         self.app.register_blueprint(metadata)
 
     @mock.patch('oneview_redfish_toolkit.util.config.items')
+    @mock.patch('oneview_redfish_toolkit.api.schemas.SCHEMAS', schemas_dict)
     def test_get_metadata(self, config_mockup):
         """Tests Metadata blueprint result against know value """
-
-        schemas = collections.OrderedDict()
-        schemas["ComputerSystemCollection"] = "ComputerSystemCollection.json"
-        schemas["ComputerSystem"] = "ComputerSystem.v1_4_0.json"
-
-        config_mockup.return_value = schemas
 
         response = self.client.get("/redfish/v1/$metadata")
 
