@@ -85,7 +85,9 @@ class Zone(RedfishJsonValidator):
     def fill_resource_blocks(self, profile_template, available_targets,
                              drives):
         for item in available_targets:
-            self.add_resource_block_item_to_links(item, "serverHardwareUri")
+            if item["serverHardwareUri"]:
+                self.add_resource_block_item_to_links(item,
+                                                      "serverHardwareUri")
 
         for item in drives:
             self.add_resource_block_item_to_links(item, "uri")
