@@ -36,6 +36,6 @@ class BaseTest(TestCase):
 
     @mock.patch.object(util, 'check_oneview_availability')
     def setUp(self, check_ov_availability):
-        self.config_file = './redfish.conf'
+        self.config_file = './oneview_redfish_toolkit/conf/redfish.conf'
 
         util.load_config(self.config_file)

@@ -28,6 +28,7 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.event import Event
+from oneview_redfish_toolkit.api import schemas
 from oneview_redfish_toolkit.api.subscription import Subscription
 from oneview_redfish_toolkit import util
 import unittest
@@ -63,7 +64,7 @@ class TestUtil(unittest.TestCase):
     def setUp(self):
         self.schema_dir = './oneview_redfish_toolkit/schemas'
         self.registry_dir = './oneview_redfish_toolkit/registry'
-        self.config_file = './redfish.conf'
+        self.config_file = './oneview_redfish_toolkit/conf/redfish.conf'
 
     def test_load_conf_invalid_config_file(self):
         # Tests if passing a file that does not exists returns false.
@@ -93,12 +94,6 @@ class TestUtil(unittest.TestCase):
         self.assertTrue(cfg.has_section('credentials'),
                         msg='Section {} not found in ini file {}'.
                         format('credentials', self.config_file))
-        self.assertTrue(cfg.has_section('schemas'),
-                        msg='Section {} not found in ini file {}'.
-                        format('schemas', self.config_file))
-        self.assertTrue(cfg.has_section('registry'),
-                        msg='Section {} not found in ini file {}'.
-                        format('registry', self.config_file))
         self.assertTrue(cfg.has_section('event_service'),
                         msg='Section {} not found in ini file {}'.
                         format('event_service', self.config_file))
@@ -108,10 +103,6 @@ class TestUtil(unittest.TestCase):
 
         cfg = util.load_conf(self.config_file)
 
-        self.assertTrue(cfg.has_option('redfish', 'schema_dir'),
-                        msg='Option {} not found in section {} in ini file {}'
-                        .format('schema_dir', 'redfish',
-                        self.config_file))
         self.assertTrue(cfg.has_option('redfish', 'indent_json'),
                         msg='Option {} not found in section {} in ini file {}'
                         .format('indent_json', 'redfish',
@@ -119,10 +110,6 @@ class TestUtil(unittest.TestCase):
         self.assertTrue(cfg.has_option('oneview_config', 'ip'),
                         msg='Option {} not found in section {} in ini file {}'
                         .format('ip', 'oneview_config', self.config_file))
-        self.assertTrue(cfg.has_option('oneview_config', 'api_version'),
-                        msg='Option {} not found in section {} in ini file {}'
-                        .format('schema_dir', 'oneview_config',
-                        self.config_file))
         self.assertTrue(cfg.has_option('credentials', 'userName'),
                         msg='Option {} not found in section {} in ini file {}'
                         .format('userName', 'credentials',
@@ -179,8 +166,7 @@ class TestUtil(unittest.TestCase):
     def test_load_registries_valid_registry_dir_valid_dict(self):
         # Tests loading registry files from redfish.conf
 
-        cfg = util.load_conf(self.config_file)
-        registries = dict(cfg.items('registry'))
+        registries = schemas.REGISTRY
 
         try:
             registry_dict = util.load_registry(self.registry_dir, registries)
