@@ -8,6 +8,10 @@ HPE OneView is a fresh approach to converged infrastructure management, inspired
 
 DMTF's Redfish is an open industry standard specification and schema that specifies a RESTful interface and utilizes JSON and OData to help customers integrate solutions within their existing tool chains.
 
+HPE OneView 4.0 version or above is required.
+
+> In order to integrate properly with OneView, the OneView API 600 is required to be supported by OneView instance.
+
 ## Installation
 
 ### Requirements
@@ -80,10 +84,6 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 
 * `redfish` section
 
-  * **schema_dir**: path to where DTMF's Redfish JSON schemas are stored
-
-  * **indent_json**: whether JSON objects on answers are indented or not
-
   * **xml_prettify**: whether XML objects on answers are indented or not
 
   * **redfish_host**: the IP address where redfish service will listen to. Using `host = 0.0.0.0` means it will listen to all IP addresses.
@@ -97,8 +97,6 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 * `oneview` section
 
   * **ip**: HPE OneView's IP or FQDN address
-
-  * **api_version**: HPE OneView's version. Defaults to 300.
 
 * `credentials` section
   Note: HPE OneView credentials are stored in clear-text. Make sure only authorized users can access this file.
@@ -136,28 +134,6 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
   * **commonName**: FQDN of the server or it's IP address. If not provided will detect de default route IP and use it. **Optional.**
  
   * **emailAddress**: Email address to contact the responsible for this server/certificate. This is an optional information. Will not be added to certificate if not informed. **Optional.**
-
-* `schemas` section
-
-  * **ServiceRoot**: DTMF's Redfish JSON schema for the `Service Root` resource
-  
-  * **ChassisCollection**: DTMF's Redfish JSON schema for `Chassis` collections
-  
-  * **Chassis**: DTMF's Redfish JSON schema for `Chassis` resources
-  
-  * **ComputerSystemCollection**: DTMF's Redfish JSON schema for `Computer Systems` collections
-  
-  * **ComputerSystem**: DTMF's Redfish JSON schema for `Computer Systems` resources
-  
-  * **ManagerCollection**: DTMF's Redfish JSON schema for `Managers` collections
-  
-  * **Manager**: DTMF's Redfish JSON schema for `Manager` resources
-  
-  * **EventService**: DTMF's Redfish JSON schema for the `Event Service` resource
-  
-  * **EventDestination**: DTMF's Redfish JSON schema for `Event Destination` resources
-  
-  * **Event**: DTMF's Redfish JSON schema for `Event` objects
 
 ## Session Management
 
