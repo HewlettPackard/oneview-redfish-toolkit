@@ -23,6 +23,7 @@ import logging
 import logging.config
 import OpenSSL
 import os
+import pkg_resources
 import socket
 import ssl
 import time
@@ -38,6 +39,7 @@ from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotAccessibleError
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
+from oneview_redfish_toolkit.api import schemas
 from oneview_redfish_toolkit.event_dispatcher import EventDispatcher
 
 globals()['subscriptions_by_type'] = {
@@ -49,6 +51,8 @@ globals()['subscriptions_by_type'] = {
 }
 
 globals()['all_subscriptions'] = {}
+
+API_VERSION = 600
 
 
 def configure_logging(log_file_path):
@@ -117,14 +121,7 @@ def load_config(conf_file):
     # Setting ov_config
     ov_config = dict(config.items('oneview_config'))
     ov_config['credentials'] = dict(config.items('credentials'))
-    ov_config['api_version'] = int(ov_config['api_version'])
     globals()['ov_config'] = ov_config
-
-    # Setting schemas_dict
-    schemas = dict(config.items('schemas'))
-    globals()['schemas'] = schemas
-
-    registries = dict(config.items('registry'))
 
     load_event_service_info()
 
@@ -133,11 +130,11 @@ def load_config(conf_file):
         check_oneview_availability(ov_config)
 
         registry_dict = load_registry(
-            config['redfish']['registry_dir'],
-            registries)
+            get_registry_path(),
+            schemas.REGISTRY)
         globals()['registry_dict'] = registry_dict
 
-        store_schemas(config['redfish']['schema_dir'])
+        store_schemas(get_schemas_path())
     except OneViewRedfishResourceNotFoundError as e:
         raise OneViewRedfishError(
             'Failed to load schemas or registries: {}'.format(e)
@@ -341,7 +338,7 @@ def get_oneview_client(session_id=None, is_service_root=False):
         # Auth mode is session
         oneview_config = dict(config.items('oneview_config'))
         oneview_config['credentials'] = {"sessionID": session_id}
-        oneview_config['api_version'] = int(oneview_config['api_version'])
+        oneview_config['api_version'] = API_VERSION
         try:
             oneview_client = OneViewClient(oneview_config)
             oneview_client.connection.get('/rest/logindomains')
@@ -488,3 +485,22 @@ def check_oneview_availability(ov_config):
     message = "After {} attempts OneView is unreachable at {}".format(
         attempts, ov_config['ip'])
     raise OneViewRedfishError(message)
+
+
+def get_app_path():
+    try:
+        source = \
+            pkg_resources.resource_filename("oneview_redfish_toolkit", "")
+        return source
+    except Exception:
+        return ""
+
+
+def get_schemas_path():
+    source = get_app_path()
+    return os.path.join(source, "schemas")
+
+
+def get_registry_path():
+    source = get_app_path()
+    return os.path.join(source, "registry")

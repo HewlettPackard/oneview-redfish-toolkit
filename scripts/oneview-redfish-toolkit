@@ -29,9 +29,6 @@ CFG_DIR_NAME = 'oneview-redfish-toolkit'
 REDFISH_CFG_FILE_NAME = 'redfish.conf'
 LOGGING_CFG_FILE_NAME = 'logging.conf'
 
-REGISTRY_DIR_NAME = 'registry'
-SCHEMAS_DIR_NAME = 'schemas'
-
 CERTS_DIR_NAME = 'certs'
 CERTS_CRT_FILE_NAME = 'self-signed.crt'
 CERTS_KEY_FILE_NAME = 'self-signed.key'
@@ -95,23 +92,13 @@ def get_path_redfish_conf():
     config = get_config_file(REDFISH_CFG_FILE_NAME)
 
     ov_ip = config['oneview_config']['ip']
-    schema_dir = config['redfish']['schema_dir']
-    registry_dir = config['redfish']['registry_dir']
     certs_dir = config['ssl']['SSLCertFile']
 
-    save_file = not (ov_ip and schema_dir and registry_dir and certs_dir)
+    save_file = not (ov_ip and certs_dir)
 
     if not ov_ip:
         ov_ip = str(input('Set Oneview IP: '))
         config['oneview_config']['ip'] =  ov_ip
-
-    if not schema_dir:
-        schemas_dir = get_config_dir_path(SCHEMAS_DIR_NAME)
-        config['redfish']['schema_dir'] =  schemas_dir
-
-    if not registry_dir:
-        registry_dir = get_config_dir_path(REGISTRY_DIR_NAME)
-        config['redfish']['registry_dir'] =  registry_dir
 
     if not certs_dir:
         certs_dir = get_config_dir_path(CERTS_DIR_NAME)

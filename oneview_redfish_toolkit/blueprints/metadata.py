@@ -26,7 +26,7 @@ from flask_api import status
 
 # own libs
 from oneview_redfish_toolkit.api.metadata import Metadata
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit.api import schemas
 
 metadata = Blueprint('metadata', __name__)
 
@@ -39,8 +39,8 @@ def get_metadata():
     """
 
     try:
-        schemas = collections.OrderedDict(util.config.items('schemas'))
-        mtdt = Metadata(schemas)
+        schemas_dict = collections.OrderedDict(schemas.SCHEMAS)
+        mtdt = Metadata(schemas_dict)
         json_str = mtdt.serialize()
         return Response(
             response=json_str,
