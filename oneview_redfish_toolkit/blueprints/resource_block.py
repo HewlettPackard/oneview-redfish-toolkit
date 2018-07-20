@@ -64,7 +64,10 @@ def get_resource_block(uuid):
                 ServerProfileTemplateResourceBlock(uuid, resource)
 
         elif category == "drives":
-            resource_block = StorageResourceBlock(resource)
+            drive_uuid = resource["uri"].split("/")[-1]
+            drives_index_trees = g.oneview_client.connection.get(
+                "/rest/index/trees/rest/drives/{}?parentDepth=3".format(drive_uuid))
+            resource_block = StorageResourceBlock(resource, drives_index_trees)
 
         else:
             raise OneViewRedfishError('Resource block not found')

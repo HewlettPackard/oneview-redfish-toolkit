@@ -14,6 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import collections
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 from oneview_redfish_toolkit.api import status_mapping
 
@@ -24,13 +25,14 @@ class StorageResourceBlock(ResourceBlock):
         Populates self.redfish with Drive data retrieved from OneView.
     """
 
-    def __init__(self, drive):
+    def __init__(self, drive, drive_index_trees):
         """StorageResourceBlock constructor
 
             Populates self.redfish with the contents of drive
 
             Args:
                 drive: OneView Drive dict
+                drive_index_trees: Drives index trees dict
         """
         uuid = drive["uri"].split("/")[-1]
         super().__init__(uuid, drive)
@@ -44,6 +46,16 @@ class StorageResourceBlock(ResourceBlock):
             compositState = "Composed"
 
         self.redfish["CompositionStatus"]["CompositionState"] = compositState
+        self.redfish["Links"] = collections.OrderedDict()
+        self.redfish["Links"]["ComputerSystems"] = list()
+        server_profile_uuid = drive_index_trees["parents"] \
+            ["DRIVE_BAY_TO_DRIVE_ASSOC"][0]["parents"] \
+            ["SAS_LOGICAL_JBOD_TO_DRIVEBAYS_ASSOCIATION"][0] \
+            ["parents"]["SERVERPROFILE_TO_SLJBOD_ASSOCIATION"][0] \
+            ["resource"]["uri"].split("/")[-1]
+        self.redfish["Links"]["ComputerSystems"].append(
+            {"@odata.id": server_profile_uuid} # see path to put here
+        )
 
         self.redfish["Storage"] = [
             {
