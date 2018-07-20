@@ -17,6 +17,9 @@
 import collections
 from copy import deepcopy
 
+from flask_api import status
+from werkzeug.exceptions import abort
+
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
@@ -170,11 +173,23 @@ class ComputerSystem(RedfishJsonValidator):
         server_profile["category"] = "server-profiles"
         server_profile["serverHardwareUri"] = \
             "/rest/server-hardware/" + system_blocks[0]["uuid"]
-        server_profile["localStorage"]["sasLogicalJBODs"] = []
+        server_profile["localStorage"]["sasLogicalJBODs"] = \
+            ComputerSystem._build_sas_logical_jbods(server_profile_template,
+                                                    storage_blocks)
 
-        # Configure storage
+        return server_profile
+
+    @staticmethod
+    def _build_sas_logical_jbods(server_profile_template, storage_blocks):
+        sas_logical_jbods = []
+
         controller = ComputerSystem._get_storage_controller(
             server_profile_template)
+
+        if not controller:
+            abort(status.HTTP_412_PRECONDITION_FAILED,
+                  "The server profile template should be controllers "
+                  "configured properly")
 
         for index, storage_block in enumerate(storage_blocks):
             storage_id = index + 1
@@ -191,9 +206,9 @@ class ComputerSystem(RedfishJsonValidator):
                                    + attributes["mediaType"].capitalize()
             }
 
-            server_profile["localStorage"]["sasLogicalJBODs"].append(storage)
+            sas_logical_jbods.append(storage)
 
-        return server_profile
+        return sas_logical_jbods
 
     @staticmethod
     def _get_storage_controller(server_profile_tmpl):

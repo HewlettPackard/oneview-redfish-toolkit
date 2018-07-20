@@ -27,12 +27,14 @@ from flask_api import status
 
 # own libs
 from hpOneView.exceptions import HPOneViewException
+from hpOneView.exceptions import HPOneViewTaskError
 from hpOneView.resources.task_monitor import TASK_ERROR_STATES
 from jsonschema import ValidationError
 
 from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
@@ -230,14 +232,13 @@ def create_composed_system():
         resource.validate()
 
         blocks = resource.redfish["Links"]["ResourceBlocks"]
-        block_ids = \
-            list(map(lambda b: b["@odata.id"].split("/")[-1], blocks))
+        block_ids = [block["@odata.id"].split("/")[-1] for block in blocks]
 
         # Should contain only one computer system entry
         system_blocks = _get_system_resource_blocks(block_ids)
         if not system_blocks:
             raise ValidationError(
-                "Should have a Compute Resource Block")
+                "Should have a Computer System Resource Block")
 
         # Check network block id with the Id attribute in the request
         network_blocks = _get_network_resource_blocks(block_ids)
@@ -260,6 +261,11 @@ def create_composed_system():
     except KeyError as e:
         abort(status.HTTP_400_BAD_REQUEST,
               "Trying access an invalid key {}".format(e.args))
+    except HPOneViewTaskError as e:
+        redfish_error = RedfishError("InternalError", e.msg)
+        redfish_error.add_extended_info("InternalError")
+        return ResponseBuilder.response(redfish_error,
+                                        status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     location_uri = ComputerSystem.BASE_URI + "/" + result["uuid"]
 
@@ -294,6 +300,9 @@ def _get_resource_block_data(func, uuids):
 
             resources.append(resource)
         except HPOneViewException as e:
+            # With our current implementation, we do not getting
+            # server_profile, but if we need get it in some moment,
+            # we must check the errorCode 'ProfileNotFoundException'
             if e.oneview_response["errorCode"] == 'RESOURCE_NOT_FOUND':
                 pass
             else:
