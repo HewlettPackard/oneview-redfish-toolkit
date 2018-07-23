@@ -189,7 +189,7 @@ class ComputerSystem(RedfishJsonValidator):
     def _build_sas_logical_jbods(server_profile_template, storage_blocks):
         sas_logical_jbods = []
 
-        controller = ComputerSystem._get_storage_controller(
+        controller = ComputerSystem.get_storage_controller(
             server_profile_template)
 
         if not controller:
@@ -217,7 +217,7 @@ class ComputerSystem(RedfishJsonValidator):
         return sas_logical_jbods
 
     @staticmethod
-    def _get_storage_controller(server_profile_tmpl):
+    def get_storage_controller(server_profile_tmpl):
         for controller in server_profile_tmpl["localStorage"]["controllers"]:
             if controller["deviceSlot"] != "Embedded":
                 return controller

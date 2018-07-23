@@ -52,6 +52,17 @@ class TestResourceBlock(BaseFlaskTest):
         ) as f:
             self.drive = json.load(f)
 
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/DriveIndexTrees.json'
+        ) as f:
+            self.drive_index_tree = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview'
+            '/ServerProfileTemplates.json'
+        ) as f:
+            self.server_profile_templates = json.load(f)
+
         self.resource_not_found = HPOneViewException({
             "errorCode": "RESOURCE_NOT_FOUND",
             "message": "Any resource not found message"
@@ -84,18 +95,27 @@ class TestResourceBlock(BaseFlaskTest):
             self.resource_not_found
         g.oneview_client.server_profile_templates.get.side_effect = \
             self.resource_not_found
-
         g.oneview_client.index_resources.get.return_value = self.drive
+        g.oneview_client.connection.get.return_value = self.drive_index_tree
+        g.oneview_client.server_profile_templates.get_all.return_value = \
+            self.server_profile_templates
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
-            "/30303437-3034-4D32-3230-313133364752")
+            "/c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e")
 
         result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_resource_block, result)
+
+        g.oneview_client.index_resources.get.assert_called_with(
+            self.drive["uri"])
+        g.oneview_client.connection.get.assert_called_with(
+            "/rest/index/trees/rest/drives/"
+            "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e?parentDepth=3")
+        g.oneview_client.server_profile_templates.get_all.assert_called_with()
 
     @mock.patch.object(resource_block, 'g')
     def test_get_server_hardware_resource_block(self, g):

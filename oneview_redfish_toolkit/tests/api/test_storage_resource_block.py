@@ -14,6 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import copy
 import json
 
 from oneview_redfish_toolkit.api.storage_resource_block import \
@@ -41,15 +42,30 @@ class TestStorageResourceBlock(BaseTest):
         ) as f:
             self.drive = json.load(f)
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
-        resource_block = StorageResourceBlock(self.drive)
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/DriveIndexTrees.json'
+        ) as f:
+            self.drive_index_tree = json.load(f)
 
-        self.assertIsInstance(resource_block, StorageResourceBlock)
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview'
+            '/ServerProfileTemplates.json'
+        ) as f:
+            self.server_profile_templates = json.load(f)
 
     def test_serialize(self):
-        # Tests the serialize function result against known result
-        resource_block = StorageResourceBlock(self.drive)
+        resource_block = StorageResourceBlock(
+            self.drive, self.drive_index_tree, self.server_profile_templates)
+        result = json.loads(resource_block.serialize())
+
+        self.assertEqual(self.resource_block_mockup, result)
+
+    def test_when_server_profile_template_has_not_storage_controller(self):
+        templates = copy.copy(self.server_profile_templates)
+        templates[1]["localStorage"]["controllers"] = []
+
+        resource_block = StorageResourceBlock(
+            self.drive, self.drive_index_tree, templates)
         result = json.loads(resource_block.serialize())
 
         self.assertEqualMockup(self.resource_block_mockup, result)
