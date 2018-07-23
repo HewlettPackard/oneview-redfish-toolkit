@@ -237,6 +237,11 @@ def main(config_file_path, logging_config_file_path):
             status=status.HTTP_401_UNAUTHORIZED,
             mimetype='application/json')
 
+    @app.errorhandler(status.HTTP_403_FORBIDDEN)
+    def forbidden(error):
+        """Creates a Forbidden Error response"""
+        return ResponseBuilder.error_403(error)
+
     @app.errorhandler(status.HTTP_404_NOT_FOUND)
     def not_found(error):
         """Creates a Not Found Error response"""

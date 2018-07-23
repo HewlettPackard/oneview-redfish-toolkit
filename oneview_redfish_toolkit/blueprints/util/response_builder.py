@@ -55,6 +55,12 @@ class ResponseBuilder(object):
         return handler_method_to_call(error_desc)
 
     @staticmethod
+    def error_403(error):
+        redfish_error = RedfishError("GeneralError", error.description)
+        return ResponseBuilder.response(redfish_error,
+                                        status.HTTP_403_FORBIDDEN)
+
+    @staticmethod
     def error_404(error):
         redfish_error = RedfishError("GeneralError", error.description)
         return ResponseBuilder.response(redfish_error,

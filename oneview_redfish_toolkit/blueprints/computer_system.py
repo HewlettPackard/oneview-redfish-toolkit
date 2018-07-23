@@ -34,7 +34,6 @@ from jsonschema import ValidationError
 from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
@@ -262,10 +261,7 @@ def create_composed_system():
         abort(status.HTTP_400_BAD_REQUEST,
               "Trying access an invalid key {}".format(e.args))
     except HPOneViewTaskError as e:
-        redfish_error = RedfishError("InternalError", e.msg)
-        redfish_error.add_extended_info("InternalError")
-        return ResponseBuilder.response(redfish_error,
-                                        status.HTTP_500_INTERNAL_SERVER_ERROR)
+        abort(status.HTTP_403_FORBIDDEN, e.msg)
 
     location_uri = ComputerSystem.BASE_URI + "/" + result["uuid"]
 

@@ -393,7 +393,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
     def test_create_system_when_a_task_error_is_raised(self, g):
         """Tests create a System when the Oneview raises a task error.
 
-            This test should return a http 500 with a error message.
+            This test should return a http 403 with a error message.
             Some problems are server hardware is powered On and the drive used
             belongs to another enclosure.
         """
@@ -428,7 +428,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             content_type='application/json')
 
         self.assertEqual(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status.HTTP_403_FORBIDDEN,
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
