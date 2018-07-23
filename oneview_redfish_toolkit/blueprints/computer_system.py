@@ -69,7 +69,7 @@ def get_computer_system(uuid):
             server_hardware_type = g.oneview_client.server_hardware_types\
                 .get(resource['serverHardwareTypeUri'])
 
-            drives = _get_drives_from_spt(resource)
+            drives = _get_drives_from_sp(resource)
 
             # Build Computer System object and validates it
             computer_system = ComputerSystem(server_hardware,
@@ -129,7 +129,7 @@ def change_power_state(uuid):
         sht = g.oneview_client.server_hardware_types. \
             get(profile["serverHardwareTypeUri"])
 
-        drives = _get_drives_from_spt(profile)
+        drives = _get_drives_from_sp(profile)
 
         # Build Computer System object and validates it
         cs = ComputerSystem(sh, sht, profile, drives)
@@ -312,8 +312,8 @@ def _get_resource_block_data(func, uuids):
     return resources
 
 
-def _get_drives_from_spt(spt):
-    """Gets Drives from Server profile template"""
+def _get_drives_from_sp(spt):
+    """Gets Drives from Server Profile"""
     jbods_drives = list()
     for sas_logical_jbod in spt["localStorage"]["sasLogicalJBODs"]:
         drives_by_sas_logical_uuid = g.oneview_client.sas_logical_jbods. \
