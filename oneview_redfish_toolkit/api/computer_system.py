@@ -239,10 +239,9 @@ class ComputerSystem(RedfishJsonValidator):
         resource_block_uuids.append(self.server_hardware["uuid"])
 
         if server_profile["description"]:
-            network_resource_uuid = server_profile["description"].split("/")[-1]
+            network_resource_uuid = \
+                server_profile["description"].split("/")[-1]
             resource_block_uuids.append(network_resource_uuid)
-            import pdb;
-            pdb.set_trace()
 
         for drive in drives:
             storage_resource_uuid = drive["uri"].split("/")[-1]
