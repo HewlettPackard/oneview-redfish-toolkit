@@ -312,10 +312,10 @@ def _get_resource_block_data(func, uuids):
     return resources
 
 
-def _get_drives_from_sp(spt):
+def _get_drives_from_sp(server_profile):
     """Gets Drives from Server Profile"""
     jbods_drives = list()
-    for sas_logical_jbod in spt["localStorage"]["sasLogicalJBODs"]:
+    for sas_logical_jbod in server_profile["localStorage"]["sasLogicalJBODs"]:
         drives_by_sas_logical_uuid = g.oneview_client.sas_logical_jbods. \
             get_drives(sas_logical_jbod["sasLogicalJBODUri"])
         jbods_drives.extend(drives_by_sas_logical_uuid)

@@ -102,7 +102,7 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
             "/redfish/v1/Managers/" + server_hardware['uuid']
         self.redfish["Links"]["ResourceBlocks"] = list()
-        self._fill_network_resource_block_members(base_resource, drives)
+        self._fill_resource_block_members(base_resource, drives)
         self.redfish["Actions"] = collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
@@ -221,9 +221,10 @@ class ComputerSystem(RedfishJsonValidator):
 
         return None
 
-    def _fill_network_resource_block_members(self, server_profile, drives):
+    def _fill_resource_block_members(self, server_profile, drives):
         resource_block_uuids = \
-            self._get_network_resource_block_uuids(server_profile, drives)
+            self._get_resource_block_uuids(server_profile, drives)
+
         resource_blocks_base_uri = \
             "/redfish/v1/CompositionService/ResourceBlocks/{}"
         for resource_block_uuid in resource_block_uuids:
@@ -233,17 +234,18 @@ class ComputerSystem(RedfishJsonValidator):
                 )
             })
 
-    def _get_network_resource_block_uuids(self, server_profile, drives):
+    def _get_resource_block_uuids(self, server_profile, drives):
         resource_block_uuids = list()
         resource_block_uuids.append(self.server_hardware["uuid"])
 
-        spt_uri = server_profile["description"]
-        if spt_uri:
-            server_profile_uuid = spt_uri.split("/")[-1]
-            resource_block_uuids.append(server_profile_uuid)
+        if server_profile["description"]:
+            network_resource_uuid = server_profile["description"].split("/")[-1]
+            resource_block_uuids.append(network_resource_uuid)
+            import pdb;
+            pdb.set_trace()
 
         for drive in drives:
-            drive_uuid = drive["uri"].split("/")[-1]
-            resource_block_uuids.append(drive_uuid)
+            storage_resource_uuid = drive["uri"].split("/")[-1]
+            resource_block_uuids.append(storage_resource_uuid)
 
         return resource_block_uuids
