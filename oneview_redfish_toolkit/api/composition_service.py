@@ -37,8 +37,7 @@ class CompositionService(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish["@odata.type"] = \
-            "#CompositionService.v1_0_0.CompositionService"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = "CompositionService"
         self.redfish["Name"] = "Composition Service"
 

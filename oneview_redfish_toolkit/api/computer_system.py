@@ -54,7 +54,7 @@ class ComputerSystem(RedfishJsonValidator):
         super().__init__(self.SCHEMA_NAME)
 
         base_resource = server_profile
-        self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = base_resource["uuid"]
         self.redfish["Name"] = base_resource["name"]
         self.redfish["SystemType"] = "Composed"

@@ -45,7 +45,7 @@ class StorageCompositionDetails(RedfishJsonValidator):
         self.odata_id = "{}/{}/Storage/1"\
             .format(ResourceBlockCollection.BASE_URI, drive_uuid)
 
-        self.redfish["@odata.type"] = "#Storage.v1_2_0.Storage"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = "1"
         self.redfish["Name"] = drive["name"]
         self.redfish["Status"] = status_mapping.STATUS_MAP.get(drive["status"])

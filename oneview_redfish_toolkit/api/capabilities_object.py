@@ -42,7 +42,7 @@ class CapabilitiesObject(RedfishJsonValidator):
         self.profile_template = profile_template
         uuid = profile_template["uri"].split("/")[-1]
 
-        self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = uuid
         self.redfish["Name"] = profile_template["name"]
 

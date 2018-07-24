@@ -41,8 +41,7 @@ class NetworkPortCollection(RedfishJsonValidator):
             server_hardware["portMap"]["deviceSlots"], "deviceNumber",
             device_id)["physicalPorts"]
 
-        self.redfish["@odata.type"] = \
-            "#NetworkPortCollection.NetworkPortCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Network Port Collection"
         self.redfish["Members"] = list()
 

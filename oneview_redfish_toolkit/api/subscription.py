@@ -48,8 +48,7 @@ class Subscription(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish["@odata.type"] = \
-            "#EventDestination.v1_2_0.EventDestination"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = subscription_id
         self.redfish["Name"] = "EventSubscription " + subscription_id
         self.redfish["Destination"] = destination

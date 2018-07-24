@@ -42,7 +42,7 @@ class Manager(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish["@odata.type"] = "#Manager.v1_3_1.Manager"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = oneview_resource['uuid']
         self.redfish["Description"] = None
         self.redfish["FirmwareVersion"] = firmware_version

@@ -43,7 +43,7 @@ class Chassis(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish["@odata.type"] = "#Chassis.v1_5_0.Chassis"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = oneview_resource["uuid"]
         self.redfish["Name"] = oneview_resource["name"]
         self.redfish["Manufacturer"] = "HPE"

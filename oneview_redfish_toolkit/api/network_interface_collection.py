@@ -37,8 +37,7 @@ class NetworkInterfaceCollection(RedfishJsonValidator):
                 server_hardware: a server hardware dict from OneView
         """
         super().__init__(self.SCHEMA_NAME)
-        self.redfish["@odata.type"] = \
-            "#NetworkInterfaceCollection.NetworkInterfaceCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Network Interface Collection"
         members_count = 0
         self.redfish["Members"] = list()

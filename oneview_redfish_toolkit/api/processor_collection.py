@@ -41,8 +41,7 @@ class ProcessorCollection(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish["@odata.type"] = \
-            "#ProcessorCollection.ProcessorCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Processors Collection"
 
         self._fill_members(server_hardware)

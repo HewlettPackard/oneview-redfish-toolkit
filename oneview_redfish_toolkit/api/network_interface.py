@@ -38,8 +38,7 @@ class NetworkInterface(RedfishJsonValidator):
                 server_hardware: Oneview's server hardware dict
         """
         super().__init__(self.SCHEMA_NAME)
-        self.redfish["@odata.type"] = \
-            "#NetworkInterface.v1_1_0.NetworkInterface"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = device_id
 
         self.redfish["Name"] = self.get_resource_by_id(

@@ -53,8 +53,7 @@ class ResourceBlockEthernetInterface(RedfishJsonValidator):
             + "/EthernetInterfaces/" \
             + str(connection["id"])
 
-        self.redfish["@odata.type"] = \
-            "#EthernetInterface.v1_3_0.EthernetInterface"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = server_profile_template_id
         self.redfish["Name"] = network["name"]
         self.redfish["SpeedMbps"] = int(connection["requestedMbps"])

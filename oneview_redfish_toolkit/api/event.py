@@ -53,7 +53,7 @@ class Event(RedfishJsonValidator):
 
         category = oneview_message["resource"]["category"]
 
-        self.redfish["@odata.type"] = "#Event.v1_2_0.Event"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["@odata.context"] = "/redfish/v1/$metadata#Event.Event"
         self.redfish["Events@odata.count"] = 1
         self.redfish["Events"] = list()

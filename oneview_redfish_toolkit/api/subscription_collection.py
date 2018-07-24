@@ -39,8 +39,7 @@ class SubscriptionCollection(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish["@odata.type"] = \
-            "#EventDestinationCollection.EventDestinationCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Event Subscriptions Collection"
         self.redfish["Members@odata.count"] = len(all_subscriptions)
         self.redfish["Members"] = list()

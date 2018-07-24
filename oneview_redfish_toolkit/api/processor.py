@@ -42,7 +42,7 @@ class Processor(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish["@odata.type"] = "#Processor.v1_1_0.Processor"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = processor_id
         self.redfish["Name"] = "Processor " + processor_id
         self.redfish["Status"] = dict()
