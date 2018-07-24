@@ -81,3 +81,16 @@ class TestRedfishJsonValidator(BaseTest):
         with self.assertRaises(OneViewRedfishError):
             redfish_json_validator.get_resource_by_id(
                 [], "deviceNumber", "INVALID_ID")
+
+    def test_get_odata_type_by_class(self):
+        redfish_json_validator = RedfishJsonValidator('ServiceRoot')
+        odata_type_schema_class = "#ServiceRoot.v1_2_0.ServiceRoot"
+
+        zone_schema_name = 'Zone'
+        odata_type_zone_schema = '#Zone.v1_1_0.Zone'
+
+        self.assertEqual(redfish_json_validator.get_odata_type(),
+                         odata_type_schema_class)
+        self.assertEqual(
+            redfish_json_validator.get_odata_type_by_schema(zone_schema_name),
+            odata_type_zone_schema)
