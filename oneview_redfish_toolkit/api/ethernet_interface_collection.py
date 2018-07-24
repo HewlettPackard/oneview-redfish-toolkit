@@ -40,8 +40,7 @@ class EthernetInterfaceCollection(RedfishJsonValidator):
         odata_uri = ComputerSystem.BASE_URI + "/" + \
             server_profile["uuid"] + "/EthernetInterfaces"
 
-        self.redfish["@odata.type"] = \
-            "#EthernetInterfaceCollection.EthernetInterfaceCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Ethernet Interface Collection"
 
         connections = server_profile["connectionSettings"]["connections"]

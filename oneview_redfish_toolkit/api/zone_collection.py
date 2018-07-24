@@ -38,7 +38,7 @@ class ZoneCollection(RedfishJsonValidator):
 
         self.server_profile_templates = server_profile_templates
 
-        self.redfish["@odata.type"] = "#ZoneCollection.ZoneCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Resource Zone Collection"
 
         self.redfish["Members@odata.count"] = \

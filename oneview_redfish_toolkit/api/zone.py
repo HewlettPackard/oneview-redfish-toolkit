@@ -57,7 +57,7 @@ class Zone(RedfishJsonValidator):
         if not has_valid_drive_config:
             drives = []
 
-        self.redfish["@odata.type"] = "#Zone.v1_1_0.Zone"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = profile_template["uri"].split("/")[-1]
         self.redfish["Name"] = profile_template["name"]
         status_from_ov = profile_template["status"]
@@ -71,7 +71,7 @@ class Zone(RedfishJsonValidator):
         self.capabilities_key = "@Redfish.CollectionCapabilities"
         self.redfish[self.capabilities_key] = dict()
         self.redfish[self.capabilities_key]["@odata.type"] = \
-            "#CollectionCapabilities.v1_0_0.CollectionCapabilities"
+            self.get_odata_type_by_schema('CollectionCapabilities')
         self.redfish[self.capabilities_key]["Capabilities"] = list()
 
         self.fill_capabilities_collection()

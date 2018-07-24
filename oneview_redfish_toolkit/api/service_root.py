@@ -44,7 +44,7 @@ class ServiceRoot(RedfishJsonValidator):
         """
 
         super().__init__(self.SCHEMA_NAME)
-        self.redfish["@odata.type"] = "#ServiceRoot.v1_2_0.ServiceRoot"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = "RootService"
         self.redfish["Name"] = "Root Service"
         self.redfish["RedfishVersion"] = "1.2.0"

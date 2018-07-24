@@ -44,8 +44,7 @@ class ResourceBlockCollection(RedfishJsonValidator):
             + server_profile_templates \
             + drives
 
-        self.redfish["@odata.type"] = \
-            "#ResourceBlockCollection.ResourceBlockCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Resource Block Collection"
 
         self.redfish["Members"] = list()

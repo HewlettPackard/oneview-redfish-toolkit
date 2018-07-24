@@ -48,8 +48,7 @@ class ChassisCollection(RedfishJsonValidator):
         self.enclosures = enclosures
         self.racks = racks
 
-        self.redfish["@odata.type"] = \
-            "#ChassisCollection.ChassisCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "MultiBlade Enclosure Chassis Collection"
         self.redfish["Members@odata.count"] = self. \
             _get_redfish_members_length()

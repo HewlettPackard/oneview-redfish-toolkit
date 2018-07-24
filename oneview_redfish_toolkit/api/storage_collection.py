@@ -39,8 +39,7 @@ class StorageCollection(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish["@odata.type"] = \
-            "#StorageCollection.StorageCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Storage Collection"
         self.redfish["Members@odata.count"] = 1
         self.redfish["Members"] = list()

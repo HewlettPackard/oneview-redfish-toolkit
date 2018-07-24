@@ -43,8 +43,7 @@ class VLanNetworkInterfaceCollection(RedfishJsonValidator):
         network_set_id = \
             network_set["uri"].split("/")[-1]
 
-        self.redfish["@odata.type"] = \
-            "#VLanNetworkInterfaceCollection.VLanNetworkInterfaceCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = network_set_id
         self.redfish["Name"] = network_set["name"]
         self.redfish["Members@odata.count"] = len(network_set["networkUris"])

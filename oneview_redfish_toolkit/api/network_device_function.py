@@ -62,8 +62,7 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             raise OneViewRedfishResourceNotFoundError(
                 device_function_id, "NetworkDeviceFunction")
 
-        self.redfish["@odata.type"] = \
-            "#NetworkDeviceFunction.v1_1_0.NetworkDeviceFunction"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = device_function_id
         self.redfish["Name"] = "Physical port {}, virtual port {}, device "\
             "function {}".format(

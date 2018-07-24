@@ -48,8 +48,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish["@odata.type"] = \
-            "#ComputerSystemCollection.ComputerSystemCollection"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Computer System Collection"
         server_profile_members_list = \
             self._get_server_profile_members_list(server_hardware_list)
@@ -96,7 +95,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
         self.capabilities_key = "@Redfish.CollectionCapabilities"
         self.redfish[self.capabilities_key] = dict()
         self.redfish[self.capabilities_key]["@odata.type"] = \
-            "#CollectionCapabilities.v1_0_0.CollectionCapabilities"
+            self.get_odata_type_by_schema('CollectionCapabilities')
         self.redfish[self.capabilities_key]["Capabilities"] = list()
 
         for server_profile_template in server_profile_templates:

@@ -66,7 +66,7 @@ class Storage(RedfishJsonValidator):
             + server_profile["uuid"] + "/Storage/1"
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Storage.Storage"
-        self.redfish["@odata.type"] = "#Storage.v1_2_0.Storage"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["StorageControllers@odata.count"] = 1
         self.redfish["Id"] = "1"
         self.redfish["Name"] = "Storage Controller"

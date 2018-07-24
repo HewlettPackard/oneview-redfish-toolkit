@@ -67,14 +67,8 @@ class RedfishJsonValidator(object):
                 OneViewRedfishError: Raises this exception if
                 schema is not found.
         """
-        schema_version = schemas.SCHEMAS[self.schema_name]
         stored_schemas = util.stored_schemas
-
-        try:
-            schema_obj = stored_schemas[
-                "http://redfish.dmtf.org/schemas/v1/" + schema_version]
-        except KeyError:
-            raise OneViewRedfishError("{} not found".format(schema_version))
+        schema_obj = self.get_schema_obj(self.schema_name)
 
         resolver = jsonschema.RefResolver('', schema_obj, store=stored_schemas)
         jsonschema.validate(self.redfish, schema_obj, resolver=resolver)
@@ -134,3 +128,47 @@ class RedfishJsonValidator(object):
 
         raise OneViewRedfishResourceNotFoundError(
             "Object", self.__class__.__name__)
+
+    def get_odata_type(self):
+        """Retrieves odata.type from schema file
+
+            Retrieves the odata.type defined on the schema file
+            for the class attribute schema name.
+
+            Returns:
+                string: odata.type for the class schema name.
+        """
+        return self.get_odata_type_by_schema(self.schema_name)
+
+    def get_odata_type_by_schema(self, schema_name):
+        """Retrieves odata.type from schema file
+
+            Retrieves the odata.type defined on the schema file
+            for the schema name received as parameter.
+
+            Returns:
+                string: odata.type for the schema name .
+        """
+        schema_obj = self.get_schema_obj(schema_name)
+        return schema_obj['title']
+
+    def get_schema_obj(self, schema_name):
+        """Retrieves schemas object for the schema name
+
+            Retrieves the schema file content loaded
+            as a dict for the schema name receveid
+            as parameter.
+
+            Returns:
+                dict: schema dict for the schema name.
+        """
+        schema_file = schemas.SCHEMAS[schema_name]
+        stored_schemas = util.stored_schemas
+
+        try:
+            schema_obj = stored_schemas[
+                "http://redfish.dmtf.org/schemas/v1/" + schema_file]
+        except KeyError:
+            raise OneViewRedfishError("{} not found".format(schema_file))
+
+        return schema_obj

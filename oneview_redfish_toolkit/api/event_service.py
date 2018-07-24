@@ -35,7 +35,7 @@ class EventService(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish["@odata.type"] = "#EventService.v1_0_4.EventService"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["@odata.context"] = "/redfish/v1/$metadata" \
             "#EventService.EventService"
         self.redfish["@odata.id"] = "/redfish/v1/EventService/"

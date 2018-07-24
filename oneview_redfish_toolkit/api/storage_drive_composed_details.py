@@ -44,7 +44,7 @@ class StorageDriveComposedDetails(RedfishJsonValidator):
         enclosure_id = server_profile["enclosureUri"].split("/")[-1]
         profile_uuid = server_profile["uri"].split("/")[-1]
 
-        self.redfish["@odata.type"] = "#Drive.v1_2_0.Drive"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = str(drive_id)
         self.redfish["Name"] = logical_jbod["name"]
         self.redfish["Status"] = status_mapping\

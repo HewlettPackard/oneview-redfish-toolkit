@@ -42,7 +42,7 @@ class ResourceBlock(RedfishJsonValidator):
 
         self.uuid = uuid
 
-        self.redfish["@odata.type"] = "#ResourceBlock.v1_1_0.ResourceBlock"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = uuid
         self.redfish["Name"] = oneview_resource["name"]
 

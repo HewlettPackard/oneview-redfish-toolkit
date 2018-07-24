@@ -43,8 +43,7 @@ class VLanNetworkInterface(RedfishJsonValidator):
         ethernet_network_id = \
             ethernet_network["uri"].split("/")[-1]
 
-        self.redfish["@odata.type"] = \
-            "#VLanNetworkInterface.v1_1_0.VLanNetworkInterface"
+        self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = ethernet_network_id
         self.redfish["Name"] = ethernet_network["name"]
         self.redfish["VLANEnable"] = True
