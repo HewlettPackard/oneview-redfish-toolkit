@@ -91,3 +91,10 @@ class BaseFlaskTest(BaseTest):
 
         # propagate the exceptions to the test client
         cls.app.testing = False
+
+    def assertEqual(self, first, second, msg=None):
+        if type(first) is dict and type(second) is dict:
+            first['@odata.type'] = ''
+            second['@odata.type'] = ''
+
+        super(BaseTest, self).assertEqual(first, second, msg)
