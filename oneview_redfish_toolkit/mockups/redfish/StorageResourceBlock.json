@@ -1,5 +1,5 @@
 {
-    "@odata.type": "#ResourceBlock.v1_1_0.ResourceBlock",
+    "@odata.type": "#ResourceBlock.v1_0_0.ResourceBlock",
     "Id": "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e",
     "Name": "Drive 40",
     "ResourceBlockType": [
