@@ -42,4 +42,4 @@ class TestCapabilitiesObject(BaseTest):
         capabilities_obj = CapabilitiesObject(self.server_profile_template)
         result = json.loads(capabilities_obj.serialize())
 
-        self.assertEqual(self.capabilities_mockup, result)
+        self.assertEqualMockup(self.capabilities_mockup, result)

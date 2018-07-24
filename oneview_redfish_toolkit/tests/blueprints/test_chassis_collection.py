@@ -171,4 +171,4 @@ class TestChassisCollection(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(chassis_collection_mockup, result)
+        self.assertEqualMockup(chassis_collection_mockup, result)

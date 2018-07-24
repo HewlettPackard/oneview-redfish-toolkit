@@ -57,7 +57,7 @@ class TestEthernetInterface(BaseTest):
 
         result = json.loads(ethernet_interface.serialize())
 
-        self.assertEqual(ethernet_interface_mockup, result)
+        self.assertEqualMockup(ethernet_interface_mockup, result)
 
     def test_serialize_when_it_has_a_list_of_vlans(self):
         # Tests the serialize function result against known result for
@@ -84,4 +84,4 @@ class TestEthernetInterface(BaseTest):
 
         result = json.loads(ethernet_interface.serialize())
 
-        self.assertEqual(ethernet_interface_mockup, result)
+        self.assertEqualMockup(ethernet_interface_mockup, result)

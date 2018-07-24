@@ -96,7 +96,8 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.expected_vlan_network_interface_spt, result)
+        self.assertEqualMockup(self.expected_vlan_network_interface_spt,
+                               result)
         g.oneview_client.server_profile_templates.get.assert_called_with(
             self.server_profile_template["uri"].split("/")[-1])
         g.oneview_client.ethernet_networks.get.assert_called_with(
@@ -180,7 +181,8 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_vlan_network_interface_collection, result)
+        self.assertEqualMockup(expected_vlan_network_interface_collection,
+                               result)
         g.oneview_client.server_profile_templates.get.assert_called_with(
             self.server_profile_template["uri"].split("/")[-1])
         g.oneview_client.network_sets.get.assert_called_with(
@@ -323,7 +325,8 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_vlan_network_interface_collection, result)
+        self.assertEqualMockup(expected_vlan_network_interface_collection,
+                               result)
         g.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uri"].split("/")[-1])
         g.oneview_client.network_sets.get.assert_called_with(

@@ -42,4 +42,4 @@ class TestOdata(BaseTest):
             'oneview_redfish_toolkit/mockups/redfish/Odata.json'
         ) as f:
             odata_mockup = json.load(f)
-        self.assertEqual(odata_mockup, result)
+        self.assertEqualMockup(odata_mockup, result)

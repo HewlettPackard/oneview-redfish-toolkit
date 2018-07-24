@@ -55,4 +55,4 @@ class TestSubscriptionCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(subscription_collection_mockup, result)
+        self.assertEqualMockup(subscription_collection_mockup, result)

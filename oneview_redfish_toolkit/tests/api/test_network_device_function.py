@@ -80,7 +80,7 @@ class TestNetworkDeviceFunction(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.network_device_function_mockup, result)
+        self.assertEqualMockup(self.network_device_function_mockup, result)
 
     def test_invalid_device_function_id(self):
         # Tests if class with an invalid device_function_id

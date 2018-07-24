@@ -56,7 +56,7 @@ class TestStorageCompositionDetails(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_storage_details, result)
+        self.assertEqualMockup(expected_storage_details, result)
 
     @mock.patch.object(storage_composition_details, 'g')
     def test_get_storage_details_when_it_is_not_found(self, g):
@@ -101,7 +101,7 @@ class TestStorageCompositionDetails(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_drive_details, result)
+        self.assertEqualMockup(expected_drive_details, result)
 
     @mock.patch.object(storage_composition_details, 'g')
     def test_get_storage_drive_details_when_drive_is_not_found(self, g):

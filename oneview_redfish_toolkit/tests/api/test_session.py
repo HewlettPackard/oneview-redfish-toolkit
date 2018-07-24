@@ -43,4 +43,4 @@ class TestSession(BaseTest):
             'oneview_redfish_toolkit/mockups/redfish/Session.json'
         ) as f:
             session_mockup = json.load(f)
-        self.assertEqual(session_mockup, result)
+        self.assertEqualMockup(session_mockup, result)

@@ -70,4 +70,5 @@ class TestNetworkPortCollection(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.network_interface_collection_mockup, result)
+        self.assertEqualMockup(self.network_interface_collection_mockup,
+                               result)

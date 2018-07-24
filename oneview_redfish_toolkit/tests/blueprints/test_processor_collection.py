@@ -71,4 +71,4 @@ class TestProcessorCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.expected_processor_collection, result)
+        self.assertEqualMockup(self.expected_processor_collection, result)

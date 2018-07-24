@@ -56,4 +56,5 @@ class TestCompositionService(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.composition_service_mockup, expected_result)
+        self.assertEqualMockup(self.composition_service_mockup,
+                               expected_result)

@@ -49,4 +49,4 @@ class TestOdata(BaseTest):
             'oneview_redfish_toolkit/mockups/redfish/Metadata.xml'
         ) as f:
             metadata_mockup = f.read()
-        self.assertEqual(metadata_mockup, result)
+        self.assertEqualMockup(metadata_mockup, result)

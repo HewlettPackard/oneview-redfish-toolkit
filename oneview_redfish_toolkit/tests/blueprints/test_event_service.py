@@ -52,7 +52,7 @@ class TestEventService(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(event_service_mockup, result)
+        self.assertEqualMockup(event_service_mockup, result)
 
     def test_post_submit_event_without_event_type(self):
         """Tests EventService SubmitTestEvent action without EventType"""
@@ -105,6 +105,6 @@ class TestEventService(BaseFlaskTest):
 
         result = json.loads(response.data.decode("utf-8"))
 
-        self.assertEqual(self.alert_mockup, result)
+        self.assertEqualMockup(self.alert_mockup, result)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
         self.assertEqual('application/json', response.mimetype)

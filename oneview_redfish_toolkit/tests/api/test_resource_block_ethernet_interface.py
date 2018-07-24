@@ -72,4 +72,4 @@ class TestResourceBlockEthernetInterface(BaseTest):
 
         result = json.loads(ethernet_interface.serialize())
 
-        self.assertEqual(self.ethernet_interface_mockup, result)
+        self.assertEqualMockup(self.ethernet_interface_mockup, result)

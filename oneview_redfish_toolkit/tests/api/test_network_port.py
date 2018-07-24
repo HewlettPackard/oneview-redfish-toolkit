@@ -79,7 +79,7 @@ class TestNetworkPort(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.network_port_mockup, result)
+        self.assertEqualMockup(self.network_port_mockup, result)
 
     def test_invalid_port_id(self):
         # Tests if class with an invalid port_id

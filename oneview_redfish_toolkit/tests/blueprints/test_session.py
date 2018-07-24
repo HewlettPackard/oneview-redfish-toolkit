@@ -81,7 +81,7 @@ class TestSession(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(session_mockup, result)
+        self.assertEqualMockup(session_mockup, result)
         self.assertIn("/redfish/v1/SessionService/Sessions/1",
                       response.headers["Location"])
         self.assertEqual("sessionId", response.headers["X-Auth-Token"])

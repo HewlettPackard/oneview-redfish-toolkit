@@ -89,7 +89,7 @@ class TestStorage(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.storage_mockup, result)
+        self.assertEqualMockup(self.storage_mockup, result)
         g.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
         g.oneview_client.server_hardware_types.get.assert_called_with(
@@ -182,7 +182,7 @@ class TestStorage(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.drive_mockup, result)
+        self.assertEqualMockup(self.drive_mockup, result)
         g.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
         g.oneview_client.sas_logical_jbods.get.assert_has_calls(

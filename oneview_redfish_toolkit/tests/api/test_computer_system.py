@@ -67,4 +67,4 @@ class TestComputerSystem(BaseTest):
 
         result = json.loads(computer_system.serialize())
 
-        self.assertEqual(self.computer_system_mockup, result)
+        self.assertEqualMockup(self.computer_system_mockup, result)

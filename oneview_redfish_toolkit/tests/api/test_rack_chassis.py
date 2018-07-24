@@ -71,4 +71,4 @@ class TestRackChassis(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.rack_chassis_mockup, result)
+        self.assertEqualMockup(self.rack_chassis_mockup, result)

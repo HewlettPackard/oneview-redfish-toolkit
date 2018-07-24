@@ -69,7 +69,7 @@ class TestNetworkDeviceFunction(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(network_device_function_mockup, result)
+        self.assertEqualMockup(network_device_function_mockup, result)
 
     @mock.patch.object(network_device_function, 'g')
     def test_get_network_device_function_invalid_device_id(self, g):

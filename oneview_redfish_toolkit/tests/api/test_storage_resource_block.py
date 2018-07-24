@@ -52,4 +52,4 @@ class TestStorageResourceBlock(BaseTest):
         resource_block = StorageResourceBlock(self.drive)
         result = json.loads(resource_block.serialize())
 
-        self.assertEqual(self.resource_block_mockup, result)
+        self.assertEqualMockup(self.resource_block_mockup, result)

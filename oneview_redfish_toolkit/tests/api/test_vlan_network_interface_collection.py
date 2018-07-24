@@ -58,4 +58,4 @@ class TestVLanNetworkInterfaceCollection(BaseTest):
 
         result = json.loads(vlan_network_interface_collection.serialize())
 
-        self.assertEqual(self.vlan_network_interface_collection, result)
+        self.assertEqualMockup(self.vlan_network_interface_collection, result)

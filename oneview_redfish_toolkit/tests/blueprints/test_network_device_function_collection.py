@@ -71,7 +71,8 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(network_device_function_collection_mockup, result)
+        self.assertEqualMockup(network_device_function_collection_mockup,
+                               result)
 
     @mock.patch.object(network_device_function_collection, 'g')
     def test_get_network_device_function_collection_sh_not_found(self, g):

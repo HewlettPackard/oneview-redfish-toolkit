@@ -68,7 +68,7 @@ class TestNetworkAdapter(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(network_adapter_mockup, result)
+        self.assertEqualMockup(network_adapter_mockup, result)
 
     @mock.patch.object(network_adapter, 'g')
     def test_get_network_interface_invalid_id(self, g):

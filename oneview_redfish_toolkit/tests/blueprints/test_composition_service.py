@@ -80,4 +80,4 @@ class TestCompositionService(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(composition_service_mockup, expected_result)
+        self.assertEqualMockup(composition_service_mockup, expected_result)

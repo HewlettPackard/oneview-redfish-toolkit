@@ -40,7 +40,7 @@ class BaseTest(TestCase):
 
         util.load_config(self.config_file)
 
-    def assertEqual(self, first, second, msg=None):
+    def assertEqualMockup(self, first, second, msg=None):
         if type(first) is dict and type(second) is dict:
             first['@odata.type'] = ''
             second['@odata.type'] = ''

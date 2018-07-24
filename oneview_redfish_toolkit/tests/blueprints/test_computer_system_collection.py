@@ -52,7 +52,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_result, result)
+        self.assertEqualMockup(expected_result, result)
 
     @mock.patch.object(computer_system_collection, 'g')
     def test_get_computer_system_collection_fail(self, g):
@@ -117,4 +117,4 @@ class TestComputerSystemCollection(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(computer_system_collection_mockup, result)
+        self.assertEqualMockup(computer_system_collection_mockup, result)

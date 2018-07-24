@@ -40,4 +40,4 @@ class TestStorageCollection(BaseTest):
 
         result = json.loads(storage_collection.serialize())
 
-        self.assertEqual(self.storage_collection_mockup, result)
+        self.assertEqualMockup(self.storage_collection_mockup, result)

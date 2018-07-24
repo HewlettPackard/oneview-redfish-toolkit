@@ -48,4 +48,4 @@ class TestStorageDriveCompositionDetails(BaseTest):
                                                 self.drive_enclosure)
         result = json.loads(target.serialize())
 
-        self.assertEqual(expected_result, result)
+        self.assertEqualMockup(expected_result, result)

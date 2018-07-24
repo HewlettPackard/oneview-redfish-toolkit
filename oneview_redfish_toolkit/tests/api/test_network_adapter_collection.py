@@ -69,4 +69,4 @@ class TestNetworkAdapterCollection(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.network_adapter_collection_mockup, result)
+        self.assertEqualMockup(self.network_adapter_collection_mockup, result)
