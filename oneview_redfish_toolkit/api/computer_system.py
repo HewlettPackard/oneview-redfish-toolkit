@@ -22,6 +22,8 @@ from werkzeug.exceptions import abort
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit.api.resource_block_collection import \
+    ResourceBlockCollection
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.api.util.power_option import \
     RESET_ALLOWABLE_VALUES_LIST
@@ -52,7 +54,6 @@ class ComputerSystem(RedfishJsonValidator):
         super().__init__(self.SCHEMA_NAME)
 
         base_resource = server_profile
-        self.server_hardware = server_hardware
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
         self.redfish["Id"] = base_resource["uuid"]
         self.redfish["Name"] = base_resource["name"]
@@ -102,7 +103,9 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
             "/redfish/v1/Managers/" + server_hardware['uuid']
         self.redfish["Links"]["ResourceBlocks"] = list()
-        self._fill_resource_block_members(base_resource, drives)
+        self._fill_resource_block_members(base_resource,
+                                          drives,
+                                          server_hardware)
         self.redfish["Actions"] = collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
@@ -221,22 +224,26 @@ class ComputerSystem(RedfishJsonValidator):
 
         return None
 
-    def _fill_resource_block_members(self, server_profile, drives):
+    def _fill_resource_block_members(self,
+                                     server_profile,
+                                     drives,
+                                     server_hardware):
         resource_block_uuids = \
-            self._get_resource_block_uuids(server_profile, drives)
+            self._get_resource_block_uuids(server_profile,
+                                           drives,
+                                           server_hardware)
 
-        resource_blocks_base_uri = \
-            "/redfish/v1/CompositionService/ResourceBlocks/{}"
+        base_uri = ResourceBlockCollection.BASE_URI + "/{}"
+        blocks = self.redfish["Links"]["ResourceBlocks"]
         for resource_block_uuid in resource_block_uuids:
-            self.redfish["Links"]["ResourceBlocks"].append({
-                "@odata.id": resource_blocks_base_uri.format(
-                    resource_block_uuid
-                )
-            })
+            blocks.append({"@odata.id": base_uri.format(resource_block_uuid)})
 
-    def _get_resource_block_uuids(self, server_profile, drives):
+    def _get_resource_block_uuids(self,
+                                  server_profile,
+                                  drives,
+                                  server_hardware):
         resource_block_uuids = list()
-        resource_block_uuids.append(self.server_hardware["uuid"])
+        resource_block_uuids.append(server_hardware["uuid"])
 
         if server_profile["description"]:
             network_resource_uuid = \
