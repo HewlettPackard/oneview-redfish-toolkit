@@ -81,7 +81,7 @@ class TestResourceBlockCollection(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(resource_block_collection_mockup, result)
+        self.assertEqualMockup(resource_block_collection_mockup, result)
 
     @mock.patch.object(resource_block_collection, 'g')
     def test_get_resource_block_collection_empty(self, g_mock):
@@ -106,4 +106,4 @@ class TestResourceBlockCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_result, result)
+        self.assertEqualMockup(expected_result, result)

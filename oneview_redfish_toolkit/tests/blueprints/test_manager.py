@@ -80,7 +80,7 @@ class TestManager(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(rf_enclosure_manager, result)
+        self.assertEqualMockup(rf_enclosure_manager, result)
         self.assertEqual(
             "{}{}".format("W/", ov_enclosure["eTag"]),
             response.headers["ETag"])
@@ -160,7 +160,7 @@ class TestManager(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(blade_manager_mockup, result)
+        self.assertEqualMockup(blade_manager_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", server_hardware["eTag"]),
             response.headers["ETag"])

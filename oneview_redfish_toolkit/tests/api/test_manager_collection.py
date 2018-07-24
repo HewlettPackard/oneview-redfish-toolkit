@@ -82,4 +82,4 @@ class TestManagerCollection(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.manager_collection_mockup, result)
+        self.assertEqualMockup(self.manager_collection_mockup, result)

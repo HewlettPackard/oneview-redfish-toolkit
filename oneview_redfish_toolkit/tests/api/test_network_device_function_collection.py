@@ -77,6 +77,6 @@ class TestNetworkDeviceFunctionCollection(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(
+        self.assertEqualMockup(
             self.network_device_function_collection_mockup,
             result)

@@ -68,7 +68,7 @@ class TestNetworkPort(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(network_port_mockup, result)
+        self.assertEqualMockup(network_port_mockup, result)
 
     @mock.patch.object(network_port, 'g')
     def test_get_network_port_fibre_channel(self, g):
@@ -103,7 +103,7 @@ class TestNetworkPort(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(network_port_mockup, result)
+        self.assertEqualMockup(network_port_mockup, result)
 
     @mock.patch.object(network_port, 'g')
     def test_get_network_port_invalid_device_id(

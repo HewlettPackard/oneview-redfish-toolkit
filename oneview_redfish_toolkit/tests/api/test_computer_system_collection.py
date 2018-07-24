@@ -83,4 +83,4 @@ class TestComputerSystemCollection(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: {}".format(e))
 
-        self.assertEqual(self.computer_system_collection_mockup, result)
+        self.assertEqualMockup(self.computer_system_collection_mockup, result)

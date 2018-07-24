@@ -46,4 +46,5 @@ class TestEthernetInterfaceCollection(BaseTest):
 
         result = json.loads(ethernet_interface_collection.serialize())
 
-        self.assertEqual(self.ethernet_interface_collection_mockup, result)
+        self.assertEqualMockup(self.ethernet_interface_collection_mockup,
+                               result)

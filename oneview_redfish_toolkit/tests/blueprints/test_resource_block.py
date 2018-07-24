@@ -95,7 +95,7 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_resource_block, result)
+        self.assertEqualMockup(expected_resource_block, result)
 
     @mock.patch.object(resource_block, 'g')
     def test_get_server_hardware_resource_block(self, g):
@@ -124,7 +124,7 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_resource_block, result)
+        self.assertEqualMockup(expected_resource_block, result)
 
     @mock.patch.object(resource_block, 'g')
     def test_get_spt_resource_block(self, g):
@@ -147,7 +147,7 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_resource_block, result)
+        self.assertEqualMockup(expected_resource_block, result)
 
     @mock.patch.object(resource_block, 'g')
     def test_get_computer_system_not_found(self, g):
@@ -180,7 +180,7 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_computer_system, result)
+        self.assertEqualMockup(expected_computer_system, result)
 
     @mock.patch.object(resource_block, 'g')
     def test_get_ethernet_interface(self, g):
@@ -208,7 +208,7 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(expected_ethernet_interface, result)
+        self.assertEqualMockup(expected_ethernet_interface, result)
 
     @mock.patch.object(resource_block, 'g')
     def test_get_ethernet_interface_not_found(self, g):

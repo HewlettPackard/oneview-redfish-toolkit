@@ -44,7 +44,7 @@ class TestRedfishError(BaseTest):
             'RedfishErrorNoExtendedInfo.json'
         ) as f:
             redfish_error_mockup = json.load(f)
-        self.assertEqual(redfish_error_mockup, result)
+        self.assertEqualMockup(redfish_error_mockup, result)
 
     def test_add_extended_info_invalid_error_code(self):
         """Tests the add_extended_info invalid error code"""
@@ -100,4 +100,4 @@ class TestRedfishError(BaseTest):
             self.fail("Failled to add Extened info".format(e))
 
         result = json.loads(redfish_error.serialize())
-        self.assertEqual(redfish_error_mockup, result)
+        self.assertEqualMockup(redfish_error_mockup, result)

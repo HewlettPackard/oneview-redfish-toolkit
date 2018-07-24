@@ -58,7 +58,7 @@ class TestSubscription(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(subscription_mockup, result)
+        self.assertEqualMockup(subscription_mockup, result)
 
     @mock.patch('uuid.uuid1')
     def test_add_subscription_duplicated_event_types(self, uuid_mockup):
@@ -83,7 +83,7 @@ class TestSubscription(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_201_CREATED, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(subscription_mockup, result)
+        self.assertEqualMockup(subscription_mockup, result)
 
     @mock.patch('uuid.uuid1')
     def test_add_subscription_invalid_key1(self, uuid_mockup):
@@ -246,7 +246,7 @@ class TestSubscription(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(subscription_mockup, result)
+        self.assertEqualMockup(subscription_mockup, result)
 
     def test_get_invalid_subscription(self):
         """Test GET invalid Subscription"""

@@ -54,7 +54,7 @@ class TestZone(BaseTest):
                     self.drives)
         result = json.loads(zone.serialize())
 
-        self.assertEqual(self.zone_mockup, result)
+        self.assertEqualMockup(self.zone_mockup, result)
 
     def test_drives_as_links_when_storage_controllers_are_not_configured(
             self):
@@ -72,7 +72,7 @@ class TestZone(BaseTest):
                     self.drives)
         result = json.loads(zone.serialize())
 
-        self.assertEqual(self.zone_without_drives_mockup, result)
+        self.assertEqualMockup(self.zone_without_drives_mockup, result)
 
     def test_drives_as_links_when_storage_controller_is_embedded(self):
         """Tests Drives as Links when not configured properly
@@ -95,7 +95,7 @@ class TestZone(BaseTest):
                     self.drives)
         result = json.loads(zone.serialize())
 
-        self.assertEqual(self.zone_without_drives_mockup, result)
+        self.assertEqualMockup(self.zone_without_drives_mockup, result)
 
     def test_spt_when_connections_are_not_configured(
             self):
@@ -113,4 +113,4 @@ class TestZone(BaseTest):
                     self.drives)
         result = json.loads(zone.serialize())
 
-        self.assertEqual(self.zone_without_network_mockup, result)
+        self.assertEqualMockup(self.zone_without_network_mockup, result)

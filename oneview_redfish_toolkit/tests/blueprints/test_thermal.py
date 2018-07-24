@@ -78,7 +78,7 @@ class TestChassis(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(blade_chassis_thermal_mockup, result)
+        self.assertEqualMockup(blade_chassis_thermal_mockup, result)
 
     @mock.patch.object(thermal, 'g')
     def test_get_blade_not_found(self, g):
@@ -156,7 +156,7 @@ class TestChassis(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(enclosure_chasssis_thermal_mockup, result)
+        self.assertEqualMockup(enclosure_chasssis_thermal_mockup, result)
 
     ########
     # Rack #
@@ -192,4 +192,4 @@ class TestChassis(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(rack_chassis_thermal_mockup, result)
+        self.assertEqualMockup(rack_chassis_thermal_mockup, result)

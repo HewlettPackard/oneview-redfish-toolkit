@@ -55,4 +55,4 @@ class TestStorageComposedDetails(BaseTest):
 
         result = json.loads(target.serialize())
 
-        self.assertEqual(expected_result, result)
+        self.assertEqualMockup(expected_result, result)

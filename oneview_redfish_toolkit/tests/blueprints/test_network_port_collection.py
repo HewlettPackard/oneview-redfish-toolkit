@@ -69,7 +69,7 @@ class TestNetworkPortCollection(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(network_port_collection_mockup, result)
+        self.assertEqualMockup(network_port_collection_mockup, result)
 
     @mock.patch.object(network_port_collection, 'g')
     def test_get_network_port_collection_sh_not_found(self, g):

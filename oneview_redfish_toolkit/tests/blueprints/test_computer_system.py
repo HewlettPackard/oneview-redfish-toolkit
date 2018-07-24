@@ -277,7 +277,7 @@ class TestComputerSystem(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.computer_system_mockup, result)
+        self.assertEqualMockup(self.computer_system_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", self.server_profile["eTag"]),
             response.headers["ETag"])
@@ -327,7 +327,7 @@ class TestComputerSystem(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(capabilities_obj_mockup, result)
+        self.assertEqualMockup(capabilities_obj_mockup, result)
         g.oneview_client.server_profiles.get \
             .assert_called_with("1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
         g.oneview_client.server_profile_templates.get \

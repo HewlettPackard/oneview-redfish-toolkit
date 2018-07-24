@@ -45,4 +45,4 @@ class TestProcessor(BaseTest):
 
         result = json.loads(processor.serialize())
 
-        self.assertEqual(self.processor_mockup, result)
+        self.assertEqualMockup(self.processor_mockup, result)

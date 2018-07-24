@@ -60,7 +60,7 @@ class TestStorageCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.storage_collection_mockup, result)
+        self.assertEqualMockup(self.storage_collection_mockup, result)
         g.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
 

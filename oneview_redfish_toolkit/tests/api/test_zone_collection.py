@@ -61,4 +61,4 @@ class TestZoneCollection(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: {}".format(e))
 
-        self.assertEqual(self.zone_collection_mockup, result)
+        self.assertEqualMockup(self.zone_collection_mockup, result)

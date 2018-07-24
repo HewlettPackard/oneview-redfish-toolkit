@@ -83,7 +83,7 @@ class TestZoneCollection(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(zone_collection_mockup, expected_result)
+        self.assertEqualMockup(zone_collection_mockup, expected_result)
 
     @mock.patch.object(zone_collection, 'g')
     def test_get_zone_collection_empty(self, g_mock):
@@ -106,4 +106,4 @@ class TestZoneCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(zone_collection_empty_mockup, result)
+        self.assertEqualMockup(zone_collection_empty_mockup, result)

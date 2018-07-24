@@ -75,4 +75,4 @@ class TestEnclosureChassis(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.enclosure_mockup, result)
+        self.assertEqualMockup(self.enclosure_mockup, result)

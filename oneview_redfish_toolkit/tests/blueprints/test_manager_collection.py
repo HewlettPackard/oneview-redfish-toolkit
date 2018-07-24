@@ -150,4 +150,4 @@ class TestManagerCollection(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(manager_collection_mockup, result)
+        self.assertEqualMockup(manager_collection_mockup, result)

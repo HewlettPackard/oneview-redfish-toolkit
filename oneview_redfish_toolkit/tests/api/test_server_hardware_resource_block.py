@@ -77,4 +77,4 @@ class TestServerHardwareResourceBlock(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: {}".format(e))
 
-        self.assertEqual(self.resource_block_mockup, result)
+        self.assertEqualMockup(self.resource_block_mockup, result)

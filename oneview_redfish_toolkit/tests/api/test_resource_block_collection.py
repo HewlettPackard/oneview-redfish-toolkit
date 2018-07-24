@@ -84,7 +84,7 @@ class TestResourceBlockCollection(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: {}".format(e))
 
-        self.assertEqual(self.resource_block_collection_mockup, result)
+        self.assertEqualMockup(self.resource_block_collection_mockup, result)
 
     def test_serialize_empty_result(self):
         with open(
@@ -97,4 +97,4 @@ class TestResourceBlockCollection(BaseTest):
         resource_block_collection = ResourceBlockCollection()
         result = json.loads(resource_block_collection.serialize())
 
-        self.assertEqual(expected_result, result)
+        self.assertEqualMockup(expected_result, result)

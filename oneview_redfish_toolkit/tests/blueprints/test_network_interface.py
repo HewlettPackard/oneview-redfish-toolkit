@@ -76,7 +76,7 @@ class TestNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(network_interface_mockup, result)
+        self.assertEqualMockup(network_interface_mockup, result)
         g.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
         g.oneview_client.server_hardware.get.assert_called_with(

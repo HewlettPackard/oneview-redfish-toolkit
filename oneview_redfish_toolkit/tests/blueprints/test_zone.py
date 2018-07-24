@@ -89,7 +89,7 @@ class TestZone(BaseTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(zone_mockup, expected_result)
+        self.assertEqualMockup(zone_mockup, expected_result)
 
     @mock.patch.object(zone, 'g')
     def test_get_zone_not_found(self, g_mock):

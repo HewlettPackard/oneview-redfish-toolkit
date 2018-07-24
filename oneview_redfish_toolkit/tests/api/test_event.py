@@ -62,4 +62,4 @@ class TestEvent(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: {}".format(e))
 
-        self.assertEqual(self.event_mockup, result)
+        self.assertEqualMockup(self.event_mockup, result)

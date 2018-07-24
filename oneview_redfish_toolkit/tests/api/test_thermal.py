@@ -111,7 +111,7 @@ class TestThermal(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.blade_thermal_mockup, result)
+        self.assertEqualMockup(self.blade_thermal_mockup, result)
 
     def test_serialize_for_enclosure(self):
         # Tests the serialize function result against known result
@@ -130,7 +130,7 @@ class TestThermal(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.enclosure_thermal_mockup, result)
+        self.assertEqualMockup(self.enclosure_thermal_mockup, result)
 
     def test_serialize_for_rack(self):
         # Tests the serialize function result against known result
@@ -149,4 +149,4 @@ class TestThermal(BaseTest):
         except Exception as e:
             self.fail("Failed to serialize. Error: ".format(e))
 
-        self.assertEqual(self.rack_thermal_mockup, result)
+        self.assertEqualMockup(self.rack_thermal_mockup, result)

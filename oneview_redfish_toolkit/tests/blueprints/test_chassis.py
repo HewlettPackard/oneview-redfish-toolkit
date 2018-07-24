@@ -112,7 +112,7 @@ class TestChassis(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.enclosure_chassis_mockup, result)
+        self.assertEqualMockup(self.enclosure_chassis_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", self.enclosure["eTag"]),
             response.headers["ETag"])
@@ -219,7 +219,7 @@ class TestChassis(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.blade_chassis_mockup, result)
+        self.assertEqualMockup(self.blade_chassis_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", self.server_hardware["eTag"]),
             response.headers["ETag"])
@@ -284,7 +284,7 @@ class TestChassis(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.rack_chassis_mockup, result)
+        self.assertEqualMockup(self.rack_chassis_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", self.rack["eTag"]),
             response.headers["ETag"])

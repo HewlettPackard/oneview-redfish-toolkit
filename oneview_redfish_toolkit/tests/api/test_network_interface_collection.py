@@ -53,4 +53,5 @@ class TestNetworkInterfaceCollection(BaseTest):
 
         result = json.loads(network_interface_collection.serialize())
 
-        self.assertEqual(self.network_interface_collection_mockup, result)
+        self.assertEqualMockup(self.network_interface_collection_mockup,
+                               result)

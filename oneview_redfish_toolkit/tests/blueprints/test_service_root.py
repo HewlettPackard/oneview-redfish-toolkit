@@ -101,4 +101,4 @@ class TestServiceRoot(BaseFlaskTest):
             'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
         ) as f:
             service_root_mockup = json.load(f)
-        self.assertEqual(service_root_mockup, result)
+        self.assertEqualMockup(service_root_mockup, result)
