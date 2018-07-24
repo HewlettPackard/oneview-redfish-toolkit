@@ -35,7 +35,7 @@ class TestSCMB(BaseTest):
         isfile.return_value = False
         self.assertFalse(scmb.check_cert_exist())
 
-    @mock.patch.object(util, 'get_oneview_client')
+    @mock.patch.object(scmb, 'get_oneview_client')
     def test_get_cert(self, get_oneview_client):
         # Certs Generated with success
         oneview_client = mock.MagicMock()

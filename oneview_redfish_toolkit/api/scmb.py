@@ -47,9 +47,7 @@ def check_cert_exist():
         os.path.isfile(SCMB_KEY)
 
 
-def get_cert():
-    # Get CA
-
+def get_oneview_client():
     # Workaround for #328
     # Create OneView client using API 500 just to retrieve OneView certificates
     try:
@@ -60,6 +58,13 @@ def get_cert():
     # if failed abort
     except Exception:
         raise
+
+    return ov_client
+
+
+def get_cert():
+    # Get CA
+    ov_client = get_oneview_client()
 
     cert = ov_client.certificate_authority.get()
 
