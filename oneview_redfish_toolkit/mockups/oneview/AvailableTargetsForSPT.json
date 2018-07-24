@@ -16,6 +16,39 @@
         "HalfHeight"
       ],
       "serverHardwareStatus": "OK"
+    },
+    {
+      "enclosureGroupName": "test_eg1",
+      "enclosureName": "MXQ80904PB",
+      "enclosureUri": "/rest/enclosures/797739MXQ80904PB",
+      "enclosureBay": 9,
+      "serverHardwareName": null,
+      "serverHardwareUri": null,
+      "serverHardwareTypeName": null,
+      "serverHardwareTypeUri": null,
+      "enclosureGroupUri": "/rest/enclosure-groups/3a5ae1cc-05f3-45bb-bd6b-8787ada59762",
+      "powerState": null,
+      "formFactor": [
+        "HalfHeight",
+        "HalfHeightDoubleWide"
+      ],
+      "serverHardwareStatus": "Unknown"
+    },
+    {
+      "enclosureGroupName": "test_eg1",
+      "enclosureName": "MXQ80904PB",
+      "enclosureUri": "/rest/enclosures/797739MXQ80904PB",
+      "enclosureBay": 10,
+      "serverHardwareName": null,
+      "serverHardwareUri": null,
+      "serverHardwareTypeName": null,
+      "serverHardwareTypeUri": null,
+      "enclosureGroupUri": "/rest/enclosure-groups/3a5ae1cc-05f3-45bb-bd6b-8787ada59762",
+      "powerState": null,
+      "formFactor": [
+        "HalfHeight"
+      ],
+      "serverHardwareStatus": "Unknown"
     }
   ],
   "uri": "/rest/server-profiles/available-targets",

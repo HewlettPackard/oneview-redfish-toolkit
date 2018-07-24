@@ -51,6 +51,10 @@ class BaseFlaskTest(BaseTest):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 mimetype="application/json")
 
+        @cls.app.errorhandler(status.HTTP_403_FORBIDDEN)
+        def forbidden(error):
+            return ResponseBuilder.error_403(error)
+
         @cls.app.errorhandler(status.HTTP_404_NOT_FOUND)
         def not_found(error):
             """Creates a Not Found Error response"""
