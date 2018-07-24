@@ -20,6 +20,7 @@
 
 import collections
 import json
+from unittest import mock
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.errors \
@@ -27,6 +28,13 @@ from oneview_redfish_toolkit.api.errors \
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
 from oneview_redfish_toolkit.tests.base_test import BaseTest
+
+service_root_version = 'v1_2_0'
+zone_version = 'v1_1_0'
+
+schemas_dict = collections.OrderedDict()
+schemas_dict['ServiceRoot'] = 'ServiceRoot.' + service_root_version + '.json'
+schemas_dict['Zone'] = 'Zone.' + zone_version + '.json'
 
 
 class TestRedfishJsonValidator(BaseTest):
@@ -82,12 +90,14 @@ class TestRedfishJsonValidator(BaseTest):
             redfish_json_validator.get_resource_by_id(
                 [], "deviceNumber", "INVALID_ID")
 
+    @mock.patch('oneview_redfish_toolkit.api.schemas.SCHEMAS', schemas_dict)
     def test_get_odata_type_by_class(self):
         redfish_json_validator = RedfishJsonValidator('ServiceRoot')
-        odata_type_schema_class = "#ServiceRoot.v1_2_0.ServiceRoot"
+        odata_type_schema_class = '#ServiceRoot.' + \
+            service_root_version + '.ServiceRoot'
 
         zone_schema_name = 'Zone'
-        odata_type_zone_schema = '#Zone.v1_1_0.Zone'
+        odata_type_zone_schema = '#Zone.' + zone_version + '.Zone'
 
         self.assertEqual(redfish_json_validator.get_odata_type(),
                          odata_type_schema_class)
