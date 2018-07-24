@@ -1,5 +1,5 @@
 {
-    "@odata.type": "#ResourceBlock.v1_1_0.ResourceBlock",
+    "@odata.type": "#ResourceBlock.v1_0_0.ResourceBlock",
     "Id": "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0",
     "Name": "Apache_Template",
     "CompositionStatus": {
