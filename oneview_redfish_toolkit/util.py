@@ -29,6 +29,7 @@ import ssl
 import time
 
 # 3rd party libs
+from copy import deepcopy
 from flask_api import status
 from hpOneView.oneview_client import OneViewClient
 from http.client import HTTPSConnection
@@ -121,6 +122,7 @@ def load_config(conf_file):
     # Setting ov_config
     ov_config = dict(config.items('oneview_config'))
     ov_config['credentials'] = dict(config.items('credentials'))
+    ov_config['api_version'] = API_VERSION
     globals()['ov_config'] = ov_config
 
     load_event_service_info()
@@ -209,8 +211,7 @@ def load_event_service_info():
 def load_registry(registry_dir, registries):
     """Loads Registries
 
-        Loads all registries listed in the config file using registry_dir
-        directory
+        Loads all registries using registry_dir directory
 
         Args:
             registry_dir: string with the directory to load registries from
@@ -336,9 +337,8 @@ def get_oneview_client(session_id=None, is_service_root=False):
                 raise
     else:
         # Auth mode is session
-        oneview_config = dict(config.items('oneview_config'))
+        oneview_config = deepcopy(globals()['ov_config'])
         oneview_config['credentials'] = {"sessionID": session_id}
-        oneview_config['api_version'] = API_VERSION
         try:
             oneview_client = OneViewClient(oneview_config)
             oneview_client.connection.get('/rest/logindomains')
