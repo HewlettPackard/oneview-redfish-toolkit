@@ -22,6 +22,8 @@ from werkzeug.exceptions import abort
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit.api.resource_block_collection import \
+    ResourceBlockCollection
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.api.util.power_option import \
     RESET_ALLOWABLE_VALUES_LIST
@@ -36,7 +38,8 @@ class ComputerSystem(RedfishJsonValidator):
     SCHEMA_NAME = 'ComputerSystem'
     BASE_URI = '/redfish/v1/Systems'
 
-    def __init__(self, server_hardware, server_hardware_types, server_profile):
+    def __init__(self, server_hardware, server_hardware_types,
+                 server_profile, drives):
         """ComputerSystem constructor
 
             Populates self.redfish with the contents of ServerHardware and
@@ -46,12 +49,11 @@ class ComputerSystem(RedfishJsonValidator):
                 server_hardware: ServerHardware dict from OneView
                 server_hardware_types: ServerHardwareTypes dict from OneView
                 server_profile: ServerProfile dict from OneView.
+                drives: Drives list from OneView
         """
         super().__init__(self.SCHEMA_NAME)
 
         base_resource = server_profile
-        self.server_hardware = server_hardware
-
         self.redfish["@odata.type"] = "#ComputerSystem.v1_4_0.ComputerSystem"
         self.redfish["Id"] = base_resource["uuid"]
         self.redfish["Name"] = base_resource["name"]
@@ -100,6 +102,10 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
             "/redfish/v1/Managers/" + server_hardware['uuid']
+        self.redfish["Links"]["ResourceBlocks"] = list()
+        self._fill_resource_block_members(base_resource,
+                                          drives,
+                                          server_hardware)
         self.redfish["Actions"] = collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
@@ -217,3 +223,35 @@ class ComputerSystem(RedfishJsonValidator):
                 return controller
 
         return None
+
+    def _fill_resource_block_members(self,
+                                     server_profile,
+                                     drives,
+                                     server_hardware):
+        resource_block_uuids = \
+            self._get_resource_block_uuids(server_profile,
+                                           drives,
+                                           server_hardware)
+
+        base_uri = ResourceBlockCollection.BASE_URI + "/{}"
+        blocks = self.redfish["Links"]["ResourceBlocks"]
+        for resource_block_uuid in resource_block_uuids:
+            blocks.append({"@odata.id": base_uri.format(resource_block_uuid)})
+
+    def _get_resource_block_uuids(self,
+                                  server_profile,
+                                  drives,
+                                  server_hardware):
+        resource_block_uuids = list()
+        resource_block_uuids.append(server_hardware["uuid"])
+
+        if server_profile["description"]:
+            network_resource_uuid = \
+                server_profile["description"].split("/")[-1]
+            resource_block_uuids.append(network_resource_uuid)
+
+        for drive in drives:
+            storage_resource_uuid = drive["uri"].split("/")[-1]
+            resource_block_uuids.append(storage_resource_uuid)
+
+        return resource_block_uuids

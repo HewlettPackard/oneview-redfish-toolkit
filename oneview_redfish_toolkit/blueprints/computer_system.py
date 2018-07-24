@@ -62,23 +62,26 @@ def get_computer_system(uuid):
         category = resource["category"]
 
         if category == 'server-profile-templates':
-            computer_system = CapabilitiesObject(resource)
+            computer_system_resource = CapabilitiesObject(resource)
         elif category == 'server-profiles':
             server_hardware = g.oneview_client.server_hardware\
                 .get(resource["serverHardwareUri"])
             server_hardware_type = g.oneview_client.server_hardware_types\
                 .get(resource['serverHardwareTypeUri'])
 
+            drives = _get_drives_from_sp(resource)
+
             # Build Computer System object and validates it
-            computer_system = ComputerSystem(server_hardware,
-                                             server_hardware_type,
-                                             resource)
+            computer_system_resource = ComputerSystem(server_hardware,
+                                                      server_hardware_type,
+                                                      resource,
+                                                      drives)
         else:
             raise OneViewRedfishError(
                 'Computer System UUID {} not found'.format(uuid))
 
         return ResponseBuilder.success(
-            computer_system,
+            computer_system_resource,
             {"ETag": "W/" + resource["eTag"]})
     except OneViewRedfishError as e:
         # In case of error log exception and abort
@@ -122,16 +125,9 @@ def change_power_state(uuid):
         profile = g.oneview_client.server_profiles.get(uuid)
         sh = g.oneview_client.server_hardware.get(profile["serverHardwareUri"])
 
-        # Gets the ServerHardwareType of the given server hardware
-        sht = g.oneview_client.server_hardware_types. \
-            get(profile["serverHardwareTypeUri"])
-
-        # Build Computer System object and validates it
-        cs = ComputerSystem(sh, sht, profile)
-
         oneview_power_configuration = \
             OneViewPowerOption.get_oneview_power_configuration(
-                cs.server_hardware, reset_type)
+                sh, reset_type)
 
         # Changes the ServerHardware power state
         g.oneview_client.server_hardware.update_power_state(
@@ -182,28 +178,6 @@ def remove_computer_system(uuid):
                     logging.exception(err['message'])
 
     abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-def _get_oneview_resource(uuid):
-    """Gets a Server hardware or Server profile templates"""
-    categories = [
-        {"func": g.oneview_client.server_profiles.get, "param": uuid},
-        {"func": g.oneview_client.server_profile_templates.get, "param": uuid}
-    ]
-
-    for category in categories:
-        try:
-            resource = category["func"](category["param"])
-
-            return resource
-        except HPOneViewException as e:
-            if e.oneview_response["errorCode"] in \
-                    ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException']:
-                pass
-            else:
-                raise  # Raise any unexpected errors
-
-    raise OneViewRedfishError("Could not find computer system with id " + uuid)
 
 
 @computer_system.route(ComputerSystem.BASE_URI + "/", methods=["POST"])
@@ -270,6 +244,28 @@ def create_composed_system():
                     mimetype="application/json")
 
 
+def _get_oneview_resource(uuid):
+    """Gets a Server hardware or Server profile templates"""
+    categories = [
+        {"func": g.oneview_client.server_profiles.get, "param": uuid},
+        {"func": g.oneview_client.server_profile_templates.get, "param": uuid}
+    ]
+
+    for category in categories:
+        try:
+            resource = category["func"](category["param"])
+
+            return resource
+        except HPOneViewException as e:
+            if e.oneview_response["errorCode"] in \
+                    ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException']:
+                pass
+            else:
+                raise  # Raise any unexpected errors
+
+    raise OneViewRedfishError("Could not find computer system with id " + uuid)
+
+
 def _get_system_resource_blocks(ids):
     return _get_resource_block_data(
         g.oneview_client.server_hardware.get, ids)
@@ -305,3 +301,14 @@ def _get_resource_block_data(func, uuids):
                 raise  # Raise any unexpected errors
 
     return resources
+
+
+def _get_drives_from_sp(server_profile):
+    """Gets Drives from Server Profile"""
+    jbods_drives = list()
+    for sas_logical_jbod in server_profile["localStorage"]["sasLogicalJBODs"]:
+        drives_by_sas_logical_uuid = g.oneview_client.sas_logical_jbods. \
+            get_drives(sas_logical_jbod["sasLogicalJBODUri"])
+        jbods_drives.extend(drives_by_sas_logical_uuid)
+
+    return jbods_drives

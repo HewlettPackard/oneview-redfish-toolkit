@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 from unittest import mock
 
@@ -89,6 +90,12 @@ class TestComputerSystem(BaseFlaskTest):
                 'oneview_redfish_toolkit/mockups/redfish/ComputerSystem.json'
         ) as f:
             self.computer_system_mockup = json.load(f)
+
+        # Loading Drives mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/Drives.json'
+        ) as f:
+            self.drives = json.load(f)
 
     @mock.patch.object(computer_system, 'g')
     def test_get_computer_system_not_found(self, g):
@@ -247,16 +254,21 @@ class TestComputerSystem(BaseFlaskTest):
     def test_get_computer_system_server_profile(self, g):
         """Tests ComputerSystem with a known Server Profile"""
 
+        server_profile = copy.deepcopy(self.server_profile)
+        server_profile["localStorage"]["sasLogicalJBODs"].pop(0)
+
         # Create mock response
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        g.oneview_client.server_profiles.get.return_value = server_profile
         g.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
         g.oneview_client.server_hardware_types.get.return_value = \
             self.server_hardware_types
+        g.oneview_client.sas_logical_jbods.get_drives.return_value = \
+            [self.drives[4]]
 
         # Get ComputerSystem
         response = self.client.get(
-            "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
         )
 
         # Gets json from response
@@ -269,8 +281,18 @@ class TestComputerSystem(BaseFlaskTest):
         self.assertEqual(
             "{}{}".format("W/", self.server_profile["eTag"]),
             response.headers["ETag"])
-        g.oneview_client.server_profiles.get \
-            .assert_called_with("0303437-3034-4D32-3230-313133364752")
+        g.oneview_client.server_profiles.get.assert_called_with(
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2"
+        )
+        g.oneview_client.server_hardware.get.assert_called_with(
+            "/rest/server-hardware/30303437-3034-4D32-3230-313130304752"
+        )
+        g.oneview_client.server_hardware_types.get.assert_called_with(
+            "/rest/server-hardware-types/FE50A6FE-B1AC-4E42-8D40-B73CA8CC0CD2"
+        )
+        g.oneview_client.sas_logical_jbods.get_drives.assert_called_with(
+            "/rest/sas-logical-jbods/9e83a03d-7a84-4f0d-a8d7-bd05a30c3175"
+        )
         g.oneview_client.server_profile_templates.get \
             .assert_not_called()
 
@@ -327,8 +349,6 @@ class TestComputerSystem(BaseFlaskTest):
         g.oneview_client.server_profiles.get.return_value = self.server_profile
         g.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
-        g.oneview_client.server_hardware_types.get.return_value = \
-            self.server_hardware_types
         g.oneview_client.server_hardware.update_power_state.return_value = \
             {"status": "OK"}
 
@@ -350,6 +370,12 @@ class TestComputerSystem(BaseFlaskTest):
 
             self.assertEqual(json_str, '{"ResetType": "%s"}' % reset_type)
 
+        g.oneview_client.server_profiles.get.assert_called_with(
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2"
+        )
+        g.oneview_client.server_hardware.get.assert_called_with(
+            "/rest/server-hardware/30303437-3034-4D32-3230-313130304752"
+        )
         g.oneview_client.server_hardware.update_power_state \
             .assert_called_with({
                 'powerControl': 'MomentaryPress',
@@ -363,8 +389,6 @@ class TestComputerSystem(BaseFlaskTest):
         g.oneview_client.server_profiles.get.return_value = self.server_profile
         g.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
-        g.oneview_client.server_hardware_types.get.return_value = \
-            self.server_hardware_types
 
         response = self.client.post(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
@@ -372,9 +396,14 @@ class TestComputerSystem(BaseFlaskTest):
             data=json.dumps(dict(ResetType="INVALID_TYPE")),
             content_type='application/json')
 
-        # Tests response
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2"
+        )
+        g.oneview_client.server_hardware.get.assert_called_with(
+            "/rest/server-hardware/30303437-3034-4D32-3230-313130304752"
+        )
 
     @mock.patch.object(computer_system, 'g')
     def test_change_power_state_unexpected_error(self, g):
@@ -418,13 +447,11 @@ class TestComputerSystem(BaseFlaskTest):
         g.oneview_client.server_profiles.get.return_value = self.server_profile
         g.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
-        g.oneview_client.server_hardware_types.get.return_value = \
-            self.server_hardware_types
         g.oneview_client.server_hardware.update_power_state.side_effect = \
             self.internal_error
 
         response = self.client.post(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
             "/Actions/ComputerSystem.Reset",
             data=json.dumps(dict(ResetType="ForceRestart")),
             content_type='application/json')
@@ -434,25 +461,12 @@ class TestComputerSystem(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-
-    @mock.patch.object(computer_system, 'g')
-    def test_change_power_state_sht_exception(self, g):
-        """Tests change SH power state with SHT exception"""
-
-        g.oneview_client.server_hardware_types.get.side_effect = \
-            self.internal_error
-
-        response = self.client.post(
-            "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
-            "/Actions/ComputerSystem.Reset",
-            data=json.dumps(dict(ResetType="On")),
-            content_type='application/json')
-
-        self.assertEqual(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-            response.status_code
+        g.oneview_client.server_profiles.get.assert_called_with(
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2"
         )
-        self.assertEqual("application/json", response.mimetype)
+        g.oneview_client.server_hardware.get.assert_called_with(
+            "/rest/server-hardware/30303437-3034-4D32-3230-313130304752"
+        )
 
     def test_change_power_state_invalid_key(self):
         """Tests change SH power state with JSON key different of ResetType"""
