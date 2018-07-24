@@ -260,7 +260,7 @@ def create_composed_system():
     except KeyError as e:
         abort(status.HTTP_400_BAD_REQUEST,
               "Trying access an invalid key {}".format(e.args))
-    except HPOneViewTaskError as e:
+    except (HPOneViewTaskError, OneViewRedfishError) as e:
         abort(status.HTTP_403_FORBIDDEN, e.msg)
 
     location_uri = ComputerSystem.BASE_URI + "/" + result["uuid"]

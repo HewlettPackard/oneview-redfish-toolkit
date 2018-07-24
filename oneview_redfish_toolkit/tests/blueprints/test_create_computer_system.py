@@ -78,6 +78,28 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.drive1_id = "e11dd3e0-78cd-47e8-bacb-9813f4bb58a8"
         self.drive2_id = "53bd734f-19fe-42fe-a8ef-3f1a83b4e5c1"
 
+        self.common_calls_to_assert_hardware = [
+            call(self.sh_id),
+            call(self.spt_id),
+            call(self.drive1_id),
+            call(self.drive2_id)
+        ]
+
+        self.common_calls_to_assert_spt = [
+            call(self.sh_id),
+            call(self.spt_id),
+            call(self.drive1_id),
+            call(self.drive2_id),
+            call(self.spt_id)
+        ]
+
+        self.common_calls_to_assert_drives = [
+            call('/rest/drives/' + self.sh_id),
+            call('/rest/drives/' + self.spt_id),
+            call('/rest/drives/' + self.drive1_id),
+            call('/rest/drives/' + self.drive2_id)
+        ]
+
     @mock.patch.object(computer_system, 'g')
     def test_create_system(self, g):
         """Tests create a redfish System with Network, Storage and Server"""
@@ -122,34 +144,14 @@ class TestCreateComputerSystem(BaseFlaskTest):
             response.headers["Location"]
         )
         g.oneview_client.server_hardware.get.assert_has_calls(
-            [
-                call(self.sh_id),
-                call(self.spt_id),
-                call(self.drive1_id),
-                call(self.drive2_id)
-            ]
-        )
+            self.common_calls_to_assert_hardware)
         g.oneview_client.server_profile_templates.get.assert_has_calls(
-            [
-                call(self.sh_id),
-                call(self.spt_id),
-                call(self.drive1_id),
-                call(self.drive2_id),
-                call(self.spt_id)
-            ]
-        )
+            self.common_calls_to_assert_spt)
         g.oneview_client.index_resources.get.assert_has_calls(
-            [
-                call('/rest/drives/' + self.sh_id),
-                call('/rest/drives/' + self.spt_id),
-                call('/rest/drives/' + self.drive1_id),
-                call('/rest/drives/' + self.drive2_id)
-            ]
-        )
+            self.common_calls_to_assert_drives)
 
         g.oneview_client.server_profiles.create.assert_called_with(
-            expected_server_profile_built
-        )
+            expected_server_profile_built)
 
     @mock.patch.object(computer_system, 'g')
     def test_create_system_when_request_content_is_wrong(self, g):
@@ -172,7 +174,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
         g.oneview_client.server_profiles.create.assert_not_called()
 
     @mock.patch.object(computer_system, 'g')
-    def test_create_system_when_request_content_did_not_have_compute(self, g):
+    def test_create_system_when_request_content_has_not_compute(self, g):
         """Tests trying create a redfish System without Compute Resource"""
 
         g.oneview_client.server_hardware.get.side_effect = [
@@ -195,19 +197,13 @@ class TestCreateComputerSystem(BaseFlaskTest):
         )
         self.assertEqual("application/json", response.mimetype)
         g.oneview_client.server_hardware.get.assert_has_calls(
-            [
-                call(self.sh_id),
-                call(self.spt_id),
-                call(self.drive1_id),
-                call(self.drive2_id)
-            ]
-        )
+            self.common_calls_to_assert_hardware)
         g.oneview_client.server_profile_templates.get.assert_not_called()
         g.oneview_client.index_resources.get.assert_not_called()
         g.oneview_client.server_profiles.create.assert_not_called()
 
     @mock.patch.object(computer_system, 'g')
-    def test_create_system_when_request_content_did_not_have_network(self, g):
+    def test_create_system_when_request_content_has_not_network(self, g):
         """Tests trying create a redfish System without Network Resource"""
 
         g.oneview_client.server_hardware.get.side_effect = [
@@ -237,26 +233,19 @@ class TestCreateComputerSystem(BaseFlaskTest):
         )
         self.assertEqual("application/json", response.mimetype)
         g.oneview_client.server_hardware.get.assert_has_calls(
-            [
-                call(self.sh_id),
-                call(self.spt_id),
-                call(self.drive1_id),
-                call(self.drive2_id)
-            ]
-        )
+            self.common_calls_to_assert_hardware)
         g.oneview_client.server_profile_templates.get.assert_has_calls(
             [
                 call(self.sh_id),
                 call(self.spt_id),
                 call(self.drive1_id),
                 call(self.drive2_id)
-            ]
-        )
+            ])
         g.oneview_client.index_resources.get.assert_not_called()
         g.oneview_client.server_profiles.create.assert_not_called()
 
     @mock.patch.object(computer_system, 'g')
-    def test_create_system_when_request_content_did_not_have_a_valid_network(
+    def test_create_system_when_request_content_has_not_a_valid_network(
             self, g):
         """Tests trying create a redfish System with a invalid Network"""
 
@@ -290,27 +279,27 @@ class TestCreateComputerSystem(BaseFlaskTest):
         )
         self.assertEqual("application/json", response.mimetype)
         g.oneview_client.server_hardware.get.assert_has_calls(
-            [
-                call(self.sh_id),
-                call(self.spt_id),
-                call(self.drive1_id),
-                call(self.drive2_id)
-            ]
-        )
+            self.common_calls_to_assert_hardware)
         g.oneview_client.server_profile_templates.get.assert_has_calls(
             [
                 call(self.sh_id),
                 call(self.spt_id),
                 call(self.drive1_id),
                 call(self.drive2_id)
-            ]
-        )
+            ])
         g.oneview_client.index_resources.get.assert_not_called()
         g.oneview_client.server_profiles.create.assert_not_called()
 
     @mock.patch.object(computer_system, 'g')
-    def test_create_system_when_request_content_did_not_have_storage(self, g):
-        """Tests create a redfish System without Storage. Should works well"""
+    def test_create_system_when_request_content_has_not_storage(self, g):
+        """Tests create a redfish System without Storage.
+
+            This test should works well.
+
+            This case is when we are creating a System without Storage
+            Resource Blocks, but the Server Profile Template related has a
+            local storage controller configured properly
+        """
 
         g.oneview_client.server_hardware.get.side_effect = [
             self.server_hardware,
@@ -346,30 +335,65 @@ class TestCreateComputerSystem(BaseFlaskTest):
             response.headers["Location"]
         )
         g.oneview_client.server_hardware.get.assert_has_calls(
-            [
-                call(self.sh_id),
-                call(self.spt_id),
-                call(self.drive1_id),
-                call(self.drive2_id)
-            ]
-        )
+            self.common_calls_to_assert_hardware)
         g.oneview_client.server_profile_templates.get.assert_has_calls(
-            [
-                call(self.sh_id),
-                call(self.spt_id),
-                call(self.drive1_id),
-                call(self.drive2_id),
-                call(self.spt_id)
-            ]
-        )
+            self.common_calls_to_assert_hardware)
         g.oneview_client.index_resources.get.assert_has_calls(
-            [
-                call('/rest/drives/' + self.sh_id),
-                call('/rest/drives/' + self.spt_id),
-                call('/rest/drives/' + self.drive1_id),
-                call('/rest/drives/' + self.drive2_id)
-            ]
+            self.common_calls_to_assert_drives)
+
+    @mock.patch.object(computer_system, 'g')
+    def test_create_system_when_has_not_storage_and_controller(self, g):
+        """Tests create a System without Storage but with Storage Controller.
+
+            This test should works well.
+
+            This case is when we are creating a System without Storage
+            Resource Blocks and the Server Profile Template related has not a
+            local storage controller configured properly
+        """
+
+        g.oneview_client.server_hardware.get.side_effect = [
+            self.server_hardware,
+            self.not_found_error,
+            self.not_found_error,
+            self.not_found_error
+        ]
+
+        template_without_controller = copy.copy(self.server_profile_template)
+        template_without_controller["localStorage"]["controllers"] = []
+        g.oneview_client.server_profile_templates.get.side_effect = [
+            self.not_found_error,
+            template_without_controller,
+            self.not_found_error,
+            self.not_found_error,
+            template_without_controller
+        ]
+        g.oneview_client.index_resources.get.side_effect = [
+            self.not_found_error,
+            self.not_found_error,
+            self.not_found_error,
+            self.not_found_error
+        ]
+        g.oneview_client.server_profiles.create.return_value = \
+            self.server_profile
+
+        response = self.client.post(
+            "/redfish/v1/Systems/",
+            data=json.dumps(self.data_to_create_system),
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertIn(
+            "/redfish/v1/Systems/" + self.server_profile["uuid"],
+            response.headers["Location"]
         )
+        g.oneview_client.server_hardware.get.assert_has_calls(
+            self.common_calls_to_assert_hardware)
+        g.oneview_client.server_profile_templates.get.assert_has_calls(
+            self.common_calls_to_assert_spt)
+        g.oneview_client.index_resources.get.assert_has_calls(
+            self.common_calls_to_assert_drives)
 
     @mock.patch.object(computer_system, 'g')
     def test_create_system_when_a_generic_exception_is_raised(self, g):
@@ -434,27 +458,64 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertIn(error.msg, response.data.decode())
         g.oneview_client.server_hardware.get.assert_has_calls(
-            [
-                call(self.sh_id),
-                call(self.spt_id),
-                call(self.drive1_id),
-                call(self.drive2_id)
-            ]
-        )
+            self.common_calls_to_assert_hardware)
         g.oneview_client.server_profile_templates.get.assert_has_calls(
-            [
-                call(self.sh_id),
-                call(self.spt_id),
-                call(self.drive1_id),
-                call(self.drive2_id),
-                call(self.spt_id)
-            ]
-        )
+            self.common_calls_to_assert_spt)
         g.oneview_client.index_resources.get.assert_has_calls(
-            [
-                call('/rest/drives/' + self.sh_id),
-                call('/rest/drives/' + self.spt_id),
-                call('/rest/drives/' + self.drive1_id),
-                call('/rest/drives/' + self.drive2_id)
-            ]
+            self.common_calls_to_assert_drives)
+
+    @mock.patch.object(computer_system, 'g')
+    def test_create_system_when_has_storage_but_not_valid_controller(self, g):
+        """Tests when the Server Profile Template has not a valid storage controller.
+
+            This test should return a http 403 with a error message.
+
+            The case is: the server profile template associated with the
+            request has not a valid local storage controller configured,
+            but the request has storage resource blocks to compose the system
+        """
+
+        g.oneview_client.server_hardware.get.side_effect = [
+            self.server_hardware,
+            self.not_found_error,
+            self.not_found_error,
+            self.not_found_error
+        ]
+
+        template_without_controller = copy.copy(self.server_profile_template)
+        template_without_controller["localStorage"]["controllers"] = []
+        g.oneview_client.server_profile_templates.get.side_effect = [
+            self.not_found_error,
+            template_without_controller,
+            self.not_found_error,
+            self.not_found_error,
+            template_without_controller
+        ]
+        g.oneview_client.index_resources.get.side_effect = [
+            self.not_found_error,
+            self.not_found_error,
+            self.drives[0],
+            self.drives[1]
+        ]
+
+        response = self.client.post(
+            "/redfish/v1/Systems/",
+            data=json.dumps(self.data_to_create_system),
+            content_type='application/json')
+
+        self.assertEqual(
+            status.HTTP_403_FORBIDDEN,
+            response.status_code
         )
+        self.assertEqual("application/json", response.mimetype)
+        self.assertIn("The Server Profile Template should have a valid "
+                      "storage controller to use the Storage Resource "
+                      "Blocks passed",
+                      response.data.decode())
+
+        g.oneview_client.server_hardware.get.assert_has_calls(
+            self.common_calls_to_assert_hardware)
+        g.oneview_client.server_profile_templates.get.assert_has_calls(
+            self.common_calls_to_assert_spt)
+        g.oneview_client.index_resources.get.assert_has_calls(
+            self.common_calls_to_assert_drives)
