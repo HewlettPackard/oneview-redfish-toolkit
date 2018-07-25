@@ -159,7 +159,7 @@ curl -X GET \
 
 ## Event Service notes
 
-Currently, Event Service works only when authentication_mode is set to conf. As it connects directly to HPE OneView SCMB, the toolkit will request OneView to generate SCMB certs and/or download the certs to the correct location. The certs file are: **oneview\_ca**: OneView's CA cert file located at: `certs/oneview_ca.pem`. **scmb\_cert**: OneView's SCMB Client cert file located at: `certs/oneview_scmb.pem`. **scmb\_key**: OneView's SCMB Client key file located at: `certs/oneview_scmb.key`
+Currently, Event Service works only when authentication_mode is set to conf and using OneView API version 500. As it connects directly to HPE OneView SCMB, the toolkit will request OneView to generate SCMB certs and/or download the certs to the correct location. The certs file are: **oneview\_ca**: OneView's CA cert file located at: `certs/oneview_ca.pem`. **scmb\_cert**: OneView's SCMB Client cert file located at: `certs/oneview_scmb.pem`. **scmb\_key**: OneView's SCMB Client key file located at: `certs/oneview_scmb.key`
 
 
 ## Contributing
