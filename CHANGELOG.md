@@ -33,20 +33,48 @@
  - #311 Resource Zone: update link to CapabilitiesObject
  - #329 Fix count on Computer System Collection
  - #339 Network Resource Block: add support for network sets
+ - #299 Include Storage resource blocks in a Resource Zone
+ - #309 Storage Resource Blocks in a Zone should be available only if storage controller is configured
+ - #270 Implement ComputerSystem for a composed resource
+ - #294 Include Network resource blocks in a Resource Zone
+ - #335 Reset action to a System is not working properly
+ - #317 Add support for Actions/Chassis.Reset in the Chassis for Server Hardware
+ - #271 Implement "@Redfish.CollectionCapabilities" in the Systems collection
+ - #337 Include information about Storage and Network for a Composed System
+ - #339 Network Resource Block: add support for network sets
+ - #341 Composed system: update NetworkInterfaces
+ - #349 Refactor Redfish.conf
+ - #263 Implement POST to create a composed resource
+ - #340 Composed System: Add ResourceBlocks in the Links
+ - #308 Update Links in the Storage Resource Block
+ - #350 Refactor odata.type
+ - #357 Set API version 500 for Event Service (workaround)
 
 # New Redfish resources
- - EventService
- - EventSubscription
- - EventDestinationCollection
- - EventDestination
- - CompositionService
- - ResourceBlockCollection
+ - Event Service
+ - Event Subscription
+ - Event Destination Collection
+ - Event Destination
+ - Event
+ - Message
+ - Composition Service
+ - Resource Block Collection
  - Zone
- - ZoneCollection
- - ResourceBlock
- - EthernetInterface
- - ProcessorCollection
+ - Zone Collection
+ - Collection Capabilities
+ - Resource Block
+ - Ethernet Interface Collection
+ - Ethernet Interface
+ - VLan Network Interface
+ - VLan Network Interface Collection
+ - Computer System (Composed scenario)
+ - Storage Collection
+ - Drive
+ - Computer System Resource Block
+ - Processor Collection
  - Processor
+ - Storage Resource Block
+ - Network Resource Block
 
 
 # 0.2.0
@@ -69,11 +97,16 @@
 
 # New Redfish resources
  - Storage
+ - Network Interface Collection
  - Network Interface
- - NetworkAdapter
- - NetworkPort
- - NetworkDeviceFunction
- - SessionService/Sessions
+ - Network Adapter Collection
+ - Network Adapter
+ - Network Port Collection
+ - Network Port
+ - Network Device Function Collection
+ - Network Device Function
+ - Session Service
+ - Session
 
 
 # 0.1.2
@@ -99,9 +132,9 @@ the following features:
 
 #### Redfish features supported
  - Service Root
- - System collection
- - System
- - System (Boot, Processor and Memory mappings)
+ - Computer System collection
+ - Computer System
+ - Computer System (Boot, Processor and Memory mappings)
  - Chassis collection
  - Chassis
  - Thermal mappings for Chassis
