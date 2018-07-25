@@ -56,21 +56,31 @@ def get_resource_block(uuid):
         category = resource["category"]
 
         if category == "server-hardware":
-            resource_block = _build_computer_system_resource_block(
+            result_resource_block = _build_computer_system_resource_block(
                 uuid, resource)
 
         elif category == "server-profile-templates":
-            resource_block = \
+            result_resource_block = \
                 ServerProfileTemplateResourceBlock(uuid, resource)
 
         elif category == "drives":
-            resource_block = StorageResourceBlock(resource)
+            drive_uuid = resource["uri"].split("/")[-1]
+            drive_index_trees_uri = \
+                "/rest/index/trees/rest/drives/{}?parentDepth=3"
+            drive_index_trees = g.oneview_client.connection.get(
+                drive_index_trees_uri.format(drive_uuid))
+
+            server_profile_templates = \
+                g.oneview_client.server_profile_templates.get_all()
+
+            result_resource_block = StorageResourceBlock(
+                resource, drive_index_trees, server_profile_templates)
 
         else:
             raise OneViewRedfishError('Resource block not found')
 
         return ResponseBuilder.success(
-            resource_block,
+            result_resource_block,
             {"ETag": "W/" + resource["eTag"]})
 
     except OneViewRedfishError as e:

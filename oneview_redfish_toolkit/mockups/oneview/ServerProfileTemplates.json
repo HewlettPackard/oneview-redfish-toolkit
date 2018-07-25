@@ -1,7 +1,20 @@
 [
   {
     "localStorage": {
-      "controllers": [],
+      "controllers": [
+        {
+          "deviceSlot": "Embedded",
+          "logicalDrives": "",
+          "mode": "HBA",
+          "initialize": ""
+        },
+        {
+          "deviceSlot": "Mezz 1",
+          "logicalDrives": "",
+          "mode": "HBA",
+          "initialize": ""
+        }
+      ],
       "sasLogicalJBODs": [
         {
           "deviceSlot": "Mezz 1",
@@ -82,7 +95,14 @@
   },
   {
     "localStorage": {
-      "controllers": [],
+      "controllers": [
+        {
+          "deviceSlot": "Embedded",
+          "logicalDrives": "",
+          "mode": "HBA",
+          "initialize": ""
+        }
+      ],
       "sasLogicalJBODs": [
         {
           "deviceSlot": "Mezz 1",

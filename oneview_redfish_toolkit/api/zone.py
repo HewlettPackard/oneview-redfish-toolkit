@@ -50,11 +50,10 @@ class Zone(RedfishJsonValidator):
 
         available_targets = available_targets_obj["targets"]
 
-        controllers = profile_template["localStorage"]["controllers"]
-        has_valid_drive_config = \
-            [i for i in controllers if i["deviceSlot"] != "Embedded"]
+        has_valid_controller = \
+            ComputerSystem.get_storage_controller(profile_template)
 
-        if not has_valid_drive_config:
+        if not has_valid_controller:
             drives = []
 
         self.redfish["@odata.type"] = self.get_odata_type()
