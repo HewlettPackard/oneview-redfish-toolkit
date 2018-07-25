@@ -17,9 +17,7 @@
 import collections
 from copy import deepcopy
 
-from flask_api import status
-from werkzeug.exceptions import abort
-
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 from oneview_redfish_toolkit.api.resource_block_collection import \
@@ -192,10 +190,10 @@ class ComputerSystem(RedfishJsonValidator):
         controller = ComputerSystem._get_storage_controller(
             server_profile_template)
 
-        if not controller:
-            abort(status.HTTP_412_PRECONDITION_FAILED,
-                  "The server profile template should be controllers "
-                  "configured properly")
+        if storage_blocks and not controller:
+            raise OneViewRedfishError(
+                "The Server Profile Template should have a valid "
+                "storage controller to use the Storage Resource Blocks passed")
 
         for index, storage_block in enumerate(storage_blocks):
             storage_id = index + 1
