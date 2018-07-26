@@ -29,7 +29,7 @@ from hpOneView.oneview_client import OneViewClient
 # own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.session import Session
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit import config as configuration
 
 
 session = Blueprint('session', __name__)
@@ -71,7 +71,7 @@ def post_session():
                             " must have the keys UserName and Password"})
 
         config = dict()
-        config["ip"] = util.ov_config["ip"]
+        config["ip"] = configuration.get_oneview_ip()
         config["credentials"] = dict()
         config["credentials"]["userName"] = username
         config["credentials"]["password"] = password

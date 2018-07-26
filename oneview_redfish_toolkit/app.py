@@ -92,21 +92,23 @@ from oneview_redfish_toolkit.blueprints.vlan_network_interface import \
     vlan_network_interface
 from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
+from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import util
 
 
 def main(config_file_path, logging_config_file_path):
     # Load config file, schemas and creates a OV connection
     try:
-        util.configure_logging(logging_config_file_path)
-        util.load_config(config_file_path)
+        config.configure_logging(logging_config_file_path)
+        config.load_config(config_file_path)
     except Exception as e:
         logging.exception('Failed to load app configuration')
         logging.exception(e)
         exit(1)
 
     # Check auth mode
-    auth_mode = util.config.get('redfish', 'authentication_mode')
+    auth_mode = config.get_authentication_mode()
 
     if auth_mode not in ["conf", "session"]:
         logging.error(
@@ -160,9 +162,9 @@ def main(config_file_path, logging_config_file_path):
     def check_authentication():
         """Checks authentication before serving the request"""
         # If authentication_mode = conf don't need auth
-        auth_mode = util.config["redfish"]["authentication_mode"]
+        auth_mode = config.get_authentication_mode()
         if auth_mode == "conf":
-            g.oneview_client = util.get_oneview_client()
+            g.oneview_client = connection.get_oneview_client()
             return None
         else:
             # ServiceRoot don't need auth
@@ -170,7 +172,7 @@ def main(config_file_path, logging_config_file_path):
                                             "/redfish",
                                             "/redfish/v1/odata",
                                             "/redfish/v1/$metadata"}:
-                g.oneview_client = util.get_oneview_client(None, True)
+                g.oneview_client = connection.get_oneview_client(None, True)
                 return None
             # If authenticating we do nothing
             if request.path == "/redfish/v1/SessionService/Sessions" and \
@@ -184,7 +186,8 @@ def main(config_file_path, logging_config_file_path):
                     "x-auth-token header not found")
             else:
                 try:
-                    oneview_client = util.get_oneview_client(x_auth_token)
+                    oneview_client = \
+                        connection.get_oneview_client(x_auth_token)
                     g.oneview_client = oneview_client
                 except Exception:
                     abort(status.HTTP_401_UNAUTHORIZED, "invalid auth token")
@@ -272,7 +275,7 @@ def main(config_file_path, logging_config_file_path):
         logging.exception(exception)
         return ResponseBuilder.error_by_hp_oneview_exception(exception)
 
-    if util.config['redfish']['authentication_mode'] == 'conf':
+    if config.get_authentication_mode() == 'conf':
         # Loading scmb connection
         if scmb.check_cert_exist():
             logging.info('SCMB certs already exists testing connection...')
@@ -290,10 +293,10 @@ def main(config_file_path, logging_config_file_path):
         logging.warning("Authentication mode set to session. SCMB events will "
                         "be disabled")
 
-    config = util.config
+    app_config = config.get_config()
 
     try:
-        host = config["redfish"]["redfish_host"]
+        host = app_config["redfish"]["redfish_host"]
 
         # Gets the correct IP type based on the string
         ipaddress.ip_address(host)
@@ -303,7 +306,7 @@ def main(config_file_path, logging_config_file_path):
         exit(1)
 
     try:
-        port = int(config["redfish"]["redfish_port"])
+        port = int(app_config["redfish"]["redfish_port"])
     except Exception:
         logging.exception(
             "Port must be an integer number between 1 and 65536.")
@@ -313,14 +316,14 @@ def main(config_file_path, logging_config_file_path):
         logging.error("Port must be an integer number between 1 and 65536.")
         exit(1)
 
-    if config["ssl"]["SSLType"] in ("self-signed", "adhoc"):
+    if app_config["ssl"]["SSLType"] in ("self-signed", "adhoc"):
         logging.warning("Server is starting with a self-signed certificate.")
-    if config["ssl"]["SSLType"] == "disabled":
+    if app_config["ssl"]["SSLType"] == "disabled":
         logging.warning(
             "Server is starting in HTTP mode. This is an insecure mode. "
             "Running the server with HTTPS enabled is highly recommended.")
 
-    ssl_type = config["ssl"]["SSLType"]
+    ssl_type = app_config["ssl"]["SSLType"]
     # Check SSLType:
     if ssl_type not in ('disabled', 'adhoc', 'certs', 'self-signed'):
         logging.error(
@@ -330,7 +333,7 @@ def main(config_file_path, logging_config_file_path):
         exit(1)
 
     try:
-        debug = config["redfish"]["debug"]
+        debug = app_config["redfish"]["debug"]
 
         if debug not in ('false', 'true'):
             logging.warning(
@@ -351,8 +354,8 @@ def main(config_file_path, logging_config_file_path):
         app.run(host=host, port=port, debug=debug, ssl_context="adhoc")
     else:
         # We should use certs file provided by the user
-        ssl_cert_file = config["ssl"]["SSLCertFile"]
-        ssl_key_file = config["ssl"]["SSLKeyFile"]
+        ssl_cert_file = app_config["ssl"]["SSLCertFile"]
+        ssl_key_file = app_config["ssl"]["SSLKeyFile"]
         # Generating cert files if they don't exists
         if ssl_type == "self-signed":
             if not os.path.exists(ssl_cert_file) and not \

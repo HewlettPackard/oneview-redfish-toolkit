@@ -41,9 +41,8 @@ class Metadata(BaseFlaskTest):
 
         self.app.register_blueprint(metadata)
 
-    @mock.patch('oneview_redfish_toolkit.util.config.items')
     @mock.patch('oneview_redfish_toolkit.api.schemas.SCHEMAS', schemas_dict)
-    def test_get_metadata(self, config_mockup):
+    def test_get_metadata(self):
         """Tests Metadata blueprint result against know value """
 
         response = self.client.get("/redfish/v1/$metadata")

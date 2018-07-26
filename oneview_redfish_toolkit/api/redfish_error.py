@@ -22,7 +22,7 @@ from oneview_redfish_toolkit.api.errors import \
     OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit import config
 
 
 class RedfishError(RedfishJsonValidator):
@@ -44,7 +44,7 @@ class RedfishError(RedfishJsonValidator):
         super().__init__(self.SCHEMA_NAME)
         self.redfish["error"] = collections.OrderedDict()
         # Check if Code is a valid Code Error in the registry
-        if code not in util.registry_dict["Base"]["Messages"]:
+        if code not in config.get_registry_dict()["Base"]["Messages"]:
             raise OneViewRedfishResourceNotFoundError(code, "registry")
         self.redfish["error"]["code"] = "Base.1.1." + code
         self.redfish["error"]["message"] = message
@@ -70,7 +70,7 @@ class RedfishError(RedfishJsonValidator):
                     necessary
 
         """
-        messages = util.registry_dict["Base"]["Messages"]
+        messages = config.get_registry_dict()["Base"]["Messages"]
 
         # Verify if message_id exists in registry
         try:

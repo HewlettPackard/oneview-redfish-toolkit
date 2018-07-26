@@ -103,9 +103,9 @@ def add_subscription():
                             " ResourceRemoved and Alert."})
 
         for event_type in sc.get_event_types():
-            util.subscriptions_by_type[event_type][subscription_id] = sc
+            util.get_subscriptions_by_type()[event_type][subscription_id] = sc
 
-        util.all_subscriptions[subscription_id] = sc
+        util.get_all_subscriptions()[subscription_id] = sc
 
         # Build redfish json
         json_str = sc.serialize()
@@ -138,13 +138,13 @@ def remove_subscription(subscription_id):
             subscription_id: The Subscription ID.
     """
     try:
-        sc = util.all_subscriptions[subscription_id]
+        sc = util.get_all_subscriptions()[subscription_id]
         event_types = sc.get_event_types()
 
         for event in event_types:
-            del util.subscriptions_by_type[event][subscription_id]
+            del util.get_subscriptions_by_type()[event][subscription_id]
 
-        del util.all_subscriptions[subscription_id]
+        del util.get_all_subscriptions()[subscription_id]
 
         return Response(
             status=status.HTTP_200_OK,
@@ -167,7 +167,7 @@ def get_subscription(subscription_id):
             Subscription JSON.
     """
     try:
-        sc = util.all_subscriptions[subscription_id]
+        sc = util.get_all_subscriptions()[subscription_id]
 
         json_str = sc.serialize()
         return Response(

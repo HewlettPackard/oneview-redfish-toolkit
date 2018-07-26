@@ -17,7 +17,8 @@
 from unittest import mock
 from unittest import TestCase
 
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit import connection
 
 
 class BaseTest(TestCase):
@@ -34,11 +35,11 @@ class BaseTest(TestCase):
                 return sub_setUp(self, *args, **kwargs)
             cls.setUp = setUpOverride
 
-    @mock.patch.object(util, 'check_oneview_availability')
+    @mock.patch.object(connection, 'check_oneview_availability')
     def setUp(self, check_ov_availability):
         self.config_file = './oneview_redfish_toolkit/conf/redfish.conf'
 
-        util.load_config(self.config_file)
+        config.load_config(self.config_file)
 
     def assertEqualMockup(self, first, second, msg=None):
         if type(first) is dict and type(second) is dict:

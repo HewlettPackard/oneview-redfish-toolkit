@@ -36,7 +36,7 @@ class TestSubscriptionCollection(BaseFlaskTest):
 
         self.app.register_blueprint(subscription_collection)
 
-    @mock.patch('oneview_redfish_toolkit.util.all_subscriptions')
+    @mock.patch('oneview_redfish_toolkit.util.get_all_subscriptions')
     def test_get_subscription_collection(self, subscriptions_mockup):
         """Tests SubscriptionCollection blueprint result against know value"""
 

@@ -19,7 +19,7 @@ import collections
 
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit import config
 
 
 class ServiceRoot(RedfishJsonValidator):
@@ -76,7 +76,7 @@ class ServiceRoot(RedfishJsonValidator):
         self._validate()
 
     def add_event_service_api(self):
-        auth_mode = util.config.get('redfish', 'authentication_mode')
+        auth_mode = config.get_authentication_mode()
 
         if auth_mode == "conf":
             self.redfish["EventService"] = collections.OrderedDict()

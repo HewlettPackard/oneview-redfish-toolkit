@@ -22,8 +22,8 @@ import json
 from unittest import mock
 
 from oneview_redfish_toolkit.api.service_root import ServiceRoot
+from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit.tests.base_test import BaseTest
-from oneview_redfish_toolkit import util
 
 
 class TestServiceRoot(BaseTest):
@@ -39,17 +39,11 @@ class TestServiceRoot(BaseTest):
                       "Error: {}".format(e))
         self.assertIsInstance(service_root, ServiceRoot)
 
-    @mock.patch.object(util, 'config')
+    @mock.patch.object(config, 'get_authentication_mode')
     def test_serialize(self, config_mock):
         """Tests the serialize function result against known result"""
 
-        def side_effect(section, option):
-            if section == "redfish" and option == "authentication_mode":
-                return "conf"
-            else:
-                return util.config.get(section, option)
-
-        config_mock.get.side_effect = side_effect
+        config_mock.return_value = "conf"
 
         service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
         result = json.loads(service_root.serialize())
