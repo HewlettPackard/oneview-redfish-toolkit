@@ -22,7 +22,7 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api import schemas
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit import config
 
 
 class RedfishJsonValidator(object):
@@ -67,7 +67,7 @@ class RedfishJsonValidator(object):
                 OneViewRedfishError: Raises this exception if
                 schema is not found.
         """
-        stored_schemas = util.stored_schemas
+        stored_schemas = config.get_stored_schemas()
         schema_obj = self.get_schema_obj(self.schema_name)
 
         resolver = jsonschema.RefResolver('', schema_obj, store=stored_schemas)
@@ -84,7 +84,7 @@ class RedfishJsonValidator(object):
                 string: json string with the contents of self.redfish
         """
 
-        if util.config['redfish']['indent_json']:
+        if config.get_config()['redfish']['indent_json']:
             indent = 4
         else:
             indent = None
@@ -163,7 +163,7 @@ class RedfishJsonValidator(object):
                 dict: schema dict for the schema name.
         """
         schema_file = schemas.SCHEMAS[schema_name]
-        stored_schemas = util.stored_schemas
+        stored_schemas = config.get_stored_schemas()
 
         try:
             schema_obj = stored_schemas[

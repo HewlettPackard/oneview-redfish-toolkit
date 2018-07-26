@@ -80,8 +80,8 @@ def get_event_service():
     """
     try:
         # Build Event Service object and validates it
-        evs = EventService(util.delivery_retry_attempts,
-                           util.delivery_retry_interval)
+        evs = EventService(util.get_delivery_retry_attempts(),
+                           util.get_delivery_retry_interval())
 
         # Build redfish json
         json_str = evs.serialize()
@@ -124,7 +124,7 @@ def execute_test_event_action():
             raise OneViewRedfishError(
                 {'message': 'Invalid JSON data. Missing EventType property.'})
 
-        if (event_type not in util.subscriptions_by_type.keys()):
+        if (event_type not in util.get_subscriptions_by_type().keys()):
             raise OneViewRedfishError(
                 {'message': 'Invalid EventType value: %s' % event_type})
 

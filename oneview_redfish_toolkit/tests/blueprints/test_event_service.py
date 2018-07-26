@@ -36,10 +36,13 @@ class TestEventService(BaseFlaskTest):
 
         self.app.register_blueprint(event_service.event_service)
 
-    @mock.patch('oneview_redfish_toolkit.util.delivery_retry_attempts', 3)
-    @mock.patch('oneview_redfish_toolkit.util.delivery_retry_interval', 30)
-    def test_get_event_service(self):
+    @mock.patch('oneview_redfish_toolkit.util.get_delivery_retry_attempts')
+    @mock.patch('oneview_redfish_toolkit.util.get_delivery_retry_interval')
+    def test_get_event_service(self, get_delivery_retry_interval,
+                               get_delivery_retry_attempts):
         """Tests EventService blueprint result against known value"""
+        get_delivery_retry_interval.return_value = 30
+        get_delivery_retry_attempts.return_value = 3
 
         response = self.client.get("/redfish/v1/EventService/")
 

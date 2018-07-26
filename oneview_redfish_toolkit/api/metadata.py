@@ -21,7 +21,7 @@ from xml.dom import minidom
 import xml.etree.ElementTree as ET
 
 # Project libs
-from oneview_redfish_toolkit import util
+from oneview_redfish_toolkit import config
 
 
 class Metadata(object):
@@ -71,7 +71,7 @@ class Metadata(object):
     def serialize(self):
         xml_str = ET.tostring(self.metadata, encoding="UTF-8").decode("UTF-8")
         # If prettify
-        if util.config['redfish']['xml_prettify'] == "True":
+        if config.get_config()['redfish']['xml_prettify'] == "True":
             return minidom.parseString(xml_str).toprettyxml(
                 encoding="UTF-8", indent="    ").decode("UTF-8")
         else:

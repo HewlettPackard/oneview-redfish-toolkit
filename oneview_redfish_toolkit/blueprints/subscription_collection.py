@@ -42,7 +42,7 @@ def get_subscription_collection():
     """
     try:
         # Build Subscription Collection object and validates it
-        sc = SubscriptionCollection(util.all_subscriptions)
+        sc = SubscriptionCollection(util.get_all_subscriptions())
 
         # Build redfish json
         json_str = sc.serialize()

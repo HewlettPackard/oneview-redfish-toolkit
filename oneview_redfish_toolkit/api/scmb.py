@@ -20,12 +20,13 @@ import os
 import pika
 import ssl
 
-from copy import deepcopy
 from hpOneView.exceptions import HPOneViewException
 from hpOneView.oneview_client import OneViewClient
 from pika.credentials import ExternalCredentials
 
 from oneview_redfish_toolkit.api.event import Event
+from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import util
 
 
@@ -51,10 +52,13 @@ def get_oneview_client():
     # Workaround for #328
     # Create OneView client using API 500 just to retrieve OneView certificates
     try:
-        ov_config = deepcopy(util.ov_config)
-        ov_config['api_version'] = 500
+        ov_config = connection.create_oneview_config(
+            ip=config.get_oneview_ip(),
+            credentials=config.get_credentials(),
+            api_version=500
+        )
         ov_client = OneViewClient(ov_config)
-        ov_client.connection.login(ov_config['credentials'])
+        ov_client.connection.login(config.get_credentials())
     # if failed abort
     except Exception:
         raise
@@ -97,7 +101,7 @@ def get_cert():
 
 
 def scmb_connect():
-    scmb_server = util.config['oneview_config']['ip']
+    scmb_server = config.get_oneview_ip()
 
     # Setup our ssl options
     ssl_options = ({'ca_certs': ONEVIEW_CA,

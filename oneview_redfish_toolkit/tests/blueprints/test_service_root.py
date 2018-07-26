@@ -24,8 +24,8 @@ from hpOneView.exceptions import HPOneViewException
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import service_root
+from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
-from oneview_redfish_toolkit import util
 
 
 class TestServiceRoot(BaseFlaskTest):
@@ -78,20 +78,14 @@ class TestServiceRoot(BaseFlaskTest):
 
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(util, 'config')
+    @mock.patch.object(config, 'get_authentication_mode')
     @mock.patch.object(service_root, 'g')
-    def test_get_service_root(self, g, config_mock):
+    def test_get_service_root(self, g, get_authentication_mode):
         """Tests ServiceRoot blueprint result against know value """
-
-        def side_effect(section, option):
-            if section == "redfish" and option == "authentication_mode":
-                return "conf"
-            else:
-                return util.config.get(section, option)
 
         g.oneview_client.appliance_node_information.get_version.return_value = \
             {'uuid': '00000000-0000-0000-0000-000000000000'}
-        config_mock.get.side_effect = side_effect
+        get_authentication_mode.return_value = "conf"
 
         result = self.client.get("/redfish/v1/")
 
