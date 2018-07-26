@@ -24,12 +24,11 @@ from flask import request
 from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
-from hpOneView.oneview_client import OneViewClient
 
 # own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.session import Session
-from oneview_redfish_toolkit import config as configuration
+from oneview_redfish_toolkit import authentication
 
 
 session = Blueprint('session', __name__)
@@ -70,14 +69,7 @@ def post_session():
                  "message": "Invalid JSON key. The JSON request body"
                             " must have the keys UserName and Password"})
 
-        config = dict()
-        config["ip"] = configuration.get_oneview_ip()
-        config["credentials"] = dict()
-        config["credentials"]["userName"] = username
-        config["credentials"]["password"] = password
-
-        oneview_client = OneViewClient(config)
-        session_id = oneview_client.connection.get_session_id()
+        session_id = authentication.login(username, password)
 
         sess = Session(username)
 

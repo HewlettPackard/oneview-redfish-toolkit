@@ -26,7 +26,7 @@ from hpOneView import HPOneViewException
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit.blueprints import session as session_file
+from oneview_redfish_toolkit import authentication
 from oneview_redfish_toolkit.blueprints.session \
     import session as session_blueprint
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
@@ -53,7 +53,7 @@ class TestSession(BaseFlaskTest):
                 status=status.HTTP_401_UNAUTHORIZED,
                 mimetype='application/json')
 
-    @mock.patch.object(session_file, 'OneViewClient')
+    @mock.patch.object(authentication, 'OneViewClient')
     def test_post_session(self, oneview_client_mockup):
         """Tests post Session"""
 
@@ -86,7 +86,7 @@ class TestSession(BaseFlaskTest):
                       response.headers["Location"])
         self.assertEqual("sessionId", response.headers["X-Auth-Token"])
 
-    @mock.patch.object(session_file, 'OneViewClient')
+    @mock.patch.object(authentication, 'OneViewClient')
     def test_post_session_invalid_key(self, oneview_client_mockup):
         """Tests post session with an invalid JSON key"""
 
@@ -118,7 +118,7 @@ class TestSession(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(result, invalid_json_key)
 
-    @mock.patch.object(session_file, 'OneViewClient')
+    @mock.patch.object(authentication, 'OneViewClient')
     def test_post_session_oneview_exception(self, oneview_client_mockup):
         """Tests post session with HPOneViewException"""
 
@@ -145,7 +145,7 @@ class TestSession(BaseFlaskTest):
         )
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(session_file, 'OneViewClient')
+    @mock.patch.object(authentication, 'OneViewClient')
     def test_post_session_unexpected_error(self, oneview_client_mockup):
         """Tests post session with an unexpected error"""
 
