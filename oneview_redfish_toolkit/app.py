@@ -34,6 +34,7 @@ from hpOneView import HPOneViewException
 
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.api import scmb
+from oneview_redfish_toolkit import authentication
 from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.chassis_collection \
     import chassis_collection
@@ -186,6 +187,10 @@ def main(config_file_path, logging_config_file_path):
                     "x-auth-token header not found")
             else:
                 try:
+                    authentication.check_authentication(x_auth_token)
+
+                    # TODO(@victorhugorodrigues): Remove this single OneView
+                    # connection after implement support for multiple OneViews
                     oneview_client = \
                         connection.get_oneview_client(x_auth_token)
                     g.oneview_client = oneview_client
