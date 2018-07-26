@@ -40,11 +40,14 @@ def get_zone(uuid):
     """
     profile_template = g.oneview_client.server_profile_templates.get(uuid)
 
-    logical_enclosure_resource = _get_logical_enclosure_by_spt(profile_template)
+    logical_enclosure_resource = \
+        _get_logical_enclosure_by_spt(profile_template)
     enclosures_uris = logical_enclosure_resource["enclosureUris"]
     server_hardware_filter = _create_server_hardware_filter(enclosures_uris)
 
-    server_hardware_list = g.oneview_client.server_hardware.get_all(filter=server_hardware_filter)
+    server_hardware_list = g.oneview_client.server_hardware.get_all(
+        filter=server_hardware_filter
+    )
 
     drives = g.oneview_client.index_resources \
         .get_all(category="drives", count=10000)
@@ -75,7 +78,7 @@ def _get_logical_enclosure_by_spt(profile_template):
     logical_enclosure_key = "ENCLOSURE_GROUP_TO_LOGICAL_ENCLOSURE"
     encl_group_children = encl_group_index_trees["children"]
     logical_encl = encl_group_children[logical_enclosure_key][0]
-    logical_encl_resource = g.oneview_client.logical_enclosures.get(
-            logical_encl["resource"]["uri"])
+    logical_encl_resource = g.oneview_client.logical_enclosures.\
+        get(logical_encl["resource"]["uri"])
 
     return logical_encl_resource

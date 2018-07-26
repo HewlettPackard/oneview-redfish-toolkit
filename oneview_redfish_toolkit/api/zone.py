@@ -63,7 +63,8 @@ class Zone(RedfishJsonValidator):
         self.redfish["Links"] = dict()
         self.redfish["Links"]["ResourceBlocks"] = list()
 
-        self.fill_resource_blocks(profile_template, server_hardware_list, drives)
+        self.fill_resource_blocks(profile_template, server_hardware_list,
+                                  drives)
 
         self.capabilities_key = "@Redfish.CollectionCapabilities"
         self.redfish[self.capabilities_key] = dict()
