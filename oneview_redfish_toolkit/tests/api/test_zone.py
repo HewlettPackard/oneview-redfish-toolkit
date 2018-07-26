@@ -28,12 +28,13 @@ class TestZone(BaseTest):
         server_profile_template = json.load(f)
 
     with open('oneview_redfish_toolkit/mockups/oneview/'
-              'ServerHardwares.json') as f:
+              'ServerHardwareList.json') as f:
         server_hardware_list = json.load(f)[:4]
 
     with open('oneview_redfish_toolkit/mockups/oneview/'
-              'Drives.json') as f:
-        drives = json.load(f)
+              'DrivesByDriveEnclosure.json') as f:
+        drives_by_encl = json.load(f)
+        drives = drives_by_encl["members"]
 
     with open('oneview_redfish_toolkit/mockups/redfish/Zone.json') as f:
         zone_mockup = json.load(f)
@@ -46,17 +47,23 @@ class TestZone(BaseTest):
               'ZoneWithoutNetwork.json') as f:
         zone_without_network_mockup = json.load(f)
 
-    def test_serialize(self):
-        """Tests if after serialize Zone the result is as expected"""
+    def test_drives_with_network_and_drive_links(self):
+        """Tests when all is configured properly"""
 
-        zone = Zone(self.server_profile_template,
+        self.maxDiff = None
+
+        profile_template = copy.deepcopy(self.server_profile_template)
+        zone_id = "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101"
+
+        zone = Zone(zone_id,
+                    profile_template,
                     self.server_hardware_list,
                     self.drives)
         result = json.loads(zone.serialize())
+
         self.assertEqualMockup(self.zone_mockup, result)
 
-    def test_drives_as_links_when_storage_controllers_are_not_configured(
-            self):
+    def test_drives_as_links_when_storage_controllers_are_not_configured(self):
         """Tests Drives as Links when not configured
 
             Tests if Drive Resource blocks is empty when Storage Controllers
@@ -65,8 +72,10 @@ class TestZone(BaseTest):
 
         profile_template = copy.deepcopy(self.server_profile_template)
         profile_template["localStorage"]["controllers"] = []
+        zone_id = "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
 
-        zone = Zone(profile_template,
+        zone = Zone(zone_id,
+                    profile_template,
                     self.server_hardware_list,
                     self.drives)
         result = json.loads(zone.serialize())
@@ -88,15 +97,16 @@ class TestZone(BaseTest):
             "driveWriteCache": "Unmanaged",
             "logicalDrives": None
         }]
+        zone_id = "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
 
-        zone = Zone(profile_template,
+        zone = Zone(zone_id,
+                    profile_template,
                     self.server_hardware_list,
                     self.drives)
         result = json.loads(zone.serialize())
         self.assertEqualMockup(self.zone_without_drives_mockup, result)
 
-    def test_spt_when_connections_are_not_configured(
-            self):
+    def test_spt_when_connections_are_not_configured(self):
         """Tests Zone with no resource block for network
 
             Tests Zone with no resource block for network when handling
@@ -105,8 +115,10 @@ class TestZone(BaseTest):
 
         profile_template = copy.deepcopy(self.server_profile_template)
         profile_template["connectionSettings"]["connections"] = []
+        zone_id = "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101"
 
-        zone = Zone(profile_template,
+        zone = Zone(zone_id,
+                    profile_template,
                     self.server_hardware_list,
                     self.drives)
         result = json.loads(zone.serialize())

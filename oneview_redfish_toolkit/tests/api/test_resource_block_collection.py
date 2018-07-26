@@ -31,7 +31,7 @@ class TestResourceBlockCollection(BaseTest):
         # Loading ServerHardware list mockup value
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerHardwares.json'
+            'ServerHardwareList.json'
         ) as f:
             self.server_hardware_list = json.load(f)
 

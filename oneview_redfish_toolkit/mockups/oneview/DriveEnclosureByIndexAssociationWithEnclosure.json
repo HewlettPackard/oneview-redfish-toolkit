@@ -1,0 +1,229 @@
+{
+  "type": "AssociationPaginatedCollectionV300",
+  "start": 0,
+  "count": 1,
+  "total": 1,
+  "unFilteredTotal": 2,
+  "uri": "/rest/index/associations/resources?start=0&count=50&category=drive-enclosures&parenturi=/rest/enclosures/0000000000A66101",
+  "category": "associations",
+  "members": [
+    {
+      "parentResource": {
+        "type": "IndexResourceV300",
+        "name": "0000A66101",
+        "description": null,
+        "attributes": {
+          "state_reason": "None",
+          "enclosure_type_uri": "/rest/enclosure-types/SY12000",
+          "reapply_config_state": "NotReapplyingConfiguration",
+          "refresh_state": "NotRefreshing",
+          "part_number": "000000-010",
+          "serial_number": "0000A66101",
+          "model": "Synergy 12000 Frame",
+          "uuid": "0000000000A66101",
+          "encgrp_uri": "/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
+          "fw_baseline_name": ""
+        },
+        "multiAttributes": {
+          "fan_bay_number": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10"
+          ],
+          "power_supply_bay_number": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "em_role": [
+            "Active",
+            "Standby"
+          ],
+          "em_fw_version": [
+            "2.00.00",
+            "2.00.00"
+          ],
+          "device_presence": [
+            "Present",
+            "Subsumed",
+            "Present",
+            "Present",
+            "Present",
+            "Absent",
+            "Present",
+            "Present",
+            "Subsumed",
+            "Subsumed",
+            "Present",
+            "Absent"
+          ],
+          "fan_status": [
+            "OK",
+            "OK",
+            "OK",
+            "OK",
+            "OK",
+            "OK",
+            "OK",
+            "OK",
+            "OK",
+            "OK"
+          ],
+          "power_supply_part_number": [
+            "0000008710",
+            "0000008710",
+            "0000008710",
+            "0000008710",
+            "0000008710",
+            "0000008710"
+          ],
+          "em_bay_number": [
+            "1",
+            "2"
+          ],
+          "power_supply_status": [
+            "OK",
+            "OK",
+            "OK",
+            "OK",
+            "OK",
+            "OK"
+          ],
+          "fan_part_number": [
+            "0008568710",
+            "0008568710",
+            "0008568710",
+            "0008568710",
+            "0008568710",
+            "0008568710",
+            "0008568710",
+            "0008568710",
+            "0008568710",
+            "0008568710"
+          ],
+          "device_bay_number": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12"
+          ],
+          "interconnect_uri": [
+            "/rest/sas-interconnects/2M220100SL",
+            "/rest/interconnects/34e661f9-06eb-465b-859b-282c3a7cb88f",
+            "/rest/interconnects/f3b2b71e-4f7d-41d1-abc7-5f621459c87b",
+            "/rest/sas-interconnects/2M220101SL",
+            "/rest/interconnects/8cb3c588-6f85-4197-b015-692807101c55",
+            "/rest/interconnects/69343adc-42df-485a-b2de-b90993f2f658"
+          ],
+          "device_uri": [
+            "/rest/drive-enclosures/SN123100",
+            null,
+            "/rest/server-hardware/30373737-3237-4D32-3230-313530314752",
+            "/rest/server-hardware/30373737-3237-4D32-3230-313530354752",
+            "/rest/server-hardware/30303437-3034-4D32-3230-313130304752",
+            null,
+            "/rest/server-hardware/30303437-3034-4D32-3230-313130364752",
+            "/rest/server-hardware/30303437-3034-4D32-3230-313130394752",
+            null,
+            null,
+            "/rest/server-hardware/33343538-3435-4A32-3230-313130304752",
+            null
+          ],
+          "interconnect_bay_number": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6"
+          ],
+          "em_ip_address": [
+            "fe80::2:0:9:1%eth2",
+            "fe80::2:0:9:2%eth2"
+          ],
+          "em_presence": [
+            "Present",
+            "Present"
+          ]
+        },
+        "ownerId": "perm",
+        "state": "Configured",
+        "status": "OK",
+        "created": "2018-04-10T19:45:53.210Z",
+        "modified": "2018-07-25T20:04:17.217Z",
+        "eTag": "2018-07-25T20:04:17.217Z",
+        "category": "enclosures",
+        "uri": "/rest/enclosures/0000000000A66101",
+        "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+        "scopeUris": null
+      },
+      "childResource": {
+        "type": "IndexResourceV300",
+        "name": "0000A66101, bay 1",
+        "description": null,
+        "attributes": {
+          "IOAdapter1Type": "HpSmartStorageIOModule.1.0.0",
+          "IOAdapter1Firmware": "2.07",
+          "IOAdapter2Firmware": "2.07",
+          "IOAdapter2Location": "2",
+          "IOAdapter1Location": "1",
+          "uuid": "SN123100",
+          "IOAdapter2Type": "HpSmartStorageIOModule.1.0.0",
+          "IOAdapter1Name": "I/O adapter 1",
+          "powerState": "On",
+          "model": "Synergy D3940 Storage Module",
+          "fwbaseline_version": "0.18",
+          "IOAdapter2Name": "I/O adapter 2",
+          "IOAdapter2Id": "b6653159-3155-42e1-97dc-ed11f1d1245e",
+          "bay": "1",
+          "IOAdapter1Id": "336abf92-e324-485e-97da-5bc08d042b3b",
+          "IOAdapter1Model": "HPE Synergy 12Gb SAS Storage IO Adapter",
+          "IOAdapter2ProductName": null,
+          "refreshState": "NotRefreshing",
+          "uidState": "Off",
+          "serial_number": "SN123100",
+          "model_short": "SY D3940",
+          "IOAdapter1ProductName": null,
+          "IOAdapter2Model": "HPE Synergy 12Gb SAS Storage IO Adapter",
+          "name": "0000A66101, bay 1",
+          "part_number": "755984-B21"
+        },
+        "multiAttributes": {},
+        "ownerId": "dfrm",
+        "state": "Configured",
+        "status": "OK",
+        "created": "2018-04-10T19:48:33.533Z",
+        "modified": "2018-07-25T20:02:31.234Z",
+        "eTag": "2018-07-25T20:02:31.234Z",
+        "category": "drive-enclosures",
+        "uri": "/rest/drive-enclosures/SN123100",
+        "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+        "scopeUris": null
+      },
+      "associationName": "ENCLOSURE_TO_BLADE"
+    }
+  ],
+  "prevPageUri": null,
+  "nextPageUri": null,
+  "created": null,
+  "modified": null,
+  "eTag": null
+}

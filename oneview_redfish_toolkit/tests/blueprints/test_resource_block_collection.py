@@ -41,7 +41,7 @@ class TestResourceBlockCollection(BaseFlaskTest):
         """Tests ResourceBlockCollection"""
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardwares.json'
+            'oneview_redfish_toolkit/mockups/oneview/ServerHardwareList.json'
         ) as f:
             server_hardware_list = json.load(f)
 

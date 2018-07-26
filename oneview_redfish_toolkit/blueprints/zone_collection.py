@@ -14,22 +14,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
-
-from flask import abort
 from flask import Blueprint
 from flask import g
-from flask import Response
-from flask_api import status
 
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
-
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
 zone_collection = Blueprint("zone_collection", __name__)
 
 
-@zone_collection.route(
-    "/redfish/v1/CompositionService/ResourceZones/", methods=["GET"])
+@zone_collection.route(ZoneCollection.BASE_URI + "/", methods=["GET"])
 def get_zone_collection():
     """Get the Redfish Zone Collection.
 
@@ -42,23 +38,47 @@ def get_zone_collection():
             JSON: Redfish json with ZoneCollection.
     """
 
-    try:
-        # Gets all server profile templates
-        server_profile_templates = \
-            g.oneview_client.server_profile_templates.get_all()
+    server_profile_templates = \
+        g.oneview_client.server_profile_templates.get_all()
 
-        # Build ZoneCollection object and validates it
-        zc = ZoneCollection(server_profile_templates)
+    zone_ids = _get_zone_ids_by_templates(server_profile_templates)
 
-        # Build redfish json
-        json_str = zc.serialize()
+    zc = ZoneCollection(zone_ids)
 
-        # Build response and returns
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return ResponseBuilder.success(zc)
+
+
+def _get_enclosures_uris_by_template(server_profile_template):
+    log_encl_assoc_uri = "/rest/index/associations/resources" \
+        "?parenturi={}&category=logical-enclosures"\
+        .format(server_profile_template["enclosureGroupUri"])
+    logical_encl_assoc = g.oneview_client.connection.get(log_encl_assoc_uri)
+    members = logical_encl_assoc["members"]
+    enclosure_uris = []
+    for member in members:
+        log_encl_uri = member["childResource"]["uri"]
+        logical_encl = g.oneview_client.logical_enclosures.get(log_encl_uri)
+        enclosure_uris += logical_encl["enclosureUris"]
+
+    #  the set keeps the elements without repetition
+    enclosure_uris = list(set(enclosure_uris))
+    enclosure_uris.sort()
+
+    return enclosure_uris
+
+
+def _get_zone_ids_by_templates(server_profile_templates):
+    zone_ids = []
+    for template in server_profile_templates:
+        template_id = template["uri"].split("/")[-1]
+        controller = ComputerSystem.get_storage_controller(template)
+        if controller:
+            enclosures_uris = _get_enclosures_uris_by_template(template)
+            for encl_uri in enclosures_uris:
+                encl_id = encl_uri.split("/")[-1]
+                zone_id = template_id + "-" + encl_id
+                zone_ids.append(zone_id)
+        else:
+            zone_ids.append(template_id)
+
+    return zone_ids
