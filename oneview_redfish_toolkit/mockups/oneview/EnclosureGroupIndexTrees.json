@@ -1,0 +1,567 @@
+{
+   "parents":{
+
+   },
+   "resource":{
+      "attributes":{
+         "encgrp_type":"EnclosureGroupV7"
+      },
+      "uri":"/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
+      "state":"Normal",
+      "status":"OK",
+      "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+      "multiAttributes":{
+
+      },
+      "type":"IndexResourceV300",
+      "category":"enclosure-groups",
+      "eTag":"2018-07-18T22:36:43.015Z",
+      "created":"2018-05-10T19:07:37.038Z",
+      "ownerId":"perm",
+      "modified":"2018-07-18T22:36:43.015Z",
+      "description":"",
+      "name":"test_eg1",
+      "scopeUris":""
+   },
+   "children":{
+      "ENCLOSURE_GROUP_TO_SERVER_PROFILE_TEMPLATE":[
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/e68bfad8-6024-4b8e-b23d-fbb94e1614e2",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-06-18T17:05:40.534Z",
+               "created":"2018-06-18T17:05:39.681Z",
+               "ownerId":"pm",
+               "modified":"2018-06-18T17:05:40.534Z",
+               "description":"",
+               "name":"Apache_Standby_2",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/9cb0cc21-4329-4578-b729-16e779d020ce",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-07-12T13:23:53.389Z",
+               "created":"2018-07-12T13:23:52.868Z",
+               "ownerId":"pm",
+               "modified":"2018-07-12T13:23:53.389Z",
+               "description":"",
+               "name":"test_without_connections",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/1cb81bc9-61e3-439a-b18e-1f42ba7428b9",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-07-06T14:55:35.680Z",
+               "created":"2018-07-06T14:55:34.839Z",
+               "ownerId":"pm",
+               "modified":"2018-07-06T14:55:35.680Z",
+               "description":"",
+               "name":"test",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/bf0abe37-f4ce-455f-96ed-12eb6b17874f",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-07-25T14:43:47.576Z",
+               "created":"2018-07-25T14:19:02.762Z",
+               "ownerId":"ServerProfileTemplateV5",
+               "modified":"2018-07-25T14:43:47.576Z",
+               "description":"",
+               "name":"Template with Storage Controller and Connections",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/13d6739e-2856-4744-8a10-63ccbda0268e",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-07-23T13:16:12.329Z",
+               "created":"2018-06-15T14:47:01.283Z",
+               "ownerId":"pm",
+               "modified":"2018-07-23T13:16:12.329Z",
+               "description":"",
+               "name":"Sample_Template",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/a07fedf3-fa71-401b-a6ae-113cb6a33929",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-07-23T17:38:42.177Z",
+               "created":"2018-07-23T17:38:41.666Z",
+               "ownerId":"pm",
+               "modified":"2018-07-23T17:38:42.177Z",
+               "description":"",
+               "name":"teste 2",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/75871d70-789e-4cf9-8bc8-6f4d73193578",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-07-23T17:36:46.793Z",
+               "created":"2018-05-11T13:44:33.925Z",
+               "ownerId":"pm",
+               "modified":"2018-07-23T17:36:46.793Z",
+               "description":"",
+               "name":"CI_Template",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/71f6210a-6648-439f-bf24-1cecb94fbfde",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-07-23T16:34:24.840Z",
+               "created":"2018-05-24T19:25:04.697Z",
+               "ownerId":"pm",
+               "modified":"2018-07-23T16:34:24.840Z",
+               "description":"89",
+               "name":"Node_Template",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-06-01T17:08:26.229Z",
+               "created":"2018-05-11T13:40:37.049Z",
+               "ownerId":"pm",
+               "modified":"2018-06-01T17:08:26.229Z",
+               "description":"",
+               "name":"Apache_Template",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/8eed54c3-9636-4160-8fed-d46710edac45",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-07-25T14:36:24.238Z",
+               "created":"2018-07-25T13:32:07.899Z",
+               "ownerId":"ServerProfileTemplateV5",
+               "modified":"2018-07-25T14:36:24.238Z",
+               "description":"",
+               "name":"Storage Controller and Connections",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+
+               },
+               "uri":"/rest/server-profile-templates/419b30f9-6d64-406f-90d8-3aa6714a3810",
+               "state":"",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profile-templates",
+               "eTag":"2018-07-25T13:10:52.964Z",
+               "created":"2018-07-25T13:09:36.236Z",
+               "ownerId":"ServerProfileTemplateV5",
+               "modified":"2018-07-25T13:10:52.964Z",
+               "description":"",
+               "name":"No Storage Controller No Connections",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         }
+      ],
+      "ENCLOSURE_GROUP_TO_LOGICAL_INTERCONNECT_GROUP":[
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+                  "enclosureType":"SY12000"
+               },
+               "uri":"/rest/logical-interconnect-groups/32636f11-b56d-41ef-b2b5-ed17e691eec0",
+               "state":"",
+               "status":"",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"logical-interconnect-groups",
+               "eTag":"2018-05-10T19:06:03.227Z",
+               "created":"2018-05-10T19:03:27.279Z",
+               "ownerId":"cd",
+               "modified":"2018-05-10T19:06:03.227Z",
+               "description":"",
+               "name":"lig_bayset3",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+                  "enclosureType":"SY12000"
+               },
+               "uri":"/rest/logical-interconnect-groups/26564370-62c8-4543-8312-bc63313e0db9",
+               "state":"",
+               "status":"",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"logical-interconnect-groups",
+               "eTag":"2018-05-10T19:00:41.440Z",
+               "created":"2018-05-10T19:00:41.440Z",
+               "ownerId":"cd",
+               "modified":"2018-05-10T19:00:41.440Z",
+               "description":"",
+               "name":"lib_bayset2",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+                  "uuid":"c1c1634e-c6b4-4f55-ba6f-d5b804c2970b",
+                  "name":"lig_bayset1",
+                  "enclosureType":"SY12000"
+               },
+               "uri":"/rest/sas-logical-interconnect-groups/c1c1634e-c6b4-4f55-ba6f-d5b804c2970b",
+               "state":"Active",
+               "status":"",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"sas-logical-interconnect-groups",
+               "eTag":"2018-05-10T18:57:58.245Z",
+               "created":"2018-05-10T18:57:58.245Z",
+               "ownerId":"dfrm",
+               "modified":"2018-05-10T18:57:58.245Z",
+               "description":"",
+               "name":"lig_bayset1",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         }
+      ],
+      "ENCLOSURE_GROUP_TO_LOGICAL_ENCLOSURE":[
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+                  "enclosure_group_uri":"/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
+                  "firmwareBaselineUri":""
+               },
+               "uri":"/rest/logical-enclosures/82431b7d-bc11-4d0b-a158-40b71071284c",
+               "state":"Consistent",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"logical-enclosures",
+               "eTag":"2018-07-18T22:36:49.071Z",
+               "created":"2018-05-10T19:08:24.072Z",
+               "ownerId":"perm",
+               "modified":"2018-07-18T22:36:49.071Z",
+               "description":"",
+               "name":"test_le1",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         }
+      ],
+      "enclosure_group_to_server_profiles":[
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+                  "inProgress":"false",
+                  "uuid":"99927407-7b80-4495-b010-f7a67ac1fb83",
+                  "templateCompliance":"Unknown"
+               },
+               "uri":"/rest/server-profiles/99927407-7b80-4495-b010-f7a67ac1fb83",
+               "state":"Normal",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profiles",
+               "eTag":"2018-07-25T16:02:57.380Z",
+               "created":"2018-07-25T15:29:31.098Z",
+               "ownerId":"ServerProfileV9",
+               "modified":"2018-07-25T16:02:57.380Z",
+               "description":"/rest/server-profile-templates/bf0abe37-f4ce-455f-96ed-12eb6b17874f",
+               "name":"New system",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+                  "inProgress":"false",
+                  "uuid":"95276a26-e5d7-4645-bcf0-ee26bb0d3fb9",
+                  "templateCompliance":"Unknown"
+               },
+               "uri":"/rest/server-profiles/95276a26-e5d7-4645-bcf0-ee26bb0d3fb9",
+               "state":"Normal",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profiles",
+               "eTag":"2018-07-23T19:50:01.121Z",
+               "created":"2018-07-23T19:27:46.915Z",
+               "ownerId":"ServerProfileV9",
+               "modified":"2018-07-23T19:50:01.121Z",
+               "description":"/rest/server-profile-templates/13d6739e-2856-4744-8a10-63ccbda0268e",
+               "name":"Composed System Using Redfish",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         },
+         {
+            "parents":{
+
+            },
+            "resource":{
+               "attributes":{
+                  "inProgress":"false",
+                  "uuid":"145d5f6b-837b-428c-829d-ea40dcfe3f03",
+                  "templateCompliance":"Compliant"
+               },
+               "uri":"/rest/server-profiles/145d5f6b-837b-428c-829d-ea40dcfe3f03",
+               "state":"Normal",
+               "status":"OK",
+               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+               "multiAttributes":{
+
+               },
+               "type":"IndexResourceV300",
+               "category":"server-profiles",
+               "eTag":"2018-07-23T17:42:26.220Z",
+               "created":"2018-07-23T17:40:40.659Z",
+               "ownerId":"ServerProfileV9",
+               "modified":"2018-07-23T17:42:26.220Z",
+               "description":"",
+               "name":"teste 2 server profile",
+               "scopeUris":""
+            },
+            "children":{
+
+            }
+         }
+      ]
+   }
+}
