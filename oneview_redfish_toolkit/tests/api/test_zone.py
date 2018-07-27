@@ -28,8 +28,8 @@ class TestZone(BaseTest):
         server_profile_template = json.load(f)
 
     with open('oneview_redfish_toolkit/mockups/oneview/'
-              'ServerHardwares.json') as f:
-        server_hardwares = json.load(f)
+              'EnclosureGroupIndexTrees.json') as f:
+        index_trees = json.load(f)
 
     with open('oneview_redfish_toolkit/mockups/oneview/'
               'Drives.json') as f:
@@ -48,9 +48,9 @@ class TestZone(BaseTest):
 
     def test_serialize(self):
         """Tests if after serialize Zone the result is as expected"""
-        self.maxDiff = None
+
         zone = Zone(self.server_profile_template,
-                    self.server_hardwares,
+                    self.index_trees,
                     self.drives)
         result = json.loads(zone.serialize())
         self.assertEqualMockup(self.zone_mockup, result)
@@ -67,7 +67,7 @@ class TestZone(BaseTest):
         profile_template["localStorage"]["controllers"] = []
 
         zone = Zone(profile_template,
-                    self.server_hardwares,
+                    self.index_trees,
                     self.drives)
         result = json.loads(zone.serialize())
 
@@ -90,7 +90,7 @@ class TestZone(BaseTest):
         }]
 
         zone = Zone(profile_template,
-                    self.server_hardwares,
+                    self.index_trees,
                     self.drives)
         result = json.loads(zone.serialize())
         self.assertEqualMockup(self.zone_without_drives_mockup, result)
@@ -102,12 +102,12 @@ class TestZone(BaseTest):
             Tests Zone with no resource block for network when handling
             a Server profile template with no connections configured
         """
-        self.maxDiff = None
+
         profile_template = copy.deepcopy(self.server_profile_template)
         profile_template["connectionSettings"]["connections"] = []
 
         zone = Zone(profile_template,
-                    self.server_hardwares,
+                    self.index_trees,
                     self.drives)
         result = json.loads(zone.serialize())
         self.assertEqualMockup(self.zone_without_network_mockup, result)

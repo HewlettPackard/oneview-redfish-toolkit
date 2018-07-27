@@ -34,7 +34,7 @@ class Zone(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Zone'
 
-    def __init__(self, profile_template, server_hardware_list, drives=[]):
+    def __init__(self, profile_template, enclosure_group_resource, drives=[]):
         """Zone constructor
 
             Populates self.redfish with the contents of
@@ -42,7 +42,7 @@ class Zone(RedfishJsonValidator):
 
             Args:
                 profile_template: Oneview's server profile template dict
-                server_hardware_list: Oneview's server hardware list
+                enclosure_group_resource: Oneview's enclosure group index trees
                 (servers and empty bays) for assignment to a server profile
                 drives: Oneview's dict drives list
         """
@@ -63,7 +63,7 @@ class Zone(RedfishJsonValidator):
         self.redfish["Links"] = dict()
         self.redfish["Links"]["ResourceBlocks"] = list()
 
-        self.fill_resource_blocks(profile_template, server_hardware_list,
+        self.fill_resource_blocks(profile_template, enclosure_group_resource,
                                   drives)
 
         self.capabilities_key = "@Redfish.CollectionCapabilities"
@@ -80,8 +80,11 @@ class Zone(RedfishJsonValidator):
 
         self._validate()
 
-    def fill_resource_blocks(self, profile_template, server_hardware_list,
+    def fill_resource_blocks(self, profile_template, enclosure_group_resource,
                              drives):
+        server_hardware_list = \
+            self._get_server_hardware_list(enclosure_group_resource)
+
         for item in server_hardware_list:
             self.add_resource_block_item_to_links(item, "uri")
 
@@ -89,6 +92,29 @@ class Zone(RedfishJsonValidator):
             self.add_resource_block_item_to_links(item, "uri")
 
         self._fill_network_resource_block(profile_template)
+
+    def _get_server_hardware_list(self, encl_group):
+        server_hardware_list = list()
+        logical_encl = \
+            encl_group["children"]["ENCLOSURE_GROUP_TO_LOGICAL_ENCLOSURE"][0]
+        enclosures = logical_encl["children"]["LOGICAL_ENCLOSURE_TO_ENCLOSURE"]
+
+        for enclosure in enclosures:
+            device_uris = \
+                enclosure["resource"]["multiAttributes"]["device_uri"]
+            server_hardware_uris = self._get_server_hardware_uris(device_uris)
+            server_hardware_list.extend(server_hardware_uris)
+
+        return server_hardware_list
+
+    @staticmethod
+    def _get_server_hardware_uris(device_uris):
+        server_hardware_uris = list()
+        for uri in filter(None, device_uris):
+            if "server-hardware" in uri:
+                server_hardware_uris.append({"uri": uri})
+
+        return server_hardware_uris
 
     def add_resource_block_item_to_links(self, original_dict, uri_key):
         uuid = original_dict[uri_key].split("/")[-1]

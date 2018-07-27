@@ -57,12 +57,6 @@ class TestZone(BaseTest):
         ) as f:
             server_profile_template = json.load(f)
 
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerHardwares.json'
-        ) as f:
-            server_hardwares = json.load(f)
-
         with open('oneview_redfish_toolkit/mockups/oneview/'
                   'Drives.json') as f:
             drives = json.load(f)
@@ -72,12 +66,6 @@ class TestZone(BaseTest):
             'EnclosureGroupIndexTrees.json'
         ) as f:
             enclosure_group_index_trees = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'LogicalEnclosure.json'
-        ) as f:
-            logical_enclosure = json.load(f)
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Zone.json'
@@ -90,10 +78,6 @@ class TestZone(BaseTest):
             return_value = enclosure_group_index_trees
         g_mock.oneview_client.index_resources.get_all\
             .return_value = drives
-        g_mock.oneview_client.logical_enclosures.get\
-            .return_value = logical_enclosure
-        g_mock.oneview_client.server_hardware.get_all\
-            .return_value = server_hardwares
 
         response = self.app.get(
             "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3"
@@ -112,26 +96,10 @@ class TestZone(BaseTest):
         g_mock.oneview_client.server_profile_templates.get.\
             assert_called_with(spt_uuid)
         g_mock.oneview_client.connection.get.\
-            assert_called_with("/rest/index/trees{}?childDepth=1".format(
-                logical_enclosure["enclosureGroupUri"]))
+            assert_called_with("/rest/index/trees{}?childDepth=2".format(
+                enclosure_group_index_trees["resource"]["uri"]))
         g_mock.oneview_client.index_resources.get_all.\
             assert_called_with(category='drives', count=10000)
-        g_mock.oneview_client.logical_enclosures.get.\
-            assert_called_with(logical_enclosure["uri"])
-        g_mock.oneview_client.server_hardware.get_all.assert_called_with(
-            filter=self._get_sh_filter(logical_enclosure))
-
-    @staticmethod
-    def _get_sh_filter(logical_enclosure):
-        enclosure_filters = list()
-        location_uri = "'locationUri'='{}'"
-
-        for enclosure_uri in logical_enclosure["enclosureUris"]:
-            enclosure_filters.append(location_uri.format(enclosure_uri))
-
-        server_hardware_filter = ' OR '.join(enclosure_filters)
-
-        return server_hardware_filter
 
     @mock.patch.object(zone, 'g')
     def test_get_zone_not_found(self, g_mock):

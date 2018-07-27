@@ -1,567 +1,2767 @@
 {
-   "parents":{
-
-   },
-   "resource":{
-      "attributes":{
-         "encgrp_type":"EnclosureGroupV7"
-      },
-      "uri":"/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
-      "state":"Normal",
-      "status":"OK",
-      "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-      "multiAttributes":{
-
-      },
-      "type":"IndexResourceV300",
-      "category":"enclosure-groups",
-      "eTag":"2018-07-18T22:36:43.015Z",
-      "created":"2018-05-10T19:07:37.038Z",
-      "ownerId":"perm",
-      "modified":"2018-07-18T22:36:43.015Z",
-      "description":"",
-      "name":"test_eg1",
-      "scopeUris":""
-   },
-   "children":{
-      "ENCLOSURE_GROUP_TO_SERVER_PROFILE_TEMPLATE":[
-         {
-            "parents":{
-
+    "children": {
+        "ENCLOSURE_GROUP_TO_LOGICAL_INTERCONNECT_GROUP": [
+            {
+                "children": {
+                    "LOGICAL_INTERCONNECT_GROUP_TO_NETWORK": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth1",
+                                "eTaing": "2018-05-10T18:51:11.129Z",
+                                "created": "2018-05-10T18:51:11.129Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:11.129Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "19638712-679d-4232-9743-c7cb6c7bf718",
+                                    "default_connection_type": "51208222-c357-4777-86f2-ce0c2aabdff1",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "10",
+                                    "network_name": "test_eth1",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth2",
+                                "eTag": "2018-05-10T18:51:24.364Z",
+                                "created": "2018-05-10T18:51:24.364Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/44e9e767-9a1a-4d6e-b4f3-888dca7d6233",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:24.364Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "44e9e767-9a1a-4d6e-b4f3-888dca7d6233",
+                                    "default_connection_type": "8eab0304-bc44-44db-b39a-be30de03b428",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "20",
+                                    "network_name": "test_eth2",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ],
+                    "LOGICAL_INTERCONNECT_GROUP_TO_LOGICAL_INTERCONNECT": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_le1-lig_bayset3",
+                                "eTag": "2018-07-25T15:37:15.395Z",
+                                "created": "2018-05-10T19:08:56.812Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/logical-interconnects/a50aa449-5dea-4095-85e0-899b2a7ec193",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T15:37:15.395Z",
+                                "category": "logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "lldpTagging": "Disabled",
+                                    "logicalInterconnectGroupUri": "/rest/logical-interconnect-groups/32636f11-b56d-41ef-b2b5-ed17e691eec0",
+                                    "enclosuresCount": "3",
+                                    "logicalInterconnectGroupName": "lig_bayset3"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "lig_bayset3",
+                    "eTag": "2018-05-10T19:06:03.227Z",
+                    "created": "2018-05-10T19:03:27.279Z",
+                    "scopeUris": "",
+                    "status": "",
+                    "uri": "/rest/logical-interconnect-groups/32636f11-b56d-41ef-b2b5-ed17e691eec0",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-05-10T19:06:03.227Z",
+                    "category": "logical-interconnect-groups",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "cd",
+                    "attributes": {
+                        "enclosureType": "SY12000"
+                    },
+                    "description": ""
+                }
             },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/e68bfad8-6024-4b8e-b23d-fbb94e1614e2",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-06-18T17:05:40.534Z",
-               "created":"2018-06-18T17:05:39.681Z",
-               "ownerId":"pm",
-               "modified":"2018-06-18T17:05:40.534Z",
-               "description":"",
-               "name":"Apache_Standby_2",
-               "scopeUris":""
+            {
+                "children": {
+                    "LOGICAL_INTERCONNECT_GROUP_TO_LOGICAL_INTERCONNECT": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_le1-lib_bayset2-2",
+                                "eTag": "2018-07-27T11:02:47.550Z",
+                                "created": "2018-05-10T19:08:52.411Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/logical-interconnects/299da236-4137-4914-9bb7-c62d08ebe027",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-27T11:02:47.550Z",
+                                "category": "logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "lldpTagging": "Disabled",
+                                    "logicalInterconnectGroupUri": "/rest/logical-interconnect-groups/26564370-62c8-4543-8312-bc63313e0db9",
+                                    "enclosuresCount": "1",
+                                    "logicalInterconnectGroupName": "lib_bayset2"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_le1-lib_bayset2-3",
+                                "eTag": "2018-07-27T09:03:07.625Z",
+                                "created": "2018-05-10T19:08:54.002Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/logical-interconnects/fe4967cc-bdf3-4a8c-a7de-e5141f7a718c",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-27T09:03:07.625Z",
+                                "category": "logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "lldpTagging": "Disabled",
+                                    "logicalInterconnectGroupUri": "/rest/logical-interconnect-groups/26564370-62c8-4543-8312-bc63313e0db9",
+                                    "enclosuresCount": "1",
+                                    "logicalInterconnectGroupName": "lib_bayset2"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_le1-lib_bayset2-1",
+                                "eTag": "2018-07-27T09:03:11.836Z",
+                                "created": "2018-05-10T19:08:48.496Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/logical-interconnects/a2b731b9-75a2-4288-b003-436588670f03",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-27T09:03:11.836Z",
+                                "category": "logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "lldpTagging": "Disabled",
+                                    "logicalInterconnectGroupUri": "/rest/logical-interconnect-groups/26564370-62c8-4543-8312-bc63313e0db9",
+                                    "enclosuresCount": "1",
+                                    "logicalInterconnectGroupName": "lib_bayset2"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "lib_bayset2",
+                    "eTag": "2018-05-10T19:00:41.440Z",
+                    "created": "2018-05-10T19:00:41.440Z",
+                    "scopeUris": "",
+                    "status": "",
+                    "uri": "/rest/logical-interconnect-groups/26564370-62c8-4543-8312-bc63313e0db9",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-05-10T19:00:41.440Z",
+                    "category": "logical-interconnect-groups",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "cd",
+                    "attributes": {
+                        "enclosureType": "SY12000"
+                    },
+                    "description": ""
+                }
             },
-            "children":{
-
+            {
+                "children": {
+                    "LOGICAL_INTERCONNECT_GROUP_TO_LOGICAL_INTERCONNECT": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Redundant",
+                                "name": "test_le1-lig_bayset1-2",
+                                "eTag": "2018-07-23T19:27:57.599Z",
+                                "created": "2018-05-10T19:09:02.756Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/sas-logical-interconnects/9edd4c86-37b8-4e54-bbf6-87970d88c450",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-23T19:27:57.599Z",
+                                "category": "sas-logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "dfrm",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "sppUri": ""
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Redundant",
+                                "name": "test_le1-lig_bayset1-1",
+                                "eTag": "2018-07-25T15:29:59.585Z",
+                                "created": "2018-05-10T19:09:02.665Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/sas-logical-interconnects/eb1f4e42-2a82-45b2-8f6c-2be66ff7eeb3",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T15:29:59.585Z",
+                                "category": "sas-logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "dfrm",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "sppUri": ""
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Redundant",
+                                "name": "test_le1-lig_bayset1-3",
+                                "eTag": "2018-06-15T13:44:46.204Z",
+                                "created": "2018-05-10T19:09:02.718Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-06-15T13:44:46.204Z",
+                                "category": "sas-logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "dfrm",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "sppUri": ""
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "Active",
+                    "name": "lig_bayset1",
+                    "eTag": "2018-05-10T18:57:58.245Z",
+                    "created": "2018-05-10T18:57:58.245Z",
+                    "scopeUris": "",
+                    "status": "",
+                    "uri": "/rest/sas-logical-interconnect-groups/c1c1634e-c6b4-4f55-ba6f-d5b804c2970b",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-05-10T18:57:58.245Z",
+                    "category": "sas-logical-interconnect-groups",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "dfrm",
+                    "attributes": {
+                        "enclosureType": "SY12000",
+                        "uuid": "c1c1634e-c6b4-4f55-ba6f-d5b804c2970b",
+                        "name": "lig_bayset1"
+                    },
+                    "description": ""
+                }
             }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/9cb0cc21-4329-4578-b729-16e779d020ce",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-07-12T13:23:53.389Z",
-               "created":"2018-07-12T13:23:52.868Z",
-               "ownerId":"pm",
-               "modified":"2018-07-12T13:23:53.389Z",
-               "description":"",
-               "name":"test_without_connections",
-               "scopeUris":""
-            },
-            "children":{
-
+        ],
+        "ENCLOSURE_GROUP_TO_LOGICAL_ENCLOSURE": [
+            {
+                "children": {
+                    "LOGICAL_ENCLOSURE_TO_LOGICAL_INTERCONNECT": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Redundant",
+                                "name": "test_le1-lig_bayset1-1",
+                                "eTag": "2018-07-25T15:29:59.585Z",
+                                "created": "2018-05-10T19:09:02.665Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/sas-logical-interconnects/eb1f4e42-2a82-45b2-8f6c-2be66ff7eeb3",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T15:29:59.585Z",
+                                "category": "sas-logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "dfrm",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "sppUri": ""
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_le1-lig_bayset3",
+                                "eTag": "2018-07-25T15:37:15.395Z",
+                                "created": "2018-05-10T19:08:56.812Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/logical-interconnects/a50aa449-5dea-4095-85e0-899b2a7ec193",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T15:37:15.395Z",
+                                "category": "logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "lldpTagging": "Disabled",
+                                    "logicalInterconnectGroupUri": "/rest/logical-interconnect-groups/32636f11-b56d-41ef-b2b5-ed17e691eec0",
+                                    "enclosuresCount": "3",
+                                    "logicalInterconnectGroupName": "lig_bayset3"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Redundant",
+                                "name": "test_le1-lig_bayset1-3",
+                                "eTag": "2018-06-15T13:44:46.204Z",
+                                "created": "2018-05-10T19:09:02.718Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-06-15T13:44:46.204Z",
+                                "category": "sas-logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "dfrm",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "sppUri": ""
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_le1-lib_bayset2-1",
+                                "eTag": "2018-07-27T09:03:11.836Z",
+                                "created": "2018-05-10T19:08:48.496Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/logical-interconnects/a2b731b9-75a2-4288-b003-436588670f03",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-27T09:03:11.836Z",
+                                "category": "logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "lldpTagging": "Disabled",
+                                    "logicalInterconnectGroupUri": "/rest/logical-interconnect-groups/26564370-62c8-4543-8312-bc63313e0db9",
+                                    "enclosuresCount": "1",
+                                    "logicalInterconnectGroupName": "lib_bayset2"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_le1-lib_bayset2-3",
+                                "eTag": "2018-07-27T09:03:07.625Z",
+                                "created": "2018-05-10T19:08:54.002Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/logical-interconnects/fe4967cc-bdf3-4a8c-a7de-e5141f7a718c",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-27T09:03:07.625Z",
+                                "category": "logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "lldpTagging": "Disabled",
+                                    "logicalInterconnectGroupUri": "/rest/logical-interconnect-groups/26564370-62c8-4543-8312-bc63313e0db9",
+                                    "enclosuresCount": "1",
+                                    "logicalInterconnectGroupName": "lib_bayset2"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_le1-lib_bayset2-2",
+                                "eTag": "2018-07-27T11:02:47.550Z",
+                                "created": "2018-05-10T19:08:52.411Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/logical-interconnects/299da236-4137-4914-9bb7-c62d08ebe027",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-27T11:02:47.550Z",
+                                "category": "logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "lldpTagging": "Disabled",
+                                    "logicalInterconnectGroupUri": "/rest/logical-interconnect-groups/26564370-62c8-4543-8312-bc63313e0db9",
+                                    "enclosuresCount": "1",
+                                    "logicalInterconnectGroupName": "lib_bayset2"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Redundant",
+                                "name": "test_le1-lig_bayset1-2",
+                                "eTag": "2018-07-23T19:27:57.599Z",
+                                "created": "2018-05-10T19:09:02.756Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/sas-logical-interconnects/9edd4c86-37b8-4e54-bbf6-87970d88c450",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-23T19:27:57.599Z",
+                                "category": "sas-logical-interconnects",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "dfrm",
+                                "attributes": {
+                                    "enclosureType": "SY12000",
+                                    "sppUri": ""
+                                },
+                                "description": ""
+                            }
+                        }
+                    ],
+                    "LOGICAL_ENCLOSURE_TO_ENCLOSURE": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Configured",
+                                "name": "0000A66102",
+                                "eTag": "2018-07-25T20:04:24.219Z",
+                                "created": "2018-04-10T19:45:55.872Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/enclosures/0000000000A66102",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T20:04:24.219Z",
+                                "category": "enclosures",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                    "device_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6",
+                                        "7",
+                                        "8",
+                                        "9",
+                                        "10",
+                                        "11",
+                                        "12"
+                                    ],
+                                    "em_presence": [
+                                        "Present",
+                                        "Present"
+                                    ],
+                                    "fan_status": [
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK"
+                                    ],
+                                    "em_role": [
+                                        "Active",
+                                        "Standby"
+                                    ],
+                                    "power_supply_status": [
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK"
+                                    ],
+                                    "em_ip_address": [
+                                        "fe80::2:0:9:3%eth2",
+                                        "fe80::2:0:9:4%eth2"
+                                    ],
+                                    "em_fw_version": [
+                                        "2.00.00",
+                                        "2.00.00"
+                                    ],
+                                    "power_supply_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
+                                    ],
+                                    "power_supply_part_number": [
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710"
+                                    ],
+                                    "device_uri": [
+                                        "/rest/drive-enclosures/SN123101",
+                                        "/rest/server-hardware/30373737-3237-4D32-3230-313530384752",
+                                        "/rest/server-hardware/30303437-3034-4D32-3230-313131324752",
+                                        "/rest/server-hardware/33343538-3136-4332-3230-313530364752",
+                                        "/rest/server-hardware/30303437-3034-4D32-3230-313131384752",
+                                        "/rest/server-hardware/33343538-3435-4A32-3230-313130344752"
+                                    ],
+                                    "interconnect_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
+                                    ],
+                                    "em_bay_number": [
+                                        "1",
+                                        "2"
+                                    ],
+                                    "fan_part_number": [
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710"
+                                    ],
+                                    "device_presence": [
+                                        "Present",
+                                        "Subsumed",
+                                        "Present",
+                                        "Absent",
+                                        "Present",
+                                        "Present",
+                                        "Present",
+                                        "Absent",
+                                        "Subsumed",
+                                        "Absent",
+                                        "Present",
+                                        "Subsumed"
+                                    ],
+                                    "fan_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6",
+                                        "7",
+                                        "8",
+                                        "9",
+                                        "10"
+                                    ],
+                                    "interconnect_uri": [
+                                        "/rest/sas-interconnects/2M220102SL",
+                                        "/rest/interconnects/d777e2bb-f66b-4f3c-98ba-1953cfb0790c",
+                                        "/rest/interconnects/9942a46b-417d-4da9-bda6-fdbcdbba4ffc",
+                                        "/rest/sas-interconnects/2M220103SL",
+                                        "/rest/interconnects/c3cc5d95-88ee-45c9-976f-c49eb61a8ead",
+                                        "/rest/interconnects/35db51bf-457d-4f16-a71d-cca928e43885"
+                                    ]
+                                },
+                                "ownerId": "perm",
+                                "attributes": {
+                                    "uuid": "0000000000A66102",
+                                    "refresh_state": "NotRefreshing",
+                                    "encgrp_uri": "/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
+                                    "fw_baseline_name": "",
+                                    "serial_number": "0000A66102",
+                                    "enclosure_type_uri": "/rest/enclosure-types/SY12000",
+                                    "part_number": "000000-010",
+                                    "model": "Synergy 12000 Frame",
+                                    "state_reason": "",
+                                    "reapply_config_state": "NotReapplyingConfiguration"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Configured",
+                                "name": "0000A66101",
+                                "eTag": "2018-07-25T20:04:17.217Z",
+                                "created": "2018-04-10T19:45:53.210Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/enclosures/0000000000A66101",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T20:04:17.217Z",
+                                "category": "enclosures",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                    "device_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6",
+                                        "7",
+                                        "8",
+                                        "9",
+                                        "10",
+                                        "11",
+                                        "12"
+                                    ],
+                                    "em_presence": [
+                                        "Present",
+                                        "Present"
+                                    ],
+                                    "fan_status": [
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK"
+                                    ],
+                                    "em_role": [
+                                        "Active",
+                                        "Standby"
+                                    ],
+                                    "power_supply_status": [
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK"
+                                    ],
+                                    "em_ip_address": [
+                                        "fe80::2:0:9:1%eth2",
+                                        "fe80::2:0:9:2%eth2"
+                                    ],
+                                    "em_fw_version": [
+                                        "2.00.00",
+                                        "2.00.00"
+                                    ],
+                                    "power_supply_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
+                                    ],
+                                    "power_supply_part_number": [
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710"
+                                    ],
+                                    "device_uri": [
+                                        "/rest/drive-enclosures/SN123100",
+                                        "/rest/server-hardware/30373737-3237-4D32-3230-313530314752",
+                                        "/rest/server-hardware/30373737-3237-4D32-3230-313530354752",
+                                        "/rest/server-hardware/30303437-3034-4D32-3230-313130304752",
+                                        "/rest/server-hardware/30303437-3034-4D32-3230-313130364752",
+                                        "/rest/server-hardware/30303437-3034-4D32-3230-313130394752",
+                                        "/rest/server-hardware/33343538-3435-4A32-3230-313130304752"
+                                    ],
+                                    "interconnect_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
+                                    ],
+                                    "em_bay_number": [
+                                        "1",
+                                        "2"
+                                    ],
+                                    "fan_part_number": [
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710"
+                                    ],
+                                    "device_presence": [
+                                        "Present",
+                                        "Subsumed",
+                                        "Present",
+                                        "Present",
+                                        "Present",
+                                        "Absent",
+                                        "Present",
+                                        "Present",
+                                        "Subsumed",
+                                        "Subsumed",
+                                        "Present",
+                                        "Absent"
+                                    ],
+                                    "fan_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6",
+                                        "7",
+                                        "8",
+                                        "9",
+                                        "10"
+                                    ],
+                                    "interconnect_uri": [
+                                        "/rest/sas-interconnects/2M220100SL",
+                                        "/rest/interconnects/34e661f9-06eb-465b-859b-282c3a7cb88f",
+                                        "/rest/interconnects/f3b2b71e-4f7d-41d1-abc7-5f621459c87b",
+                                        "/rest/sas-interconnects/2M220101SL",
+                                        "/rest/interconnects/8cb3c588-6f85-4197-b015-692807101c55",
+                                        "/rest/interconnects/69343adc-42df-485a-b2de-b90993f2f658"
+                                    ]
+                                },
+                                "ownerId": "perm",
+                                "attributes": {
+                                    "uuid": "0000000000A66101",
+                                    "refresh_state": "NotRefreshing",
+                                    "encgrp_uri": "/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
+                                    "fw_baseline_name": "",
+                                    "serial_number": "0000A66101",
+                                    "enclosure_type_uri": "/rest/enclosure-types/SY12000",
+                                    "part_number": "000000-010",
+                                    "model": "Synergy 12000 Frame",
+                                    "state_reason": "",
+                                    "reapply_config_state": "NotReapplyingConfiguration"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Configured",
+                                "name": "0000A66103",
+                                "eTag": "2018-07-25T19:57:55.217Z",
+                                "created": "2018-04-10T19:45:54.296Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/enclosures/0000000000A66103",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T19:57:55.217Z",
+                                "category": "enclosures",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                    "device_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6",
+                                        "7",
+                                        "8",
+                                        "9",
+                                        "10",
+                                        "11",
+                                        "12"
+                                    ],
+                                    "em_presence": [
+                                        "Present",
+                                        "Present"
+                                    ],
+                                    "fan_status": [
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK"
+                                    ],
+                                    "em_role": [
+                                        "Active",
+                                        "Standby"
+                                    ],
+                                    "power_supply_status": [
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK",
+                                        "OK"
+                                    ],
+                                    "em_ip_address": [
+                                        "fe80::2:0:9:5%eth2",
+                                        "fe80::2:0:9:6%eth2"
+                                    ],
+                                    "em_fw_version": [
+                                        "2.00.00",
+                                        "2.00.00"
+                                    ],
+                                    "power_supply_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
+                                    ],
+                                    "power_supply_part_number": [
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710",
+                                        "0000008710"
+                                    ],
+                                    "device_uri": [
+                                        "/rest/server-hardware/30373737-3237-4D32-3230-313531354752",
+                                        "/rest/server-hardware/30373737-3237-4D32-3230-313531394752",
+                                        "/rest/server-hardware/30303437-3034-4D32-3230-313132344752",
+                                        "/rest/server-hardware/33343538-3136-4332-3230-313531314752",
+                                        "/rest/server-hardware/30303437-3034-4D32-3230-313133304752",
+                                        "/rest/server-hardware/30303437-3034-4D32-3230-313133334752",
+                                        "/rest/server-hardware/33343538-3435-4A32-3230-313130384752"
+                                    ],
+                                    "interconnect_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6"
+                                    ],
+                                    "em_bay_number": [
+                                        "1",
+                                        "2"
+                                    ],
+                                    "fan_part_number": [
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710",
+                                        "0008568710"
+                                    ],
+                                    "device_presence": [
+                                        "Absent",
+                                        "Absent",
+                                        "Present",
+                                        "Present",
+                                        "Present",
+                                        "Present",
+                                        "Present",
+                                        "Present",
+                                        "Subsumed",
+                                        "Subsumed",
+                                        "Present",
+                                        "Subsumed"
+                                    ],
+                                    "fan_bay_number": [
+                                        "1",
+                                        "2",
+                                        "3",
+                                        "4",
+                                        "5",
+                                        "6",
+                                        "7",
+                                        "8",
+                                        "9",
+                                        "10"
+                                    ],
+                                    "interconnect_uri": [
+                                        "/rest/sas-interconnects/2M220104SL",
+                                        "/rest/interconnects/e6fb8353-6383-483f-8c99-b15d4fd8034a",
+                                        "/rest/interconnects/ef505a29-3650-4a97-a897-38ca9770f5fe",
+                                        "/rest/sas-interconnects/2M220105SL",
+                                        "/rest/interconnects/cc9b9605-63dc-4456-9faa-f778fab3d71a",
+                                        "/rest/interconnects/bb106f16-d42a-4068-aaac-85044a893799"
+                                    ]
+                                },
+                                "ownerId": "perm",
+                                "attributes": {
+                                    "uuid": "0000000000A66103",
+                                    "refresh_state": "RefreshFailed",
+                                    "encgrp_uri": "/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
+                                    "fw_baseline_name": "",
+                                    "serial_number": "0000A66103",
+                                    "enclosure_type_uri": "/rest/enclosure-types/SY12000",
+                                    "part_number": "000000-010",
+                                    "model": "Synergy 12000 Frame",
+                                    "state_reason": "",
+                                    "reapply_config_state": "NotReapplyingConfiguration"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "Consistent",
+                    "name": "test_le1",
+                    "eTag": "2018-07-18T22:36:49.071Z",
+                    "created": "2018-05-10T19:08:24.072Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/logical-enclosures/82431b7d-bc11-4d0b-a158-40b71071284c",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-18T22:36:49.071Z",
+                    "category": "logical-enclosures",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "perm",
+                    "attributes": {
+                        "firmwareBaselineUri": "",
+                        "enclosure_group_uri": "/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa"
+                    },
+                    "description": ""
+                }
             }
-         },
-         {
-            "parents":{
-
+        ],
+        "ENCLOSURE_GROUP_TO_SERVER_PROFILE_TEMPLATE": [
+            {
+                "children": {
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "Apache_Standby_2",
+                    "eTag": "2018-06-18T17:05:40.534Z",
+                    "created": "2018-06-18T17:05:39.681Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/e68bfad8-6024-4b8e-b23d-fbb94e1614e2",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-06-18T17:05:40.534Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "pm",
+                    "attributes": {
+                    },
+                    "description": ""
+                }
             },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/1cb81bc9-61e3-439a-b18e-1f42ba7428b9",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-07-06T14:55:35.680Z",
-               "created":"2018-07-06T14:55:34.839Z",
-               "ownerId":"pm",
-               "modified":"2018-07-06T14:55:35.680Z",
-               "description":"",
-               "name":"test",
-               "scopeUris":""
+            {
+                "children": {
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "test_without_connections",
+                    "eTag": "2018-07-12T13:23:53.389Z",
+                    "created": "2018-07-12T13:23:52.868Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/9cb0cc21-4329-4578-b729-16e779d020ce",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-12T13:23:53.389Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "pm",
+                    "attributes": {
+                    },
+                    "description": ""
+                }
             },
-            "children":{
-
+            {
+                "children": {
+                    "SERVER_PROFILE_TEMPLATE_TO_NETWORK": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth1",
+                                "eTag": "2018-05-10T18:51:11.129Z",
+                                "created": "2018-05-10T18:51:11.129Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:11.129Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "19638712-679d-4232-9743-c7cb6c7bf718",
+                                    "default_connection_type": "51208222-c357-4777-86f2-ce0c2aabdff1",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "10",
+                                    "network_name": "test_eth1",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth2",
+                                "eTag": "2018-05-10T18:51:24.364Z",
+                                "created": "2018-05-10T18:51:24.364Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/44e9e767-9a1a-4d6e-b4f3-888dca7d6233",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:24.364Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "44e9e767-9a1a-4d6e-b4f3-888dca7d6233",
+                                    "default_connection_type": "8eab0304-bc44-44db-b39a-be30de03b428",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "20",
+                                    "network_name": "test_eth2",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "test",
+                    "eTag": "2018-07-06T14:55:35.680Z",
+                    "created": "2018-07-06T14:55:34.839Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/1cb81bc9-61e3-439a-b18e-1f42ba7428b9",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-06T14:55:35.680Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "pm",
+                    "attributes": {
+                    },
+                    "description": ""
+                }
+            },
+            {
+                "children": {
+                    "SERVER_PROFILE_TEMPLATE_TO_NETWORK": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth1",
+                                "eTag": "2018-05-10T18:51:11.129Z",
+                                "created": "2018-05-10T18:51:11.129Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:11.129Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "19638712-679d-4232-9743-c7cb6c7bf718",
+                                    "default_connection_type": "51208222-c357-4777-86f2-ce0c2aabdff1",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "10",
+                                    "network_name": "test_eth1",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "Template with Storage Controller and Connections",
+                    "eTag": "2018-07-25T14:43:47.576Z",
+                    "created": "2018-07-25T14:19:02.762Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/bf0abe37-f4ce-455f-96ed-12eb6b17874f",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-25T14:43:47.576Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "ServerProfileTemplateV5",
+                    "attributes": {
+                    },
+                    "description": ""
+                }
+            },
+            {
+                "children": {
+                    "SERVER_PROFILE_TEMPLATE_TO_NETWORK": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "set_example",
+                                "eTag": "2018-06-20T13:15:24.571Z",
+                                "created": "2018-06-20T13:15:24.571Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/network-sets/76f584da-1f9d-40b8-9b9d-5ccb09810142",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-06-20T13:15:24.571Z",
+                                "category": "network-sets",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                    "network_ids": [
+                                        "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                        "/rest/ethernet-networks/44e9e767-9a1a-4d6e-b4f3-888dca7d6233"
+                                    ]
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "native_network_id": "/rest/ethernet-networks/null",
+                                    "id": "/rest/network-sets/76f584da-1f9d-40b8-9b9d-5ccb09810142",
+                                    "name": "set_example"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth1",
+                                "eTag": "2018-05-10T18:51:11.129Z",
+                                "created": "2018-05-10T18:51:11.129Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:11.129Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "19638712-679d-4232-9743-c7cb6c7bf718",
+                                    "default_connection_type": "51208222-c357-4777-86f2-ce0c2aabdff1",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "10",
+                                    "network_name": "test_eth1",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "Sample_Template",
+                    "eTag": "2018-07-23T13:16:12.329Z",
+                    "created": "2018-06-15T14:47:01.283Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/13d6739e-2856-4744-8a10-63ccbda0268e",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-23T13:16:12.329Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "pm",
+                    "attributes": {
+                    },
+                    "description": ""
+                }
+            },
+            {
+                "children": {
+                    "server_profile_template_to_server_profiles": [
+                        {
+                            "children": {
+                                "server_profiles_to_server_hardware": [
+                                    {
+                                        "children": {
+                                        },
+                                        "parents": {
+                                        },
+                                        "resource": {
+                                            "state": "ProfileApplied",
+                                            "name": "0000A66101, bay 7",
+                                            "eTag": "2018-07-25T20:04:04.095Z",
+                                            "created": "2018-04-10T19:49:47.122Z",
+                                            "scopeUris": "",
+                                            "status": "OK",
+                                            "uri": "/rest/server-hardware/30303437-3034-4D32-3230-313130364752",
+                                            "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                            "modified": "2018-07-25T20:04:04.095Z",
+                                            "category": "server-hardware",
+                                            "type": "IndexResourceV300",
+                                            "multiAttributes": {
+                                                "Intelligent Platform Abstraction Data": [
+                                                    "null",
+                                                    "",
+                                                    "",
+                                                    "15.5"
+                                                ],
+                                                "mezzNames": [
+                                                    "",
+                                                    "HPE Synergy 3530C 16G Host Bus Adapter",
+                                                    "HPE Synergy 3820C 10/20Gb Converged Network Adapter"
+                                                ],
+                                                "mpIpAddresses": [
+                                                    "fe80:0:0:0:2:ff:fe03:6",
+                                                    "172.18.6.6"
+                                                ],
+                                                "Intelligent Provisioning": [
+                                                    "null",
+                                                    "",
+                                                    "",
+                                                    "2.30"
+                                                ],
+                                                "HPE Synergy 3820C 10/20Gb Converged Network Adapter": [
+                                                    "47a4b1a62a384f5a14e416a4103c2231",
+                                                    "",
+                                                    "",
+                                                    "1.20"
+                                                ],
+                                                "componentVersions": [
+                                                    "I39 v1.30 08/26/2014",
+                                                    "15.5",
+                                                    "3.0.6.267.1",
+                                                    "2.30 Jul 23 2015",
+                                                    "1.0",
+                                                    "1.0.9",
+                                                    "1.20",
+                                                    "1.20",
+                                                    "Version 0x2F",
+                                                    "I37 v1.30 08/26/2014",
+                                                    "2.30"
+                                                ],
+                                                "iLO": [
+                                                    "2932ecaecc69d843bd0e61dc3406f71b",
+                                                    "",
+                                                    "",
+                                                    "2.30 Jul 23 2015"
+                                                ],
+                                                "HP ProLiant System ROM - Backup": [
+                                                    "00000000000000000000000001493337",
+                                                    "",
+                                                    "",
+                                                    "I39 v1.30 08/26/2014"
+                                                ],
+                                                "System Programmable Logic Device": [
+                                                    "000000000000000000000000000000f3",
+                                                    "",
+                                                    "",
+                                                    "Version 0x2F"
+                                                ],
+                                                "HP ProLiant System ROM": [
+                                                    "00000000000000000000000001493337",
+                                                    "",
+                                                    "",
+                                                    "I37 v1.30 08/26/2014"
+                                                ],
+                                                "Power Management Controller FW Bootloader": [
+                                                    "null",
+                                                    "",
+                                                    "",
+                                                    "1.0"
+                                                ],
+                                                "componentLocations": [
+                                                    "System Board",
+                                                    "System Board",
+                                                    "System Board",
+                                                    "System Board",
+                                                    "System Board",
+                                                    "System Board",
+                                                    "Slot 0",
+                                                    "Slot 0",
+                                                    "System Board",
+                                                    "System Board",
+                                                    "System Board"
+                                                ],
+                                                "Server Platform Services (SPS) Firmware": [
+                                                    "null",
+                                                    "",
+                                                    "",
+                                                    "3.0.6.267.1"
+                                                ],
+                                                "componentTypes": [
+                                                    "Firmware",
+                                                    "Firmware",
+                                                    "Firmware",
+                                                    "Firmware",
+                                                    "Firmware",
+                                                    "Firmware",
+                                                    "Firmware",
+                                                    "Firmware",
+                                                    "Firmware",
+                                                    "Firmware",
+                                                    "Firmware"
+                                                ],
+                                                "Power Management Controller Firmware": [
+                                                    "00000000000000000000000000504d14",
+                                                    "",
+                                                    "",
+                                                    "1.0.9"
+                                                ],
+                                                "componentNames": [
+                                                    "HP ProLiant System ROM - Backup",
+                                                    "Intelligent Platform Abstraction Data",
+                                                    "Server Platform Services (SPS) Firmware",
+                                                    "iLO",
+                                                    "Power Management Controller FW Bootloader",
+                                                    "Power Management Controller Firmware",
+                                                    "HPE Synergy 3820C 10/20Gb Converged Network Adapter",
+                                                    "HPE Synergy 3530C 16G Host Bus Adapter",
+                                                    "System Programmable Logic Device",
+                                                    "HP ProLiant System ROM",
+                                                    "Intelligent Provisioning"
+                                                ],
+                                                "mezzSlots": [
+                                                    "1",
+                                                    "2",
+                                                    "3"
+                                                ],
+                                                "HPE Synergy 3530C 16G Host Bus Adapter": [
+                                                    "47a4b1a62a384f5a10dfe200103c8001",
+                                                    "",
+                                                    "",
+                                                    "1.20"
+                                                ]
+                                            },
+                                            "ownerId": "psrm",
+                                            "attributes": {
+                                                "intelligentProvisioningVersion": "2.30",
+                                                "processorType": "Intel(R) Xeon(R) CPU E5620 @ 2.40GHz",
+                                                "profileName": "teste 2 server profile",
+                                                "serverProfileUri": "/rest/server-profiles/145d5f6b-837b-428c-829d-ea40dcfe3f03",
+                                                "refreshState": "NotRefreshing",
+                                                "powerState": "Off",
+                                                "firmwareInventoryTimestamp": "1532546484809",
+                                                "mpHostName": "172.18.6.6",
+                                                "romVersion": "I37 v1.30 08/26/2014",
+                                                "serverName": "",
+                                                "firmwareBaselineNameAndVersion": "",
+                                                "serial_number": "2M201106GR",
+                                                "model": "HPE Synergy 480 Gen9 Compute Module",
+                                                "mpModel": "iLO4",
+                                                "firmwareInventoryStatus": "Supported",
+                                                "mpFirmwareVersion": "2.30 Jul 23 2015",
+                                                "uuid": "30303437-3034-4D32-3230-313130364752",
+                                                "memoryMb": "524288",
+                                                "mpIpV4Mode": "static",
+                                                "stateReason": "NotApplicable",
+                                                "model_short": "SY 480 Gen9",
+                                                "bay": "7",
+                                                "partNumber": "740040-001",
+                                                "uidState": "Off"
+                                            },
+                                            "description": ""
+                                        }
+                                    }
+                                ]
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Normal",
+                                "name": "teste 2 server profile",
+                                "eTag": "2018-07-23T17:42:26.220Z",
+                                "created": "2018-07-23T17:40:40.659Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/server-profiles/145d5f6b-837b-428c-829d-ea40dcfe3f03",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-23T17:42:26.220Z",
+                                "category": "server-profiles",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "ServerProfileV9",
+                                "attributes": {
+                                    "uuid": "145d5f6b-837b-428c-829d-ea40dcfe3f03",
+                                    "templateCompliance": "Compliant",
+                                    "inProgress": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "teste 2",
+                    "eTag": "2018-07-23T17:38:42.177Z",
+                    "created": "2018-07-23T17:38:41.666Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/a07fedf3-fa71-401b-a6ae-113cb6a33929",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-23T17:38:42.177Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "pm",
+                    "attributes": {
+                    },
+                    "description": ""
+                }
+            },
+            {
+                "children": {
+                    "SERVER_PROFILE_TEMPLATE_TO_NETWORK": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth2",
+                                "eTag": "2018-05-10T18:51:24.364Z",
+                                "created": "2018-05-10T18:51:24.364Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/44e9e767-9a1a-4d6e-b4f3-888dca7d6233",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:24.364Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "44e9e767-9a1a-4d6e-b4f3-888dca7d6233",
+                                    "default_connection_type": "8eab0304-bc44-44db-b39a-be30de03b428",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "20",
+                                    "network_name": "test_eth2",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "CI_Template",
+                    "eTag": "2018-07-23T17:36:46.793Z",
+                    "created": "2018-05-11T13:44:33.925Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/75871d70-789e-4cf9-8bc8-6f4d73193578",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-23T17:36:46.793Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "pm",
+                    "attributes": {
+                    },
+                    "description": ""
+                }
+            },
+            {
+                "children": {
+                    "SERVER_PROFILE_TEMPLATE_TO_NETWORK": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth1",
+                                "eTag": "2018-05-10T18:51:11.129Z",
+                                "created": "2018-05-10T18:51:11.129Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:11.129Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "19638712-679d-4232-9743-c7cb6c7bf718",
+                                    "default_connection_type": "51208222-c357-4777-86f2-ce0c2aabdff1",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "10",
+                                    "network_name": "test_eth1",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "Node_Template",
+                    "eTag": "2018-07-23T16:34:24.840Z",
+                    "created": "2018-05-24T19:25:04.697Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/71f6210a-6648-439f-bf24-1cecb94fbfde",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-23T16:34:24.840Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "pm",
+                    "attributes": {
+                    },
+                    "description": "89"
+                }
+            },
+            {
+                "children": {
+                    "SERVER_PROFILE_TEMPLATE_TO_NETWORK": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth1",
+                                "eTag": "2018-05-10T18:51:11.129Z",
+                                "created": "2018-05-10T18:51:11.129Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:11.129Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "19638712-679d-4232-9743-c7cb6c7bf718",
+                                    "default_connection_type": "51208222-c357-4777-86f2-ce0c2aabdff1",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "10",
+                                    "network_name": "test_eth1",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "Apache_Template",
+                    "eTag": "2018-06-01T17:08:26.229Z",
+                    "created": "2018-05-11T13:40:37.049Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-06-01T17:08:26.229Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "pm",
+                    "attributes": {
+                    },
+                    "description": ""
+                }
+            },
+            {
+                "children": {
+                    "SERVER_PROFILE_TEMPLATE_TO_NETWORK": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth1",
+                                "eTag": "2018-05-10T18:51:11.129Z",
+                                "created": "2018-05-10T18:51:11.129Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:11.129Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "19638712-679d-4232-9743-c7cb6c7bf718",
+                                    "default_connection_type": "51208222-c357-4777-86f2-ce0c2aabdff1",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "10",
+                                    "network_name": "test_eth1",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "Storage Controller and Connections",
+                    "eTag": "2018-07-25T14:36:24.238Z",
+                    "created": "2018-07-25T13:32:07.899Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/8eed54c3-9636-4160-8fed-d46710edac45",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-25T14:36:24.238Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "ServerProfileTemplateV5",
+                    "attributes": {
+                    },
+                    "description": ""
+                }
+            },
+            {
+                "children": {
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "",
+                    "name": "No Storage Controller No Connections",
+                    "eTag": "2018-07-25T13:10:52.964Z",
+                    "created": "2018-07-25T13:09:36.236Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profile-templates/419b30f9-6d64-406f-90d8-3aa6714a3810",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-25T13:10:52.964Z",
+                    "category": "server-profile-templates",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "ServerProfileTemplateV5",
+                    "attributes": {
+                    },
+                    "description": ""
+                }
             }
-         },
-         {
-            "parents":{
-
+        ],
+        "enclosure_group_to_server_profiles": [
+            {
+                "children": {
+                    "server_profiles_to_networks": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth1",
+                                "eTag": "2018-05-10T18:51:11.129Z",
+                                "created": "2018-05-10T18:51:11.129Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:11.129Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "19638712-679d-4232-9743-c7cb6c7bf718",
+                                    "default_connection_type": "51208222-c357-4777-86f2-ce0c2aabdff1",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "10",
+                                    "network_name": "test_eth1",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ],
+                    "SERVER_PROFILE_TO_SAS_LJBOD_ATTACHMENT_ASSOCIATION": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Deployed",
+                                "name": "test_le1-lig_bayset1-1-SLJA-2",
+                                "eTag": "2018-07-25T15:30:35.862Z",
+                                "created": "2018-07-25T15:29:48.499Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/sas-logical-jbod-attachments/8260ee0f-d30c-4dab-8977-f0eb2b58d478",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T15:30:35.862Z",
+                                "category": "sas-logical-jbod-attachments",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "dfrm",
+                                "attributes": {
+                                    "uuid": "8260ee0f-d30c-4dab-8977-f0eb2b58d478",
+                                    "name": "test_le1-lig_bayset1-1-SLJA-2"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ],
+                    "server_profiles_to_server_hardware": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "ProfileApplied",
+                                "name": "0000A66101, bay 5",
+                                "eTag": "2018-07-25T20:04:03.821Z",
+                                "created": "2018-04-10T19:49:42.042Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/server-hardware/30303437-3034-4D32-3230-313130304752",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T20:04:03.821Z",
+                                "category": "server-hardware",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                    "Intelligent Platform Abstraction Data": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "15.5"
+                                    ],
+                                    "mezzNames": [
+                                        "Smart Array P542D Controller",
+                                        "",
+                                        "HPE Synergy 3820C 10/20Gb Converged Network Adapter"
+                                    ],
+                                    "mpIpAddresses": [
+                                        "fe80:0:0:0:2:ff:fe03:2",
+                                        "172.18.6.2"
+                                    ],
+                                    "Intelligent Provisioning": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "2.30"
+                                    ],
+                                    "HPE Synergy 3820C 10/20Gb Converged Network Adapter": [
+                                        "47a4b1a62a384f5a14e416a4103c2231",
+                                        "",
+                                        "",
+                                        "1.20"
+                                    ],
+                                    "componentVersions": [
+                                        "2.30",
+                                        "2.30 Jul 23 2015",
+                                        "HP01",
+                                        "1.20",
+                                        "I39 v1.30 08/26/2014",
+                                        "1.0",
+                                        "I37 v1.30 08/26/2014",
+                                        "Version 0x2F",
+                                        "3.0.6.267.1",
+                                        "15.5",
+                                        "1.0.9"
+                                    ],
+                                    "Server Platform Services (SPS) Firmware": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "3.0.6.267.1"
+                                    ],
+                                    "HP ProLiant System ROM - Backup": [
+                                        "00000000000000000000000001493337",
+                                        "",
+                                        "",
+                                        "I39 v1.30 08/26/2014"
+                                    ],
+                                    "System Programmable Logic Device": [
+                                        "000000000000000000000000000000f3",
+                                        "",
+                                        "",
+                                        "Version 0x2F"
+                                    ],
+                                    "HP ProLiant System ROM": [
+                                        "00000000000000000000000001493337",
+                                        "",
+                                        "",
+                                        "I37 v1.30 08/26/2014"
+                                    ],
+                                    "Power Management Controller FW Bootloader": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "1.0"
+                                    ],
+                                    "componentLocations": [
+                                        "System Board",
+                                        "System Board",
+                                        "ControllerPort 1, Box 1, Bay 1",
+                                        "Slot 0",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board"
+                                    ],
+                                    "componentTypes": [
+                                        "Firmware",
+                                        "Firmware",
+                                        "Software",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware"
+                                    ],
+                                    "Power Management Controller Firmware": [
+                                        "00000000000000000000000000504d14",
+                                        "",
+                                        "",
+                                        "1.0.9"
+                                    ],
+                                    "componentNames": [
+                                        "Intelligent Provisioning",
+                                        "iLO",
+                                        "HpSmartStorageDiskDrive (SATA)",
+                                        "HPE Synergy 3820C 10/20Gb Converged Network Adapter",
+                                        "HP ProLiant System ROM - Backup",
+                                        "Power Management Controller FW Bootloader",
+                                        "HP ProLiant System ROM",
+                                        "System Programmable Logic Device",
+                                        "Server Platform Services (SPS) Firmware",
+                                        "Intelligent Platform Abstraction Data",
+                                        "Power Management Controller Firmware"
+                                    ],
+                                    "mezzSlots": [
+                                        "1",
+                                        "2",
+                                        "3"
+                                    ],
+                                    "iLO": [
+                                        "2932ecaecc69d843bd0e61dc3406f71b",
+                                        "",
+                                        "",
+                                        "2.30 Jul 23 2015"
+                                    ]
+                                },
+                                "ownerId": "psrm",
+                                "attributes": {
+                                    "intelligentProvisioningVersion": "2.30",
+                                    "processorType": "Intel(R) Xeon(R) CPU E5620 @ 2.40GHz",
+                                    "profileName": "New system",
+                                    "refreshState": "NotRefreshing",
+                                    "powerState": "Off",
+                                    "firmwareInventoryTimestamp": "1532546497397",
+                                    "mpHostName": "172.18.6.2",
+                                    "romVersion": "I37 v1.30 08/26/2014",
+                                    "serverName": "",
+                                    "firmwareBaselineNameAndVersion": "",
+                                    "serial_number": "2M201100GR",
+                                    "model": "HPE Synergy 480 Gen9 Compute Module",
+                                    "mpModel": "iLO4",
+                                    "firmwareInventoryStatus": "Supported",
+                                    "mpFirmwareVersion": "2.30 Jul 23 2015",
+                                    "firmwareScheduleDatetime": "",
+                                    "uuid": "30303437-3034-4D32-3230-313130304752",
+                                    "memoryMb": "524288",
+                                    "mpIpV4Mode": "static",
+                                    "stateReason": "NotApplicable",
+                                    "model_short": "SY 480 Gen9",
+                                    "serverProfileUri": "/rest/server-profiles/99927407-7b80-4495-b010-f7a67ac1fb83",
+                                    "bay": "5",
+                                    "partNumber": "740040-001",
+                                    "uidState": "Off"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ],
+                    "SERVERPROFILE_TO_SLJBOD_ASSOCIATION": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Configured",
+                                "name": "Storage 1",
+                                "eTag": "2018-07-25T20:01:54.690Z",
+                                "created": "2018-07-25T15:29:47.526Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/sas-logical-jbods/0a863467-6289-4389-91f7-3571a1cf24d3",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T20:01:54.690Z",
+                                "category": "sas-logical-jbods",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "dfrm",
+                                "attributes": {
+                                    "uuid": "0a863467-6289-4389-91f7-3571a1cf24d3",
+                                    "isMarkedForErase": "false",
+                                    "name": "Storage 1",
+                                    "driveCount": "1"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "Normal",
+                    "name": "New system",
+                    "eTag": "2018-07-25T16:02:57.380Z",
+                    "created": "2018-07-25T15:29:31.098Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profiles/99927407-7b80-4495-b010-f7a67ac1fb83",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-25T16:02:57.380Z",
+                    "category": "server-profiles",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "ServerProfileV9",
+                    "attributes": {
+                        "uuid": "99927407-7b80-4495-b010-f7a67ac1fb83",
+                        "templateCompliance": "Unknown",
+                        "inProgress": "false"
+                    },
+                    "description": "/rest/server-profile-templates/bf0abe37-f4ce-455f-96ed-12eb6b17874f"
+                }
             },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/bf0abe37-f4ce-455f-96ed-12eb6b17874f",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-07-25T14:43:47.576Z",
-               "created":"2018-07-25T14:19:02.762Z",
-               "ownerId":"ServerProfileTemplateV5",
-               "modified":"2018-07-25T14:43:47.576Z",
-               "description":"",
-               "name":"Template with Storage Controller and Connections",
-               "scopeUris":""
+            {
+                "children": {
+                    "server_profiles_to_networks": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "set_example",
+                                "eTag": "2018-06-20T13:15:24.571Z",
+                                "created": "2018-06-20T13:15:24.571Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/network-sets/76f584da-1f9d-40b8-9b9d-5ccb09810142",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-06-20T13:15:24.571Z",
+                                "category": "network-sets",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                    "network_ids": [
+                                        "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                        "/rest/ethernet-networks/44e9e767-9a1a-4d6e-b4f3-888dca7d6233"
+                                    ]
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "native_network_id": "/rest/ethernet-networks/null",
+                                    "id": "/rest/network-sets/76f584da-1f9d-40b8-9b9d-5ccb09810142",
+                                    "name": "set_example"
+                                },
+                                "description": ""
+                            }
+                        },
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "",
+                                "name": "test_eth1",
+                                "eTag": "2018-05-10T18:51:11.129Z",
+                                "created": "2018-05-10T18:51:11.129Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-05-10T18:51:11.129Z",
+                                "category": "ethernet-networks",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "cd",
+                                "attributes": {
+                                    "object_id": "19638712-679d-4232-9743-c7cb6c7bf718",
+                                    "default_connection_type": "51208222-c357-4777-86f2-ce0c2aabdff1",
+                                    "subnet_uri": "",
+                                    "ethernetNetworkType": "Tagged",
+                                    "purpose": "General",
+                                    "vlan_id": "10",
+                                    "network_name": "test_eth1",
+                                    "privateNetwork": "false"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ],
+                    "SERVER_PROFILE_TO_SAS_LJBOD_ATTACHMENT_ASSOCIATION": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Deployed",
+                                "name": "test_le1-lig_bayset1-2-SLJA-1",
+                                "eTag": "2018-07-23T19:28:16.790Z",
+                                "created": "2018-07-23T19:28:04.243Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/sas-logical-jbod-attachments/d3376090-3047-46e7-a2d1-df262f0620fb",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-23T19:28:16.790Z",
+                                "category": "sas-logical-jbod-attachments",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "dfrm",
+                                "attributes": {
+                                    "uuid": "d3376090-3047-46e7-a2d1-df262f0620fb",
+                                    "name": "test_le1-lig_bayset1-2-SLJA-1"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ],
+                    "server_profiles_to_server_hardware": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "ProfileApplied",
+                                "name": "0000A66102, bay 5",
+                                "eTag": "2018-07-25T20:04:03.850Z",
+                                "created": "2018-04-10T19:49:56.653Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/server-hardware/30303437-3034-4D32-3230-313131324752",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T20:04:03.850Z",
+                                "category": "server-hardware",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                    "Intelligent Platform Abstraction Data": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "15.5"
+                                    ],
+                                    "mezzNames": [
+                                        "Smart Array P542D Controller",
+                                        "",
+                                        "HPE Synergy 3820C 10/20Gb Converged Network Adapter"
+                                    ],
+                                    "mpIpAddresses": [
+                                        "fe80:0:0:0:2:ff:fe03:c",
+                                        "172.18.6.12"
+                                    ],
+                                    "Intelligent Provisioning": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "2.30"
+                                    ],
+                                    "HPE Synergy 3820C 10/20Gb Converged Network Adapter": [
+                                        "47a4b1a62a384f5a14e416a4103c2231",
+                                        "",
+                                        "",
+                                        "1.20"
+                                    ],
+                                    "componentVersions": [
+                                        "3.0.6.267.1",
+                                        "HP01",
+                                        "15.5",
+                                        "I39 v1.30 08/26/2014",
+                                        "I37 v1.30 08/26/2014",
+                                        "2.30",
+                                        "1.0",
+                                        "Version 0x2F",
+                                        "1.0.9",
+                                        "1.20",
+                                        "2.30 Jul 23 2015"
+                                    ],
+                                    "Server Platform Services (SPS) Firmware": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "3.0.6.267.1"
+                                    ],
+                                    "HP ProLiant System ROM - Backup": [
+                                        "00000000000000000000000001493337",
+                                        "",
+                                        "",
+                                        "I39 v1.30 08/26/2014"
+                                    ],
+                                    "System Programmable Logic Device": [
+                                        "000000000000000000000000000000f3",
+                                        "",
+                                        "",
+                                        "Version 0x2F"
+                                    ],
+                                    "HP ProLiant System ROM": [
+                                        "00000000000000000000000001493337",
+                                        "",
+                                        "",
+                                        "I37 v1.30 08/26/2014"
+                                    ],
+                                    "Power Management Controller FW Bootloader": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "1.0"
+                                    ],
+                                    "componentLocations": [
+                                        "System Board",
+                                        "ControllerPort 1, Box 1, Bay 1",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "Slot 0",
+                                        "System Board"
+                                    ],
+                                    "componentTypes": [
+                                        "Firmware",
+                                        "Software",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware"
+                                    ],
+                                    "Power Management Controller Firmware": [
+                                        "00000000000000000000000000504d14",
+                                        "",
+                                        "",
+                                        "1.0.9"
+                                    ],
+                                    "componentNames": [
+                                        "Server Platform Services (SPS) Firmware",
+                                        "HpSmartStorageDiskDrive (SATA)",
+                                        "Intelligent Platform Abstraction Data",
+                                        "HP ProLiant System ROM - Backup",
+                                        "HP ProLiant System ROM",
+                                        "Intelligent Provisioning",
+                                        "Power Management Controller FW Bootloader",
+                                        "System Programmable Logic Device",
+                                        "Power Management Controller Firmware",
+                                        "HPE Synergy 3820C 10/20Gb Converged Network Adapter",
+                                        "iLO"
+                                    ],
+                                    "mezzSlots": [
+                                        "1",
+                                        "2",
+                                        "3"
+                                    ],
+                                    "iLO": [
+                                        "2932ecaecc69d843bd0e61dc3406f71b",
+                                        "",
+                                        "",
+                                        "2.30 Jul 23 2015"
+                                    ]
+                                },
+                                "ownerId": "psrm",
+                                "attributes": {
+                                    "intelligentProvisioningVersion": "2.30",
+                                    "processorType": "Intel(R) Xeon(R) CPU E5620 @ 2.40GHz",
+                                    "profileName": "Composed System Using Redfish",
+                                    "refreshState": "NotRefreshing",
+                                    "powerState": "Off",
+                                    "firmwareInventoryTimestamp": "1532546506421",
+                                    "mpHostName": "172.18.6.12",
+                                    "romVersion": "I37 v1.30 08/26/2014",
+                                    "serverName": "",
+                                    "firmwareBaselineNameAndVersion": "",
+                                    "serial_number": "2M201112GR",
+                                    "model": "HPE Synergy 480 Gen9 Compute Module",
+                                    "mpModel": "iLO4",
+                                    "firmwareInventoryStatus": "Supported",
+                                    "mpFirmwareVersion": "2.30 Jul 23 2015",
+                                    "firmwareScheduleDatetime": "",
+                                    "uuid": "30303437-3034-4D32-3230-313131324752",
+                                    "memoryMb": "524288",
+                                    "mpIpV4Mode": "static",
+                                    "stateReason": "NotApplicable",
+                                    "model_short": "SY 480 Gen9",
+                                    "serverProfileUri": "/rest/server-profiles/95276a26-e5d7-4645-bcf0-ee26bb0d3fb9",
+                                    "bay": "5",
+                                    "partNumber": "740040-001",
+                                    "uidState": "Off"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ],
+                    "SERVERPROFILE_TO_SLJBOD_ASSOCIATION": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "Configured",
+                                "name": "Storage 1",
+                                "eTag": "2018-07-25T20:01:51.527Z",
+                                "created": "2018-07-23T19:28:02.617Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/sas-logical-jbods/b3b23388-5ca1-43bc-934c-51b7e6edc4a7",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T20:01:51.527Z",
+                                "category": "sas-logical-jbods",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                },
+                                "ownerId": "dfrm",
+                                "attributes": {
+                                    "uuid": "b3b23388-5ca1-43bc-934c-51b7e6edc4a7",
+                                    "isMarkedForErase": "false",
+                                    "name": "Storage 1",
+                                    "driveCount": "1"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "Normal",
+                    "name": "Composed System Using Redfish",
+                    "eTag": "2018-07-23T19:50:01.121Z",
+                    "created": "2018-07-23T19:27:46.915Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profiles/95276a26-e5d7-4645-bcf0-ee26bb0d3fb9",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-23T19:50:01.121Z",
+                    "category": "server-profiles",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "ServerProfileV9",
+                    "attributes": {
+                        "uuid": "95276a26-e5d7-4645-bcf0-ee26bb0d3fb9",
+                        "templateCompliance": "Unknown",
+                        "inProgress": "false"
+                    },
+                    "description": "/rest/server-profile-templates/13d6739e-2856-4744-8a10-63ccbda0268e"
+                }
             },
-            "children":{
-
+            {
+                "children": {
+                    "server_profiles_to_server_hardware": [
+                        {
+                            "children": {
+                            },
+                            "parents": {
+                            },
+                            "resource": {
+                                "state": "ProfileApplied",
+                                "name": "0000A66101, bay 7",
+                                "eTag": "2018-07-25T20:04:04.095Z",
+                                "created": "2018-04-10T19:49:47.122Z",
+                                "scopeUris": "",
+                                "status": "OK",
+                                "uri": "/rest/server-hardware/30303437-3034-4D32-3230-313130364752",
+                                "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                                "modified": "2018-07-25T20:04:04.095Z",
+                                "category": "server-hardware",
+                                "type": "IndexResourceV300",
+                                "multiAttributes": {
+                                    "Intelligent Platform Abstraction Data": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "15.5"
+                                    ],
+                                    "mezzNames": [
+                                        "",
+                                        "HPE Synergy 3530C 16G Host Bus Adapter",
+                                        "HPE Synergy 3820C 10/20Gb Converged Network Adapter"
+                                    ],
+                                    "mpIpAddresses": [
+                                        "fe80:0:0:0:2:ff:fe03:6",
+                                        "172.18.6.6"
+                                    ],
+                                    "Intelligent Provisioning": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "2.30"
+                                    ],
+                                    "HPE Synergy 3820C 10/20Gb Converged Network Adapter": [
+                                        "47a4b1a62a384f5a14e416a4103c2231",
+                                        "",
+                                        "",
+                                        "1.20"
+                                    ],
+                                    "componentVersions": [
+                                        "I39 v1.30 08/26/2014",
+                                        "15.5",
+                                        "3.0.6.267.1",
+                                        "2.30 Jul 23 2015",
+                                        "1.0",
+                                        "1.0.9",
+                                        "1.20",
+                                        "1.20",
+                                        "Version 0x2F",
+                                        "I37 v1.30 08/26/2014",
+                                        "2.30"
+                                    ],
+                                    "iLO": [
+                                        "2932ecaecc69d843bd0e61dc3406f71b",
+                                        "",
+                                        "",
+                                        "2.30 Jul 23 2015"
+                                    ],
+                                    "HP ProLiant System ROM - Backup": [
+                                        "00000000000000000000000001493337",
+                                        "",
+                                        "",
+                                        "I39 v1.30 08/26/2014"
+                                    ],
+                                    "System Programmable Logic Device": [
+                                        "000000000000000000000000000000f3",
+                                        "",
+                                        "",
+                                        "Version 0x2F"
+                                    ],
+                                    "HP ProLiant System ROM": [
+                                        "00000000000000000000000001493337",
+                                        "",
+                                        "",
+                                        "I37 v1.30 08/26/2014"
+                                    ],
+                                    "Power Management Controller FW Bootloader": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "1.0"
+                                    ],
+                                    "componentLocations": [
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board",
+                                        "Slot 0",
+                                        "Slot 0",
+                                        "System Board",
+                                        "System Board",
+                                        "System Board"
+                                    ],
+                                    "Server Platform Services (SPS) Firmware": [
+                                        "null",
+                                        "",
+                                        "",
+                                        "3.0.6.267.1"
+                                    ],
+                                    "componentTypes": [
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware",
+                                        "Firmware"
+                                    ],
+                                    "Power Management Controller Firmware": [
+                                        "00000000000000000000000000504d14",
+                                        "",
+                                        "",
+                                        "1.0.9"
+                                    ],
+                                    "componentNames": [
+                                        "HP ProLiant System ROM - Backup",
+                                        "Intelligent Platform Abstraction Data",
+                                        "Server Platform Services (SPS) Firmware",
+                                        "iLO",
+                                        "Power Management Controller FW Bootloader",
+                                        "Power Management Controller Firmware",
+                                        "HPE Synergy 3820C 10/20Gb Converged Network Adapter",
+                                        "HPE Synergy 3530C 16G Host Bus Adapter",
+                                        "System Programmable Logic Device",
+                                        "HP ProLiant System ROM",
+                                        "Intelligent Provisioning"
+                                    ],
+                                    "mezzSlots": [
+                                        "1",
+                                        "2",
+                                        "3"
+                                    ],
+                                    "HPE Synergy 3530C 16G Host Bus Adapter": [
+                                        "47a4b1a62a384f5a10dfe200103c8001",
+                                        "",
+                                        "",
+                                        "1.20"
+                                    ]
+                                },
+                                "ownerId": "psrm",
+                                "attributes": {
+                                    "intelligentProvisioningVersion": "2.30",
+                                    "processorType": "Intel(R) Xeon(R) CPU E5620 @ 2.40GHz",
+                                    "profileName": "teste 2 server profile",
+                                    "serverProfileUri": "/rest/server-profiles/145d5f6b-837b-428c-829d-ea40dcfe3f03",
+                                    "refreshState": "NotRefreshing",
+                                    "powerState": "Off",
+                                    "firmwareInventoryTimestamp": "1532546484809",
+                                    "mpHostName": "172.18.6.6",
+                                    "romVersion": "I37 v1.30 08/26/2014",
+                                    "serverName": "",
+                                    "firmwareBaselineNameAndVersion": "",
+                                    "serial_number": "2M201106GR",
+                                    "model": "HPE Synergy 480 Gen9 Compute Module",
+                                    "mpModel": "iLO4",
+                                    "firmwareInventoryStatus": "Supported",
+                                    "mpFirmwareVersion": "2.30 Jul 23 2015",
+                                    "uuid": "30303437-3034-4D32-3230-313130364752",
+                                    "memoryMb": "524288",
+                                    "mpIpV4Mode": "static",
+                                    "stateReason": "NotApplicable",
+                                    "model_short": "SY 480 Gen9",
+                                    "bay": "7",
+                                    "partNumber": "740040-001",
+                                    "uidState": "Off"
+                                },
+                                "description": ""
+                            }
+                        }
+                    ]
+                },
+                "parents": {
+                },
+                "resource": {
+                    "state": "Normal",
+                    "name": "teste 2 server profile",
+                    "eTag": "2018-07-23T17:42:26.220Z",
+                    "created": "2018-07-23T17:40:40.659Z",
+                    "scopeUris": "",
+                    "status": "OK",
+                    "uri": "/rest/server-profiles/145d5f6b-837b-428c-829d-ea40dcfe3f03",
+                    "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+                    "modified": "2018-07-23T17:42:26.220Z",
+                    "category": "server-profiles",
+                    "type": "IndexResourceV300",
+                    "multiAttributes": {
+                    },
+                    "ownerId": "ServerProfileV9",
+                    "attributes": {
+                        "uuid": "145d5f6b-837b-428c-829d-ea40dcfe3f03",
+                        "templateCompliance": "Compliant",
+                        "inProgress": "false"
+                    },
+                    "description": ""
+                }
             }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/13d6739e-2856-4744-8a10-63ccbda0268e",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-07-23T13:16:12.329Z",
-               "created":"2018-06-15T14:47:01.283Z",
-               "ownerId":"pm",
-               "modified":"2018-07-23T13:16:12.329Z",
-               "description":"",
-               "name":"Sample_Template",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/a07fedf3-fa71-401b-a6ae-113cb6a33929",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-07-23T17:38:42.177Z",
-               "created":"2018-07-23T17:38:41.666Z",
-               "ownerId":"pm",
-               "modified":"2018-07-23T17:38:42.177Z",
-               "description":"",
-               "name":"teste 2",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/75871d70-789e-4cf9-8bc8-6f4d73193578",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-07-23T17:36:46.793Z",
-               "created":"2018-05-11T13:44:33.925Z",
-               "ownerId":"pm",
-               "modified":"2018-07-23T17:36:46.793Z",
-               "description":"",
-               "name":"CI_Template",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/71f6210a-6648-439f-bf24-1cecb94fbfde",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-07-23T16:34:24.840Z",
-               "created":"2018-05-24T19:25:04.697Z",
-               "ownerId":"pm",
-               "modified":"2018-07-23T16:34:24.840Z",
-               "description":"89",
-               "name":"Node_Template",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-06-01T17:08:26.229Z",
-               "created":"2018-05-11T13:40:37.049Z",
-               "ownerId":"pm",
-               "modified":"2018-06-01T17:08:26.229Z",
-               "description":"",
-               "name":"Apache_Template",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/8eed54c3-9636-4160-8fed-d46710edac45",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-07-25T14:36:24.238Z",
-               "created":"2018-07-25T13:32:07.899Z",
-               "ownerId":"ServerProfileTemplateV5",
-               "modified":"2018-07-25T14:36:24.238Z",
-               "description":"",
-               "name":"Storage Controller and Connections",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-
-               },
-               "uri":"/rest/server-profile-templates/419b30f9-6d64-406f-90d8-3aa6714a3810",
-               "state":"",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profile-templates",
-               "eTag":"2018-07-25T13:10:52.964Z",
-               "created":"2018-07-25T13:09:36.236Z",
-               "ownerId":"ServerProfileTemplateV5",
-               "modified":"2018-07-25T13:10:52.964Z",
-               "description":"",
-               "name":"No Storage Controller No Connections",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         }
-      ],
-      "ENCLOSURE_GROUP_TO_LOGICAL_INTERCONNECT_GROUP":[
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-                  "enclosureType":"SY12000"
-               },
-               "uri":"/rest/logical-interconnect-groups/32636f11-b56d-41ef-b2b5-ed17e691eec0",
-               "state":"",
-               "status":"",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"logical-interconnect-groups",
-               "eTag":"2018-05-10T19:06:03.227Z",
-               "created":"2018-05-10T19:03:27.279Z",
-               "ownerId":"cd",
-               "modified":"2018-05-10T19:06:03.227Z",
-               "description":"",
-               "name":"lig_bayset3",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-                  "enclosureType":"SY12000"
-               },
-               "uri":"/rest/logical-interconnect-groups/26564370-62c8-4543-8312-bc63313e0db9",
-               "state":"",
-               "status":"",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"logical-interconnect-groups",
-               "eTag":"2018-05-10T19:00:41.440Z",
-               "created":"2018-05-10T19:00:41.440Z",
-               "ownerId":"cd",
-               "modified":"2018-05-10T19:00:41.440Z",
-               "description":"",
-               "name":"lib_bayset2",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-                  "uuid":"c1c1634e-c6b4-4f55-ba6f-d5b804c2970b",
-                  "name":"lig_bayset1",
-                  "enclosureType":"SY12000"
-               },
-               "uri":"/rest/sas-logical-interconnect-groups/c1c1634e-c6b4-4f55-ba6f-d5b804c2970b",
-               "state":"Active",
-               "status":"",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"sas-logical-interconnect-groups",
-               "eTag":"2018-05-10T18:57:58.245Z",
-               "created":"2018-05-10T18:57:58.245Z",
-               "ownerId":"dfrm",
-               "modified":"2018-05-10T18:57:58.245Z",
-               "description":"",
-               "name":"lig_bayset1",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         }
-      ],
-      "ENCLOSURE_GROUP_TO_LOGICAL_ENCLOSURE":[
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-                  "enclosure_group_uri":"/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
-                  "firmwareBaselineUri":""
-               },
-               "uri":"/rest/logical-enclosures/82431b7d-bc11-4d0b-a158-40b71071284c",
-               "state":"Consistent",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"logical-enclosures",
-               "eTag":"2018-07-18T22:36:49.071Z",
-               "created":"2018-05-10T19:08:24.072Z",
-               "ownerId":"perm",
-               "modified":"2018-07-18T22:36:49.071Z",
-               "description":"",
-               "name":"test_le1",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         }
-      ],
-      "enclosure_group_to_server_profiles":[
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-                  "inProgress":"false",
-                  "uuid":"99927407-7b80-4495-b010-f7a67ac1fb83",
-                  "templateCompliance":"Unknown"
-               },
-               "uri":"/rest/server-profiles/99927407-7b80-4495-b010-f7a67ac1fb83",
-               "state":"Normal",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profiles",
-               "eTag":"2018-07-25T16:02:57.380Z",
-               "created":"2018-07-25T15:29:31.098Z",
-               "ownerId":"ServerProfileV9",
-               "modified":"2018-07-25T16:02:57.380Z",
-               "description":"/rest/server-profile-templates/bf0abe37-f4ce-455f-96ed-12eb6b17874f",
-               "name":"New system",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-                  "inProgress":"false",
-                  "uuid":"95276a26-e5d7-4645-bcf0-ee26bb0d3fb9",
-                  "templateCompliance":"Unknown"
-               },
-               "uri":"/rest/server-profiles/95276a26-e5d7-4645-bcf0-ee26bb0d3fb9",
-               "state":"Normal",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profiles",
-               "eTag":"2018-07-23T19:50:01.121Z",
-               "created":"2018-07-23T19:27:46.915Z",
-               "ownerId":"ServerProfileV9",
-               "modified":"2018-07-23T19:50:01.121Z",
-               "description":"/rest/server-profile-templates/13d6739e-2856-4744-8a10-63ccbda0268e",
-               "name":"Composed System Using Redfish",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         },
-         {
-            "parents":{
-
-            },
-            "resource":{
-               "attributes":{
-                  "inProgress":"false",
-                  "uuid":"145d5f6b-837b-428c-829d-ea40dcfe3f03",
-                  "templateCompliance":"Compliant"
-               },
-               "uri":"/rest/server-profiles/145d5f6b-837b-428c-829d-ea40dcfe3f03",
-               "state":"Normal",
-               "status":"OK",
-               "applianceId":"c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
-               "multiAttributes":{
-
-               },
-               "type":"IndexResourceV300",
-               "category":"server-profiles",
-               "eTag":"2018-07-23T17:42:26.220Z",
-               "created":"2018-07-23T17:40:40.659Z",
-               "ownerId":"ServerProfileV9",
-               "modified":"2018-07-23T17:42:26.220Z",
-               "description":"",
-               "name":"teste 2 server profile",
-               "scopeUris":""
-            },
-            "children":{
-
-            }
-         }
-      ]
-   }
+        ]
+    },
+    "parents": {
+    },
+    "resource": {
+        "state": "Normal",
+        "name": "test_eg1",
+        "eTag": "2018-07-18T22:36:43.015Z",
+        "created": "2018-05-10T19:07:37.038Z",
+        "scopeUris": "",
+        "status": "OK",
+        "uri": "/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
+        "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+        "modified": "2018-07-18T22:36:43.015Z",
+        "category": "enclosure-groups",
+        "type": "IndexResourceV300",
+        "multiAttributes": {
+        },
+        "ownerId": "perm",
+        "attributes": {
+            "encgrp_type": "EnclosureGroupV7"
+        },
+        "description": ""
+    }
 }
