@@ -51,17 +51,13 @@ def check_cert_exist():
 def get_oneview_client():
     # Workaround for #328
     # Create OneView client using API 500 just to retrieve OneView certificates
-    try:
-        ov_config = connection.create_oneview_config(
-            ip=config.get_oneview_ip(),
-            credentials=config.get_credentials(),
-            api_version=500
-        )
-        ov_client = OneViewClient(ov_config)
-        ov_client.connection.login(config.get_credentials())
-    # if failed abort
-    except Exception:
-        raise
+    ov_config = connection.create_oneview_config(
+        ip=config.get_oneview_ip(),
+        credentials=config.get_credentials(),
+        api_version=500
+    )
+    ov_client = OneViewClient(ov_config)
+    ov_client.connection.login(config.get_credentials())
 
     return ov_client
 

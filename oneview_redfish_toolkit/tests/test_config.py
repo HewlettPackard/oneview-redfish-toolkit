@@ -15,7 +15,7 @@
 # under the License.
 
 """
-    Tests for store_schema and load_registry function from util.py
+    Tests for load_schema and load_registry function from util.py
 """
 
 import collections
@@ -39,7 +39,7 @@ class TestUtil(unittest.TestCase):
                 - have all expected options
                 - checks if globals vars are not none
 
-            store_schema()
+            load_schema()
                 - invalid schema dir
 
             load_registry()
