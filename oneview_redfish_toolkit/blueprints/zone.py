@@ -40,21 +40,15 @@ def get_zone(uuid):
     """
     profile_template = g.oneview_client.server_profile_templates.get(uuid)
 
-    enclosure_group_resource = \
-        _get_enclosure_group_index_trees(profile_template)
+    enclosure_group_uri = profile_template["enclosureGroupUri"]
+    enclosure_group_filter = "serverGroupUri='{}'".format(enclosure_group_uri)
+
+    server_hardware_list = g.oneview_client.server_hardware.get_all(
+        filter=enclosure_group_filter)
 
     drives = g.oneview_client.index_resources \
         .get_all(category="drives", count=10000)
 
-    zone_data = Zone(profile_template, enclosure_group_resource, drives)
+    zone_data = Zone(profile_template, server_hardware_list, drives)
 
     return ResponseBuilder.success(zone_data)
-
-
-def _get_enclosure_group_index_trees(profile_template):
-    encl_group_uri = profile_template['enclosureGroupUri']
-    encl_group_index_trees_uri = "/rest/index/trees{}?childDepth=2"
-    encl_group_index_trees = g.oneview_client.connection.get(
-        encl_group_index_trees_uri.format(encl_group_uri))
-
-    return encl_group_index_trees

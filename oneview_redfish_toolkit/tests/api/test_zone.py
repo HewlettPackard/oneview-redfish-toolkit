@@ -28,8 +28,8 @@ class TestZone(BaseTest):
         server_profile_template = json.load(f)
 
     with open('oneview_redfish_toolkit/mockups/oneview/'
-              'EnclosureGroupIndexTrees.json') as f:
-        index_trees = json.load(f)
+              'ServerHardwares.json') as f:
+        server_hardware_list = json.load(f)[:4]
 
     with open('oneview_redfish_toolkit/mockups/oneview/'
               'Drives.json') as f:
@@ -50,7 +50,7 @@ class TestZone(BaseTest):
         """Tests if after serialize Zone the result is as expected"""
 
         zone = Zone(self.server_profile_template,
-                    self.index_trees,
+                    self.server_hardware_list,
                     self.drives)
         result = json.loads(zone.serialize())
         self.assertEqualMockup(self.zone_mockup, result)
@@ -67,7 +67,7 @@ class TestZone(BaseTest):
         profile_template["localStorage"]["controllers"] = []
 
         zone = Zone(profile_template,
-                    self.index_trees,
+                    self.server_hardware_list,
                     self.drives)
         result = json.loads(zone.serialize())
 
@@ -90,7 +90,7 @@ class TestZone(BaseTest):
         }]
 
         zone = Zone(profile_template,
-                    self.index_trees,
+                    self.server_hardware_list,
                     self.drives)
         result = json.loads(zone.serialize())
         self.assertEqualMockup(self.zone_without_drives_mockup, result)
@@ -107,7 +107,7 @@ class TestZone(BaseTest):
         profile_template["connectionSettings"]["connections"] = []
 
         zone = Zone(profile_template,
-                    self.index_trees,
+                    self.server_hardware_list,
                     self.drives)
         result = json.loads(zone.serialize())
         self.assertEqualMockup(self.zone_without_network_mockup, result)

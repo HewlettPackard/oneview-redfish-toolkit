@@ -63,9 +63,9 @@ class TestZone(BaseTest):
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
-            'EnclosureGroupIndexTrees.json'
+            'ServerHardwares.json'
         ) as f:
-            enclosure_group_index_trees = json.load(f)
+            server_hardware_list = json.load(f)
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Zone.json'
@@ -74,8 +74,8 @@ class TestZone(BaseTest):
 
         g_mock.oneview_client.server_profile_templates.get\
             .return_value = server_profile_template
-        g_mock.oneview_client.connection.get.\
-            return_value = enclosure_group_index_trees
+        g_mock.oneview_client.server_hardware.get_all\
+            .return_value = server_hardware_list[:4]
         g_mock.oneview_client.index_resources.get_all\
             .return_value = drives
 
@@ -95,9 +95,9 @@ class TestZone(BaseTest):
         spt_uuid = server_profile_template["uri"].split("/")[-1]
         g_mock.oneview_client.server_profile_templates.get.\
             assert_called_with(spt_uuid)
-        g_mock.oneview_client.connection.get.\
-            assert_called_with("/rest/index/trees{}?childDepth=2".format(
-                enclosure_group_index_trees["resource"]["uri"]))
+        g_mock.oneview_client.server_hardware.get_all.\
+            assert_called_with(filter="serverGroupUri='{}'".format(
+                server_profile_template["enclosureGroupUri"]))
         g_mock.oneview_client.index_resources.get_all.\
             assert_called_with(category='drives', count=10000)
 
