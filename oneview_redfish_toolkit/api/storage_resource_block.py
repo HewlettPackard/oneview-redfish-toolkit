@@ -44,7 +44,7 @@ class StorageResourceBlock(ResourceBlock):
         self.redfish["ResourceBlockType"] = ["Storage"]
         self.redfish["Status"] = status_mapping.STATUS_MAP.get(drive["status"])
 
-        if drive["attributes"]["available"]:
+        if drive["attributes"]["available"] == "yes":
             composit_state = "Unused"
         else:
             composit_state = "Composed"
