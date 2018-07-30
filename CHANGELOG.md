@@ -20,9 +20,12 @@
  - #234 Implement ResourceZones
  - #259 Add ResourceBlocks for each Server Profile Template in the ResourceBlocks collection
  - #258 Check OneView availability
+ - #273 Create Installer
  - #237 Implement base CollectionCapabilities: "@Redfish.CollectionCapabilities" in the ResourceZone
  - #260 Create a ResourceZone for each Server Profile Template
  - #250 Implement ResourceBlock for Server Hardware
+ - #276 Refactoring: create a base blueprint class
+ - #264 Implement DELETE to delete a composed resource
  - #300 Include Storage Resource Blocks into Resource Blocks collection
  - #261 Implement Network Resource Block
  - #298 Include Network Resource Blocks into Resource Blocks collection
