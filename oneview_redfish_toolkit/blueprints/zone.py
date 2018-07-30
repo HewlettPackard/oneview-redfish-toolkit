@@ -40,17 +40,15 @@ def get_zone(uuid):
     """
     profile_template = g.oneview_client.server_profile_templates.get(uuid)
 
-    encl_group_uri = profile_template['enclosureGroupUri']
-    sh_type_uri = profile_template['serverHardwareTypeUri']
+    enclosure_group_uri = profile_template["enclosureGroupUri"]
+    enclosure_group_filter = "serverGroupUri='{}'".format(enclosure_group_uri)
 
-    available_targets = g.oneview_client\
-        .server_profiles\
-        .get_available_targets(enclosureGroupUri=encl_group_uri,
-                               serverHardwareTypeUri=sh_type_uri)
+    server_hardware_list = g.oneview_client.server_hardware.get_all(
+        filter=enclosure_group_filter)
 
     drives = g.oneview_client.index_resources \
         .get_all(category="drives", count=10000)
 
-    zone_data = Zone(profile_template, available_targets, drives)
+    zone_data = Zone(profile_template, server_hardware_list, drives)
 
     return ResponseBuilder.success(zone_data)

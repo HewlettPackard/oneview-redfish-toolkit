@@ -57,15 +57,15 @@ class TestZone(BaseTest):
         ) as f:
             server_profile_template = json.load(f)
 
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'AvailableTargetsForSPT.json'
-        ) as f:
-            available_targets = json.load(f)
-
         with open('oneview_redfish_toolkit/mockups/oneview/'
                   'Drives.json') as f:
             drives = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'ServerHardwares.json'
+        ) as f:
+            server_hardware_list = json.load(f)
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Zone.json'
@@ -74,8 +74,8 @@ class TestZone(BaseTest):
 
         g_mock.oneview_client.server_profile_templates.get\
             .return_value = server_profile_template
-        g_mock.oneview_client.server_profiles.get_available_targets\
-            .return_value = available_targets
+        g_mock.oneview_client.server_hardware.get_all\
+            .return_value = server_hardware_list[:4]
         g_mock.oneview_client.index_resources.get_all\
             .return_value = drives
 
@@ -90,6 +90,16 @@ class TestZone(BaseTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(zone_mockup, expected_result)
+
+        # Tests oneview's calls
+        spt_uuid = server_profile_template["uri"].split("/")[-1]
+        g_mock.oneview_client.server_profile_templates.get.\
+            assert_called_with(spt_uuid)
+        g_mock.oneview_client.server_hardware.get_all.\
+            assert_called_with(filter="serverGroupUri='{}'".format(
+                server_profile_template["enclosureGroupUri"]))
+        g_mock.oneview_client.index_resources.get_all.\
+            assert_called_with(category='drives', count=10000)
 
     @mock.patch.object(zone, 'g')
     def test_get_zone_not_found(self, g_mock):

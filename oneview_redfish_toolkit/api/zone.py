@@ -34,21 +34,19 @@ class Zone(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Zone'
 
-    def __init__(self, profile_template, available_targets_obj, drives=[]):
+    def __init__(self, profile_template, server_hardware_list, drives=[]):
         """Zone constructor
 
             Populates self.redfish with the contents of
-            server profile template and available targets dict from Oneview
+            server profile template and server hardware list from Oneview
 
             Args:
                 profile_template: Oneview's server profile template dict
-                available_targets_obj: Oneview's available targets dict
+                server_hardware_list: Oneview's server hardware list
                 (servers and empty bays) for assignment to a server profile
                 drives: Oneview's dict drives list
         """
         super().__init__(self.SCHEMA_NAME)
-
-        available_targets = available_targets_obj["targets"]
 
         has_valid_controller = \
             ComputerSystem.get_storage_controller(profile_template)
@@ -65,7 +63,8 @@ class Zone(RedfishJsonValidator):
         self.redfish["Links"] = dict()
         self.redfish["Links"]["ResourceBlocks"] = list()
 
-        self.fill_resource_blocks(profile_template, available_targets, drives)
+        self.fill_resource_blocks(profile_template, server_hardware_list,
+                                  drives)
 
         self.capabilities_key = "@Redfish.CollectionCapabilities"
         self.redfish[self.capabilities_key] = dict()
@@ -81,12 +80,10 @@ class Zone(RedfishJsonValidator):
 
         self._validate()
 
-    def fill_resource_blocks(self, profile_template, available_targets,
+    def fill_resource_blocks(self, profile_template, server_hardware_list,
                              drives):
-        for item in available_targets:
-            if item["serverHardwareUri"]:
-                self.add_resource_block_item_to_links(item,
-                                                      "serverHardwareUri")
+        for item in server_hardware_list:
+            self.add_resource_block_item_to_links(item, "uri")
 
         for item in drives:
             self.add_resource_block_item_to_links(item, "uri")
