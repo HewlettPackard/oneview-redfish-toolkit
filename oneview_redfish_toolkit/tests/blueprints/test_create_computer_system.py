@@ -133,7 +133,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_profile
 
         response = self.client.post(
-            "/redfish/v1/Systems/",
+            "/redfish/v1/Systems",
             data=json.dumps(self.data_to_create_system),
             content_type='application/json')
 
@@ -161,7 +161,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             "Name": "Composed System Without Links"
         }
 
-        response = self.client.post("/redfish/v1/Systems/",
+        response = self.client.post("/redfish/v1/Systems",
                                     data=json.dumps(data_to_send),
                                     content_type='application/json')
 
