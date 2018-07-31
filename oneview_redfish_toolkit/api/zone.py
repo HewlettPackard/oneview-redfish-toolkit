@@ -45,6 +45,7 @@ class Zone(RedfishJsonValidator):
             server profile template and server hardware list from Oneview
 
             Args:
+                resource_id: The resource id
                 profile_template: Oneview's server profile template dict
                 server_hardware_list: Oneview's server hardware list
                 (servers and empty bays) for assignment to a server profile

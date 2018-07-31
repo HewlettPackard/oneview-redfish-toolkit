@@ -21,6 +21,7 @@ from oneview_redfish_toolkit.api.computer_system_collection \
     import ComputerSystemCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit.blueprints import zone_collection
 
 
 computer_system_collection = Blueprint("computer_system_collection", __name__)
@@ -43,9 +44,11 @@ def get_computer_system_collection():
     server_profile_templates = \
         g.oneview_client.server_profile_templates.get_all()
 
+    zone_ids = zone_collection.get_zone_ids_by_templates(
+        server_profile_templates)
+
     # Build Computer System Collection object and validates it
-    csc = ComputerSystemCollection(server_hardware_list,
-                                   server_profile_templates)
+    csc = ComputerSystemCollection(server_hardware_list, zone_ids)
 
     # Build response and returns it
     return ResponseBuilder.success(csc)
