@@ -34,17 +34,17 @@ from oneview_redfish_toolkit import connection
 
 
 RESOURCE_STRATEGY = {
-        "server_hardware": {
-            "get": first_parameter_resource,
-            "get_all": all_oneviews_resource,
-            },
-        "server_hardware_types": {"get": first_parameter_resource},
-        "server_profiles": {"get": first_parameter_resource},
-        "server_profile_templates": {
-            "get": first_parameter_resource,
-            "get_all": all_oneviews_resource
-            },
-        "sas_logical_jbods": {"get_drives": first_parameter_resource},
+    "server_hardware": {
+        "get": first_parameter_resource,
+        "get_all": all_oneviews_resource,
+        },
+    "server_hardware_types": {"get": first_parameter_resource},
+    "server_profiles": {"get": first_parameter_resource},
+    "server_profile_templates": {
+        "get": first_parameter_resource,
+        "get_all": all_oneviews_resource
+        },
+    "sas_logical_jbods": {"get_drives": first_parameter_resource},
 }
 
 
@@ -52,7 +52,6 @@ class MultipleOneViewResource(object):
 
     def __getattribute__(self, name):
         return MultipleOneViewResourceFunction(name)
-        # return MultipleOneViewResourceRetriever(name, '')
 
 
 class MultipleOneViewResourceFunction(object):
@@ -66,20 +65,13 @@ class MultipleOneViewResourceFunction(object):
         return MultipleOneViewResourceRetriever(
             self.multiple_ov_resource_name, name).retrieve
 
+
 class MultipleOneViewResourceRetriever(object):
 
     def __init__(self, resource_name, function_name):
         self.multiple_ov_resource_name = resource_name
         self.multiple_ov_function_name = function_name
-    
-    # def __getattribute__(self, name):
-    #     if name in ['multiple_ov_resource_name',
-    #                 'multiple_ov_function_name', 'reselftrieve']:
-    #         return object.__getattribute__(self, name)
 
-    #     self.multiple_ov_function_name = name
-
-    #     return self.retrieve
 
     def retrieve(self, *args, **kwargs):
         resource = self.multiple_ov_resource_name
