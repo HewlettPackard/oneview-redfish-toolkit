@@ -91,7 +91,10 @@ class StorageResourceBlock(ResourceBlock):
             server_profile_uuid = \
                 server_profile["resource"]["uri"].split("/")[-1]
         except KeyError as e:
-            logging.exception("Key {} does not exist".format(e.args[0]))
+            logging.info("The key {} was not found inside "
+                         "'drive index trees dict' from the Oneview when "
+                         "trying get the server profile uuid"
+                         .format(e.args[0]))
             server_profile_uuid = None
 
         return server_profile_uuid

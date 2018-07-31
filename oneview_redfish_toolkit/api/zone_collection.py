@@ -28,23 +28,23 @@ class ZoneCollection(RedfishJsonValidator):
     SCHEMA_NAME = 'ZoneCollection'
     BASE_URI = '/redfish/v1/CompositionService/ResourceZones'
 
-    def __init__(self, server_profile_templates):
+    def __init__(self, zone_ids):
         """ZoneCollection constructor
 
             Populates self.redfish with some hardcoded ZoneCollection
             values and with the response of OneView.
+
+            Args:
+                zone_ids: Zone ids based on Oneview data
         """
         super().__init__(self.SCHEMA_NAME)
-
-        self.server_profile_templates = server_profile_templates
 
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Resource Zone Collection"
 
-        self.redfish["Members@odata.count"] = \
-            len(self.server_profile_templates)
+        self.redfish["Members@odata.count"] = len(zone_ids)
         self.redfish["Members"] = list()
-        self._set_redfish_members()
+        self._fill_redfish_members(zone_ids)
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ZoneCollection.ZoneCollection"
@@ -53,18 +53,14 @@ class ZoneCollection(RedfishJsonValidator):
 
         self._validate()
 
-    def _set_redfish_members(self):
+    def _fill_redfish_members(self, zone_ids):
         """Mounts the list of Redfish members
 
             Populates self.redfish["Members"] with the links
             to Redfish Resource Zones.
         """
-        for server_profile_template in self.server_profile_templates:
-            resource_zone = dict()
-
-            zone_id = server_profile_template["uri"].split("/")[-1]
-
-            resource_zone["@odata.id"] = "/redfish/v1/CompositionService/" \
-                "ResourceZones/" + zone_id
-
+        for zone_id in zone_ids:
+            resource_zone = {
+                "@odata.id": self.BASE_URI + "/" + zone_id
+            }
             self.redfish["Members"].append(resource_zone)

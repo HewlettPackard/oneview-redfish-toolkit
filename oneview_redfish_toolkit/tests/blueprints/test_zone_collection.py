@@ -32,9 +32,15 @@ class TestZoneCollection(BaseFlaskTest):
 
         self.app.register_blueprint(zone_collection.zone_collection)
 
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'ServerProfileTemplates.json'
+        ) as f:
+            self.server_profile_template_list = json.load(f)
+
     @mock.patch.object(zone_collection, 'g')
-    def test_get_zone_collection_fail(self, g_mock):
-        """Tests ZoneCollection with an error"""
+    def test_get_zone_collection_when_get_templates_raises_error(self, g_mock):
+        """Tests ZoneCollection when server profile templates raises error"""
 
         g_mock.oneview_client.server_profile_templates.get_all.side_effect = \
             Exception()
@@ -59,31 +65,51 @@ class TestZoneCollection(BaseFlaskTest):
     def test_get_zone_collection(self, g_mock):
         """Tests ZoneCollection"""
 
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerProfileTemplates.json'
-        ) as f:
-            server_profile_template_list = json.load(f)
+        self.maxDiff = None
+
+        ov_api = g_mock.oneview_client
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/ZoneCollection.json'
         ) as f:
             zone_collection_mockup = json.load(f)
 
-        g_mock.oneview_client.server_profile_templates.get_all.return_value = \
-            server_profile_template_list
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'LogicalEnclByIndexAssociationWithEnclGroup.json'
+        ) as f:
+            logical_encl_assoc = json.load(f)
 
-        # Get ZoneCollection
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosure.json'
+        ) as f:
+            logical_encl = json.load(f)
+
+        ov_api.connection.get.return_value = logical_encl_assoc
+        ov_api.logical_enclosures.get.return_value = logical_encl
+
+        ov_api.server_profile_templates.get_all.return_value = \
+            self.server_profile_template_list
+
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
 
-        # Gets json from response
-        expected_result = json.loads(response.data.decode("utf-8"))
+        result = json.loads(response.data.decode("utf-8"))
 
-        # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(zone_collection_mockup, expected_result)
+        self.assertEqualMockup(zone_collection_mockup, result)
+
+        spt_with_storage_ctrler = self.server_profile_template_list[0]
+        ov_api.connection.get.assert_called_with(
+            "/rest/index/associations/resources"
+            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
+            + "&category=logical-enclosures")
+        ov_api.connection.get.assert_called_with(
+            "/rest/index/associations/resources"
+            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
+            + "&category=logical-enclosures")
+        ov_api.logical_enclosures.get.assert_called_with(logical_encl["uri"])
 
     @mock.patch.object(zone_collection, 'g')
     def test_get_zone_collection_empty(self, g_mock):
@@ -97,11 +123,9 @@ class TestZoneCollection(BaseFlaskTest):
         ) as f:
             zone_collection_empty_mockup = json.load(f)
 
-        # Get ZoneCollection
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
 
-        # Gets json from response
         result = json.loads(response.data.decode("utf-8"))
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)

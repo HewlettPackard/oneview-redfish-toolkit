@@ -132,7 +132,7 @@ class TestChassisCollection(BaseFlaskTest):
         # Loading server_hardware mockup value
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerHardwares.json'
+            'ServerHardwareList.json'
         ) as f:
             server_hardware_list = json.load(f)
 

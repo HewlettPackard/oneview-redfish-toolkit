@@ -1,6 +1,6 @@
 {
     "@odata.type": "#Zone.v1_1_0.Zone",
-    "Id": "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0",
+    "Id": "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101",
     "Name": "Apache_Template",
     "Status": {
         "State": "Enabled",
@@ -21,19 +21,19 @@
                 "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/30303437-3034-4D32-3230-313133364752"
             },
             {
-                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/84d382aa-33fd-4447-a0ef-5d96bb34b345"
+                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e"
             },
             {
-                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/53bd734f-19fe-42fe-a8ef-3f1a83b4e5c1"
+                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/c09b7065-ed9a-45c2-88e3-1745e2506808"
             },
             {
-                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/b102f715-84b1-4157-ba8d-639574e0aedc"
+                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/44393d3e-207d-4e1a-8bc6-8c8213950b68"
             },
             {
-                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/ebd096fe-c036-40a4-bbff-5397ed0c2e6a"
+                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/f3aa9659-66aa-4618-9837-f66ccf837b2c"
             },
             {
-                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/d8b142ba-6762-470d-9082-0e53d0499303"
+                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/a068bfb3-0e85-41bf-a892-d192b5dd1dcf"
             },
             {
                 "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
@@ -45,7 +45,7 @@
         "Capabilities": [
             {
                 "CapabilitiesObject": {
-                    "@odata.id": "/redfish/v1/Systems/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
+                    "@odata.id": "/redfish/v1/Systems/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101"
                 },
                 "UseCase": "ComputerSystemComposition",
                 "Links": {
@@ -57,5 +57,5 @@
         ]
     },
     "@odata.context": "/redfish/v1/$metadata#Zone.Zone",
-    "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
+    "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101"
 }

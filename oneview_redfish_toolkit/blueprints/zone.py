@@ -26,8 +26,8 @@ from oneview_redfish_toolkit.blueprints.util.response_builder import \
 zone = Blueprint("zone", __name__)
 
 
-@zone.route(ZoneCollection.BASE_URI + "/<uuid>", methods=["GET"])
-def get_zone(uuid):
+@zone.route(ZoneCollection.BASE_URI + "/<zone_uuid>", methods=["GET"])
+def get_zone(zone_uuid):
     """Get the Redfish Zone.
 
         Return Resource Zone redfish JSON.
@@ -38,17 +38,58 @@ def get_zone(uuid):
         Returns:
             JSON: Redfish json with Resource Zone.
     """
-    profile_template = g.oneview_client.server_profile_templates.get(uuid)
 
-    enclosure_group_uri = profile_template["enclosureGroupUri"]
-    enclosure_group_filter = "serverGroupUri='{}'".format(enclosure_group_uri)
+    template_id, enclosure_id = _split_template_id_and_enclosure_id(zone_uuid)
+
+    if enclosure_id:
+        enclosure = g.oneview_client.enclosures.get(enclosure_id)
+        profile_template = g.oneview_client.server_profile_templates.get(
+            template_id)
+        drives = _get_drives(enclosure)
+        sh_filter = "locationUri='{}'".format(enclosure["uri"])
+    else:
+        profile_template = g.oneview_client.server_profile_templates.get(
+            template_id)
+        drives = []
+        enclosure_group_uri = profile_template["enclosureGroupUri"]
+        sh_filter = "serverGroupUri='{}'".format(enclosure_group_uri)
 
     server_hardware_list = g.oneview_client.server_hardware.get_all(
-        filter=enclosure_group_filter)
+        filter=sh_filter)
 
-    drives = g.oneview_client.index_resources \
-        .get_all(category="drives", count=10000)
-
-    zone_data = Zone(profile_template, server_hardware_list, drives)
+    zone_data = Zone(zone_uuid, profile_template, server_hardware_list, drives)
 
     return ResponseBuilder.success(zone_data)
+
+
+def _get_drives(enclosure):
+    drive_encl_assoc_uri = "/rest/index/associations/resources" \
+                           "?parenturi={}&category=drive-enclosures"\
+        .format(enclosure["uri"])
+    drive_encl_assoc = g.oneview_client.connection.get(drive_encl_assoc_uri)
+    get_drives_uri = '/rest/index/resources' \
+        '?category=drives&count=10000' \
+        '&filter="driveEnclosureUri:{}"'
+    drives = []
+    for member in drive_encl_assoc["members"]:
+        drive_encl_uri = member["childResource"]["uri"]
+        drives_index_list = g.oneview_client.connection.get(
+            get_drives_uri.format(drive_encl_uri))
+        drives += drives_index_list["members"]
+
+    return drives
+
+
+def _split_template_id_and_enclosure_id(zone_uuid):
+    # verify if has enclosure id inside the zone_uuid,
+    # the uuid has by default only 5 groups separated by hyphen
+    uuid_groups = zone_uuid.split("-")
+
+    if len(uuid_groups) > 5:
+        enclosure_id = uuid_groups[-1]
+        template_id = str.join("-", uuid_groups[:5])
+    else:
+        template_id = zone_uuid
+        enclosure_id = None
+
+    return template_id, enclosure_id

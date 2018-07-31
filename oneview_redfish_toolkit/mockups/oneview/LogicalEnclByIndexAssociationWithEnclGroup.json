@@ -1,0 +1,58 @@
+{
+  "type": "AssociationPaginatedCollectionV300",
+  "start": 0,
+  "count": 1,
+  "total": 1,
+  "unFilteredTotal": 1,
+  "uri": "/rest/index/associations/resources?start=0&count=50&category=logical-enclosures&parenturi=/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
+  "category": "associations",
+  "members": [
+    {
+      "parentResource": {
+        "type": "IndexResourceV300",
+        "name": "test_eg1",
+        "description": null,
+        "attributes": {
+          "encgrp_type": "EnclosureGroupV7"
+        },
+        "multiAttributes": {},
+        "ownerId": "perm",
+        "state": "Normal",
+        "status": "OK",
+        "created": "2018-05-10T19:07:37.038Z",
+        "modified": "2018-07-18T22:36:43.015Z",
+        "eTag": "2018-07-18T22:36:43.015Z",
+        "category": "enclosure-groups",
+        "uri": "/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa",
+        "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+        "scopeUris": null
+      },
+      "childResource": {
+        "type": "IndexResourceV300",
+        "name": "test_le1",
+        "description": null,
+        "attributes": {
+          "firmwareBaselineUri": null,
+          "enclosure_group_uri": "/rest/enclosure-groups/bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa"
+        },
+        "multiAttributes": {},
+        "ownerId": "perm",
+        "state": "Consistent",
+        "status": "OK",
+        "created": "2018-05-10T19:08:24.072Z",
+        "modified": "2018-07-18T22:36:49.071Z",
+        "eTag": "2018-07-18T22:36:49.071Z",
+        "category": "logical-enclosures",
+        "uri": "/rest/logical-enclosures/82431b7d-bc11-4d0b-a158-40b71071284c",
+        "applianceId": "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50",
+        "scopeUris": null
+      },
+      "associationName": "ENCLOSURE_GROUP_TO_LOGICAL_ENCLOSURE"
+    }
+  ],
+  "prevPageUri": null,
+  "nextPageUri": null,
+  "created": null,
+  "modified": null,
+  "eTag": null
+}

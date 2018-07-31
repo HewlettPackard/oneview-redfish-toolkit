@@ -34,7 +34,11 @@ class Zone(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Zone'
 
-    def __init__(self, profile_template, server_hardware_list, drives=[]):
+    def __init__(self,
+                 resource_id,
+                 profile_template,
+                 server_hardware_list,
+                 drives=[]):
         """Zone constructor
 
             Populates self.redfish with the contents of
@@ -55,7 +59,7 @@ class Zone(RedfishJsonValidator):
             drives = []
 
         self.redfish["@odata.type"] = self.get_odata_type()
-        self.redfish["Id"] = profile_template["uri"].split("/")[-1]
+        self.redfish["Id"] = resource_id
         self.redfish["Name"] = profile_template["name"]
         status_from_ov = profile_template["status"]
         self.redfish["Status"] = status_mapping.STATUS_MAP[status_from_ov]
