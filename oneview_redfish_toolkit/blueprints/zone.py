@@ -87,7 +87,7 @@ def _split_template_id_and_enclosure_id(zone_uuid):
 
     if len(uuid_groups) > 5:
         enclosure_id = uuid_groups[-1]
-        template_id = zone_uuid.replace("-" + enclosure_id, "")
+        template_id = str.join("-", uuid_groups[:5])
     else:
         template_id = zone_uuid
         enclosure_id = None
