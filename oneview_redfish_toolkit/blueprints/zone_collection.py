@@ -17,10 +17,10 @@
 from flask import Blueprint
 from flask import g
 
-from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit.services.zone_service import ZoneService
 
 zone_collection = Blueprint("zone_collection", __name__)
 
@@ -41,7 +41,8 @@ def get_zone_collection():
     server_profile_templates = \
         g.oneview_client.server_profile_templates.get_all()
 
-    zone_ids = get_zone_ids_by_templates(server_profile_templates)
+    zone_service = ZoneService(g.oneview_client)
+    zone_ids = zone_service.get_zone_ids_by_templates(server_profile_templates)
 
     zc = ZoneCollection(zone_ids)
 
@@ -65,20 +66,3 @@ def _get_enclosures_uris_by_template(server_profile_template):
     enclosure_uris.sort()
 
     return enclosure_uris
-
-
-def get_zone_ids_by_templates(server_profile_templates):
-    zone_ids = []
-    for template in server_profile_templates:
-        template_id = template["uri"].split("/")[-1]
-        controller = ComputerSystem.get_storage_controller(template)
-        if controller:
-            enclosures_uris = _get_enclosures_uris_by_template(template)
-            for encl_uri in enclosures_uris:
-                encl_id = encl_uri.split("/")[-1]
-                zone_id = template_id + "-" + encl_id
-                zone_ids.append(zone_id)
-        else:
-            zone_ids.append(template_id)
-
-    return zone_ids

@@ -1,0 +1,27 @@
+{
+    "@odata.type": "#ResourceBlock.v1_0_0.ResourceBlock",
+    "Id": "75871d70-789e-4cf9-8bc8-6f4d73193578",
+    "Name": "CI_Template",
+    "CompositionStatus": {
+      "SharingCapable": true,
+      "CompositionState": "Unused"
+    },
+    "@odata.context": "/redfish/v1/$metadata#ResourceBlock.ResourceBlock",
+    "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/75871d70-789e-4cf9-8bc8-6f4d73193578",
+    "ResourceBlockType": [
+      "Network"
+    ],
+    "EthernetInterfaces": [
+      {
+        "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/75871d70-789e-4cf9-8bc8-6f4d73193578/EthernetInterfaces/2"
+      }
+    ],
+    "EthernetInterfaces@odata.count": 1,
+    "Links": {
+      "Zones": [
+        {
+          "@odata.id": "/redfish/v1/CompositionService/ResourceZones/75871d70-789e-4cf9-8bc8-6f4d73193578"
+        }
+      ]
+    }
+  }

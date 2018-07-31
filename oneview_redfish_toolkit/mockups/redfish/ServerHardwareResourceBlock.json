@@ -28,7 +28,7 @@
     ],
     "Zones": [
       {
-        "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
+        "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66103"
       },
       {
         "@odata.id": "/redfish/v1/CompositionService/ResourceZones/75871d70-789e-4cf9-8bc8-6f4d73193578"

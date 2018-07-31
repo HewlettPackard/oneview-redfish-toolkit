@@ -24,38 +24,60 @@ from oneview_redfish_toolkit.tests.base_test import BaseTest
 class TestServerProfileTemplateResourceBlock(BaseTest):
     """Tests for ServerProfileTemplateResourceBlock class"""
 
-    def setUp(self):
-        """Tests preparation"""
+    def test_serialize(self):
+        # Tests the serialize function result against known result
 
-        # Loading ServerProfileTemplateResourceBlock mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerProfileTemplate.json'
+        ) as f:
+            server_profile_template = json.load(f)
+
         with open(
             'oneview_redfish_toolkit/mockups/redfish'
             '/ServerProfileTemplateResourceBlock.json'
         ) as f:
-            self.resource_block_mockup = json.load(f)
+            expected_result = json.load(f)
 
-        # Loading ServerProfileTemplate mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerProfileTemplate.json'
-        ) as f:
-            self.server_profile_template = json.load(f)
+        zone_ids = [
+            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101",
+            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66102",
+            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66103"
+        ]
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
         resource_block = ServerProfileTemplateResourceBlock(
             '1f0ca9ef-7f81-45e3-9d64-341b46cf87e0',
-            self.server_profile_template)
-
-        self.assertIsInstance(
-            resource_block, ServerProfileTemplateResourceBlock)
-
-    def test_serialize(self):
-        # Tests the serialize function result against known result
-        resource_block = ServerProfileTemplateResourceBlock(
-            '1f0ca9ef-7f81-45e3-9d64-341b46cf87e0',
-            self.server_profile_template)
+            server_profile_template,
+            zone_ids)
 
         result = json.loads(resource_block.serialize())
 
-        self.assertEqualMockup(self.resource_block_mockup, result)
+        self.assertEqualMockup(expected_result, result)
+
+    def test_serialize_with_only_one_zone(self):
+        # Tests the serialize function result against known result
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerProfileTemplates.json'
+        ) as f:
+            server_profile_template = json.load(f)[1]
+
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish'
+                '/SPTResourceBlockWithOnlyOneZone.json'
+        ) as f:
+            expected_result = json.load(f)
+
+        zone_ids = [
+            expected_result["Id"]
+        ]
+
+        resource_block = ServerProfileTemplateResourceBlock(
+            expected_result["Id"],
+            server_profile_template,
+            zone_ids)
+
+        result = json.loads(resource_block.serialize())
+
+        self.assertEqualMockup(expected_result, result)

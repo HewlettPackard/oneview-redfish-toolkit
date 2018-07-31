@@ -25,6 +25,8 @@ from oneview_redfish_toolkit.api.resource_block_collection import \
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.api.util.power_option import \
     RESET_ALLOWABLE_VALUES_LIST
+from oneview_redfish_toolkit.services.computer_system_service import \
+    ComputerSystemService
 
 CRITICALITY_STATUS_MAPPING = {
     "OK": 1,
@@ -206,7 +208,7 @@ class ComputerSystem(RedfishJsonValidator):
     def _build_sas_logical_jbods(server_profile_template, storage_blocks):
         sas_logical_jbods = []
 
-        controller = ComputerSystem.get_storage_controller(
+        controller = ComputerSystemService.get_storage_controller(
             server_profile_template)
 
         if storage_blocks and not controller:
@@ -233,14 +235,6 @@ class ComputerSystem(RedfishJsonValidator):
 
         return sas_logical_jbods
 
-    @staticmethod
-    def get_storage_controller(server_profile_tmpl):
-        for controller in server_profile_tmpl["localStorage"]["controllers"]:
-            if controller["deviceSlot"] != "Embedded":
-                return controller
-
-        return None
-
     def _fill_resource_block_members(self,
                                      server_profile,
                                      drives,
@@ -262,10 +256,10 @@ class ComputerSystem(RedfishJsonValidator):
         resource_block_uuids = list()
         resource_block_uuids.append(server_hardware["uuid"])
 
+        # fill with network resource block
         if server_profile["description"]:
-            network_resource_uuid = \
-                server_profile["description"].split("/")[-1]
-            resource_block_uuids.append(network_resource_uuid)
+            spt_id = server_profile["description"].split("/")[-1]
+            resource_block_uuids.append(spt_id)
 
         for drive in drives:
             storage_resource_uuid = drive["uri"].split("/")[-1]

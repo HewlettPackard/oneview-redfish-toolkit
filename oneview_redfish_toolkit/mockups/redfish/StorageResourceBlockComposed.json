@@ -10,7 +10,7 @@
     "Health": "OK"
   },
   "CompositionStatus": {
-    "CompositionState": "Unused"
+    "CompositionState": "Composed"
   },
   "Storage": [
     {
@@ -18,7 +18,11 @@
     }
   ],
   "Links": {
-    "ComputerSystems": [],
+    "ComputerSystems": [
+      {
+        "@odata.id": "/redfish/v1/Systems/b2b9e92c-dc2e-41bc-8c54-e70f9d4854e7"
+      }
+    ],
     "Zones": [
       {
         "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66102"

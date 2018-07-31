@@ -36,6 +36,7 @@ from oneview_redfish_toolkit.api.storage_resource_block \
     import StorageResourceBlock
 from oneview_redfish_toolkit.blueprints.util.response_builder \
     import ResponseBuilder
+from oneview_redfish_toolkit.services.zone_service import ZoneService
 
 resource_block = Blueprint("resource_block", __name__)
 
@@ -52,6 +53,7 @@ def get_resource_block(uuid):
             JSON: Redfish json with ResourceBlock.
     """
     try:
+        zone_service = ZoneService(g.oneview_client)
         resource = _get_oneview_resource(uuid)
         category = resource["category"]
 
@@ -60,8 +62,13 @@ def get_resource_block(uuid):
                 uuid, resource)
 
         elif category == "server-profile-templates":
+            zone_ids = zone_service.get_zone_ids_by_templates([resource])
+            if not zone_ids:
+                raise OneViewRedfishError("Zone not found "
+                                          "to ResourceBlock {}".format(uuid))
+
             result_resource_block = \
-                ServerProfileTemplateResourceBlock(uuid, resource)
+                ServerProfileTemplateResourceBlock(uuid, resource, zone_ids)
 
         elif category == "drives":
             drive_uuid = resource["uri"].split("/")[-1]
@@ -70,11 +77,14 @@ def get_resource_block(uuid):
             drive_index_trees = g.oneview_client.connection.get(
                 drive_index_trees_uri.format(drive_uuid))
 
-            server_profile_templates = \
+            server_profile_templs = \
                 g.oneview_client.server_profile_templates.get_all()
 
+            zone_ids = zone_service.get_zone_ids_by_templates(
+                server_profile_templs)
+
             result_resource_block = StorageResourceBlock(
-                resource, drive_index_trees, server_profile_templates)
+                resource, drive_index_trees, zone_ids)
 
         else:
             raise OneViewRedfishError('Resource block not found')
@@ -186,9 +196,11 @@ def _build_computer_system_resource_block(uuid, server_hardware):
     filters.append("enclosureGroupUri='{}'".format(eg_uri))
     filters.append("serverHardwareTypeUri='{}'".format(sht_uri))
 
-    server_profile_templates = g.oneview_client \
+    server_profile_templs = g.oneview_client \
         .server_profile_templates.get_all(filter=filters)
 
+    zone_service = ZoneService(g.oneview_client)
+    zone_ids = zone_service.get_zone_ids_by_templates(server_profile_templs)
+
     # Build ResourceBlock object and validates it
-    return ServerHardwareResourceBlock(
-        uuid, server_hardware, server_profile_templates)
+    return ServerHardwareResourceBlock(uuid, server_hardware, zone_ids)

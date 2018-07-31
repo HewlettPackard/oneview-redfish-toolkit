@@ -1,0 +1,14 @@
+{
+  "Id": "75871d70-789e-4cf9-8bc8-6f4d73193578",
+  "Name": "Composed System Using Redfish",
+  "Links": {
+    "ResourceBlocks": [
+      {
+        "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/30303437-3034-4D32-3230-313133364752"
+      },
+      {
+        "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/75871d70-789e-4cf9-8bc8-6f4d73193578"
+      }
+    ]
+  }
+}

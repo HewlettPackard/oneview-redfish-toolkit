@@ -23,6 +23,8 @@ from oneview_redfish_toolkit.api.resource_block_collection import \
     ResourceBlockCollection
 from oneview_redfish_toolkit.api import status_mapping
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
+from oneview_redfish_toolkit.services.computer_system_service import \
+    ComputerSystemService
 
 
 class Zone(RedfishJsonValidator):
@@ -54,7 +56,7 @@ class Zone(RedfishJsonValidator):
         super().__init__(self.SCHEMA_NAME)
 
         has_valid_controller = \
-            ComputerSystem.get_storage_controller(profile_template)
+            ComputerSystemService.get_storage_controller(profile_template)
 
         if not has_valid_controller:
             drives = []
@@ -77,7 +79,7 @@ class Zone(RedfishJsonValidator):
             self.get_odata_type_by_schema('CollectionCapabilities')
         self.redfish[self.capabilities_key]["Capabilities"] = list()
 
-        self.fill_capabilities_collection()
+        self.fill_capabilities_collection(profile_template)
 
         self.redfish["@odata.context"] = "/redfish/v1/$metadata#Zone.Zone"
         self.redfish["@odata.id"] = ZoneCollection.BASE_URI + "/" +\
@@ -107,11 +109,12 @@ class Zone(RedfishJsonValidator):
         if conn_settings["connections"]:
             self.add_resource_block_item_to_links(profile_template, "uri")
 
-    def fill_capabilities_collection(self):
+    def fill_capabilities_collection(self, profile_template):
+        spt_id = profile_template["uri"].split("/")[-1]
         capability = {
             "CapabilitiesObject": {
                 "@odata.id":
-                    CapabilitiesObject.BASE_URI + "/" + self.redfish["Id"]
+                    CapabilitiesObject.BASE_URI + "/" + spt_id
             },
             "UseCase": "ComputerSystemComposition",
             "Links": {

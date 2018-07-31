@@ -21,7 +21,7 @@ from oneview_redfish_toolkit.api.zone import Zone
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
-
+from oneview_redfish_toolkit.services.zone_service import ZoneService
 
 zone = Blueprint("zone", __name__)
 
@@ -38,19 +38,27 @@ def get_zone(zone_uuid):
         Returns:
             JSON: Redfish json with Resource Zone.
     """
+    template_id, enclosure_id = ZoneService.\
+        split_zone_id_to_spt_uuid_and_enclosure_id(zone_uuid)
 
-    template_id, enclosure_id = _split_template_id_and_enclosure_id(zone_uuid)
     profile_template = g.oneview_client.server_profile_templates.get(
         template_id)
+    sh_type_uri = profile_template['serverHardwareTypeUri']
 
     if enclosure_id:
         enclosure = g.oneview_client.enclosures.get(enclosure_id)
         drives = _get_drives(enclosure)
-        sh_filter = "locationUri='{}'".format(enclosure["uri"])
+        sh_filter = [
+            "locationUri='{}'".format(enclosure['uri']),
+            "serverHardwareTypeUri='{}'".format(sh_type_uri)
+        ]
     else:
         drives = []
         enclosure_group_uri = profile_template["enclosureGroupUri"]
-        sh_filter = "serverGroupUri='{}'".format(enclosure_group_uri)
+        sh_filter = [
+            "serverGroupUri='{}'".format(enclosure_group_uri),
+            "serverHardwareTypeUri='{}'".format(sh_type_uri)
+        ]
 
     server_hardware_list = g.oneview_client.server_hardware.get_all(
         filter=sh_filter)
@@ -76,18 +84,3 @@ def _get_drives(enclosure):
         drives += drives_index_list["members"]
 
     return drives
-
-
-def _split_template_id_and_enclosure_id(zone_uuid):
-    # verify if has enclosure id inside the zone_uuid,
-    # the uuid has by default only 5 groups separated by hyphen
-    uuid_groups = zone_uuid.split("-")
-
-    if len(uuid_groups) > 5:
-        enclosure_id = uuid_groups[-1]
-        template_id = str.join("-", uuid_groups[:5])
-    else:
-        template_id = zone_uuid
-        enclosure_id = None
-
-    return template_id, enclosure_id
