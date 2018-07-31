@@ -36,6 +36,9 @@ class BaseFlaskTest(BaseTest):
         # creates a test client
         cls.app = Flask(cls.__name__)
 
+        # same configuration applied to Flask in app.py
+        cls.app.url_map.strict_slashes = False
+
         @cls.app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
         def internal_server_error(error):
             """General InternalServerError handler for the app"""

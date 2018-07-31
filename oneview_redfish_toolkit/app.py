@@ -118,6 +118,8 @@ def main(config_file_path, logging_config_file_path):
     # Flask application
     app = Flask(__name__)
 
+    app.url_map.strict_slashes = False
+
     # Register blueprints
     app.register_blueprint(redfish_base, url_prefix="/redfish/")
     app.register_blueprint(service_root, url_prefix='/redfish/v1/')
