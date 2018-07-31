@@ -39,7 +39,7 @@ def get_zone(zone_uuid):
             JSON: Redfish json with Resource Zone.
     """
 
-    template_id, enclosure_id = _split_template_id_and_enclosure_id(zone_uuid)
+    template_id, enclosure_id = split_base_id_and_enclosure_id(zone_uuid)
 
     if enclosure_id:
         enclosure = g.oneview_client.enclosures.get(enclosure_id)
@@ -80,7 +80,7 @@ def _get_drives(enclosure):
     return drives
 
 
-def _split_template_id_and_enclosure_id(zone_uuid):
+def split_base_id_and_enclosure_id(zone_uuid):
     # verify if has enclosure id inside the zone_uuid,
     # the uuid has by default only 5 groups separated by hyphen
     uuid_groups = zone_uuid.split("-")

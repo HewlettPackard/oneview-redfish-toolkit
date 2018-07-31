@@ -28,26 +28,26 @@ class CapabilitiesObject(RedfishJsonValidator):
     SCHEMA_NAME = 'ComputerSystem'
     BASE_URI = '/redfish/v1/Systems'
 
-    def __init__(self, profile_template):
+    def __init__(self, resource_id, profile_template):
         """Capability constructor
 
             Populates self.redfish with some hardcoded Capability
             values and with the response of OneView.
 
             Args:
+                resource_id: Resource ID
                 profile_template: Oneview's Server profile templates dict
         """
         super().__init__(self.SCHEMA_NAME)
 
         self.profile_template = profile_template
-        uuid = profile_template["uri"].split("/")[-1]
 
         self.redfish["@odata.type"] = self.get_odata_type()
-        self.redfish["Id"] = uuid
+        self.redfish["Id"] = resource_id
         self.redfish["Name"] = profile_template["name"]
 
         self.redfish["Id@Redfish.RequiredOnCreate"] = True
-        self.redfish["Id@Redfish.AllowableValues"] = [uuid]
+        self.redfish["Id@Redfish.AllowableValues"] = [resource_id]
         self.redfish["Name@Redfish.RequiredOnCreate"] = True
         self.redfish["Name@Redfish.SetOnlyOnCreate"] = True
         self.redfish["Links@Redfish.RequiredOnCreate"] = True
@@ -60,6 +60,6 @@ class CapabilitiesObject(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystem.ComputerSystem"
         self.redfish["@odata.id"] = "{}/{}".format(
-            self.BASE_URI, uuid)
+            self.BASE_URI, resource_id)
 
         self._validate()

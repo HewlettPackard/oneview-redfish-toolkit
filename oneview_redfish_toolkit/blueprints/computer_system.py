@@ -39,12 +39,13 @@ from oneview_redfish_toolkit.api.redfish_json_validator \
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit.blueprints import zone
 
 computer_system = Blueprint("computer_system", __name__)
 
 
-@computer_system.route("/redfish/v1/Systems/<uuid>", methods=["GET"])
-def get_computer_system(uuid):
+@computer_system.route("/redfish/v1/Systems/<system_id>", methods=["GET"])
+def get_computer_system(system_id):
     """Get the Redfish Computer System for a given UUID.
 
         Return ComputerSystem redfish JSON for a given
@@ -58,12 +59,13 @@ def get_computer_system(uuid):
     """
 
     try:
-        resource = _get_oneview_resource(uuid)
+        resource_id, encl_id = zone.split_base_id_and_enclosure_id(system_id)
+        resource = _get_oneview_resource(resource_id)
         category = resource["category"]
 
         if category == 'server-profile-templates':
-            computer_system_resource = CapabilitiesObject(resource)
-        elif category == 'server-profiles':
+            computer_system_resource = CapabilitiesObject(system_id, resource)
+        elif category == 'server-profiles' and not encl_id:
             server_hardware = g.oneview_client.server_hardware\
                 .get(resource["serverHardwareUri"])
             server_hardware_type = g.oneview_client.server_hardware_types\
@@ -78,7 +80,7 @@ def get_computer_system(uuid):
                                                       drives)
         else:
             raise OneViewRedfishError(
-                'Computer System UUID {} not found'.format(uuid))
+                'Computer System UUID {} not found'.format(system_id))
 
         return ResponseBuilder.success(
             computer_system_resource,
