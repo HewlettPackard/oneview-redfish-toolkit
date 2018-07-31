@@ -36,8 +36,8 @@ def _get_map_tokens():
     return globals()['map_tokens']
 
 
-def _set_map_tokens(new_map):
-    globals()['map_tokens'] = new_map
+def _init_map_tokens():
+    globals()['map_tokens'] = dict()
 
 
 def _set_new_token(redfish_token, tokens_ov_by_ip):
@@ -61,7 +61,7 @@ def login(username, password):
         redfish_token = next(iter(tokens_ov_by_ip.values()))
 
         if 'map_tokens' not in globals():
-            _set_map_tokens(dict())
+            _init_map_tokens()
 
         _set_new_token(redfish_token, tokens_ov_by_ip)
 

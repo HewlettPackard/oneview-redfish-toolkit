@@ -57,7 +57,7 @@ class TestAuthentication(unittest.TestCase):
         map_tokens = authentication._get_map_tokens()
         self.assertTrue(rf_token in map_tokens)
 
-        # Check if chaced token map has the correct OneViewIp/OneViewToken
+        # Check if cached token map has the correct OneViewIp/OneViewToken
         # tuples
         for ov_ip, ov_token in map_tokens[rf_token].items():
             self.assertEqual(tokens_ov[ov_ip], ov_token)
