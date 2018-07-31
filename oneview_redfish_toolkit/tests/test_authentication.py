@@ -54,7 +54,7 @@ class TestAuthentication(unittest.TestCase):
         self.assertTrue(rf_token in list_tokens)
 
         # Check if cached token map has the Redfish token return on login
-        map_tokens = authentication.get_map_tokens()
+        map_tokens = authentication._get_map_tokens()
         self.assertTrue(rf_token in map_tokens)
 
         # Check if chaced token map has the correct OneViewIp/OneViewToken

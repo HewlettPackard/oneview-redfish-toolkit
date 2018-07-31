@@ -32,15 +32,15 @@ from oneview_redfish_toolkit import connection
 # Globals vars:
 #   globals()['map_tokens']
 
-def get_map_tokens():
+def _get_map_tokens():
     return globals()['map_tokens']
 
 
-def set_map_tokens(new_map):
+def _set_map_tokens(new_map):
     globals()['map_tokens'] = new_map
 
 
-def set_new_token(redfish_token, tokens_ov_by_ip):
+def _set_new_token(redfish_token, tokens_ov_by_ip):
     globals()['map_tokens'][redfish_token] = tokens_ov_by_ip
 
 
@@ -61,9 +61,9 @@ def login(username, password):
         redfish_token = next(iter(tokens_ov_by_ip.values()))
 
         if 'map_tokens' not in globals():
-            set_map_tokens(dict())
+            _set_map_tokens(dict())
 
-        set_new_token(redfish_token, tokens_ov_by_ip)
+        _set_new_token(redfish_token, tokens_ov_by_ip)
 
         return redfish_token
     except HPOneViewException as e:
@@ -72,7 +72,7 @@ def login(username, password):
 
 
 def check_authentication(rf_token):
-    if rf_token not in get_map_tokens():
+    if rf_token not in _get_map_tokens():
         msg = 'Unauthorized error for redfish token: {}'.format(rf_token)
         logging.exception(msg)
         abort(status.HTTP_401_UNAUTHORIZED, msg)
@@ -80,7 +80,7 @@ def check_authentication(rf_token):
 
 def get_oneview_token(rf_token, ip_oneview):
     try:
-        return get_map_tokens()[rf_token][ip_oneview]
+        return _get_map_tokens()[rf_token][ip_oneview]
     except KeyError:
         msg = 'Unauthorized error for redfish token {} and OneView IP {}' \
             .format(rf_token, ip_oneview)
