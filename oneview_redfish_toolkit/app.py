@@ -95,6 +95,7 @@ from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit import util
 
 
@@ -163,6 +164,7 @@ def main(config_file_path, logging_config_file_path):
 
     @app.before_request
     def check_authentication():
+        # TODO: remove CONF and SESSION handling
         """Checks authentication before serving the request"""
         # If authentication_mode = conf don't need auth
         auth_mode = config.get_authentication_mode()
@@ -189,13 +191,11 @@ def main(config_file_path, logging_config_file_path):
                     "x-auth-token header not found")
             else:
                 try:
-                    authentication.check_authentication(x_auth_token)
+                    # TODO: add check authentication
+                    # authentication.check_authentication(x_auth_token)
 
-                    # TODO(@victorhugorodrigues): Remove this single OneView
-                    # connection after implement support for multiple OneViews
-                    oneview_client = \
-                        connection.get_oneview_client(x_auth_token)
-                    g.oneview_client = oneview_client
+                    g.oneview_client = \
+                        multiple_oneview.MultipleOneViewResource()
                 except Exception:
                     abort(status.HTTP_401_UNAUTHORIZED, "invalid auth token")
 

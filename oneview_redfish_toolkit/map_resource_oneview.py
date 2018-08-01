@@ -21,10 +21,13 @@ import logging.config
 # 3rd party libs
 from flask import abort
 from flask import g
+from flask_api import status
 from hpOneView import HPOneViewException
 from hpOneView.oneview_client import OneViewClient
 
 # Modules own libs
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit import authentication
 from oneview_redfish_toolkit import connection
 
@@ -34,10 +37,28 @@ from oneview_redfish_toolkit import connection
 def init_map_resources():
     globals()['map_resources_ov'] = dict()
 
+
 def get_map_resources():
     return globals()['map_resources_ov']
 
-def get_ov_client_by_resource(uuid):
+
+def query_ov_client_by_resource(resource_id, resource, function,
+                                *args, **kwargs):
+    ip_oneview = get_ov_ip_by_resource(resource_id)
+    
+    if not ip_oneview:
+        return search_resource_multiple_ov(resource_id, resource, function,
+                                *args, **kwargs)
+
+    ov_token = authentication.get_oneview_token(ip_oneview)
+
+    ov_client = connection.get_oneview_client(session_id=ov_token)
+
+    return execute_query_ov_client(ov_client, resource, function,
+                                    *args, **kwargs)
+
+
+def get_ov_ip_by_resource(uuid):
     map_resources = get_map_resources()
 
     if uuid not in map_resources:
@@ -45,7 +66,43 @@ def get_ov_client_by_resource(uuid):
 
     ip_oneview = map_resources[uuid]
 
-    ov_token = authentication.get_oneview_token(ip_oneview)
+    return ip_oneview
 
-    return connection.get_oneview_client(session_id=ov_token)
 
+def search_resource_multiple_ov(resource_id, resource, function,
+                                *args, **kwargs):
+    ov_ip_tokens = authentication.get_multiple_oneview_token()
+    expected_resource = None
+    error = None
+
+    for ov_ip, ov_token in ov_ip_tokens.items():
+        ov_client = connection.get_oneview_client(session_id=ov_token)
+
+        try:
+            result = execute_query_ov_client(ov_client, resource, function,
+                                             *args, **kwargs)
+        except HPOneViewException as e:
+            error = e
+    
+    if not expected_resource:
+        if error and error.oneview_response["errorCode"] == \
+            status.HTTP_500_INTERNAL_SERVER_ERROR:
+            raise error
+
+        raise OneViewRedfishResourceNotFoundError(
+                    resource_id, resource)
+
+
+def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
+    ov_resource = object.__getattribute__(ov_client, resource)
+    ov_function = object.__getattribute__(ov_resource, function)
+
+    return ov_function(*args, **kwargs)
+
+
+def _get_ov_client_by_resource(resource_id):
+    return g.oneview_connection
+
+
+def _get_all_oneviews_clients():
+    return [g.oneview_connection]

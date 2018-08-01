@@ -20,6 +20,7 @@ import logging.config
 
 # 3rd party libs
 from flask import abort
+from flask import request
 from flask_api import status
 from hpOneView import HPOneViewException
 from hpOneView.oneview_client import OneViewClient
@@ -78,12 +79,23 @@ def check_authentication(rf_token):
         abort(status.HTTP_401_UNAUTHORIZED, msg)
 
 
-def get_oneview_token(rf_token, ip_oneview):
+def get_oneview_token(ip_oneview):
     try:
-        return _get_map_tokens()[rf_token][ip_oneview]
+        return get_multiple_oneview_token()[ip_oneview]
     except KeyError:
-        msg = 'Unauthorized error for redfish token {} and OneView IP {}' \
-            .format(rf_token, ip_oneview)
+        msg = 'Unauthorized error for redfish token for OneView IP {}' \
+            .format(ip_oneview)
+        logging.exception(msg)
+        abort(status.HTTP_401_UNAUTHORIZED, msg)
+
+
+def get_multiple_oneview_token():
+    try:
+        rf_token = request.headers.get('x-auth-token')
+        return get_map_tokens()[rf_token]
+    except KeyError:
+        msg = 'Unauthorized error for redfish token {}' \
+            .format(rf_token)
         logging.exception(msg)
         abort(status.HTTP_401_UNAUTHORIZED, msg)
 

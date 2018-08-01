@@ -26,37 +26,27 @@ from hpOneView.oneview_client import OneViewClient
 
 # Modules own libs
 from oneview_redfish_toolkit import connection
-
+from oneview_redfish_toolkit.map_resource_oneview \
+    import query_ov_client_by_resource
+from oneview_redfish_toolkit.map_resource_oneview \
+    import execute_query_ov_client
+from oneview_redfish_toolkit.map_resource_oneview \
+    import get_all_oneviews_clients
 
 def first_parameter_resource(resource, function, *args, **kwargs):
     resource_id = args[0]
-    ov_client = _get_ov_client_by_resource(resource_id)
 
-    return _execute_query_ov_client(ov_client, resource, function,
-                                    *args, **kwargs)
+    return query_ov_client_by_resource(resource_id, resource, function,
+                                       *args, **kwargs)
 
 
 def all_oneviews_resource(resource, function, *args, **kwargs):
-    all_ov_clients = _get_all_oneviews_clients()
+    all_ov_clients = get_all_oneviews_clients()
     all_results = []
 
     for ov_client in all_ov_clients:
-        result = _execute_query_ov_client(ov_client, resource, function,
+        result = execute_query_ov_client(ov_client, resource, function,
                                           *args, **kwargs)
         result.append(result)
 
     return all_results
-
-def _execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
-    ov_resource = object.__getattribute__(ov_client, resource)
-    ov_function = object.__getattribute__(ov_resource, function)
-
-    return ov_function(*args, **kwargs)
-
-
-def _get_ov_client_by_resource(resource_id):
-    return g.oneview_connection
-
-
-def _get_all_oneviews_clients():
-    return [g.oneview_connection]
