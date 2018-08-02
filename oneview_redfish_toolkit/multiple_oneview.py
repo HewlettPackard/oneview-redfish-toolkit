@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -26,58 +26,140 @@ from hpOneView import HPOneViewException
 from hpOneView.oneview_client import OneViewClient
 
 # Modules own libs
-from oneview_redfish_toolkit.strategy_multiple_oneview \
-    import first_parameter_resource
-from oneview_redfish_toolkit.strategy_multiple_oneview \
-    import all_oneviews_resource
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotFoundError
+from oneview_redfish_toolkit import authentication
 from oneview_redfish_toolkit import connection
 
-
-RESOURCE_STRATEGY = {
-    "server_hardware": {
-        "get": first_parameter_resource,
-        "get_all": all_oneviews_resource,
-        },
-    "server_hardware_types": {"get": first_parameter_resource},
-    "server_profiles": {"get": first_parameter_resource},
-    "server_profile_templates": {
-        "get": first_parameter_resource,
-        "get_all": all_oneviews_resource
-        },
-    "sas_logical_jbods": {"get_drives": first_parameter_resource},
-}
+# Globals vars:
+#   globals()['map_resources_ov']
 
 
-class MultipleOneViewResource(object):
-
-    def __getattribute__(self, name):
-        return MultipleOneViewResourceFunction(name)
+NOT_FOUND_ERROR = ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException',
+                   'DFRM_SAS_LOGICAL_JBOD_NOT_FOUND']
 
 
-class MultipleOneViewResourceFunction(object):
-    def __init__(self, resource_name):
-        self.multiple_ov_resource_name = resource_name
+def init_map_resources():
+    globals()['map_resources_ov'] = dict()
+
+
+def get_map_resources():
+    return globals()['map_resources_ov']
+
+
+def set_map_resources_entry(resource_id, ip_oneview):
+    get_map_resources()[resource_id] = ip_oneview
+
+
+def query_ov_client_by_resource(resource_id, resource, function,
+                                *args, **kwargs):
+    """Query resource on OneViews.
+
+        Query specific resource ID on multiple OneViews.
+        Look resource ID on cached map ResourceID->OneViewIP for query
+        on specific cached OneView IP. 
+        If the resource ID is not cached yet it searchs on all OneViews.
+
+        Returns:
+            dict: OneView resource
+    """
+    # Get cached OneView IP by resource ID
+    ip_oneview = get_ov_ip_by_resource(resource_id)
+
+    # If resource is not cached yet search in all OneViews
+    if not ip_oneview:
+        return search_resource_multiple_ov(resource, function, resource_id, 
+                                            *args, **kwargs)
+
+    # Get cached OneView's token
+    ov_token = authentication.get_oneview_token(ip_oneview)
+
+    ov_client = connection.get_oneview_client(ip_oneview, token=ov_token)
+
+    return execute_query_ov_client(ov_client, resource, function,
+                                   *args, **kwargs)
+
+
+def get_ov_ip_by_resource(resource_id):
+    """Get cached OneView's IP by resource ID"""
+    map_resources = get_map_resources()
+
+    if resource_id not in map_resources:
+        return None
+
+    ip_oneview = map_resources[resource_id]
+
+    return ip_oneview
+
+
+def search_resource_multiple_ov(resource, function, resource_id,
+                                *args, **kwargs):
+    """Search resource on multiple OneViews
+
+        Query resource on all OneViews. 
+        If it's looking for a specific resource:
+            -Once resource is found it will cache the resource ID for the
+                OneView's IP that was found;
+            -If it is not found return NotFound exception.
+        If it's looking for all resources(get_all):
+            -Always query on all OneViews and return a list appended the 
+                results for all OneViews
+        
+        Args:
+            resource: resource type (server_hardware)
+            function: resource function name (get_all)
+            resource_id: set only if it should look for a specific resource ID
+            *args: original arguments for the OneView client query
+            **kwargs: original keyword arguments for the OneView client query
+
+        Returns:
+            OneView resource(s)
+
+        Exceptions:
+            OneViewRedfishResourceNotFoundError: When resource was not found
+            in any OneViews.
+
+            HPOneViewException: When occur an error on any OneViews which is 
+            not an not found error.
+    """
+    # Get all OneView's IP and tokens cached by Redfish's token
+    ov_ip_tokens = authentication.get_multiple_oneview_token()
+    result = []
     
-    def __getattribute__(self, name):
-        if name == 'multiple_ov_resource_name':
-            return object.__getattribute__(self, name)
+    # Loop in all OneView's IP and token
+    for ov_ip, ov_token in ov_ip_tokens.items():
+        ov_client = connection.get_oneview_client(ov_ip,
+                                                  token=ov_token)
 
-        return MultipleOneViewResourceRetriever(
-            self.multiple_ov_resource_name, name).retrieve
+        try:
+            # Query resource on OneView
+            expected_resource = \
+                execute_query_ov_client(ov_client, resource, function,
+                                        *args, **kwargs)
+            
+            if expected_resource:
+                # If it's looking for a especific resource and was found
+                if resource_id:
+                    set_map_resources_entry(resource_id, ov_ip)
+                    return expected_resource
+                else:
+                    # If it's looking for a resource list (get_all)
+                    result.extend(expected_resource)
+        except HPOneViewException as e:
+            # If get any error that is not a notFoundError
+            if e.oneview_response["errorCode"] not in NOT_FOUND_ERROR:
+                raise e
+    
+    # If it's looking for a specific resource returns a NotFound exception
+    if resource_id:
+        raise OneViewRedfishResourceNotFoundError(resource_id, resource)
+
+    return result
 
 
-class MultipleOneViewResourceRetriever(object):
+def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
+    """Execute query for resource on OneView client received as parameter"""
+    ov_resource = object.__getattribute__(ov_client, resource)
+    ov_function = object.__getattribute__(ov_resource, function)
 
-    def __init__(self, resource_name, function_name):
-        self.multiple_ov_resource_name = resource_name
-        self.multiple_ov_function_name = function_name
-
-
-    def retrieve(self, *args, **kwargs):
-        resource = self.multiple_ov_resource_name
-        function = self.multiple_ov_function_name
-
-        get_ov_client_strategy = RESOURCE_STRATEGY[resource][function]
-        result = get_ov_client_strategy(resource, function, *args, **kwargs)
-
-        return result
+    return ov_function(*args, **kwargs)

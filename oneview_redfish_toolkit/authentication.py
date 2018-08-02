@@ -37,7 +37,7 @@ def _get_map_tokens():
     return globals()['map_tokens']
 
 
-def _init_map_tokens():
+def init_map_tokens():
     globals()['map_tokens'] = dict()
 
 
@@ -61,10 +61,7 @@ def login(username, password):
 
         redfish_token = next(iter(tokens_ov_by_ip.values()))
 
-        if 'map_tokens' not in globals():
-            _init_map_tokens()
-
-        _set_new_token(redfish_token, tokens_ov_by_ip)
+        set_new_token(redfish_token, tokens_ov_by_ip)
 
         return redfish_token
     except HPOneViewException as e:

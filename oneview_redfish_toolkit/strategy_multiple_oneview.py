@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -26,27 +26,21 @@ from hpOneView.oneview_client import OneViewClient
 
 # Modules own libs
 from oneview_redfish_toolkit import connection
-from oneview_redfish_toolkit.map_resource_oneview \
-    import query_ov_client_by_resource
-from oneview_redfish_toolkit.map_resource_oneview \
-    import execute_query_ov_client
-from oneview_redfish_toolkit.map_resource_oneview \
-    import get_all_oneviews_clients
+from oneview_redfish_toolkit import multiple_oneview
+
 
 def first_parameter_resource(resource, function, *args, **kwargs):
     resource_id = args[0]
 
-    return query_ov_client_by_resource(resource_id, resource, function,
-                                       *args, **kwargs)
+    return multiple_oneview.query_ov_client_by_resource(resource_id, resource,
+                                                        function, *args,
+                                                        **kwargs)
 
 
 def all_oneviews_resource(resource, function, *args, **kwargs):
-    all_ov_clients = get_all_oneviews_clients()
-    all_results = []
-
-    for ov_client in all_ov_clients:
-        result = execute_query_ov_client(ov_client, resource, function,
-                                          *args, **kwargs)
-        result.append(result)
+    all_results = multiple_oneview.search_resource_multiple_ov(resource,
+                                                               function, None,
+                                                               *args,
+                                                               **kwargs)
 
     return all_results
