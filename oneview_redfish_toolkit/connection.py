@@ -22,6 +22,7 @@ import ssl
 import time
 
 # 3rd party libs
+from flask import request
 from flask_api import status
 from hpOneView.oneview_client import OneViewClient
 from http.client import HTTPSConnection
@@ -31,74 +32,64 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import config
 
 
-# Globals vars:
-#   globals()['ov_client']
+SERVICE_ROOT_ENDPOINTS = ["/redfish/v1",
+                          "/redfish",
+                          "/redfish/v1/odata",
+                          "/redfish/v1/$metadata"]
 
 
-def get_oneview_client(session_id=None, is_service_root=False,
+def get_oneview_client(ip_oneview, token=None,
                        api_version=None):
-    """Establishes a OneView connection to be used in the module
-
-        Establishes a OV connection if one does not exists.
-        If one exists, do a single OV access to check if its sill
-        valid. If not tries to establish a new connection.
-        Sets the connection on the ov_conn global var
-
-        Args:
-            session_id: The ID of a valid authenticated session, if the
-            authentication_mode is session. Defaults to None.
-
-            is_service_root: Informs if who is calling this function is the
-            ServiceRoot blueprint. If true, even if authentication_mode is
-            set to session it will use the information on the conf file to
-            return a connection.  This is a workaround to allow ServiceRoot
-            to retrieve the appliance UUID before user logs in.
-
-        Returns:
-            OneViewClient object
-
-        Exceptions:
-            HPOneViewException if can't connect or reconnect to OV
-    """
-
     auth_mode = config.get_authentication_mode()
+    ov_config = None
 
-    if auth_mode == "conf" or is_service_root:
-        # Doing conf based authentication
-        ov_config = create_oneview_config(ip=config.get_oneview_ip(),
-                                          credentials=config.get_credentials())
-        ov_client = None
+    if auth_mode == "conf":
+        return get_oneview_client_conf_mode(ip_oneview, api_version)
 
-        # Check if connection is ok yet
+    if is_service_root():
+        ov_config = create_oneview_config(ip=ip_oneview,
+                                          api_version=api_version)
+    
+    if auth_mode == "session":
+        ov_config = create_oneview_config(ip=ip_oneview,
+                                          api_version=api_version,
+                                          token=token)
+
+    try:
+        oneview_client = OneViewClient(ov_config)
+        return oneview_client
+    except Exception:
+        logging.exception("Failed to recover session based connection")
+        raise
+
+
+def get_oneview_client_conf_mode(ip_oneview, api_version=None):
+    ov_client = None
+    # Check if connection is ok yet
+    try:
+        ov_config = \
+            create_oneview_config(ip=ip_oneview,
+                                  api_version=api_version,
+                                  credentials=config.get_credentials())
+
+        ov_client = OneViewClient(ov_config)
+        return ov_client
+    except Exception:
         try:
-            # Check if OneViewClient already exists
-            if 'ov_client' not in globals():
-                globals()['ov_client'] = OneViewClient(ov_config)
-
-            ov_client = globals()['ov_client']
-            ov_client.connection.get('/rest/logindomains')
-            return ov_client
-        # If expired try to make a new connection
+            logging.exception('Re-authenticated')
+            if ov_client:
+                ov_client.connection.login(config.get_credentials())
+                return ov_client
+        # if failed abort
         except Exception:
-            try:
-                logging.exception('Re-authenticated')
-                if ov_client:
-                    ov_client.connection.login(config.get_credentials())
-                    return ov_client
-            # if failed abort
-            except Exception:
-                raise
-    else:
-        # Auth mode is session
-        ov_config = create_oneview_config(ip=config.get_oneview_ip(),
-                                          session_token=session_id)
-        try:
-            oneview_client = OneViewClient(ov_config)
-            oneview_client.connection.get('/rest/logindomains')
-            return oneview_client
-        except Exception:
-            logging.exception("Failed to recover session based connection")
             raise
+
+
+def is_service_root():
+    if request.path.rstrip("/") in SERVICE_ROOT_ENDPOINTS:
+        return True
+
+    return False
 
 
 def check_oneview_availability(oneview_ip):
@@ -155,15 +146,15 @@ def request_oneview(oneview_ip, rest_url):
         connection.close()
 
 
-def create_oneview_config(ip, session_token=None, api_version=None,
+def create_oneview_config(ip, token=None, api_version=None,
                           credentials=None):
     """Creates a dict to pass as argument on creating a new OneViewClient"""
     ov_config = {}
     ov_config['ip'] = ip
     ov_config['api_version'] = config.get_api_version()
 
-    if session_token:
-        ov_config['credentials'] = {"sessionID": session_token}
+    if token:
+        ov_config['credentials'] = {"sessionID": token}
 
     if credentials:
         ov_config['credentials'] = credentials

@@ -50,10 +50,6 @@ def get_oneview_config():
     return dict(get_config().items('oneview_config'))
 
 
-def get_oneview_ip():
-    return get_oneview_multiple_ips()[0]
-
-
 def get_oneview_multiple_ips():
     ips_config = dict(get_config().items('oneview_config'))['ip'].split(",")
     list_ips = [ip.strip() for ip in ips_config]
@@ -153,7 +149,8 @@ def load_config(conf_file):
 
     # Load schemas | Store schemas
     try:
-        connection.check_oneview_availability(get_oneview_ip())
+        for ip_oneview in get_oneview_multiple_ips():
+            connection.check_oneview_availability(ip_oneview)
 
         registry_dict = load_registry(
             get_registry_path(),

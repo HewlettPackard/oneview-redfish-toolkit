@@ -95,6 +95,7 @@ from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
+from oneview_redfish_toolkit import handler_multiple_oneview
 from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit import util
 
@@ -157,6 +158,10 @@ def main(config_file_path, logging_config_file_path):
     app.register_blueprint(zone_collection)
     app.register_blueprint(zone)
 
+    # Init cached data
+    authentication.init_map_tokens()
+    multiple_oneview.init_map_resources()
+
     if auth_mode == "conf":
         app.register_blueprint(event_service)
         app.register_blueprint(subscription_collection)
@@ -164,40 +169,16 @@ def main(config_file_path, logging_config_file_path):
 
     @app.before_request
     def check_authentication():
-        # TODO: remove CONF and SESSION handling
-        """Checks authentication before serving the request"""
-        # If authentication_mode = conf don't need auth
-        auth_mode = config.get_authentication_mode()
-        if auth_mode == "conf":
-            g.oneview_client = connection.get_oneview_client()
+        # If authenticating do not check for anything
+        if request.path == "/redfish/v1/SessionService/Sessions" and \
+            request.method == "POST":
             return None
-        else:
-            # ServiceRoot don't need auth
-            if request.path.rstrip("/") in {"/redfish/v1",
-                                            "/redfish",
-                                            "/redfish/v1/odata",
-                                            "/redfish/v1/$metadata"}:
-                g.oneview_client = connection.get_oneview_client(None, True)
-                return None
-            # If authenticating we do nothing
-            if request.path == "/redfish/v1/SessionService/Sessions" and \
-                request.method == "POST":
-                return None
-            # Any other path we demand auth
-            x_auth_token = request.headers.get('x-auth-token')
-            if not x_auth_token:
-                abort(
-                    status.HTTP_401_UNAUTHORIZED,
-                    "x-auth-token header not found")
-            else:
-                try:
-                    # TODO: add check authentication
-                    # authentication.check_authentication(x_auth_token)
 
-                    g.oneview_client = \
-                        multiple_oneview.MultipleOneViewResource()
-                except Exception:
-                    abort(status.HTTP_401_UNAUTHORIZED, "invalid auth token")
+        # TODO: add check authentication
+        # authentication.check_authentication(x_auth_token)
+
+        g.oneview_client = \
+            handler_multiple_oneview.MultipleOneViewResource()
 
     @app.before_request
     def has_odata_version_header():
