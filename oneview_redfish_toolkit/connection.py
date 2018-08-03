@@ -49,7 +49,7 @@ def get_oneview_client(ip_oneview, token=None,
     if is_service_root():
         ov_config = create_oneview_config(ip=ip_oneview,
                                           api_version=api_version)
-    
+
     if auth_mode == "session":
         ov_config = create_oneview_config(ip=ip_oneview,
                                           api_version=api_version,

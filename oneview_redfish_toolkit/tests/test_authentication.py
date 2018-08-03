@@ -40,6 +40,8 @@ class TestAuthentication(unittest.TestCase):
         list_tokens = list(tokens_ov.values())
         iter_tokens_ov = iter(list_tokens)
 
+        authentication.init_map_tokens()
+
         get_oneview_multiple_ips.return_value = list_ips
 
         def function_returning_token():

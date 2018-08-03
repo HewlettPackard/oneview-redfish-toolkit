@@ -14,16 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# Python libs
-import logging
-import logging.config
-
 # 3rd party libs
-from flask import abort
-from flask import g
-from flask_api import status
 from hpOneView import HPOneViewException
-from hpOneView.oneview_client import OneViewClient
 
 # Modules own libs
 from oneview_redfish_toolkit.api.errors \
@@ -57,7 +49,7 @@ def query_ov_client_by_resource(resource_id, resource, function,
 
         Query specific resource ID on multiple OneViews.
         Look resource ID on cached map ResourceID->OneViewIP for query
-        on specific cached OneView IP. 
+        on specific cached OneView IP.
         If the resource ID is not cached yet it searchs on all OneViews.
 
         Returns:
@@ -68,8 +60,8 @@ def query_ov_client_by_resource(resource_id, resource, function,
 
     # If resource is not cached yet search in all OneViews
     if not ip_oneview:
-        return search_resource_multiple_ov(resource, function, resource_id, 
-                                            *args, **kwargs)
+        return search_resource_multiple_ov(resource, function, resource_id,
+                                           *args, **kwargs)
 
     # Get cached OneView's token
     ov_token = authentication.get_oneview_token(ip_oneview)
@@ -96,15 +88,15 @@ def search_resource_multiple_ov(resource, function, resource_id,
                                 *args, **kwargs):
     """Search resource on multiple OneViews
 
-        Query resource on all OneViews. 
+        Query resource on all OneViews.
         If it's looking for a specific resource:
             -Once resource is found it will cache the resource ID for the
                 OneView's IP that was found;
             -If it is not found return NotFound exception.
         If it's looking for all resources(get_all):
-            -Always query on all OneViews and return a list appended the 
+            -Always query on all OneViews and return a list appended the
                 results for all OneViews
-        
+
         Args:
             resource: resource type (server_hardware)
             function: resource function name (get_all)
@@ -119,13 +111,13 @@ def search_resource_multiple_ov(resource, function, resource_id,
             OneViewRedfishResourceNotFoundError: When resource was not found
             in any OneViews.
 
-            HPOneViewException: When occur an error on any OneViews which is 
+            HPOneViewException: When occur an error on any OneViews which is
             not an not found error.
     """
     # Get all OneView's IP and tokens cached by Redfish's token
     ov_ip_tokens = authentication.get_multiple_oneview_token()
     result = []
-    
+
     # Loop in all OneView's IP and token
     for ov_ip, ov_token in ov_ip_tokens.items():
         ov_client = connection.get_oneview_client(ov_ip,
@@ -136,7 +128,7 @@ def search_resource_multiple_ov(resource, function, resource_id,
             expected_resource = \
                 execute_query_ov_client(ov_client, resource, function,
                                         *args, **kwargs)
-            
+
             if expected_resource:
                 # If it's looking for a especific resource and was found
                 if resource_id:
@@ -149,7 +141,7 @@ def search_resource_multiple_ov(resource, function, resource_id,
             # If get any error that is not a notFoundError
             if e.oneview_response["errorCode"] not in NOT_FOUND_ERROR:
                 raise e
-    
+
     # If it's looking for a specific resource returns a NotFound exception
     if resource_id:
         raise OneViewRedfishResourceNotFoundError(resource_id, resource)
