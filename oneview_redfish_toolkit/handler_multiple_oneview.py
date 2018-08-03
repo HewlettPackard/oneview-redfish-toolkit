@@ -18,21 +18,55 @@
 from oneview_redfish_toolkit.strategy_multiple_oneview \
     import all_oneviews_resource
 from oneview_redfish_toolkit.strategy_multiple_oneview \
+    import filter_uuid_parameter_resource
+from oneview_redfish_toolkit.strategy_multiple_oneview \
     import first_parameter_resource
+from oneview_redfish_toolkit.strategy_multiple_oneview \
+    import second_parameter_resource
+from oneview_redfish_toolkit.strategy_multiple_oneview \
+    import spt_get_all_with_filter
 
 
 RESOURCE_STRATEGY = {
+    # Check if is query on all OneViews
+    "appliance_node_information": {"get_version": all_oneviews_resource},
+    "connection": {"get": first_parameter_resource},
+    "drive_enclosures": {"get": first_parameter_resource},
+    "enclosures": {
+        "get": first_parameter_resource,
+        "get_all": all_oneviews_resource,
+        "get_environmental_configuration": first_parameter_resource,
+        "get_utilization": first_parameter_resource,
+        },
+    "ethernet_networks": {"get": first_parameter_resource},
+    "index_resources": {
+        "get": first_parameter_resource,
+        "get_all": filter_uuid_parameter_resource,
+        },
+    "logical_enclosures": {"get": first_parameter_resource},
+    "network_sets": {"get": first_parameter_resource},
+    "racks": {
+        "get": first_parameter_resource,
+        "get_all": all_oneviews_resource,
+        "get_device_topology": first_parameter_resource,
+        },
+    "sas_logical_jbods": {"get_drives": first_parameter_resource},
     "server_hardware": {
         "get": first_parameter_resource,
         "get_all": all_oneviews_resource,
+        "get_utilization": first_parameter_resource,
+        "update_power_state": second_parameter_resource,
         },
     "server_hardware_types": {"get": first_parameter_resource},
-    "server_profiles": {"get": first_parameter_resource},
+    "server_profiles": {
+        "delete": first_parameter_resource,
+        "get": first_parameter_resource,
+        "get_available_targets": first_parameter_resource,
+        },
     "server_profile_templates": {
         "get": first_parameter_resource,
-        "get_all": all_oneviews_resource
+        "get_all": spt_get_all_with_filter,
         },
-    "sas_logical_jbods": {"get_drives": first_parameter_resource},
 }
 
 
