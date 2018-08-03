@@ -41,15 +41,14 @@ def get_zone(zone_uuid):
 
     template_id, enclosure_id = _split_template_id_and_enclosure_id(zone_uuid)
 
+    profile_template = g.oneview_client.server_profile_templates.get(
+        template_id)
+
     if enclosure_id:
         enclosure = g.oneview_client.enclosures.get(enclosure_id)
-        profile_template = g.oneview_client.server_profile_templates.get(
-            template_id)
         drives = _get_drives(enclosure)
         sh_filter = "locationUri='{}'".format(enclosure["uri"])
     else:
-        profile_template = g.oneview_client.server_profile_templates.get(
-            template_id)
         drives = []
         enclosure_group_uri = profile_template["enclosureGroupUri"]
         sh_filter = "serverGroupUri='{}'".format(enclosure_group_uri)
