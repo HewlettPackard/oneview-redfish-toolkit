@@ -27,19 +27,30 @@ class TestCapabilitiesObject(BaseTest):
               'ServerProfileTemplate.json') as f:
         server_profile_template = json.load(f)
 
-    with open('oneview_redfish_toolkit/mockups/redfish/'
-              'CapabilitiesObject.json') as f:
-        capabilities_mockup = json.load(f)
+    def test_serialize_passing_spt_id_as_resource_id(self):
+        # Tests the serialize using template id as resource_id
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
-        capabilities_obj = CapabilitiesObject(self.server_profile_template)
+        with open('oneview_redfish_toolkit/mockups/redfish/'
+                  'CapabilitiesObject.json') as f:
+            capabilities_mockup = json.load(f)
 
-        self.assertIsInstance(capabilities_obj, CapabilitiesObject)
-
-    def test_serialize(self):
-        # Tests the serialize function result against known result
-        capabilities_obj = CapabilitiesObject(self.server_profile_template)
+        resource_id = "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
+        capabilities_obj = CapabilitiesObject(resource_id,
+                                              self.server_profile_template)
         result = json.loads(capabilities_obj.serialize())
 
-        self.assertEqualMockup(self.capabilities_mockup, result)
+        self.assertEqualMockup(capabilities_mockup, result)
+
+    def test_serialize_passing_spt_id_and_encl_id_as_resource_id(self):
+        # Tests the serialize using template id + enclosure id as resource_id
+
+        with open('oneview_redfish_toolkit/mockups/redfish/'
+                  'CapabilitiesObjectWithSPTIdAndEnclId.json') as f:
+            capabilities_mockup = json.load(f)
+
+        resource_id = "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101"
+        capabilities_obj = CapabilitiesObject(resource_id,
+                                              self.server_profile_template)
+        result = json.loads(capabilities_obj.serialize())
+
+        self.assertEqualMockup(capabilities_mockup, result)
