@@ -25,6 +25,7 @@ def first_parameter_resource(resource, function, *args, **kwargs):
                                                         function, *args,
                                                         **kwargs)
 
+
 def second_parameter_resource(resource, function, *args, **kwargs):
     resource_id = args[1]
 
@@ -40,6 +41,7 @@ def filter_uuid_parameter_resource(resource, function, *args, **kwargs):
     return multiple_oneview.query_ov_client_by_resource(resource_id, resource,
                                                         function, *args,
                                                         **kwargs)
+
 
 def all_oneviews_resource(resource, function, *args, **kwargs):
     all_results = multiple_oneview.search_resource_multiple_ov(resource,
@@ -62,5 +64,6 @@ def spt_get_all_with_filter(resource, function, *args, **kwargs):
             resource_id = filter_data[1]
             return \
                 multiple_oneview.query_ov_client_by_resource(resource_id,
-                                                        resource, function,
-                                                        *args, **kwargs)
+                                                             resource,
+                                                             function,
+                                                             *args, **kwargs)
