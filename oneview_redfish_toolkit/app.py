@@ -94,7 +94,6 @@ from oneview_redfish_toolkit.blueprints.vlan_network_interface import \
 from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
 from oneview_redfish_toolkit import config
-from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import handler_multiple_oneview
 from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit import util
@@ -174,8 +173,8 @@ def main(config_file_path, logging_config_file_path):
             request.method == "POST":
             return None
 
-        # TODO: add check authentication
-        # authentication.check_authentication(x_auth_token)
+        x_auth_token = request.headers.get('x-auth-token')
+        authentication.check_authentication(x_auth_token)
 
         g.oneview_client = \
             handler_multiple_oneview.MultipleOneViewResource()

@@ -14,18 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# Python libs
-import logging
-import logging.config
-
-# 3rd party libs
-from flask import abort
-from flask import g
-from hpOneView import HPOneViewException
-from hpOneView.oneview_client import OneViewClient
-
 # Modules own libs
-from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import multiple_oneview
 
 

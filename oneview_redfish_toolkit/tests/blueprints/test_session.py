@@ -63,6 +63,8 @@ class TestSession(BaseFlaskTest):
         ) as f:
             session_mockup = json.load(f)
 
+        authentication.init_map_tokens()
+
         # Create mock response
         oneview_client = oneview_client_mockup()
         oneview_client.connection.get_session_id.return_value = "sessionId"

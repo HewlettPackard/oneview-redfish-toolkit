@@ -61,7 +61,7 @@ def login(username, password):
 
         redfish_token = next(iter(tokens_ov_by_ip.values()))
 
-        set_new_token(redfish_token, tokens_ov_by_ip)
+        _set_new_token(redfish_token, tokens_ov_by_ip)
 
         return redfish_token
     except HPOneViewException as e:
@@ -89,7 +89,7 @@ def get_oneview_token(ip_oneview):
 def get_multiple_oneview_token():
     try:
         rf_token = request.headers.get('x-auth-token')
-        return get_map_tokens()[rf_token]
+        return _get_map_tokens()[rf_token]
     except KeyError:
         msg = 'Unauthorized error for redfish token {}' \
             .format(rf_token)
