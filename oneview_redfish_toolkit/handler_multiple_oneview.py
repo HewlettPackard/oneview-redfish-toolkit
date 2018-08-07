@@ -50,7 +50,10 @@ RESOURCE_STRATEGY = {
         "get_all": all_oneviews_resource,
         "get_device_topology": first_parameter_resource,
         },
-    "sas_logical_jbods": {"get_drives": first_parameter_resource},
+    "sas_logical_jbods": {
+        "get": first_parameter_resource,
+        "get_drives": first_parameter_resource,
+        },
     "server_hardware": {
         "get": first_parameter_resource,
         "get_all": all_oneviews_resource,

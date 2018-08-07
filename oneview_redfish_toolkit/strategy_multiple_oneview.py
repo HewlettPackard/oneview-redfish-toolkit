@@ -35,6 +35,9 @@ def second_parameter_resource(resource, function, *args, **kwargs):
 
 
 def filter_uuid_parameter_resource(resource, function, *args, **kwargs):
+    if 'filter' not in kwargs:
+        return all_oneviews_resource(resource, function, *args, **kwargs)
+
     filter_parameter = kwargs['filter']
     resource_id = filter_parameter.split('=')[1]
 
