@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -37,8 +36,7 @@ class TestNetworkAdapterCollection(BaseFlaskTest):
         self.app.register_blueprint(
             network_adapter_collection.network_adapter_collection)
 
-    @mock.patch.object(network_adapter_collection, 'g')
-    def test_get_network_adapter_collection(self, g):
+    def test_get_network_adapter_collection(self):
         """Tests NetworkAdapterCollection"""
 
         # Loading server_hardware mockup value
@@ -55,7 +53,7 @@ class TestNetworkAdapterCollection(BaseFlaskTest):
             network_adapter_collection_mockup = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkAdapterCollection
         response = self.client.get(
@@ -71,15 +69,14 @@ class TestNetworkAdapterCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(network_adapter_collection_mockup, result)
 
-    @mock.patch.object(network_adapter_collection, 'g')
-    def test_get_network_adapter_collection_sh_not_found(self, g):
+    def test_get_network_adapter_collection_sh_not_found(self):
         """Tests NetworkAdapterCollection"""
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkAdapterCollection
         response = self.client.get(
@@ -90,15 +87,14 @@ class TestNetworkAdapterCollection(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(network_adapter_collection, 'g')
-    def test_get_network_adapter_collection_sh_exception(self, g):
+    def test_get_network_adapter_collection_sh_exception(self):
         """Tests NetworkAdapterCollection"""
 
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware-types error',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkAdapterCollection
         response = self.client.get(

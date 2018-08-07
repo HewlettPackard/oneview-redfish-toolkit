@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -36,8 +35,7 @@ class TestNetworkPort(BaseFlaskTest):
 
         self.app.register_blueprint(network_port.network_port)
 
-    @mock.patch.object(network_port, 'g')
-    def test_get_network_port(self, g):
+    def test_get_network_port(self):
         """Tests NetworkPort"""
 
         # Loading server_hardware mockup value
@@ -54,7 +52,7 @@ class TestNetworkPort(BaseFlaskTest):
             network_port_mockup = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkPort
         response = self.client.get(
@@ -70,8 +68,7 @@ class TestNetworkPort(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(network_port_mockup, result)
 
-    @mock.patch.object(network_port, 'g')
-    def test_get_network_port_fibre_channel(self, g):
+    def test_get_network_port_fibre_channel(self):
         """Tests NetworkPort"""
 
         # Loading server_hardware mockup value
@@ -89,7 +86,7 @@ class TestNetworkPort(BaseFlaskTest):
             network_port_mockup = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkPort
         response = self.client.get(
@@ -105,9 +102,8 @@ class TestNetworkPort(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(network_port_mockup, result)
 
-    @mock.patch.object(network_port, 'g')
     def test_get_network_port_invalid_device_id(
-        self, g):
+        self):
         """Tests NetworkPort"""
 
         # Loading server_hardware mockup value
@@ -117,7 +113,7 @@ class TestNetworkPort(BaseFlaskTest):
             server_hardware = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkPort
         response = self.client.get(
@@ -129,15 +125,14 @@ class TestNetworkPort(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(network_port, 'g')
-    def test_get_network_port_sh_not_found(self, g):
+    def test_get_network_port_sh_not_found(self):
         """Tests NetworkPort server hardware not found"""
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkPort
         response = self.client.get(
@@ -148,15 +143,14 @@ class TestNetworkPort(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(network_port, 'g')
-    def test_get_network_port_sh_exception(self, g):
+    def test_get_network_port_sh_exception(self):
         """Tests NetworkPort unknown exception"""
 
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware error',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkPort
         response = self.client.get(

@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -46,9 +45,8 @@ class TestProcessorCollection(BaseFlaskTest):
         ) as f:
             self.expected_processor_collection = json.load(f)
 
-    @mock.patch.object(processor_collection, 'g')
-    def test_get_processor_collection_server_hardware_not_found(self, g):
-        g.oneview_client.server_hardware.get.side_effect = \
+    def test_get_processor_collection_server_hardware_not_found(self):
+        self.oneview_client.server_hardware.get.side_effect = \
             HPOneViewException({"errorCode": "RESOURCE_NOT_FOUND"})
 
         response = self.client.get(
@@ -58,9 +56,8 @@ class TestProcessorCollection(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(processor_collection, 'g')
-    def test_get_processor(self, g):
-        g.oneview_client.server_hardware.get.return_value = \
+    def test_get_processor(self):
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
         response = self.client.get(

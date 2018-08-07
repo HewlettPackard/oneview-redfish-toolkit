@@ -15,7 +15,6 @@
 # under the License.
 import copy
 import json
-from unittest import mock
 from unittest.mock import call
 
 from flask_api import status
@@ -66,11 +65,10 @@ class TestZone(BaseFlaskTest):
 
         self.spt_id = self.server_profile_template["uri"].split("/")[-1]
 
-    @mock.patch.object(zone, 'g')
-    def test_get_zone_when_uuid_is_template_id_with_enclosure_id(self, g_mock):
+    def test_get_zone_when_uuid_is_template_id_with_enclosure_id(self):
         """Tests get a Zone when the zone uuid is template id + enclosure id"""
 
-        api_client = g_mock.oneview_client
+        api_client = self.oneview_client
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Zone.json'
@@ -116,11 +114,10 @@ class TestZone(BaseFlaskTest):
                 + self.server_profile_template["serverHardwareTypeUri"] + "'"
             ])
 
-    @mock.patch.object(zone, 'g')
-    def test_get_zone_when_uuid_is_only_template_id(self, g_mock):
+    def test_get_zone_when_uuid_is_only_template_id(self):
         """Tests get a Zone when the zone uuid is only template id"""
 
-        api_client = g_mock.oneview_client
+        api_client = self.oneview_client
 
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
@@ -158,11 +155,10 @@ class TestZone(BaseFlaskTest):
                 + self.server_profile_template["serverHardwareTypeUri"] + "'"
             ])
 
-    @mock.patch.object(zone, 'g')
-    def test_get_zone_when_drive_enclosures_assoc_is_empty(self, g_mock):
+    def test_get_zone_when_drive_enclosures_assoc_is_empty(self):
         """Tests get a Zone when drive enclosures by enclosure is empty"""
 
-        api_client = g_mock.oneview_client
+        api_client = self.oneview_client
 
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
@@ -208,11 +204,10 @@ class TestZone(BaseFlaskTest):
                 + self.server_profile_template["serverHardwareTypeUri"] + "'"
             ])
 
-    @mock.patch.object(zone, 'g')
-    def test_get_zone_not_found(self, g_mock):
+    def test_get_zone_not_found(self):
         """Tests Zone when UUID was not found"""
 
-        g_mock.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get.side_effect = \
             HPOneViewException({
                 'errorCode': 'RESOURCE_NOT_FOUND',
                 'message': 'SPT not found'
@@ -225,11 +220,10 @@ class TestZone(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(zone, 'g')
-    def test_get_zone_when_enclosure_not_found(self, g_mock):
+    def test_get_zone_when_enclosure_not_found(self):
         """Tests Zone when UUID was not found due the enclosure not found"""
 
-        g_mock.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get.side_effect = \
             HPOneViewException({
                 'errorCode': 'RESOURCE_NOT_FOUND',
                 'message': 'Enclosure not found'

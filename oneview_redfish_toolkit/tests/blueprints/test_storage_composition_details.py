@@ -15,7 +15,6 @@
 # under the License.
 
 import json
-from unittest import mock
 
 from flask_api import status
 
@@ -38,9 +37,8 @@ class TestStorageCompositionDetails(BaseFlaskTest):
         ) as f:
             self.drive = json.load(f)
 
-    @mock.patch.object(storage_composition_details, 'g')
-    def test_get_storage_details(self, g):
-        g.oneview_client.index_resources.get.return_value = self.drive
+    def test_get_storage_details(self):
+        self.oneview_client.index_resources.get.return_value = self.drive
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
@@ -58,9 +56,8 @@ class TestStorageCompositionDetails(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_storage_details, result)
 
-    @mock.patch.object(storage_composition_details, 'g')
-    def test_get_storage_details_when_it_is_not_found(self, g):
-        g.oneview_client.index_resources.get.return_value = self.drive
+    def test_get_storage_details_when_it_is_not_found(self):
+        self.oneview_client.index_resources.get.return_value = self.drive
 
         wrong_id = "2"  # any value other than "1"
 
@@ -77,8 +74,7 @@ class TestStorageCompositionDetails(BaseFlaskTest):
                     "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e"
         self.assertIn(msg_error, str(result))
 
-    @mock.patch.object(storage_composition_details, 'g')
-    def test_get_storage_drive_details(self, g):
+    def test_get_storage_drive_details(self):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
             'StorageDriveCompositionDetails.json'
@@ -90,8 +86,8 @@ class TestStorageCompositionDetails(BaseFlaskTest):
         ) as f:
             drive_enclosure = json.load(f)
 
-        g.oneview_client.index_resources.get.return_value = self.drive
-        g.oneview_client.drive_enclosures.get.return_value = drive_enclosure
+        self.oneview_client.index_resources.get.return_value = self.drive
+        self.oneview_client.drive_enclosures.get.return_value = drive_enclosure
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -103,9 +99,8 @@ class TestStorageCompositionDetails(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_drive_details, result)
 
-    @mock.patch.object(storage_composition_details, 'g')
-    def test_get_storage_drive_details_when_drive_is_not_found(self, g):
-        g.oneview_client.index_resources.get.return_value = self.drive
+    def test_get_storage_drive_details_when_drive_is_not_found(self):
+        self.oneview_client.index_resources.get.return_value = self.drive
 
         wrong_id = "2"  # any value other than "1"
 
@@ -123,9 +118,8 @@ class TestStorageCompositionDetails(BaseFlaskTest):
                     "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e"
         self.assertIn(msg_error, str(result))
 
-    @mock.patch.object(storage_composition_details, 'g')
-    def test_get_storage_drive_details_when_storage_is_not_found(self, g):
-        g.oneview_client.index_resources.get.return_value = self.drive
+    def test_get_storage_drive_details_when_storage_is_not_found(self):
+        self.oneview_client.index_resources.get.return_value = self.drive
 
         wrong_id = "2"  # any value other than "1"
 

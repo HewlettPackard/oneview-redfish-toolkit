@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -39,8 +38,7 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             network_device_function_collection.
             network_device_function_collection)
 
-    @mock.patch.object(network_device_function_collection, 'g')
-    def test_get_network_device_function_collection(self, g):
+    def test_get_network_device_function_collection(self):
         """Tests NetworkDeviceFunctionCollection"""
 
         # Loading server_hardware mockup value
@@ -57,7 +55,7 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             network_device_function_collection_mockup = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkDeviceFunctionCollection
         response = self.client.get(
@@ -74,15 +72,14 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
         self.assertEqualMockup(network_device_function_collection_mockup,
                                result)
 
-    @mock.patch.object(network_device_function_collection, 'g')
-    def test_get_network_device_function_collection_sh_not_found(self, g):
+    def test_get_network_device_function_collection_sh_not_found(self):
         """Tests NetworkDeviceFunctionCollection"""
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkDeviceFunctionCollection
         response = self.client.get(
@@ -93,15 +90,14 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(network_device_function_collection, 'g')
-    def test_get_network_device_function_collection_sh_exception(self, g):
+    def test_get_network_device_function_collection_sh_exception(self):
         """Tests NetworkDeviceFunctionCollection"""
 
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware-types error',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkDeviceFunctionCollection
         response = self.client.get(

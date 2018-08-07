@@ -17,7 +17,6 @@
 # Python libs
 import copy
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -84,13 +83,12 @@ class TestComputerSystem(BaseFlaskTest):
         ) as f:
             self.drives = json.load(f)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_not_found(self, g):
+    def test_get_computer_system_not_found(self):
         """Tests ComputerSystem with ServerProfileTemplates not found"""
 
-        g.oneview_client.server_profiles.get.side_effect = \
+        self.oneview_client.server_profiles.get.side_effect = \
             self.not_found_server_profile
-        g.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get.side_effect = \
             self.not_found_error
 
         response = self.client.get(
@@ -99,22 +97,19 @@ class TestComputerSystem(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get \
+        self.oneview_client.server_profiles.get \
             .assert_called_with("0303437-3034-4D32-3230-313133364752")
-        g.oneview_client.server_profile_templates.get \
+        self.oneview_client.server_profile_templates.get \
             .assert_called_with("0303437-3034-4D32-3230-313133364752")
 
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_sh_not_found(
-            self,
-            g):
+    def test_get_computer_system_sh_not_found(self):
         """Tests ComputerSystem with Server Hardware not found"""
 
-        g.oneview_client.server_profiles.get.return_value = {
+        self.oneview_client.server_profiles.get.return_value = {
             "category": "server-profiles",
             "serverHardwareUri": "notFoundUri"
         }
-        g.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get.side_effect = \
             self.not_found_error
 
         response = self.client.get(
@@ -123,22 +118,20 @@ class TestComputerSystem(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_hardware.get.assert_called_with('notFoundUri')
-        g.oneview_client.server_hardware_types.get.assert_not_called()
+        self.oneview_client.server_hardware.\
+            get.assert_called_with('notFoundUri')
+        self.oneview_client.server_hardware_types.get.assert_not_called()
 
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_sht_not_found(
-            self,
-            g):
+    def test_get_computer_system_sht_not_found(self):
         """Tests ComputerSystem with ServerHardwareType not found"""
 
-        g.oneview_client.server_profiles.get.return_value = {
+        self.oneview_client.server_profiles.get.return_value = {
             "category": "server-profiles",
             "serverHardwareUri": "validURI",
             "serverHardwareTypeUri": "notFoundURI"
         }
-        g.oneview_client.server_hardware.get.return_value = {}
-        g.oneview_client.server_hardware_types.get.side_effect = \
+        self.oneview_client.server_hardware.get.return_value = {}
+        self.oneview_client.server_hardware_types.get.side_effect = \
             self.not_found_error
 
         response = self.client.get(
@@ -147,19 +140,19 @@ class TestComputerSystem(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_hardware.get.assert_called_with("validURI")
-        g.oneview_client.server_hardware_types.get\
+        self.oneview_client.server_hardware.get.assert_called_with("validURI")
+        self.oneview_client.server_hardware_types.get\
             .assert_called_with("notFoundURI")
 
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_sh_exception(self, g):
+    def test_get_computer_system_sh_exception(self):
         """Tests ComputerSystem with ServerHardware exception"""
 
-        g.oneview_client.server_profiles.get.return_value = {
+        self.oneview_client.server_profiles.get.return_value = {
             "category": "server-profiles",
             "serverHardwareUri": "someURI"
         }
-        g.oneview_client.server_hardware.get.side_effect = self.internal_error
+        self.oneview_client.\
+            server_hardware.get.side_effect = self.internal_error
 
         response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -171,20 +164,18 @@ class TestComputerSystem(BaseFlaskTest):
         )
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_sht_exception(
-            self,
-            g):
+    def test_get_computer_system_sht_exception(self):
         """Tests ComputerSystem with ServerHardwareTypes exception"""
 
-        g.oneview_client.server_profiles.get.return_value = \
+        self.oneview_client.server_profiles.get.return_value = \
             {
                 'serverHardwareTypeUri': 'invalidUri',
                 'serverHardwareUri': 'validUri',
                 'category': 'server-profiles'
             }
-        g.oneview_client.server_hardware.get.return_value = {}  # some object
-        g.oneview_client.server_hardware_types.get.side_effect = \
+        self.oneview_client.\
+            server_hardware.get.return_value = {}  # some object
+        self.oneview_client.server_hardware_types.get.side_effect = \
             self.internal_error
 
         response = self.client.get(
@@ -196,17 +187,15 @@ class TestComputerSystem(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get \
+        self.oneview_client.server_profiles.get \
             .assert_called_with("0303437-3034-4D32-3230-313133364752")
 
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_spt_exception(
-            self,
-            g):
+    def test_get_computer_system_spt_exception(self):
         """Tests ComputerSystem with ServerProfileTemplates exception"""
 
-        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
-        g.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.\
+            server_profiles.get.side_effect = self.not_found_error
+        self.oneview_client.server_profile_templates.get.side_effect = \
             self.internal_error
 
         response = self.client.get(
@@ -219,14 +208,13 @@ class TestComputerSystem(BaseFlaskTest):
         )
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_unexpected_error(
-            self,
-            g):
+    def test_get_computer_system_unexpected_error(self):
         """Tests ComputerSystem with an unexpected error"""
 
-        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
-        g.oneview_client.server_profile_templates.get.side_effect = Exception()
+        self.oneview_client.\
+            server_profiles.get.side_effect = self.not_found_error
+        self.oneview_client.\
+            server_profile_templates.get.side_effect = Exception()
 
         response = self.client.get(
             "/redfish/v1/Systems/0303437-3034-4D32-3230-313133364752"
@@ -237,20 +225,19 @@ class TestComputerSystem(BaseFlaskTest):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_server_profile(self, g):
+    def test_get_computer_system_server_profile(self):
         """Tests ComputerSystem with a known Server Profile"""
 
         server_profile = copy.deepcopy(self.server_profile)
         server_profile["localStorage"]["sasLogicalJBODs"].pop(0)
 
         # Create mock response
-        g.oneview_client.server_profiles.get.return_value = server_profile
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.server_profiles.get.return_value = server_profile
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
-        g.oneview_client.server_hardware_types.get.return_value = \
+        self.oneview_client.server_hardware_types.get.return_value = \
             self.server_hardware_types
-        g.oneview_client.sas_logical_jbods.get_drives.return_value = \
+        self.oneview_client.sas_logical_jbods.get_drives.return_value = \
             [self.drives[4]]
 
         # Get ComputerSystem
@@ -268,23 +255,22 @@ class TestComputerSystem(BaseFlaskTest):
         self.assertEqual(
             "{}{}".format("W/", self.server_profile["eTag"]),
             response.headers["ETag"])
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             "b425802b-a6a5-4941-8885-aab68dfa2ee2"
         )
-        g.oneview_client.server_hardware.get.assert_called_with(
+        self.oneview_client.server_hardware.get.assert_called_with(
             "/rest/server-hardware/30303437-3034-4D32-3230-313130304752"
         )
-        g.oneview_client.server_hardware_types.get.assert_called_with(
+        self.oneview_client.server_hardware_types.get.assert_called_with(
             "/rest/server-hardware-types/FE50A6FE-B1AC-4E42-8D40-B73CA8CC0CD2"
         )
-        g.oneview_client.sas_logical_jbods.get_drives.assert_called_with(
+        self.oneview_client.sas_logical_jbods.get_drives.assert_called_with(
             "/rest/sas-logical-jbods/9e83a03d-7a84-4f0d-a8d7-bd05a30c3175"
         )
-        g.oneview_client.server_profile_templates.get \
+        self.oneview_client.server_profile_templates.get \
             .assert_not_called()
 
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_spt(self, g):
+    def test_get_computer_system_spt(self):
         """Tests ComputerSystem with a known Server Profile Templates"""
 
         with open(
@@ -299,8 +285,9 @@ class TestComputerSystem(BaseFlaskTest):
             capabilities_obj_mockup = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
-        g.oneview_client.server_profile_templates.get.return_value = \
+        self.oneview_client.\
+            server_profiles.get.side_effect = self.not_found_error
+        self.oneview_client.server_profile_templates.get.return_value = \
             server_profile_template
 
         # Get ComputerSystem
@@ -315,13 +302,12 @@ class TestComputerSystem(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(capabilities_obj_mockup, result)
-        g.oneview_client.server_profiles.get \
+        self.oneview_client.server_profiles.get \
             .assert_called_with("1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
-        g.oneview_client.server_profile_templates.get \
+        self.oneview_client.server_profile_templates.get \
             .assert_called_with("1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
 
-    @mock.patch.object(computer_system, 'g')
-    def test_change_power_state(self, g):
+    def test_change_power_state(self):
         """Tests change SH power state with valid power values
 
             Valid Power Values:
@@ -333,10 +319,11 @@ class TestComputerSystem(BaseFlaskTest):
                 - PushPowerButton
         """
 
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.\
+            server_profiles.get.return_value = self.server_profile
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
-        g.oneview_client.server_hardware.update_power_state.return_value = \
+        self.oneview_client.server_hardware.update_power_state.return_value = \
             {"status": "OK"}
 
         reset_types = ["On", "ForceOff", "GracefulShutdown",
@@ -357,24 +344,24 @@ class TestComputerSystem(BaseFlaskTest):
 
             self.assertEqual(json_str, '{"ResetType": "%s"}' % reset_type)
 
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             "b425802b-a6a5-4941-8885-aab68dfa2ee2"
         )
-        g.oneview_client.server_hardware.get.assert_called_with(
+        self.oneview_client.server_hardware.get.assert_called_with(
             "/rest/server-hardware/30303437-3034-4D32-3230-313130304752"
         )
-        g.oneview_client.server_hardware.update_power_state \
+        self.oneview_client.server_hardware.update_power_state \
             .assert_called_with({
                 'powerControl': 'MomentaryPress',
                 'powerState': 'Off'
             }, "30303437-3034-4D32-3230-313133364752")
 
-    @mock.patch.object(computer_system, 'g')
-    def test_change_power_state_invalid_value(self, g):
+    def test_change_power_state_invalid_value(self):
         """Tests change SH power state with invalid power value"""
 
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.\
+            server_profiles.get.return_value = self.server_profile
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
         response = self.client.post(
@@ -385,18 +372,17 @@ class TestComputerSystem(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             "b425802b-a6a5-4941-8885-aab68dfa2ee2"
         )
-        g.oneview_client.server_hardware.get.assert_called_with(
+        self.oneview_client.server_hardware.get.assert_called_with(
             "/rest/server-hardware/30303437-3034-4D32-3230-313130304752"
         )
 
-    @mock.patch.object(computer_system, 'g')
-    def test_change_power_state_unexpected_error(self, g):
+    def test_change_power_state_unexpected_error(self):
         """Tests change SH power state with OneView unexpected error"""
 
-        g.oneview_client.server_hardware.get.side_effect = Exception()
+        self.oneview_client.server_hardware.get.side_effect = Exception()
 
         response = self.client.post(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
@@ -409,11 +395,11 @@ class TestComputerSystem(BaseFlaskTest):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_change_power_state_sh_exception(self, g):
+    def test_change_power_state_sh_exception(self):
         """Tests change SH power state with SH exception"""
 
-        g.oneview_client.server_hardware.get.side_effect = self.internal_error
+        self.oneview_client.\
+            server_hardware.get.side_effect = self.internal_error
 
         response = self.client.post(
             "/redfish/v1/Systems/30303437-3034-4D32-3230-313133364752"
@@ -427,14 +413,14 @@ class TestComputerSystem(BaseFlaskTest):
         )
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_change_power_state_unable_reset(self, g):
+    def test_change_power_state_unable_reset(self):
         """Tests change SH power state with SH unable to reset"""
 
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.\
+            server_profiles.get.return_value = self.server_profile
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
-        g.oneview_client.server_hardware.update_power_state.side_effect = \
+        self.oneview_client.server_hardware.update_power_state.side_effect = \
             self.internal_error
 
         response = self.client.post(
@@ -448,10 +434,10 @@ class TestComputerSystem(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             "b425802b-a6a5-4941-8885-aab68dfa2ee2"
         )
-        g.oneview_client.server_hardware.get.assert_called_with(
+        self.oneview_client.server_hardware.get.assert_called_with(
             "/rest/server-hardware/30303437-3034-4D32-3230-313130304752"
         )
 
@@ -479,11 +465,10 @@ class TestComputerSystem(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(result, invalid_json_key)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_remove_computer_system(self, g):
+    def test_remove_computer_system(self):
         """Tests delete computer system"""
 
-        g.oneview_client.server_profiles.delete.return_value = True
+        self.oneview_client.server_profiles.delete.return_value = True
 
         response = self.client.delete(
             "/redfish/v1/Systems/"
@@ -494,13 +479,10 @@ class TestComputerSystem(BaseFlaskTest):
             response.status_code
         )
 
-    @mock.patch.object(computer_system, 'g')
-    def test_remove_computer_system_sp_not_found(
-            self,
-            g):
+    def test_remove_computer_system_sp_not_found(self):
         """Tests remove ComputerSystem with ServerProfile not found"""
 
-        g.oneview_client.server_profiles.delete.side_effect = \
+        self.oneview_client.server_profiles.delete.side_effect = \
             self.not_found_error
 
         response = self.client.delete(
@@ -510,17 +492,14 @@ class TestComputerSystem(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_remove_computer_system_exception(
-            self,
-            g):
+    def test_remove_computer_system_exception(self):
         """Tests remove ComputerSystem with ServerProfile exception"""
 
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-profile error',
         })
-        g.oneview_client.server_profiles.delete.side_effect = e
+        self.oneview_client.server_profiles.delete.side_effect = e
 
         response = self.client.delete(
             "/redfish/v1/Systems/"
@@ -530,13 +509,10 @@ class TestComputerSystem(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_remove_computer_system_not_deleted(
-            self,
-            g):
+    def test_remove_computer_system_not_deleted(self):
         """Tests remove ComputerSystem with ServerProfile not deleted"""
 
-        g.oneview_client.server_profiles.delete.return_value = False
+        self.oneview_client.server_profiles.delete.return_value = False
 
         response = self.client.delete(
             "/redfish/v1/Systems/"
@@ -546,15 +522,12 @@ class TestComputerSystem(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(computer_system, 'g')
-    def test_remove_computer_system_task_completed(
-            self,
-            g):
+    def test_remove_computer_system_task_completed(self):
         """Tests remove ComputerSystem with task completed"""
 
         task = {'taskState': 'Completed'}
 
-        g.oneview_client.server_profiles.delete.return_value = task
+        self.oneview_client.server_profiles.delete.return_value = task
 
         response = self.client.delete(
             "/redfish/v1/Systems/"
@@ -565,15 +538,12 @@ class TestComputerSystem(BaseFlaskTest):
             response.status_code
         )
 
-    @mock.patch.object(computer_system, 'g')
-    def test_remove_computer_system_task_error(
-            self,
-            g):
+    def test_remove_computer_system_task_error(self):
         """Tests remove ComputerSystem with task completed"""
 
         task = {'taskState': 'Error'}
 
-        g.oneview_client.server_profiles.delete.return_value = task
+        self.oneview_client.server_profiles.delete.return_value = task
 
         response = self.client.delete(
             "/redfish/v1/Systems/"

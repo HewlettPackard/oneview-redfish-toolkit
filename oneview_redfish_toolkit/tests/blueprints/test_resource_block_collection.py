@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -36,8 +35,7 @@ class TestResourceBlockCollection(BaseFlaskTest):
         self.app.register_blueprint(
             resource_block_collection.resource_block_collection)
 
-    @mock.patch.object(resource_block_collection, 'g')
-    def test_get_resource_block_collection(self, g_mock):
+    def test_get_resource_block_collection(self):
         """Tests ResourceBlockCollection"""
 
         with open(
@@ -62,13 +60,13 @@ class TestResourceBlockCollection(BaseFlaskTest):
         ) as f:
             resource_block_collection_mockup = json.load(f)
 
-        g_mock.oneview_client.server_hardware.get_all.return_value = \
+        self.oneview_client.server_hardware.get_all.return_value = \
             server_hardware_list
 
-        g_mock.oneview_client.server_profile_templates.get_all.return_value = \
+        self.oneview_client.server_profile_templates.get_all.return_value = \
             server_profile_template_list
 
-        g_mock.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             drives_list
 
         # Get ResourceBlockCollection
@@ -83,13 +81,12 @@ class TestResourceBlockCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(resource_block_collection_mockup, result)
 
-    @mock.patch.object(resource_block_collection, 'g')
-    def test_get_resource_block_collection_empty(self, g_mock):
+    def test_get_resource_block_collection_empty(self):
         """Tests ResourceBlockCollection with an empty list"""
 
-        g_mock.oneview_client.server_hardware.get_all.return_value = []
-        g_mock.oneview_client.server_profile_template.get_all.return_value = []
-        g_mock.oneview_client.index_resources.get_all.return_value = []
+        self.oneview_client.server_hardware.get_all.return_value = []
+        self.oneview_client.server_profile_template.get_all.return_value = []
+        self.oneview_client.index_resources.get_all.return_value = []
 
         # Get ResourceBlockCollection
         response = self.client.get(

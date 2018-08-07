@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -51,8 +50,7 @@ class TestNetworkInterface(BaseFlaskTest):
             'message': 'any message not found'
         })
 
-    @mock.patch.object(network_interface, 'g')
-    def test_get_network_interface(self, g):
+    def test_get_network_interface(self):
         """Tests NetworkInterfaceCollection"""
 
         with open(
@@ -61,10 +59,10 @@ class TestNetworkInterface(BaseFlaskTest):
         ) as f:
             network_interface_mockup = json.load(f)
 
-        g.oneview_client.server_profiles.get.return_value = \
+        self.oneview_client.server_profiles.get.return_value = \
             self.server_profile
 
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
         response = self.client.get(
@@ -77,17 +75,17 @@ class TestNetworkInterface(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(network_interface_mockup, result)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.server_hardware.get.assert_called_with(
+        self.oneview_client.server_hardware.get.assert_called_with(
             self.server_profile["serverHardwareUri"])
 
-    @mock.patch.object(network_interface, 'g')
-    def test_get_network_interface_invalid_id(self, g):
+    def test_get_network_interface_invalid_id(self):
         """Tests NetworkInterfaceCollection"""
 
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.\
+            server_profiles.get.return_value = self.server_profile
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
         response = self.client.get(
@@ -97,15 +95,15 @@ class TestNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_not_called()
-        g.oneview_client.server_hardware.get.assert_not_called()
+        self.oneview_client.server_profiles.get.assert_not_called()
+        self.oneview_client.server_hardware.get.assert_not_called()
 
-    @mock.patch.object(network_interface, 'g')
     def test_get_network_interface_server_profile_not_found(
-            self, g):
+            self):
         """Tests NetworkInterface server profile not found"""
 
-        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
+        self.oneview_client.\
+            server_profiles.get.side_effect = self.not_found_error
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -114,17 +112,18 @@ class TestNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.server_hardware.get.assert_not_called()
+        self.oneview_client.server_hardware.get.assert_not_called()
 
-    @mock.patch.object(network_interface, 'g')
     def test_get_network_interface_sh_not_found(
-        self, g):
+        self):
         """Tests NetworkInterface server hardware not found"""
 
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
-        g.oneview_client.server_hardware.get.side_effect = self.not_found_error
+        self.oneview_client.\
+            server_profiles.get.return_value = self.server_profile
+        self.oneview_client.\
+            server_hardware.get.side_effect = self.not_found_error
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -133,21 +132,20 @@ class TestNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.server_hardware.get.assert_called_with(
+        self.oneview_client.server_hardware.get.assert_called_with(
             self.server_profile["serverHardwareUri"])
 
-    @mock.patch.object(network_interface, 'g')
     def test_get_network_interface_server_profile_exception(
-        self, g):
+        self):
         """Tests NetworkInterface unknown exception"""
 
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware error',
         })
-        g.oneview_client.server_profiles.get.side_effect = e
+        self.oneview_client.server_profiles.get.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -159,6 +157,6 @@ class TestNetworkInterface(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.server_hardware.get.assert_not_called()
+        self.oneview_client.server_hardware.get.assert_not_called()
