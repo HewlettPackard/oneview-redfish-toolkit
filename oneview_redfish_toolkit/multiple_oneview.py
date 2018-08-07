@@ -151,7 +151,7 @@ def search_resource_multiple_ov(resource, function, resource_id,
 
 def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
     """Execute query for resource on OneView client received as parameter"""
-    ov_resource = object.__getattribute__(ov_client, resource)
-    ov_function = object.__getattribute__(ov_resource, function)
+    ov_resource = getattr(ov_client, resource)
+    ov_function = getattr(ov_resource, function)
 
     return ov_function(*args, **kwargs)
