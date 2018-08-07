@@ -18,7 +18,6 @@ from unittest import mock
 from unittest import TestCase
 
 from oneview_redfish_toolkit import config
-from oneview_redfish_toolkit import connection
 
 
 class BaseTest(TestCase):
@@ -26,20 +25,13 @@ class BaseTest(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """Runs setUp from inherited classes"""
-        if cls is not BaseTest and cls.setUp is not BaseTest.setUp:
-            sub_setUp = cls.setUp
+        patcher = mock.patch('oneview_redfish_toolkit.connection.'
+                             'check_oneview_availability')
+        cls.mock_check_availability = patcher.start()
 
-            def setUpOverride(self, *args, **kwargs):
-                BaseTest.setUp(self)
-                return sub_setUp(self, *args, **kwargs)
-            cls.setUp = setUpOverride
+        cls.config_file = './oneview_redfish_toolkit/conf/redfish.conf'
 
-    @mock.patch.object(connection, 'check_oneview_availability')
-    def setUp(self, check_ov_availability):
-        self.config_file = './oneview_redfish_toolkit/conf/redfish.conf'
-
-        config.load_config(self.config_file)
+        config.load_config(cls.config_file)
 
     def assertEqualMockup(self, first, second, msg=None):
         if type(first) is dict and type(second) is dict:

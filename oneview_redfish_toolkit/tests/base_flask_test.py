@@ -15,14 +15,18 @@
 # under the License.
 
 from flask import Flask
+from flask import g
 from flask import Response
 from flask_api import status
+from unittest import mock
 
 from hpOneView import HPOneViewException
 
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit import handler_multiple_oneview
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
@@ -35,6 +39,20 @@ class BaseFlaskTest(BaseTest):
 
         # creates a test client
         cls.app = Flask(cls.__name__)
+
+        patcher = mock.patch('oneview_redfish_toolkit.authentication.'
+                             'get_multiple_oneview_token')
+        cls.mock_ov_token = patcher.start()
+        cls.mock_ov_token.return_value = {'123': 'abc'}
+
+        cls.oneview_client = mock.MagicMock()
+
+        patcher_conn = mock.patch('oneview_redfish_toolkit.connection.'
+                                  'OneViewClient')
+        cls.ov_client_mock = patcher_conn.start()
+        cls.ov_client_mock.return_value = cls.oneview_client
+
+        multiple_oneview.init_map_resources()
 
         # same configuration applied to Flask in app.py
         cls.app.url_map.strict_slashes = False
@@ -90,14 +108,17 @@ class BaseFlaskTest(BaseTest):
         def hp_oneview_client_exception(exception):
             return ResponseBuilder.error_by_hp_oneview_exception(exception)
 
+        @cls.app.before_request
+        def check_authentication():
+            g.oneview_client = \
+                handler_multiple_oneview.MultipleOneViewResource()
+
         cls.client = cls.app.test_client()
 
         # propagate the exceptions to the test client
         cls.app.testing = False
 
-    def assertEqualMockup(self, first, second, msg=None):
-        if type(first) is dict and type(second) is dict:
-            first['@odata.type'] = ''
-            second['@odata.type'] = ''
-
-        super(BaseTest, self).assertEqual(first, second, msg)
+    @classmethod
+    def setUp(cls):
+        cls.oneview_client = mock.MagicMock()
+        cls.ov_client_mock.return_value = cls.oneview_client
