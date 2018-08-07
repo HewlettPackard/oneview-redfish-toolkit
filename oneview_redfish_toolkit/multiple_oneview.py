@@ -18,8 +18,6 @@
 from hpOneView import HPOneViewException
 
 # Modules own libs
-from oneview_redfish_toolkit.api.errors \
-    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit import authentication
 from oneview_redfish_toolkit import connection
 
