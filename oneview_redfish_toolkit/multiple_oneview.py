@@ -117,6 +117,7 @@ def search_resource_multiple_ov(resource, function, resource_id,
     # Get all OneView's IP and tokens cached by Redfish's token
     ov_ip_tokens = authentication.get_multiple_oneview_token()
     result = []
+    error_not_found = []
 
     # Loop in all OneView's IP and token
     for ov_ip, ov_token in ov_ip_tokens.items():
@@ -142,9 +143,11 @@ def search_resource_multiple_ov(resource, function, resource_id,
             if e.oneview_response["errorCode"] not in NOT_FOUND_ERROR:
                 raise e
 
+            error_not_found.append(e)
+
     # If it's looking for a specific resource returns a NotFound exception
-    if resource_id:
-        raise OneViewRedfishResourceNotFoundError(resource_id, resource)
+    if resource_id and error_not_found:
+        raise error_not_found.pop()
 
     return result
 
