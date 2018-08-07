@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -37,8 +36,7 @@ class TestNetworkDeviceFunction(BaseFlaskTest):
         self.app.register_blueprint(
             network_device_function.network_device_function)
 
-    @mock.patch.object(network_device_function, 'g')
-    def test_get_network_device_function(self, g):
+    def test_get_network_device_function(self):
         """Tests NetworkDeviceFunction"""
 
         # Loading server_hardware mockup value
@@ -55,7 +53,7 @@ class TestNetworkDeviceFunction(BaseFlaskTest):
             network_device_function_mockup = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkDeviceFunction
         response = self.client.get(
@@ -71,8 +69,7 @@ class TestNetworkDeviceFunction(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(network_device_function_mockup, result)
 
-    @mock.patch.object(network_device_function, 'g')
-    def test_get_network_device_function_invalid_device_id(self, g):
+    def test_get_network_device_function_invalid_device_id(self):
         """Tests NetworkDeviceFunction"""
 
         # Loading server_hardware mockup value
@@ -82,7 +79,7 @@ class TestNetworkDeviceFunction(BaseFlaskTest):
             server_hardware = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkDeviceFunction
         response = self.client.get(
@@ -94,15 +91,14 @@ class TestNetworkDeviceFunction(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(network_device_function, 'g')
-    def test_get_network_device_function_sh_not_found(self, g):
+    def test_get_network_device_function_sh_not_found(self):
         """Tests NetworkDeviceFunction server hardware not found"""
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkDeviceFunction
         response = self.client.get(
@@ -113,15 +109,14 @@ class TestNetworkDeviceFunction(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(network_device_function, 'g')
-    def test_get_network_device_function_sh_exception(self, g):
+    def test_get_network_device_function_sh_exception(self):
         """Tests NetworkDeviceFunction unknown exception"""
 
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware error',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkDeviceFunction
         response = self.client.get(

@@ -17,7 +17,6 @@
 # Python libs
 import copy
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -79,12 +78,11 @@ class TestVLanNetworkInterface(BaseFlaskTest):
             "message": "Any resource not found message"
         })
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_spt_vlan_network_interface(self, g):
-        g.oneview_client.server_profile_templates.get.return_value = \
+    def test_get_spt_vlan_network_interface(self):
+        self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
 
-        g.oneview_client.ethernet_networks.get.return_value = \
+        self.oneview_client.ethernet_networks.get.return_value = \
             self.ethernet_network_mockup
 
         response = self.client.get(
@@ -98,17 +96,16 @@ class TestVLanNetworkInterface(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(self.expected_vlan_network_interface_spt,
                                result)
-        g.oneview_client.server_profile_templates.get.assert_called_with(
+        self.oneview_client.server_profile_templates.get.assert_called_with(
             self.server_profile_template["uri"].split("/")[-1])
-        g.oneview_client.ethernet_networks.get.assert_called_with(
+        self.oneview_client.ethernet_networks.get.assert_called_with(
             self.expected_vlan_network_interface_spt["Id"])
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_spt_vlan_network_interface_not_found(self, g):
-        g.oneview_client.server_profile_templates.get.return_value = \
+    def test_get_spt_vlan_network_interface_not_found(self):
+        self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
 
-        g.oneview_client.ethernet_networks.get.side_effect = \
+        self.oneview_client.ethernet_networks.get.side_effect = \
             self.resource_not_found
 
         response = self.client.get(
@@ -118,14 +115,13 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profile_templates.get.assert_called_with(
+        self.oneview_client.server_profile_templates.get.assert_called_with(
             self.server_profile_template["uri"].split("/")[-1])
-        g.oneview_client.ethernet_networks.get.assert_called_with(
+        self.oneview_client.ethernet_networks.get.assert_called_with(
             self.expected_vlan_network_interface_spt["Id"])
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_spt_vlan_network_interface_spt_not_found(self, g):
-        g.oneview_client.server_profile_templates.get.side_effect = \
+    def test_get_spt_vlan_network_interface_spt_not_found(self):
+        self.oneview_client.server_profile_templates.get.side_effect = \
             self.resource_not_found
 
         response = self.client.get(
@@ -135,13 +131,12 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profile_templates.get.assert_called_with(
+        self.oneview_client.server_profile_templates.get.assert_called_with(
             self.server_profile_template["uri"].split("/")[-1])
-        g.oneview_client.ethernet_networks.get.assert_not_called()
+        self.oneview_client.ethernet_networks.get.assert_not_called()
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_spt_vlan_network_interface_connection_not_found(self, g):
-        g.oneview_client.server_profile_templates.get.return_value = \
+    def test_get_spt_vlan_network_interface_connection_not_found(self):
+        self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
 
         connection_id = "999"
@@ -154,22 +149,21 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profile_templates.get.assert_called_with(
+        self.oneview_client.server_profile_templates.get.assert_called_with(
             self.server_profile_template["uri"].split("/")[-1])
-        g.oneview_client.ethernet_networks.get.assert_not_called()
+        self.oneview_client.ethernet_networks.get.assert_not_called()
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_spt_vlan_network_interface_collection(self, g):
+    def test_get_spt_vlan_network_interface_collection(self):
         with open(
             'oneview_redfish_toolkit/mockups/'
             'redfish/VLanNetworkInterfaceCollectionSPT.json'
         ) as f:
             expected_vlan_network_interface_collection = json.load(f)
 
-        g.oneview_client.server_profile_templates.get.return_value = \
+        self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
 
-        g.oneview_client.network_sets.get.return_value = \
+        self.oneview_client.network_sets.get.return_value = \
             self.network_set_mockup
 
         response = self.client.get(
@@ -183,17 +177,16 @@ class TestVLanNetworkInterface(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_vlan_network_interface_collection,
                                result)
-        g.oneview_client.server_profile_templates.get.assert_called_with(
+        self.oneview_client.server_profile_templates.get.assert_called_with(
             self.server_profile_template["uri"].split("/")[-1])
-        g.oneview_client.network_sets.get.assert_called_with(
+        self.oneview_client.network_sets.get.assert_called_with(
             self.network_set_mockup["uri"])
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_spt_vlan_collection_not_found(self, g):
-        g.oneview_client.server_profile_templates.get.return_value = \
+    def test_get_spt_vlan_collection_not_found(self):
+        self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
 
-        g.oneview_client.network_sets.get.side_effect = \
+        self.oneview_client.network_sets.get.side_effect = \
             self.resource_not_found
 
         response = self.client.get(
@@ -203,14 +196,13 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profile_templates.get.assert_called_with(
+        self.oneview_client.server_profile_templates.get.assert_called_with(
             self.server_profile_template["uri"].split("/")[-1])
-        g.oneview_client.network_sets.get.assert_called_with(
+        self.oneview_client.network_sets.get.assert_called_with(
             self.network_set_mockup["uri"])
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_spt_vlan_collection_with_spt_not_found(self, g):
-        g.oneview_client.server_profile_templates.get.side_effect = \
+    def test_get_spt_vlan_collection_with_spt_not_found(self):
+        self.oneview_client.server_profile_templates.get.side_effect = \
             self.resource_not_found
 
         response = self.client.get(
@@ -220,16 +212,15 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profile_templates.get.assert_called_with(
+        self.oneview_client.server_profile_templates.get.assert_called_with(
             self.server_profile_template["uri"].split("/")[-1])
-        g.oneview_client.network_sets.get.assert_not_called()
+        self.oneview_client.network_sets.get.assert_not_called()
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_sp_vlan_network_interface(self, g):
-        g.oneview_client.server_profiles.get.return_value = \
+    def test_get_sp_vlan_network_interface(self):
+        self.oneview_client.server_profiles.get.return_value = \
             self.server_profile
 
-        g.oneview_client.ethernet_networks.get.return_value = \
+        self.oneview_client.ethernet_networks.get.return_value = \
             self.ethernet_network_mockup
 
         response = self.client.get(
@@ -242,17 +233,16 @@ class TestVLanNetworkInterface(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(self.expected_vlan_network_interface_sp, result)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uri"].split("/")[-1])
-        g.oneview_client.ethernet_networks.get.assert_called_with(
+        self.oneview_client.ethernet_networks.get.assert_called_with(
             self.expected_vlan_network_interface_sp["Id"])
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_sp_vlan_network_interface_not_found(self, g):
-        g.oneview_client.server_profiles.get.return_value = \
+    def test_get_sp_vlan_network_interface_not_found(self):
+        self.oneview_client.server_profiles.get.return_value = \
             self.server_profile
 
-        g.oneview_client.ethernet_networks.get.side_effect = \
+        self.oneview_client.ethernet_networks.get.side_effect = \
             self.resource_not_found
 
         response = self.client.get(
@@ -262,14 +252,13 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uri"].split("/")[-1])
-        g.oneview_client.ethernet_networks.get.assert_called_with(
+        self.oneview_client.ethernet_networks.get.assert_called_with(
             self.expected_vlan_network_interface_sp["Id"])
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_sp_vlan_network_interface_sp_not_found(self, g):
-        g.oneview_client.server_profiles.get.side_effect = \
+    def test_get_sp_vlan_network_interface_sp_not_found(self):
+        self.oneview_client.server_profiles.get.side_effect = \
             self.resource_not_found
 
         response = self.client.get(
@@ -279,13 +268,12 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uri"].split("/")[-1])
-        g.oneview_client.ethernet_networks.get.assert_not_called()
+        self.oneview_client.ethernet_networks.get.assert_not_called()
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_sp_vlan_network_interface_connection_not_found(self, g):
-        g.oneview_client.server_profiles.get.return_value = \
+    def test_get_sp_vlan_network_interface_connection_not_found(self):
+        self.oneview_client.server_profiles.get.return_value = \
             self.server_profile
 
         connection_id = "999"
@@ -298,22 +286,21 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uri"].split("/")[-1])
-        g.oneview_client.ethernet_networks.get.assert_not_called()
+        self.oneview_client.ethernet_networks.get.assert_not_called()
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_sp_vlan_network_interface_collection(self, g):
+    def test_get_sp_vlan_network_interface_collection(self):
         with open(
             'oneview_redfish_toolkit/mockups/'
             'redfish/VLanNetworkInterfaceCollectionSP.json'
         ) as f:
             expected_vlan_network_interface_collection = json.load(f)
 
-        g.oneview_client.server_profiles.get.return_value = \
+        self.oneview_client.server_profiles.get.return_value = \
             self.server_profile
 
-        g.oneview_client.network_sets.get.return_value = \
+        self.oneview_client.network_sets.get.return_value = \
             self.network_set_mockup
 
         response = self.client.get(
@@ -327,17 +314,16 @@ class TestVLanNetworkInterface(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_vlan_network_interface_collection,
                                result)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uri"].split("/")[-1])
-        g.oneview_client.network_sets.get.assert_called_with(
+        self.oneview_client.network_sets.get.assert_called_with(
             self.network_set_mockup["uri"])
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_sp_vlan_collection_not_found(self, g):
-        g.oneview_client.server_profiles.get.return_value = \
+    def test_get_sp_vlan_collection_not_found(self):
+        self.oneview_client.server_profiles.get.return_value = \
             self.server_profile
 
-        g.oneview_client.network_sets.get.side_effect = \
+        self.oneview_client.network_sets.get.side_effect = \
             self.resource_not_found
 
         response = self.client.get(
@@ -347,14 +333,13 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uri"].split("/")[-1])
-        g.oneview_client.network_sets.get.assert_called_with(
+        self.oneview_client.network_sets.get.assert_called_with(
             self.network_set_mockup["uri"])
 
-    @mock.patch.object(vlan_network_interface, 'g')
-    def test_get_sp_vlan_collection_with_sp_not_found(self, g):
-        g.oneview_client.server_profiles.get.side_effect = \
+    def test_get_sp_vlan_collection_with_sp_not_found(self):
+        self.oneview_client.server_profiles.get.side_effect = \
             self.resource_not_found
 
         response = self.client.get(
@@ -364,6 +349,6 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uri"].split("/")[-1])
-        g.oneview_client.network_sets.get.assert_not_called()
+        self.oneview_client.network_sets.get.assert_not_called()

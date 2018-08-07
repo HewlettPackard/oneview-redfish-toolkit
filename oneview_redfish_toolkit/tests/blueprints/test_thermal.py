@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -45,8 +44,8 @@ class TestChassis(BaseFlaskTest):
     #############
     # Blade     #
     #############
-    @mock.patch.object(thermal, 'g')
-    def test_get_blade_thermal(self, g):
+
+    def test_get_blade_thermal(self):
         """"Tests BladeThermal with a known SH"""
 
         # Loading ServerHardwareUtilization mockup value
@@ -63,9 +62,9 @@ class TestChassis(BaseFlaskTest):
         ) as f:
             blade_chassis_thermal_mockup = json.load(f)
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get_utilization.return_value = \
+        self.oneview_client.server_hardware.get_utilization.return_value = \
             server_hardware_utilization
 
         # Get BladeThermal
@@ -80,20 +79,19 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(blade_chassis_thermal_mockup, result)
 
-    @mock.patch.object(thermal, 'g')
-    def test_get_blade_not_found(self, g):
+    def test_get_blade_not_found(self):
         """Tests BladeThermal with SH not found"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get_utilization.return_value = \
+        self.oneview_client.server_hardware.get_utilization.return_value = \
             {'serverHardwareUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server hardware not found',
         })
 
-        g.oneview_client.server_hardware.get_utilization.side_effect = e
+        self.oneview_client.server_hardware.get_utilization.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal"
@@ -102,13 +100,12 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(thermal, 'g')
-    def test_blade_unexpected_error(self, g):
+    def test_blade_unexpected_error(self):
         """Tests BladeThermal with an unexpected error"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get_utilization.side_effect = \
+        self.oneview_client.server_hardware.get_utilization.side_effect = \
             Exception()
 
         response = self.client.get(
@@ -123,8 +120,8 @@ class TestChassis(BaseFlaskTest):
     #############
     # Enclosure #
     #############
-    @mock.patch.object(thermal, 'g')
-    def test_get_encl_thermal(self, g):
+
+    def test_get_encl_thermal(self):
         """"Tests EnclosureThermal with a known Enclosure"""
 
         # Loading EnclosureUtilization mockup value
@@ -141,9 +138,9 @@ class TestChassis(BaseFlaskTest):
         ) as f:
             enclosure_chasssis_thermal_mockup = json.load(f)
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
-        g.oneview_client.enclosures.get_utilization.return_value = \
+        self.oneview_client.enclosures.get_utilization.return_value = \
             enclosure_utilization
 
         # Get EnclosureThermal
@@ -161,8 +158,8 @@ class TestChassis(BaseFlaskTest):
     ########
     # Rack #
     ########
-    @mock.patch.object(thermal, 'g')
-    def test_get_rack_thermal(self, g):
+
+    def test_get_rack_thermal(self):
         """"Tests RackThermal with a known Rack"""
 
         # Loading RackDeviceTopology mockup value
@@ -178,9 +175,10 @@ class TestChassis(BaseFlaskTest):
         ) as f:
             rack_chassis_thermal_mockup = json.load(f)
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "racks"}]
-        g.oneview_client.racks.get_device_topology.return_value = rack_topology
+        self.oneview_client.\
+            racks.get_device_topology.return_value = rack_topology
 
         # Get RackThermal
         response = self.client.get(

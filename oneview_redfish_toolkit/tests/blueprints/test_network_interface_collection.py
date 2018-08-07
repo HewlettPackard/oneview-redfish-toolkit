@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -47,8 +46,7 @@ class TestNetworkInterfaceCollection(BaseFlaskTest):
         ) as f:
             self.server_hardware = json.load(f)
 
-    @mock.patch.object(network_interface_collection, 'g')
-    def test_get_network_interface_collection(self, g):
+    def test_get_network_interface_collection(self):
         """Tests NetworkInterfaceCollection"""
 
         with open(
@@ -57,8 +55,9 @@ class TestNetworkInterfaceCollection(BaseFlaskTest):
         ) as f:
             network_interface_collection_mockup = json.load(f)
 
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.\
+            server_profiles.get.return_value = self.server_profile
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
         response = self.client.get(
@@ -71,21 +70,20 @@ class TestNetworkInterfaceCollection(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(network_interface_collection_mockup, result)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.server_hardware.get.assert_called_with(
+        self.oneview_client.server_hardware.get.assert_called_with(
             self.server_profile["serverHardwareUri"])
 
-    @mock.patch.object(network_interface_collection, 'g')
     def test_get_network_interface_collection_when_profile_not_found(
-        self, g):
+        self):
         """Tests when the searching a server profile returns not found"""
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        g.oneview_client.server_profiles.get.side_effect = e
+        self.oneview_client.server_profiles.get.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -94,20 +92,19 @@ class TestNetworkInterfaceCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.server_hardware.get.assert_not_called()
+        self.oneview_client.server_hardware.get.assert_not_called()
 
-    @mock.patch.object(network_interface_collection, 'g')
     def test_get_network_interface_collection_when_server_hardware_not_found(
-            self, g):
+            self):
         """Tests when the searching a server hardware returns not found"""
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        g.oneview_client.server_profiles.get.side_effect = e
+        self.oneview_client.server_profiles.get.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -116,20 +113,19 @@ class TestNetworkInterfaceCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.server_hardware.get.assert_not_called()
+        self.oneview_client.server_hardware.get.assert_not_called()
 
-    @mock.patch.object(network_interface_collection, 'g')
     def test_get_network_interface_collection_when_profile_raise_any_exception(
-        self, g):
+        self):
         """Tests when the searching a server profile raises any exception"""
 
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware-types error',
         })
-        g.oneview_client.server_profiles.get.side_effect = e
+        self.oneview_client.server_profiles.get.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -141,6 +137,6 @@ class TestNetworkInterfaceCollection(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.server_hardware.get.assert_not_called()
+        self.oneview_client.server_hardware.get.assert_not_called()

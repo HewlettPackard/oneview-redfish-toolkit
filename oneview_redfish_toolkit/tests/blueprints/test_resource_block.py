@@ -17,7 +17,6 @@
 # Python libs
 import copy
 import json
-from unittest import mock
 
 # 3rd party libs
 from unittest.mock import call
@@ -31,7 +30,6 @@ from oneview_redfish_toolkit.blueprints import resource_block
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-@mock.patch.object(resource_block, 'g')
 class TestResourceBlock(BaseFlaskTest):
     """Tests for ResourceBlock blueprint"""
 
@@ -96,12 +94,12 @@ class TestResourceBlock(BaseFlaskTest):
             "message": "Any resource not found message"
         })
 
-    def test_get_resource_block_not_found(self, g):
-        g.oneview_client.server_hardware.get.side_effect = \
+    def test_get_resource_block_not_found(self):
+        self.oneview_client.server_hardware.get.side_effect = \
             self.resource_not_found
-        g.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get.side_effect = \
             self.resource_not_found
-        g.oneview_client.index_resources.get.side_effect = \
+        self.oneview_client.index_resources.get.side_effect = \
             self.resource_not_found
 
         response = self.client.get(
@@ -111,22 +109,22 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    def test_get_storage_resource_block(self, g):
+    def test_get_storage_resource_block(self):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/StorageResourceBlock.json'
         ) as f:
             expected_resource_block = json.load(f)
 
-        g.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get.side_effect = \
             self.resource_not_found
-        g.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get.side_effect = \
             self.resource_not_found
-        g.oneview_client.index_resources.get.return_value = self.drive
-        g.oneview_client.connection.get.side_effect = [
+        self.oneview_client.index_resources.get.return_value = self.drive
+        self.oneview_client.connection.get.side_effect = [
             self.drive_index_tree,
             self.log_encl_index_assoc
         ]
-        g.oneview_client.server_profile_templates.get_all.return_value = \
+        self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
         g.oneview_client.logical_enclosures.get.return_value = self.log_encl
 
@@ -140,9 +138,9 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_resource_block, result)
 
-        g.oneview_client.index_resources.get.assert_called_with(
+        self.oneview_client.index_resources.get.assert_called_with(
             self.drive["uri"])
-        g.oneview_client.connection.get.assert_has_calls(
+        self.oneview_client.connection.get.assert_has_calls(
             [
                 call("/rest/index/trees/rest/drives/"
                      "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e?parentDepth=3"),
@@ -151,8 +149,8 @@ class TestResourceBlock(BaseFlaskTest):
                      "bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa"
                      "&category=logical-enclosures"),
             ])
-        g.oneview_client.server_profile_templates.get_all.assert_called_with()
-        g.oneview_client.logical_enclosures.get.assert_called_with(
+        self.oneview_client.server_profile_templates.get_all.assert_called_with()
+        self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
 
     def test_get_storage_resource_block_when_drive_is_composed(self, g):
@@ -165,16 +163,16 @@ class TestResourceBlock(BaseFlaskTest):
         drive_composed = copy.copy(self.drive)
         drive_composed["attributes"]["available"] = "no"
 
-        g.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get.side_effect = \
             self.resource_not_found
-        g.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get.side_effect = \
             self.resource_not_found
-        g.oneview_client.index_resources.get.return_value = drive_composed
-        g.oneview_client.connection.get.side_effect = [
+        self.oneview_client.index_resources.get.return_value = drive_composed
+        self.oneview_client.connection.get.side_effect = [
             self.drive_composed_index_tree,
             self.log_encl_index_assoc
         ]
-        g.oneview_client.server_profile_templates.get_all.return_value = \
+        self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
         g.oneview_client.logical_enclosures.get.return_value = self.log_encl
 
@@ -188,9 +186,9 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_resource_block, result)
 
-        g.oneview_client.index_resources.get.assert_called_with(
+        self.oneview_client.index_resources.get.assert_called_with(
             self.drive["uri"])
-        g.oneview_client.connection.get.assert_has_calls(
+        self.oneview_client.connection.get.assert_has_calls(
             [
                 call("/rest/index/trees/rest/drives/"
                      "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e?parentDepth=3"),
@@ -199,14 +197,14 @@ class TestResourceBlock(BaseFlaskTest):
                      "bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa"
                      "&category=logical-enclosures"),
             ])
-        g.oneview_client.server_profile_templates.get_all.assert_called_with()
-        g.oneview_client.logical_enclosures.get.assert_called_with(
+        self.oneview_client.server_profile_templates.get_all.assert_called_with()
+        self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
 
-    def test_get_server_hardware_resource_block(self, g):
-        g.oneview_client.server_hardware.get.return_value = \
+    def test_get_server_hardware_resource_block(self):
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
-        g.oneview_client.server_profile_templates.get_all.return_value = \
+        self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
         g.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
@@ -282,9 +280,9 @@ class TestResourceBlock(BaseFlaskTest):
             self.assertEqual("application/json", response.mimetype)
             self.assertEqualMockup(expected_cs, result)
 
-        g.oneview_client.server_hardware.get.assert_called_with(
+        self.oneview_client.server_hardware.get.assert_called_with(
             self.server_hardware["uuid"])
-        g.oneview_client.connection.get.assert_called_with(
+        self.oneview_client.connection.get.assert_called_with(
             "/rest/index/associations/resources"
             "?parenturi=/rest/enclosure-groups/"
             "bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa"
@@ -293,23 +291,23 @@ class TestResourceBlock(BaseFlaskTest):
 
         encl_group_uri = self.server_hardware["serverGroupUri"]
         sh_type_uri = self.server_hardware["serverHardwareTypeUri"]
-        g.oneview_client.server_profile_templates.get_all.assert_called_with(
+        self.oneview_client.server_profile_templates.get_all.assert_called_with(
             filter=["enclosureGroupUri='" + encl_group_uri + "'",
                     "serverHardwareTypeUri='" + sh_type_uri + "'"]
         )
-        g.oneview_client.logical_enclosures.get.assert_called_with(
+        self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
 
-    def test_get_spt_resource_block(self, g):
+    def test_get_spt_resource_block(self):
         with open(
             'oneview_redfish_toolkit/mockups/redfish'
             '/ServerProfileTemplateResourceBlock.json'
         ) as f:
             expected_resource_block = json.load(f)
 
-        g.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get.side_effect = \
             self.resource_not_found
-        g.oneview_client.server_profile_templates.get.return_value = \
+        self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
         g.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
@@ -325,23 +323,23 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_resource_block, result)
 
-        g.oneview_client.logical_enclosures.get.assert_called_with(
+        self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
 
-    def test_get_spt_resource_when_template_has_not_valid_controller(self, g):
+    def test_get_spt_resource_when_template_has_not_valid_controller(self):
         with open(
             'oneview_redfish_toolkit/mockups/redfish'
             '/SPTResourceBlockWithOnlyOneZone.json'
         ) as f:
             expected_resource_block = json.load(f)
 
-        g.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get.side_effect = \
             self.resource_not_found
-        g.oneview_client.server_profile_templates.get.return_value = \
+        self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_templates[1]
-        g.oneview_client.connection.get.return_value = \
+        self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
-        g.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -353,11 +351,11 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_resource_block, result)
 
-        g.oneview_client.connection.get.assert_not_called()
-        g.oneview_client.logical_enclosures.get.assert_not_called()
+        self.oneview_client.connection.get.assert_not_called()
+        self.oneview_client.logical_enclosures.get.assert_not_called()
 
-    def test_get_computer_system_not_found(self, g):
-        g.oneview_client.server_hardware.get.side_effect = \
+    def test_get_computer_system_not_found(self):
+        self.oneview_client.server_hardware.get.side_effect = \
             HPOneViewException({"errorCode": "RESOURCE_NOT_FOUND"})
 
         response = self.client.get(
@@ -367,14 +365,14 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    def test_get_computer_system(self, g):
+    def test_get_computer_system(self):
         with open(
             'oneview_redfish_toolkit/mockups/redfish'
             '/ResourceBlockComputerSystem.json'
         ) as f:
             expected_computer_system = json.load(f)
 
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
         response = self.client.get(
@@ -387,7 +385,7 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_computer_system, result)
 
-    def test_get_ethernet_interface(self, g):
+    def test_get_ethernet_interface(self):
         with open(
             'oneview_redfish_toolkit/mockups/redfish'
             '/ResourceBlockEthernetInterface.json'
@@ -399,9 +397,9 @@ class TestResourceBlock(BaseFlaskTest):
         ) as f:
             ethernet_network = json.load(f)
 
-        g.oneview_client.server_profile_templates.get.return_value = \
+        self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
-        g.oneview_client.index_resources.get.return_value = \
+        self.oneview_client.index_resources.get.return_value = \
             ethernet_network
 
         response = self.client.get(
@@ -414,8 +412,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_ethernet_interface, result)
 
-    def test_get_ethernet_interface_not_found(self, g):
-        g.oneview_client.server_profile_templates.get.side_effect = \
+    def test_get_ethernet_interface_not_found(self):
+        self.oneview_client.server_profile_templates.get.side_effect = \
             self.resource_not_found
 
         response = self.client.get(
@@ -425,8 +423,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    def test_get_ethernet_interface_invalid_id(self, g):
-        g.oneview_client.server_profile_templates.get.return_value = \
+    def test_get_ethernet_interface_invalid_id(self):
+        self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
 
         response = self.client.get(

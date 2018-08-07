@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -36,8 +35,7 @@ class TestNetworkAdapter(BaseFlaskTest):
 
         self.app.register_blueprint(network_adapter.network_adapter)
 
-    @mock.patch.object(network_adapter, 'g')
-    def test_get_network_interface(self, g):
+    def test_get_network_interface(self):
         """Tests NetworkAdapter"""
 
         # Loading server_hardware mockup value
@@ -54,7 +52,7 @@ class TestNetworkAdapter(BaseFlaskTest):
             network_adapter_mockup = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkAdapter
         response = self.client.get(
@@ -70,8 +68,7 @@ class TestNetworkAdapter(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(network_adapter_mockup, result)
 
-    @mock.patch.object(network_adapter, 'g')
-    def test_get_network_interface_invalid_id(self, g):
+    def test_get_network_interface_invalid_id(self):
         """Tests NetworkAdapter"""
 
         # Loading server_hardware mockup value
@@ -81,7 +78,7 @@ class TestNetworkAdapter(BaseFlaskTest):
             server_hardware = json.load(f)
 
         # Create mock response
-        g.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = server_hardware
 
         # Get NetworkAdapter
         response = self.client.get(
@@ -93,15 +90,14 @@ class TestNetworkAdapter(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(network_adapter, 'g')
-    def test_get_network_interface_sh_not_found(self, g):
+    def test_get_network_interface_sh_not_found(self):
         """Tests NetworkAdapter server hardware not found"""
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkAdapter
         response = self.client.get(
@@ -112,16 +108,15 @@ class TestNetworkAdapter(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(network_adapter, 'g')
     def test_get_network_interface_sh_exception(
-        self, g):
+        self):
         """Tests NetworkAdapter unknown exception"""
 
         e = HPOneViewException({
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware error',
         })
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         # Get NetworkAdapter
         response = self.client.get(

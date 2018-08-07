@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -92,14 +91,14 @@ class TestChassis(BaseFlaskTest):
     #############
     # Enclosure #
     #############
-    @mock.patch.object(chassis, 'g')
-    def test_get_enclosure_chassis(self, g):
+
+    def test_get_enclosure_chassis(self):
         """"Tests EnclosureChassis with a known Enclosure"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
-        g.oneview_client.enclosures.get.return_value = self.enclosure
-        g.oneview_client.enclosures.get_environmental_configuration.\
+        self.oneview_client.enclosures.get.return_value = self.enclosure
+        self.oneview_client.enclosures.get_environmental_configuration.\
             return_value = self.enclosure_environment_configuration_mockup
 
         # Get EnclosureChassis
@@ -117,18 +116,17 @@ class TestChassis(BaseFlaskTest):
             "{}{}".format("W/", self.enclosure["eTag"]),
             response.headers["ETag"])
 
-    @mock.patch.object(chassis, 'g')
-    def test_get_enclosure_not_found(self, g):
+    def test_get_enclosure_not_found(self):
         """Tests EnclosureChassis with Enclosure not found"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'enclosure not found',
         })
 
-        g.oneview_client.enclosures.get.side_effect = e
+        self.oneview_client.enclosures.get.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Chassis/0000000000A66101"
@@ -137,20 +135,19 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(chassis, 'g')
-    def test_get_enclosure_env_config_not_found(self, g):
+    def test_get_enclosure_env_config_not_found(self):
         """Tests EnclosureChassis with Enclosure env_config not found"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
 
-        g.oneview_client.enclosures.get.return_value = self.enclosure
+        self.oneview_client.enclosures.get.return_value = self.enclosure
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'environmental configuration not found',
         })
-        g.oneview_client.enclosures.get_environmental_configuration.\
+        self.oneview_client.enclosures.get_environmental_configuration.\
             side_effect = e
 
         response = self.client.get(
@@ -160,13 +157,12 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(chassis, 'g')
-    def test_enclosure_unexpected_error(self, g):
+    def test_enclosure_unexpected_error(self):
         """Tests EnclosureChassis with an unexpected error"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
-        g.oneview_client.enclosures.get.side_effect = Exception()
+        self.oneview_client.enclosures.get.side_effect = Exception()
 
         response = self.client.get(
             "/redfish/v1/Chassis/0000000000A66101"
@@ -177,15 +173,14 @@ class TestChassis(BaseFlaskTest):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(chassis, 'g')
-    def test_enclosure_env_config_unexpected_error(self, g):
+    def test_enclosure_env_config_unexpected_error(self):
         """Tests EnclosureChassis env_config with an unexpected error"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
 
-        g.oneview_client.enclosures.get.return_value = self.enclosure
-        g.oneview_client.enclosures.get_environmental_configuration.\
+        self.oneview_client.enclosures.get.return_value = self.enclosure
+        self.oneview_client.enclosures.get_environmental_configuration.\
             side_effect = Exception()
 
         response = self.client.get(
@@ -200,13 +195,13 @@ class TestChassis(BaseFlaskTest):
     #############
     # Blade     #
     #############
-    @mock.patch.object(chassis, 'g')
-    def test_get_blade_chassis(self, g):
+
+    def test_get_blade_chassis(self):
         """"Tests BladeChassis with a known Server Hardware"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
         # Get BladeChassis
@@ -224,20 +219,19 @@ class TestChassis(BaseFlaskTest):
             "{}{}".format("W/", self.server_hardware["eTag"]),
             response.headers["ETag"])
 
-    @mock.patch.object(chassis, 'g')
-    def test_get_server_hardware_not_found(self, g):
+    def test_get_server_hardware_not_found(self):
         """Tests BladeChassis with Server Hardware not found"""
 
-        g.oneview_client.index_resources.get_all.return_value = [
+        self.oneview_client.index_resources.get_all.return_value = [
             {"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.return_value =\
+        self.oneview_client.server_hardware.get.return_value =\
             {'serverHardwareUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server hardware not found',
         })
 
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
@@ -246,13 +240,12 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(chassis, 'g')
-    def test_server_hardware_unexpected_error(self, g):
+    def test_server_hardware_unexpected_error(self):
         """Tests BladeChassis with an unexpected error"""
 
-        g.oneview_client.index_resources.get_all.return_value = [
+        self.oneview_client.index_resources.get_all.return_value = [
             {"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.side_effect = Exception()
+        self.oneview_client.server_hardware.get.side_effect = Exception()
 
         response = self.client.get(
             "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
@@ -266,13 +259,13 @@ class TestChassis(BaseFlaskTest):
     ########
     # Rack #
     ########
-    @mock.patch.object(chassis, 'g')
-    def test_get_rack_chassis(self, g):
+
+    def test_get_rack_chassis(self):
         """"Tests RackChassis with a known Rack"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "racks"}]
-        g.oneview_client.racks.get.return_value = self.rack
+        self.oneview_client.racks.get.return_value = self.rack
 
         # Get RackChassis
         response = self.client.get(
@@ -289,19 +282,18 @@ class TestChassis(BaseFlaskTest):
             "{}{}".format("W/", self.rack["eTag"]),
             response.headers["ETag"])
 
-    @mock.patch.object(chassis, 'g')
-    def test_get_rack_not_found(self, g):
+    def test_get_rack_not_found(self):
         """Tests RackChassis with Racks not found"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "racks"}]
-        g.oneview_client.racks.get.return_value = {'rackeUri': 'invalidUri'}
+        self.oneview_client.racks.get.return_value = {'rackeUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'rack not found',
         })
 
-        g.oneview_client.racks.get.side_effect = e
+        self.oneview_client.racks.get.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Chassis/2AB100LMNB"
@@ -310,13 +302,12 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(chassis, 'g')
-    def test_rack_unexpected_error(self, g):
+    def test_rack_unexpected_error(self):
         """Tests RackChassis with an unexpected error"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "racks"}]
-        g.oneview_client.racks.get.side_effect = Exception()
+        self.oneview_client.racks.get.side_effect = Exception()
 
         response = self.client.get(
             "/redfish/v1/Chassis/2AB100LMNB"
@@ -327,8 +318,7 @@ class TestChassis(BaseFlaskTest):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(chassis, 'g')
-    def test_change_power_state(self, g):
+    def test_change_power_state(self):
         """Tests changes a SH chassi type with valid reset options
 
             Valid Reset Values:
@@ -339,11 +329,11 @@ class TestChassis(BaseFlaskTest):
                 - ForceRestart
                 - PushPowerButton
         """
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
-        g.oneview_client.server_hardware.update_power_state.return_value = \
+        self.oneview_client.server_hardware.update_power_state.return_value = \
             {"status": "OK"}
 
         reset_types = ["On", "ForceOff", "GracefulShutdown",
@@ -362,13 +352,12 @@ class TestChassis(BaseFlaskTest):
             self.assertEqual("application/json", response.mimetype)
             self.assertEqual(json_str, '{"ResetType": "%s"}' % reset_type)
 
-    @mock.patch.object(chassis, 'g')
-    def test_change_power_state_invalid_value(self, g):
+    def test_change_power_state_invalid_value(self):
         """Tests changes a SH chassi type with invalid power value"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
         response = self.client.post(
@@ -380,13 +369,12 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(chassis, 'g')
-    def test_change_power_state_unexpected_error(self, g):
+    def test_change_power_state_unexpected_error(self):
         """Tests changes a SH chassi type with OneView unexpected error"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.side_effect = Exception()
+        self.oneview_client.server_hardware.get.side_effect = Exception()
 
         response = self.client.post(
             "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
@@ -399,8 +387,7 @@ class TestChassis(BaseFlaskTest):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(chassis, 'g')
-    def test_change_power_state_oneview_exception(self, g):
+    def test_change_power_state_oneview_exception(self):
         """Tests changes a SH chassi type with OneView unexpected error"""
 
         e = HPOneViewException({
@@ -408,9 +395,9 @@ class TestChassis(BaseFlaskTest):
             'message': 'server-hardware error',
         })
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         response = self.client.post(
             "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
@@ -423,8 +410,7 @@ class TestChassis(BaseFlaskTest):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(chassis, 'g')
-    def test_change_power_state_unable_reset(self, g):
+    def test_change_power_state_unable_reset(self):
         """Tests changes a SH chassi type with SH unable to reset"""
 
         e = HPOneViewException({
@@ -433,11 +419,11 @@ class TestChassis(BaseFlaskTest):
                        'currently off.'
         })
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
-        g.oneview_client.server_hardware.update_power_state.side_effect = e
+        self.oneview_client.server_hardware.update_power_state.side_effect = e
 
         response = self.client.post(
             "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"

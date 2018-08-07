@@ -14,7 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 import json
-from unittest import mock
 
 from flask_api import status
 
@@ -32,12 +31,11 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.app.register_blueprint(
             computer_system_collection.computer_system_collection)
 
-    @mock.patch.object(computer_system_collection, 'g')
-    def test_get_computer_system_collection_empty(self, g):
+    def test_get_computer_system_collection_empty(self):
         """Tests ComputerSystemCollection with an empty list"""
 
-        g.oneview_client.server_hardware.get_all.return_value = []
-        g.oneview_client.server_profile_templates.get_all.return_value = []
+        self.oneview_client.server_hardware.get_all.return_value = []
+        self.oneview_client.server_profile_templates.get_all.return_value = []
 
         response = self.client.get("/redfish/v1/Systems/")
 
@@ -54,11 +52,10 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_result, result)
 
-    @mock.patch.object(computer_system_collection, 'g')
-    def test_get_computer_system_collection_fail(self, g):
+    def test_get_computer_system_collection_fail(self):
         """Tests ComputerSystemCollection with an error"""
 
-        g.oneview_client.server_hardware.get_all.side_effect = Exception()
+        self.oneview_client.server_hardware.get_all.side_effect = Exception()
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
@@ -77,8 +74,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, result)
 
-    @mock.patch.object(computer_system_collection, 'g')
-    def test_get_computer_system_collection(self, g):
+    def test_get_computer_system_collection(self):
         """Tests ComputerSystemCollection with a known Server Hardware list"""
 
         with open(
@@ -110,10 +106,10 @@ class TestComputerSystemCollection(BaseFlaskTest):
         ) as f:
             computer_system_collection_mockup = json.load(f)
 
-        g.oneview_client.server_hardware.get_all.return_value = \
+        self.oneview_client.server_hardware.get_all.return_value = \
             server_hardware_list
 
-        g.oneview_client.server_profile_templates.get_all.return_value = \
+        self.oneview_client.server_profile_templates.get_all.return_value = \
             server_profile_template_list
 
         g.oneview_client.connection.get\

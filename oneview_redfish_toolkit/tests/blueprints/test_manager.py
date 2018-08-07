@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -47,9 +46,9 @@ class TestManager(BaseFlaskTest):
     #############
     # Enclosure #
     #############
-    @mock.patch.object(manager, 'g')
+
     def test_get_enclosure_manager(
-            self, g):
+            self):
         """"Tests EnclosureManager with a known Enclosure"""
 
         # Loading Enclosure mockup value
@@ -64,10 +63,10 @@ class TestManager(BaseFlaskTest):
         ) as f:
             rf_enclosure_manager = json.load(f)
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
-        g.oneview_client.enclosures.get.return_value = ov_enclosure
-        g.oneview_client. appliance_node_information.get_version.return_value = \
+        self.oneview_client.enclosures.get.return_value = ov_enclosure
+        self.oneview_client. appliance_node_information.get_version.return_value = \
             {"softwareVersion": "3.00.07-0288219"}
 
         # Get EnclosureManager
@@ -85,20 +84,19 @@ class TestManager(BaseFlaskTest):
             "{}{}".format("W/", ov_enclosure["eTag"]),
             response.headers["ETag"])
 
-    @mock.patch.object(manager, 'g')
-    def test_get_enclosure_not_found(self, g):
+    def test_get_enclosure_not_found(self):
         """Tests EnclosureManager with Enclosure not found"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
-        g.oneview_client.enclosures.get.return_value = \
+        self.oneview_client.enclosures.get.return_value = \
             {'enclosureUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'enclosure not found',
         })
 
-        g.oneview_client.enclosures.get.side_effect = e
+        self.oneview_client.enclosures.get.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Managers/0000000000A66101"
@@ -107,13 +105,12 @@ class TestManager(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(manager, 'g')
-    def test_enclosure_unexpected_error(self, g):
+    def test_enclosure_unexpected_error(self):
         """Tests EnclosureManager with an unexpected error"""
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
-        g.oneview_client.enclosures.get.side_effect = Exception()
+        self.oneview_client.enclosures.get.side_effect = Exception()
 
         response = self.client.get(
             "/redfish/v1/Managers/0000000000A66101"
@@ -127,9 +124,9 @@ class TestManager(BaseFlaskTest):
     #############
     # Blade     #
     #############
-    @mock.patch.object(manager, 'g')
+
     def test_get_blade_manager(
-            self, g):
+            self):
         """"Tests BladeManager with a known Server Hardware"""
 
         # Loading ServerHardware mockup value
@@ -144,10 +141,10 @@ class TestManager(BaseFlaskTest):
         ) as f:
             blade_manager_mockup = json.load(f)
 
-        g.oneview_client.index_resources.get_all.return_value = \
+        self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.return_value = server_hardware
-        g.oneview_client. appliance_node_information.get_version.return_value = \
+        self.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client. appliance_node_information.get_version.return_value = \
             {"softwareVersion": "3.00.07-0288219"}
 
         # Get BladeManager
@@ -165,20 +162,19 @@ class TestManager(BaseFlaskTest):
             "{}{}".format("W/", server_hardware["eTag"]),
             response.headers["ETag"])
 
-    @mock.patch.object(manager, 'g')
-    def test_get_server_hardware_not_found(self, g):
+    def test_get_server_hardware_not_found(self):
         """Tests BladeManager with Server Hardware not found"""
 
-        g.oneview_client.index_resources.get_all.return_value = [
+        self.oneview_client.index_resources.get_all.return_value = [
             {"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.return_value =\
+        self.oneview_client.server_hardware.get.return_value =\
             {'serverHardwareUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server hardware not found',
         })
 
-        g.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"
@@ -187,13 +183,12 @@ class TestManager(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(manager, 'g')
-    def test_server_hardware_unexpected_error(self, g):
+    def test_server_hardware_unexpected_error(self):
         """Tests BladeManager with an unexpected error"""
 
-        g.oneview_client.index_resources.get_all.return_value = [
+        self.oneview_client.index_resources.get_all.return_value = [
             {"category": "server-hardware"}]
-        g.oneview_client.server_hardware.get.side_effect = Exception()
+        self.oneview_client.server_hardware.get.side_effect = Exception()
 
         response = self.client.get(
             "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"

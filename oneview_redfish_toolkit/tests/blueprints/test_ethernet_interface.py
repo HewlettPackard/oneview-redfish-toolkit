@@ -16,7 +16,6 @@
 
 # Python libs
 import json
-from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -42,8 +41,7 @@ class TestEthernetInterface(BaseFlaskTest):
         ) as f:
             self.server_profile = json.load(f)
 
-    @mock.patch.object(ethernet_interface, 'g')
-    def test_get_ethernet_interface_when_it_has_only_one_vlan(self, g):
+    def test_get_ethernet_interface_when_it_has_only_one_vlan(self):
         """Tests request a valid EthernetInterface when it has one vlan"""
 
         with open(
@@ -58,8 +56,9 @@ class TestEthernetInterface(BaseFlaskTest):
         ) as f:
             network = json.load(f)
 
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
-        g.oneview_client.index_resources.get.return_value = network
+        self.oneview_client.\
+            server_profiles.get.return_value = self.server_profile
+        self.oneview_client.index_resources.get.return_value = network
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -71,15 +70,14 @@ class TestEthernetInterface(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(ethernet_interface_mockup, result)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
 
         # if verifies the URI of connection from ServerProfile.json mockup
-        g.oneview_client.index_resources.get.assert_called_with(
+        self.oneview_client.index_resources.get.assert_called_with(
             "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718")
 
-    @mock.patch.object(ethernet_interface, 'g')
-    def test_get_ethernet_interface_when_it_has_only_a_list_of_vlan(self, g):
+    def test_get_ethernet_interface_when_it_has_only_a_list_of_vlan(self):
         """Tests request a valid EthernetInterface when it has a vlans list"""
 
         with open(
@@ -94,8 +92,9 @@ class TestEthernetInterface(BaseFlaskTest):
         ) as f:
             ethernet_interface_mockup = json.load(f)
 
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
-        g.oneview_client.index_resources.get.return_value = network_set
+        self.oneview_client.\
+            server_profiles.get.return_value = self.server_profile
+        self.oneview_client.index_resources.get.return_value = network_set
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -107,18 +106,18 @@ class TestEthernetInterface(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(ethernet_interface_mockup, result)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
 
         # if verifies the URI of connection from ServerProfile.json mockup
-        g.oneview_client.index_resources.get.assert_called_with(
+        self.oneview_client.index_resources.get.assert_called_with(
             "/rest/network-sets/76f584da-1f9d-40b8-9b9d-5ccb09810142")
 
-    @mock.patch.object(ethernet_interface, 'g')
-    def test_get_ethernet_interface_when_id_is_not_found(self, g):
+    def test_get_ethernet_interface_when_id_is_not_found(self):
         """Tests request a not found EthernetInterface"""
 
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
+        self.oneview_client.\
+            server_profiles.get.return_value = self.server_profile
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -127,9 +126,9 @@ class TestEthernetInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.index_resources.get.assert_not_called()
+        self.oneview_client.index_resources.get.assert_not_called()
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -138,15 +137,14 @@ class TestEthernetInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
 
-    @mock.patch.object(ethernet_interface, 'g')
-    def test_get_ethernet_interface_when_profile_not_found(self, g):
+    def test_get_ethernet_interface_when_profile_not_found(self):
         """Tests request EthernetInterface when server profile not found"""
 
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND'
         })
 
-        g.oneview_client.server_profiles.get.side_effect = e
+        self.oneview_client.server_profiles.get.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -155,6 +153,6 @@ class TestEthernetInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.index_resources.get.assert_not_called()
+        self.oneview_client.index_resources.get.assert_not_called()

@@ -15,7 +15,6 @@
 # under the License.
 
 import json
-from unittest import mock
 
 from flask_api import status
 
@@ -38,11 +37,10 @@ class TestZoneCollection(BaseFlaskTest):
         ) as f:
             self.server_profile_template_list = json.load(f)
 
-    @mock.patch.object(zone_collection, 'g')
-    def test_get_zone_collection_when_get_templates_raises_error(self, g_mock):
+    def test_get_zone_collection_when_get_templates_raises_error(self):
         """Tests ZoneCollection when server profile templates raises error"""
 
-        g_mock.oneview_client.server_profile_templates.get_all.side_effect = \
+        self.oneview_client.server_profile_templates.get_all.side_effect = \
             Exception()
 
         with open(
@@ -61,13 +59,12 @@ class TestZoneCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, result)
 
-    @mock.patch.object(zone_collection, 'g')
-    def test_get_zone_collection(self, g_mock):
+    def test_get_zone_collection(self):
         """Tests ZoneCollection"""
 
         self.maxDiff = None
 
-        ov_api = g_mock.oneview_client
+        ov_api = self.oneview_client
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/ZoneCollection.json'
@@ -111,11 +108,10 @@ class TestZoneCollection(BaseFlaskTest):
             + "&category=logical-enclosures")
         ov_api.logical_enclosures.get.assert_called_with(logical_encl["uri"])
 
-    @mock.patch.object(zone_collection, 'g')
-    def test_get_zone_collection_empty(self, g_mock):
+    def test_get_zone_collection_empty(self):
         """Tests ZoneCollection with an empty list"""
 
-        g_mock.oneview_client.server_profile_templates.get_all.return_value = \
+        self.oneview_client.server_profile_templates.get_all.return_value = \
             []
 
         with open(
