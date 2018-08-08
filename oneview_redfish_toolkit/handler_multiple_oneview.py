@@ -18,11 +18,11 @@
 import logging
 
 # Modules own libs
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import strategy_multiple_oneview as st
 
 
 RESOURCE_STRATEGY = {
-    # Check if is query on all OneViews
     "appliance_node_information": {"get_version": st.all_oneviews_resource},
     "connection": {"get": st.first_parameter_resource},
     "drive_enclosures": {"get": st.first_parameter_resource},
@@ -99,9 +99,11 @@ class MultipleOneViewResourceRetriever(object):
         try:
             get_ov_client_strategy = RESOURCE_STRATEGY[resource][function]
         except KeyError as e:
-            logging.exception('Not mapped strategy on multiple OneViews'
-                              'support for method {}.{} : {}'.
-                              format(resource, function, e))
+            msg = 'Not mapped strategy on multiple OneViews' \
+                  'support for method {}.{} : {}'. \
+                  format(resource, function, e)
+            logging.exception(msg)
+            raise OneViewRedfishError(msg)
         result = get_ov_client_strategy(resource, function, *args, **kwargs)
 
         return result
