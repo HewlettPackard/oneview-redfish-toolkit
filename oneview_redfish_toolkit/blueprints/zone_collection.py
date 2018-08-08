@@ -41,7 +41,7 @@ def get_zone_collection():
     server_profile_templates = \
         g.oneview_client.server_profile_templates.get_all()
 
-    zone_ids = get_zone_ids_by_templates(server_profile_templates)
+    zone_ids = _get_zone_ids_by_templates(server_profile_templates)
 
     zc = ZoneCollection(zone_ids)
 
@@ -67,7 +67,7 @@ def _get_enclosures_uris_by_template(server_profile_template):
     return enclosure_uris
 
 
-def get_zone_ids_by_templates(server_profile_templates):
+def _get_zone_ids_by_templates(server_profile_templates):
     zone_ids = []
     for template in server_profile_templates:
         template_id = template["uri"].split("/")[-1]

@@ -34,7 +34,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
 
     SCHEMA_NAME = 'ComputerSystemCollection'
 
-    def __init__(self, server_hardware_list, zone_ids):
+    def __init__(self, server_hardware_list, server_profile_templates):
         """ComputerSystemCollection constructor
 
             Populates self.redfish with a hardcoded ComputerSystemCollection
@@ -42,8 +42,9 @@ class ComputerSystemCollection(RedfishJsonValidator):
             Server Profile applied and all server profile templates.
 
             Args:
-                server_hardware_list: A list of dicts of server hardware.
-                zone_ids: A list of Zone Ids
+                server_hardware: A list of dicts of server hardware.
+                server_profile_templates: A list of dicts of server profile
+                templates
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -55,7 +56,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
             len(server_profile_members_list)
         self.redfish["Members"] = server_profile_members_list
 
-        self._set_collection_capabilities(zone_ids)
+        self._set_collection_capabilities(server_profile_templates)
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystemCollection" \
@@ -90,14 +91,16 @@ class ComputerSystemCollection(RedfishJsonValidator):
 
         return server_profile_members_list
 
-    def _set_collection_capabilities(self, zone_ids):
+    def _set_collection_capabilities(self, server_profile_templates):
         self.capabilities_key = "@Redfish.CollectionCapabilities"
         self.redfish[self.capabilities_key] = dict()
         self.redfish[self.capabilities_key]["@odata.type"] = \
             self.get_odata_type_by_schema('CollectionCapabilities')
         self.redfish[self.capabilities_key]["Capabilities"] = list()
 
-        for zone_id in zone_ids:
+        for server_profile_template in server_profile_templates:
+            zone_id = server_profile_template["uri"].split("/")[-1]
+
             capability = self._get_capability_object(zone_id)
 
             self.redfish[self.capabilities_key]["Capabilities"].\
