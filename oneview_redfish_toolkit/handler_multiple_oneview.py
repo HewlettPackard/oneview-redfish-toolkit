@@ -18,6 +18,10 @@
 from oneview_redfish_toolkit.strategy_multiple_oneview \
     import all_oneviews_resource
 from oneview_redfish_toolkit.strategy_multiple_oneview \
+    import create_server_profile
+from oneview_redfish_toolkit.strategy_multiple_oneview \
+    import delete_server_profile
+from oneview_redfish_toolkit.strategy_multiple_oneview \
     import filter_uuid_parameter_resource
 from oneview_redfish_toolkit.strategy_multiple_oneview \
     import first_parameter_resource
@@ -25,6 +29,8 @@ from oneview_redfish_toolkit.strategy_multiple_oneview \
     import second_parameter_resource
 from oneview_redfish_toolkit.strategy_multiple_oneview \
     import spt_get_all_with_filter
+from oneview_redfish_toolkit.strategy_multiple_oneview \
+    import update_power_state_server_hardware
 
 
 RESOURCE_STRATEGY = {
@@ -58,11 +64,12 @@ RESOURCE_STRATEGY = {
         "get": first_parameter_resource,
         "get_all": all_oneviews_resource,
         "get_utilization": first_parameter_resource,
-        "update_power_state": second_parameter_resource,
+        "update_power_state": update_power_state_server_hardware,
         },
     "server_hardware_types": {"get": first_parameter_resource},
     "server_profiles": {
-        "delete": first_parameter_resource,
+        "create": create_server_profile,
+        "delete": delete_server_profile,
         "get": first_parameter_resource,
         "get_available_targets": first_parameter_resource,
         },

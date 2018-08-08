@@ -135,7 +135,10 @@ def search_resource_multiple_ov(resource, function, resource_id,
                     return expected_resource
                 else:
                     # If it's looking for a resource list (get_all)
-                    result.extend(expected_resource)
+                    if isinstance(expected_resource, list):
+                        result.extend(expected_resource)
+                    else:
+                        result.append(expected_resource)
         except HPOneViewException as e:
             # If get any error that is not a notFoundError
             if e.oneview_response["errorCode"] not in NOT_FOUND_ERROR:
