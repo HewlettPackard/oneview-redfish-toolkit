@@ -85,7 +85,7 @@ class TestResourceBlockCollection(BaseFlaskTest):
         """Tests ResourceBlockCollection with an empty list"""
 
         self.oneview_client.server_hardware.get_all.return_value = []
-        self.oneview_client.server_profile_template.get_all.return_value = []
+        self.oneview_client.server_profile_templates.get_all.return_value = []
         self.oneview_client.index_resources.get_all.return_value = []
 
         # Get ResourceBlockCollection
