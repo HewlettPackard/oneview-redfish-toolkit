@@ -46,7 +46,7 @@ def get_managers(uuid):
     try:
         appliance_information = \
             g.oneview_client.appliance_node_information.get_version()
-        oneview_version = appliance_information['softwareVersion']
+        oneview_version = appliance_information[0]['softwareVersion']
 
         resource_index = g.oneview_client.index_resources.get_all(
             filter='uuid=' + uuid
