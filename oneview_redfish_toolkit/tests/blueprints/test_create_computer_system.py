@@ -119,7 +119,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_profile_template,
             self.not_found_error,
             self.not_found_error,
-            self.server_profile_template
+            self.server_profile_template,
+            self.server_profile_template  # Get for multiple oneview support
         ]
         self.oneview_client.index_resources.get.side_effect = [
             self.not_found_error,
@@ -386,7 +387,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
             template_without_controller,
             self.not_found_error,
             self.not_found_error,
-            template_without_controller
+            template_without_controller,
+            template_without_controller  # Get for multiple OneView support
         ]
         self.oneview_client.index_resources.get.side_effect = [
             self.not_found_error,
@@ -451,7 +453,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_profile_template,
             self.not_found_error,
             self.not_found_error,
-            self.server_profile_template
+            self.server_profile_template,
+            self.server_profile_template  # Get for multiple oneview support
         ]
         self.oneview_client.index_resources.get.side_effect = [
             self.not_found_error,
