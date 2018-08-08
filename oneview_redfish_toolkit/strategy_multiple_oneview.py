@@ -70,3 +70,34 @@ def spt_get_all_with_filter(resource, function, *args, **kwargs):
                                                              resource,
                                                              function,
                                                              *args, **kwargs)
+
+
+def create_server_profile(resource, function, *args, **kwargs):
+    sp = args[0]
+    spt_uuid = sp['description']
+    return _run_action(spt_uuid, 'server_profile_templates', 'get', resource,
+            function, *args, **kwargs)
+
+
+def delete_server_profile(resource, function, *args, **kwargs):
+    sp_uuid = args[0]
+    return _run_action(sp_uuid, 'server_profiles', 'get', resource,
+            function, *args, **kwargs)
+
+
+def update_power_state_server_hardware(resource, function, *args, **kwargs):
+    sh_uuid = args[1]
+    return _run_action(sh_uuid, 'server_hardware', 'get', resource,
+            function, *args, **kwargs)
+
+
+def _run_action(resource_id, resource_get, function_get, resource,
+        function, *args, **kwargs):
+
+    # Mapping OneView for the resource_id
+    multiple_oneview.query_ov_client_by_resource(resource_id, resource_get,
+            function_get, resource_id, None)
+
+    # Running action on OneView already mapped for resource_id
+    return multiple_oneview.query_ov_client_by_resource(resource_id, resource,
+            function, *args, **kwargs)
