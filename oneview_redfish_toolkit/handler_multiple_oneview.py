@@ -14,68 +14,56 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
+import logging
+
 # Modules own libs
-from oneview_redfish_toolkit.strategy_multiple_oneview \
-    import all_oneviews_resource
-from oneview_redfish_toolkit.strategy_multiple_oneview \
-    import create_server_profile
-from oneview_redfish_toolkit.strategy_multiple_oneview \
-    import delete_server_profile
-from oneview_redfish_toolkit.strategy_multiple_oneview \
-    import filter_uuid_parameter_resource
-from oneview_redfish_toolkit.strategy_multiple_oneview \
-    import first_parameter_resource
-from oneview_redfish_toolkit.strategy_multiple_oneview \
-    import second_parameter_resource
-from oneview_redfish_toolkit.strategy_multiple_oneview \
-    import spt_get_all_with_filter
-from oneview_redfish_toolkit.strategy_multiple_oneview \
-    import update_power_state_server_hardware
+from oneview_redfish_toolkit import strategy_multiple_oneview as st
 
 
 RESOURCE_STRATEGY = {
     # Check if is query on all OneViews
-    "appliance_node_information": {"get_version": all_oneviews_resource},
-    "connection": {"get": first_parameter_resource},
-    "drive_enclosures": {"get": first_parameter_resource},
+    "appliance_node_information": {"get_version": st.all_oneviews_resource},
+    "connection": {"get": st.first_parameter_resource},
+    "drive_enclosures": {"get": st.first_parameter_resource},
     "enclosures": {
-        "get": first_parameter_resource,
-        "get_all": all_oneviews_resource,
-        "get_environmental_configuration": first_parameter_resource,
-        "get_utilization": first_parameter_resource,
+        "get": st.first_parameter_resource,
+        "get_all": st.all_oneviews_resource,
+        "get_environmental_configuration": st.first_parameter_resource,
+        "get_utilization": st.first_parameter_resource,
         },
-    "ethernet_networks": {"get": first_parameter_resource},
+    "ethernet_networks": {"get": st.first_parameter_resource},
     "index_resources": {
-        "get": first_parameter_resource,
-        "get_all": filter_uuid_parameter_resource,
+        "get": st.first_parameter_resource,
+        "get_all": st.filter_uuid_parameter_resource,
         },
-    "logical_enclosures": {"get": first_parameter_resource},
-    "network_sets": {"get": first_parameter_resource},
+    "logical_enclosures": {"get": st.first_parameter_resource},
+    "network_sets": {"get": st.first_parameter_resource},
     "racks": {
-        "get": first_parameter_resource,
-        "get_all": all_oneviews_resource,
-        "get_device_topology": first_parameter_resource,
+        "get": st.first_parameter_resource,
+        "get_all": st.all_oneviews_resource,
+        "get_device_topology": st.first_parameter_resource,
         },
     "sas_logical_jbods": {
-        "get": first_parameter_resource,
-        "get_drives": first_parameter_resource,
+        "get": st.first_parameter_resource,
+        "get_drives": st.first_parameter_resource,
         },
     "server_hardware": {
-        "get": first_parameter_resource,
-        "get_all": all_oneviews_resource,
-        "get_utilization": first_parameter_resource,
-        "update_power_state": update_power_state_server_hardware,
+        "get": st.first_parameter_resource,
+        "get_all": st.all_oneviews_resource,
+        "get_utilization": st.first_parameter_resource,
+        "update_power_state": st.update_power_state_server_hardware,
         },
-    "server_hardware_types": {"get": first_parameter_resource},
+    "server_hardware_types": {"get": st.first_parameter_resource},
     "server_profiles": {
-        "create": create_server_profile,
-        "delete": delete_server_profile,
-        "get": first_parameter_resource,
-        "get_available_targets": first_parameter_resource,
+        "create": st.create_server_profile,
+        "delete": st.delete_server_profile,
+        "get": st.first_parameter_resource,
+        "get_available_targets": st.first_parameter_resource,
         },
     "server_profile_templates": {
-        "get": first_parameter_resource,
-        "get_all": spt_get_all_with_filter,
+        "get": st.first_parameter_resource,
+        "get_all": st.spt_get_all_with_filter,
         },
 }
 
@@ -108,7 +96,12 @@ class MultipleOneViewResourceRetriever(object):
         resource = self.multiple_ov_resource_name
         function = self.multiple_ov_function_name
 
-        get_ov_client_strategy = RESOURCE_STRATEGY[resource][function]
+        try:
+            get_ov_client_strategy = RESOURCE_STRATEGY[resource][function]
+        except KeyError as e:
+            logging.exception('Not mapped strategy on multiple OneViews'
+                              'support for method {}.{} : {}'.
+                              format(resource, function, e))
         result = get_ov_client_strategy(resource, function, *args, **kwargs)
 
         return result

@@ -26,14 +26,6 @@ def first_parameter_resource(resource, function, *args, **kwargs):
                                                         **kwargs)
 
 
-def second_parameter_resource(resource, function, *args, **kwargs):
-    resource_id = args[1]
-
-    return multiple_oneview.query_ov_client_by_resource(resource_id, resource,
-                                                        function, *args,
-                                                        **kwargs)
-
-
 def filter_uuid_parameter_resource(resource, function, *args, **kwargs):
     if 'filter' not in kwargs:
         return all_oneviews_resource(resource, function, *args, **kwargs)
@@ -76,28 +68,31 @@ def create_server_profile(resource, function, *args, **kwargs):
     sp = args[0]
     spt_uuid = sp['description']
     return _run_action(spt_uuid, 'server_profile_templates', 'get', resource,
-            function, *args, **kwargs)
+                       function, *args, **kwargs)
 
 
 def delete_server_profile(resource, function, *args, **kwargs):
     sp_uuid = args[0]
     return _run_action(sp_uuid, 'server_profiles', 'get', resource,
-            function, *args, **kwargs)
+                       function, *args, **kwargs)
 
 
 def update_power_state_server_hardware(resource, function, *args, **kwargs):
     sh_uuid = args[1]
     return _run_action(sh_uuid, 'server_hardware', 'get', resource,
-            function, *args, **kwargs)
+                       function, *args, **kwargs)
 
 
 def _run_action(resource_id, resource_get, function_get, resource,
-        function, *args, **kwargs):
+                function, *args, **kwargs):
 
     # Mapping OneView for the resource_id
-    multiple_oneview.query_ov_client_by_resource(resource_id, resource_get,
-            function_get, resource_id, None)
+    multiple_oneview.query_ov_client_by_resource(resource_id,
+                                                 resource_get,
+                                                 function_get,
+                                                 resource_id, None)
 
     # Running action on OneView already mapped for resource_id
-    return multiple_oneview.query_ov_client_by_resource(resource_id, resource,
-            function, *args, **kwargs)
+    return multiple_oneview.query_ov_client_by_resource(resource_id,
+                                                        resource, function,
+                                                        *args, **kwargs)

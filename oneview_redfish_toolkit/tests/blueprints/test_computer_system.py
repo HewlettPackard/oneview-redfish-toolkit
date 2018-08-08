@@ -19,9 +19,9 @@ import copy
 import json
 
 # 3rd party libs
-from unittest.mock import call
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
+from unittest.mock import call
 
 # Module libs
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
@@ -349,8 +349,9 @@ class TestComputerSystem(BaseFlaskTest):
             "b425802b-a6a5-4941-8885-aab68dfa2ee2"
         )
         self.oneview_client.server_hardware.get.has_calls(
-            [call("/rest/server-hardware/30303437-3034-4D32-3230-313130304752"),
-            call("30303437-3034-4D32-3230-313130304752")]
+            [call("/rest/server-hardware/"
+                  "30303437-3034-4D32-3230-313130304752"),
+             call("30303437-3034-4D32-3230-313130304752")]
         )
         self.oneview_client.server_hardware.update_power_state \
             .assert_called_with({
@@ -440,8 +441,10 @@ class TestComputerSystem(BaseFlaskTest):
             "b425802b-a6a5-4941-8885-aab68dfa2ee2"
         )
         self.oneview_client.server_hardware.get.has_calls(
-            [call("/rest/server-hardware/30303437-3034-4D32-3230-313130304752"),
-                call("/rest/server-hardware/30303437-3034-4D32-3230-313130304752")]
+            [call("/rest/server-hardware/"
+                  "30303437-3034-4D32-3230-313130304752"),
+             call("/rest/server-hardware/"
+                  "30303437-3034-4D32-3230-313130304752")]
         )
 
     def test_change_power_state_invalid_key(self):
