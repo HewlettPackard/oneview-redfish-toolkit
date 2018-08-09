@@ -40,16 +40,16 @@ class BaseFlaskTest(BaseTest):
         # creates a test client
         cls.app = Flask(cls.__name__)
 
-        patcher = mock.patch('oneview_redfish_toolkit.authentication.'
-                             'get_multiple_oneview_token')
-        cls.mock_ov_token = patcher.start()
+        cls.patcher_auth = mock.patch('oneview_redfish_toolkit.authentication.'
+                                      'get_multiple_oneview_token')
+        cls.mock_ov_token = cls.patcher_auth.start()
         cls.mock_ov_token.return_value = {'123': 'abc'}
 
         cls.oneview_client = mock.MagicMock()
 
-        patcher_conn = mock.patch('oneview_redfish_toolkit.connection.'
-                                  'OneViewClient')
-        cls.ov_client_mock = patcher_conn.start()
+        cls.patcher_conn = mock.patch('oneview_redfish_toolkit.connection.'
+                                      'OneViewClient')
+        cls.ov_client_mock = cls.patcher_conn.start()
         cls.ov_client_mock.return_value = cls.oneview_client
 
         multiple_oneview.init_map_resources()
@@ -122,3 +122,8 @@ class BaseFlaskTest(BaseTest):
     def setUp(cls):
         cls.oneview_client = mock.MagicMock()
         cls.ov_client_mock.return_value = cls.oneview_client
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.patcher_auth.stop()
+        cls.patcher_conn.stop()
