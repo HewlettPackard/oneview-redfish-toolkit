@@ -94,7 +94,8 @@ class Storage(RedfishJsonValidator):
 
         count_drives_by_jbod = \
             [int(item["numPhysicalDrives"]) for item in sas_logical_jbods]
-        count_drives = reduce(operator.add, count_drives_by_jbod)
+
+        count_drives = reduce(operator.add, count_drives_by_jbod, 0)
 
         self.redfish["Drives@odata.count"] = count_drives
         self.redfish["Drives"] = list()

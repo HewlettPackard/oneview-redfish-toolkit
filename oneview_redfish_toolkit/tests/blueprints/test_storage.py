@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 from unittest import mock
 
@@ -290,4 +291,34 @@ class TestStorage(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertIn("Drive id should be a integer", str(response.data))
         g.oneview_client.server_profiles.get.assert_not_called()
+        g.oneview_client.sas_logical_jbods.get.assert_not_called()
+
+    @mock.patch.object(storage, 'g')
+    def test_composed_system_without_drives(self, g):
+        """Tests Storage when it does not have drives"""
+        server_profile = copy.deepcopy(self.server_profile)
+        server_profile["localStorage"]["sasLogicalJBODs"] = []
+        storage_mockup_without_drives = copy.deepcopy(self.storage_mockup)
+        storage_mockup_without_drives["Drives"] = []
+        storage_mockup_without_drives["Drives@odata.count"] = 0
+        g.oneview_client.server_profiles.get.return_value = server_profile
+        g.oneview_client.server_hardware_types.get.return_value \
+            = self.server_hardware_type
+
+        response = self.client.get(
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1"
+        )
+
+        # Gets json from response
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(storage_mockup_without_drives, result)
+        g.oneview_client.server_profiles.get.assert_called_with(
+            self.server_profile["uuid"])
+        g.oneview_client.server_hardware_types.get.assert_called_with(
+            self.server_hardware_type["uri"])
         g.oneview_client.sas_logical_jbods.get.assert_not_called()
