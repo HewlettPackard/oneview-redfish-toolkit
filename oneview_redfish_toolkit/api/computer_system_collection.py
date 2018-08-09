@@ -34,7 +34,10 @@ class ComputerSystemCollection(RedfishJsonValidator):
 
     SCHEMA_NAME = 'ComputerSystemCollection'
 
-    def __init__(self, server_hardware_list, server_profile_templates):
+    def __init__(self,
+                 sh_with_profile_applied,
+                 server_profile_templates,
+                 zone_ids):
         """ComputerSystemCollection constructor
 
             Populates self.redfish with a hardcoded ComputerSystemCollection
@@ -42,21 +45,23 @@ class ComputerSystemCollection(RedfishJsonValidator):
             Server Profile applied and all server profile templates.
 
             Args:
-                server_hardware: A list of dicts of server hardware.
+                sh_with_profile_applied: A list of dicts of server hardware
+                    with profile applied.
                 server_profile_templates: A list of dicts of server profile
-                templates
+                    templates
+                zone_ids: A list of Zone Ids
         """
         super().__init__(self.SCHEMA_NAME)
 
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Computer System Collection"
         server_profile_members_list = \
-            self._get_server_profile_members_list(server_hardware_list)
+            self._get_server_profile_members_list(sh_with_profile_applied)
         self.redfish["Members@odata.count"] = \
             len(server_profile_members_list)
         self.redfish["Members"] = server_profile_members_list
 
-        self._set_collection_capabilities(server_profile_templates)
+        self._set_collection_capabilities(server_profile_templates, zone_ids)
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystemCollection" \
@@ -77,21 +82,20 @@ class ComputerSystemCollection(RedfishJsonValidator):
                 hardwares information.
 
             Returns:
-                list: list of Server Profile applied to be filled on
+                list: list of computer system members to be filled on
                 Redfish Members.
         """
-        server_profile_members_list = list()
+        members = list()
         for server_hardware in server_hardware_list:
-            if server_hardware["state"] == "ProfileApplied":
-                server_profile_uuid = \
-                    server_hardware["serverProfileUri"].split("/")[-1]
-                server_profile_members_list.append({
-                    "@odata.id": "/redfish/v1/Systems/" + server_profile_uuid
-                })
+            server_profile_uuid = \
+                server_hardware["serverProfileUri"].split("/")[-1]
+            members.append({
+                "@odata.id": "/redfish/v1/Systems/" + server_profile_uuid
+            })
 
-        return server_profile_members_list
+        return members
 
-    def _set_collection_capabilities(self, server_profile_templates):
+    def _set_collection_capabilities(self, server_profile_templates, zone_ids):
         self.capabilities_key = "@Redfish.CollectionCapabilities"
         self.redfish[self.capabilities_key] = dict()
         self.redfish[self.capabilities_key]["@odata.type"] = \
@@ -99,26 +103,34 @@ class ComputerSystemCollection(RedfishJsonValidator):
         self.redfish[self.capabilities_key]["Capabilities"] = list()
 
         for server_profile_template in server_profile_templates:
-            zone_id = server_profile_template["uri"].split("/")[-1]
+            spt_id = server_profile_template["uri"].split("/")[-1]
 
-            capability = self._get_capability_object(zone_id)
+            capability = self._get_capability_object(spt_id, zone_ids)
 
             self.redfish[self.capabilities_key]["Capabilities"].\
                 append(capability)
 
-    def _get_capability_object(self, zone_id):
+    def _get_capability_object(self, spt_id, zone_ids):
         capability = OrderedDict()
         capability["CapabilitiesObject"] = dict()
         capability["CapabilitiesObject"]["@odata.id"] = \
-            ComputerSystem.BASE_URI + "/" + zone_id
+            ComputerSystem.BASE_URI + "/" + spt_id
         capability["UseCase"] = "ComputerSystemComposition"
         capability["Links"] = dict()
         capability["Links"]["TargetCollection"] = dict()
         capability["Links"]["TargetCollection"]["@odata.id"] = \
             ComputerSystem.BASE_URI
-        capability["Links"]["RelatedItem"] = list()
-        related_item = dict()
-        related_item["@odata.id"] = ZoneCollection.BASE_URI + "/" + zone_id
-        capability["Links"]["RelatedItem"].append(related_item)
+
+        zone_ids_filtered = filter(lambda zone_id: spt_id in zone_id, zone_ids)
+        self._build_capability_related_items(capability, zone_ids_filtered)
 
         return capability
+
+    def _build_capability_related_items(self,
+                                        capability,
+                                        zone_ids_of_capability):
+        capability["Links"]["RelatedItem"] = list()
+        for zone_id in zone_ids_of_capability:
+            related_item = dict()
+            related_item["@odata.id"] = ZoneCollection.BASE_URI + "/" + zone_id
+            capability["Links"]["RelatedItem"].append(related_item)

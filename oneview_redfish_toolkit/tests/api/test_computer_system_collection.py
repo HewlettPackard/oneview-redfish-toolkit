@@ -52,35 +52,22 @@ class TestComputerSystemCollection(BaseTest):
         ) as f:
             self.server_profile_template_list = json.load(f)
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
-
-        try:
-            computer_system_collection = ComputerSystemCollection(
-                self.server_hardware_list, self.server_profile_template_list
-            )
-        except Exception as e:
-            self.fail("Failed to instantiate ComputerSystemCollection class."
-                      " Error: {}".format(e))
-        self.assertIsInstance(
-            computer_system_collection,
-            ComputerSystemCollection
-        )
-
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            computer_system_collection = ComputerSystemCollection(
-                self.server_hardware_list, self.server_profile_template_list
-            )
-        except Exception as e:
-            self.fail("Failed to instantiate ComputerSystemCollection class."
-                      " Error: {}".format(e))
+        zone_ids = [
+            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101",
+            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66102",
+            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66103",
+            "75871d70-789e-4cf9-8bc8-6f4d73193578"
+        ]
 
-        try:
-            result = json.loads(computer_system_collection.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: {}".format(e))
+        computer_system_collection = ComputerSystemCollection(
+            self.server_hardware_list,
+            self.server_profile_template_list,
+            zone_ids
+        )
+
+        result = json.loads(computer_system_collection.serialize())
 
         self.assertEqualMockup(self.computer_system_collection_mockup, result)

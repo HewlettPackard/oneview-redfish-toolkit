@@ -19,6 +19,7 @@ from unittest import mock
 from flask_api import status
 
 from oneview_redfish_toolkit.blueprints import computer_system_collection
+from oneview_redfish_toolkit.blueprints import zone_collection
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -77,11 +78,11 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, result)
 
+    @mock.patch.object(zone_collection, 'g')
     @mock.patch.object(computer_system_collection, 'g')
-    def test_get_computer_system_collection(self, g):
+    def test_get_computer_system_collection(self, g, g_client_zone):
         """Tests ComputerSystemCollection with a known Server Hardware list"""
 
-        # Read mock values
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
                 'ServerProfilesApplied.json'
@@ -95,26 +96,48 @@ class TestComputerSystemCollection(BaseFlaskTest):
             server_profile_template_list = json.load(f)
 
         with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'LogicalEnclByIndexAssociationWithEnclGroup.json'
+        ) as f:
+            logical_encl_assoc = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosure.json'
+        ) as f:
+            logical_encl = json.load(f)
+
+        with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
                 'ComputerSystemCollection.json'
         ) as f:
             computer_system_collection_mockup = json.load(f)
 
-        # Create mock response
         g.oneview_client.server_hardware.get_all.return_value = \
             server_hardware_list
 
         g.oneview_client.server_profile_templates.get_all.return_value = \
             server_profile_template_list
 
-        # Get ComputerSystemCollection
-        response = self.client.get("/redfish/v1/Systems/")
+        g_client_zone.oneview_client.connection.get\
+            .return_value = logical_encl_assoc
+        g_client_zone.oneview_client.logical_enclosures.get\
+            .return_value = logical_encl
 
-        # Gets json from response
+        response = self.client.get("/redfish/v1/Systems/")
 
         result = json.loads(response.data.decode("utf-8"))
 
-        # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(computer_system_collection_mockup, result)
+
+        g.oneview_client.server_hardware.get_all.assert_called_with(
+            filter="state=ProfileApplied")
+
+        spt_with_storage_ctrler = server_profile_template_list[0]
+        g_client_zone.oneview_client.connection.get.assert_called_with(
+            "/rest/index/associations/resources"
+            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
+            + "&category=logical-enclosures")
+        g_client_zone.oneview_client.logical_enclosures.get.assert_called_with(
+            logical_encl["uri"])
