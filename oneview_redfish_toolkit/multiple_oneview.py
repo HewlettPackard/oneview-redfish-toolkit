@@ -14,8 +14,11 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
+import logging
+
 # 3rd party libs
-from hpOneView import HPOneViewException
+from hpOneView.exceptions import HPOneViewException
 
 # Modules own libs
 from oneview_redfish_toolkit import authentication
@@ -142,6 +145,9 @@ def search_resource_multiple_ov(resource, function, resource_id,
         except HPOneViewException as e:
             # If get any error that is not a notFoundError
             if e.oneview_response["errorCode"] not in NOT_FOUND_ERROR:
+                logging.exception("Error while searching on multiple "
+                                  "OneViews for Oneview {}: {}".
+                                  format(ov_ip, e))
                 raise e
 
             error_not_found.append(e)
