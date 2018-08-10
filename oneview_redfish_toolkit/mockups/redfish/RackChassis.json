@@ -6,7 +6,7 @@
     "SerialNumber": "2AB100LMNB",
     "PartNumber": null,
     "Status": {
-        "State": "Enabled",
+        "State": "StandbyOffline",
         "Health": "OK"
     },
     "Links": {

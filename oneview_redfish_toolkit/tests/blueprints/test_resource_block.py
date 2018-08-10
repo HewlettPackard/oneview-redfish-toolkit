@@ -24,6 +24,7 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
+import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.blueprints import resource_block
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
@@ -63,6 +64,12 @@ class TestResourceBlock(BaseFlaskTest):
             '/ServerProfileTemplates.json'
         ) as f:
             self.server_profile_templates = json.load(f)
+
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish'
+                '/ServerHardwareResourceBlock.json'
+        ) as f:
+            self.expected_resource_block = json.load(f)
 
         self.resource_not_found = HPOneViewException({
             "errorCode": "RESOURCE_NOT_FOUND",
@@ -159,22 +166,11 @@ class TestResourceBlock(BaseFlaskTest):
 
     @mock.patch.object(resource_block, 'g')
     def test_get_server_hardware_resource_block(self, g):
-        with open(
-                'oneview_redfish_toolkit/mockups/redfish'
-                '/ServerHardwareResourceBlock.json'
-        ) as f:
-            expected_resource_block = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerProfileTemplates.json'
-        ) as f:
-            server_profile_templates = json.load(f)
 
         g.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
         g.oneview_client.server_profile_templates.get_all.return_value = \
-            server_profile_templates
+            self.server_profile_templates
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -184,7 +180,61 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(expected_resource_block, result)
+        self.assertEqualMockup(self.expected_resource_block, result)
+
+    @mock.patch.object(resource_block, 'g')
+    def test_all_server_hardware_resouce_block_states(self, g):
+        server_hardware = copy.deepcopy(self.server_hardware)
+        expected_rb = copy.deepcopy(self.expected_resource_block)
+
+        for oneview_state, redfish_state in status_mapping.\
+                SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING.items():
+
+            server_hardware["state"] = oneview_state
+            expected_rb["Status"]["State"] = redfish_state
+            expected_rb["CompositionStatus"]["CompositionState"] = \
+                status_mapping.COMPOSITION_STATE_MAPPING.get(
+                    oneview_state, None)
+
+            g.oneview_client.server_hardware.get.return_value = \
+                server_hardware
+            g.oneview_client.server_profile_templates.get_all.return_value = \
+                self.server_profile_templates
+
+            response = self.client.get(
+                "/redfish/v1/CompositionService/ResourceBlocks"
+                "/30303437-3034-4D32-3230-313133364752")
+
+            result = json.loads(response.data.decode("utf-8"))
+
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual("application/json", response.mimetype)
+            self.assertEqualMockup(expected_rb, result)
+
+    @mock.patch.object(resource_block, 'g')
+    def test_all_server_hardware_resouce_block_health(self, g):
+        server_hardware = copy.deepcopy(self.server_hardware)
+        expected_cs = copy.deepcopy(self.expected_resource_block)
+
+        for oneview_status, redfish_status in \
+                status_mapping.HEALTH_STATE_MAPPING.items():
+            server_hardware["status"] = oneview_status
+            expected_cs["Status"]["Health"] = redfish_status
+
+            g.oneview_client.server_hardware.get.return_value = \
+                server_hardware
+            g.oneview_client.server_profile_templates.get_all.return_value = \
+                self.server_profile_templates
+
+            response = self.client.get(
+                "/redfish/v1/CompositionService/ResourceBlocks"
+                "/30303437-3034-4D32-3230-313133364752")
+
+            result = json.loads(response.data.decode("utf-8"))
+
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual("application/json", response.mimetype)
+            self.assertEqualMockup(expected_cs, result)
 
     @mock.patch.object(resource_block, 'g')
     def test_get_spt_resource_block(self, g):
