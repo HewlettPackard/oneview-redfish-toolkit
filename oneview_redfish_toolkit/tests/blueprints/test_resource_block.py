@@ -220,7 +220,7 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(self.expected_sh_resource_block, result)
 
-    def test_all_server_hardware_resouce_block_states(self, g):
+    def test_all_server_hardware_resouce_block_states(self):
         self.maxDiff = None
         server_hardware = copy.deepcopy(self.server_hardware)
         expected_rb = copy.deepcopy(self.expected_sh_resource_block)
@@ -239,7 +239,7 @@ class TestResourceBlock(BaseFlaskTest):
             expected_rb["CompositionStatus"]["CompositionState"] = \
                 status_mapping.COMPOSITION_STATE_MAPPING.get(oneview_state)
 
-            g.oneview_client.server_hardware.get.return_value = \
+            self.oneview_client.server_hardware.get.return_value = \
                 server_hardware
 
             response = self.client.get(
@@ -252,7 +252,7 @@ class TestResourceBlock(BaseFlaskTest):
             self.assertEqual("application/json", response.mimetype)
             self.assertEqualMockup(expected_rb, result)
 
-    def test_all_server_hardware_resouce_block_health(self, g):
+    def test_all_server_hardware_resouce_block_health(self):
         server_hardware = copy.deepcopy(self.server_hardware)
         expected_cs = copy.deepcopy(self.expected_sh_resource_block)
 
@@ -267,7 +267,7 @@ class TestResourceBlock(BaseFlaskTest):
             server_hardware["status"] = oneview_status
             expected_cs["Status"]["Health"] = redfish_status
 
-            g.oneview_client.server_hardware.get.return_value = \
+            self.oneview_client.server_hardware.get.return_value = \
                 server_hardware
 
             response = self.client.get(

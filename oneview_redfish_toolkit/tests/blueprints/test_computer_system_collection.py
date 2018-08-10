@@ -112,9 +112,9 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.oneview_client.server_profile_templates.get_all.return_value = \
             server_profile_template_list
 
-        g.oneview_client.connection.get\
+        self.oneview_client.connection.get\
             .return_value = logical_encl_assoc
-        g.oneview_client.logical_enclosures.get\
+        self.oneview_client.logical_enclosures.get\
             .return_value = logical_encl
 
         response = self.client.get("/redfish/v1/Systems/")
@@ -125,14 +125,14 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(computer_system_collection_mockup, result)
 
-        g.oneview_client.server_hardware.get_all.assert_called_with(
+        self.oneview_client.server_hardware.get_all.assert_called_with(
             filter="state=ProfileApplied")
         g.oneview_client.server_profile_templates.get_all.assert_called_with()
 
         spt_with_storage_ctrler = server_profile_template_list[0]
-        g.oneview_client.connection.get.assert_called_with(
+        self.oneview_client.connection.get.assert_called_with(
             "/rest/index/associations/resources"
             "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
             + "&category=logical-enclosures")
-        g.oneview_client.logical_enclosures.get.assert_called_with(
+        self.oneview_client.logical_enclosures.get.assert_called_with(
             logical_encl["uri"])
