@@ -19,14 +19,15 @@ import copy
 import json
 
 # 3rd party libs
+from unittest import mock
 from unittest.mock import call
 
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
-from hpOneView.exceptions import HPOneViewTaskError
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import computer_system
+from oneview_redfish_toolkit.services import computer_system_service
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -99,21 +100,15 @@ class TestCreateComputerSystem(BaseFlaskTest):
             call('/rest/drives/' + self.drive2_id)
         ]
 
-    def test_create_system(self):
-        """Tests create a redfish System with Network, Storage and Server"""
-
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/'
-                'ServerProfileBuiltFromTemplateToCreateASystem.json'
-        ) as f:
-            expected_server_profile_built = json.load(f)
-
+    def run_common_mock_to_server_hardware(self):
         self.oneview_client.server_hardware.get.side_effect = [
             self.server_hardware,
             self.not_found_error,
             self.not_found_error,
             self.not_found_error
         ]
+
+    def run_common_mock_to_server_profile_template(self):
         self.oneview_client.server_profile_templates.get.side_effect = [
             self.not_found_error,
             self.server_profile_template,
@@ -122,14 +117,62 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_profile_template,
             self.server_profile_template  # Get for multiple oneview support
         ]
+
+    def run_common_mock_to_drives(self):
         self.oneview_client.index_resources.get.side_effect = [
             self.not_found_error,
             self.not_found_error,
             self.drives[0],
             self.drives[1]
         ]
-        self.oneview_client.server_profiles.create.return_value = \
-            self.server_profile
+
+    def assert_common_calls(self):
+        self.oneview_client.server_hardware.get.assert_has_calls(
+            self.common_calls_to_assert_hardware)
+        self.oneview_client.server_profile_templates.get.assert_has_calls(
+            self.common_calls_to_assert_spt)
+        self.oneview_client.index_resources.get.assert_has_calls(
+            self.common_calls_to_assert_drives)
+
+    @mock.patch.object(computer_system_service, 'time')
+    def test_create_system(self, time_mock):
+        """Tests create a redfish System with Network, Storage and Server"""
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerProfileBuiltFromTemplateToCreateASystem.json'
+        ) as f:
+            expected_server_profile_built = json.load(f)
+
+        task_without_resource_uri = {
+            "associatedResource": {
+                "resourceUri": None
+            },
+            "uri": "/rest/tasks/123456"
+        }
+
+        task_with_resource_uri = {
+            "associatedResource": {
+                "resourceUri": self.server_profile["uri"]
+            },
+            "uri": "/rest/tasks/123456"
+        }
+
+        self.run_common_mock_to_server_hardware()
+        self.run_common_mock_to_server_profile_template()
+        self.run_common_mock_to_drives()
+
+        # The connection.post return for /rest/server-profiles is a tuple
+        self.oneview_client.connection.post.return_value = \
+            (task_without_resource_uri, None)
+
+        # The task will be requested 3 times in this case,
+        # simulating the checking of resource uri
+        self.oneview_client.tasks.get.side_effect = [
+            task_without_resource_uri,
+            task_without_resource_uri,
+            task_with_resource_uri
+        ]
 
         response = self.client.post(
             "/redfish/v1/Systems",
@@ -142,15 +185,22 @@ class TestCreateComputerSystem(BaseFlaskTest):
             "/redfish/v1/Systems/" + self.server_profile["uuid"],
             response.headers["Location"]
         )
+
         self.oneview_client.server_hardware.get.assert_has_calls(
             self.common_calls_to_assert_hardware)
         self.oneview_client.server_profile_templates.get.assert_has_calls(
             self.common_calls_to_assert_spt)
         self.oneview_client.index_resources.get.assert_has_calls(
             self.common_calls_to_assert_drives)
+        self.oneview_client.server_profiles.create.assert_not_called()
 
-        self.oneview_client.server_profiles.create.assert_called_with(
-            expected_server_profile_built)
+        self.oneview_client.tasks.get.assert_called_with(
+            task_without_resource_uri["uri"])
+        self.oneview_client.connection.post.assert_called_once_with(
+            '/rest/server-profiles', expected_server_profile_built
+        )
+        self.assertEqual(self.oneview_client.tasks.get.call_count, 3)
+        time_mock.sleep.assert_called_with(3)
 
     def test_create_system_when_request_content_is_wrong(self):
         """Tests trying create a redfish System without Links"""
@@ -169,7 +219,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.oneview_client.server_hardware.get.assert_not_called()
         self.oneview_client.server_profile_templates.get.assert_not_called()
         self.oneview_client.index_resources.get.assert_not_called()
-        self.oneview_client.server_profiles.create.assert_not_called()
+        self.oneview_client.connection.post.assert_not_called()
 
     def test_create_system_when_request_content_has_not_compute(self):
         """Tests trying create a redfish System without Compute Resource"""
@@ -197,7 +247,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.common_calls_to_assert_hardware)
         self.oneview_client.server_profile_templates.get.assert_not_called()
         self.oneview_client.index_resources.get.assert_not_called()
-        self.oneview_client.server_profiles.create.assert_not_called()
+        self.oneview_client.connection.post.assert_not_called()
 
     def test_create_system_when_request_content_has_not_network(self):
         """Tests trying create a redfish System without Network Resource"""
@@ -238,7 +288,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
                 call(self.drive2_id)
             ])
         self.oneview_client.index_resources.get.assert_not_called()
-        self.oneview_client.server_profiles.create.assert_not_called()
+        self.oneview_client.connection.post.assert_not_called()
 
     def test_create_system_when_request_content_has_not_a_valid_network(
             self):
@@ -284,9 +334,10 @@ class TestCreateComputerSystem(BaseFlaskTest):
                 call(self.drive2_id)
             ])
         self.oneview_client.index_resources.get.assert_not_called()
-        self.oneview_client.server_profiles.create.assert_not_called()
+        self.oneview_client.connection.post.assert_not_called()
 
-    def test_create_system_when_request_content_has_not_storage(self):
+    @mock.patch.object(computer_system_service, 'time')
+    def test_create_system_when_request_content_has_not_storage(self, _):
         """Tests create a redfish System without Storage.
 
             This test should works well.
@@ -316,6 +367,13 @@ class TestCreateComputerSystem(BaseFlaskTest):
             spt = list_spt[1]  # without local storage controller configured
             spt_id = spt["uri"].split("/")[-1]
 
+        task = {
+            "associatedResource": {
+                "resourceUri": self.server_profile["uri"]
+            },
+            "uri": "/rest/tasks/123456"
+        }
+
         self.oneview_client.server_hardware.get.side_effect = [
             self.server_hardware,
             self.not_found_error,
@@ -330,8 +388,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.not_found_error,
             self.not_found_error,
         ]
-        self.oneview_client.server_profiles.create.return_value = \
-            self.server_profile
+        self.oneview_client.connection.post.return_value = (task, None)
 
         response = self.client.post(
             "/redfish/v1/Systems/",
@@ -361,10 +418,12 @@ class TestCreateComputerSystem(BaseFlaskTest):
                 call('/rest/drives/' + spt_id),
             ])
 
-        self.oneview_client.server_profiles.create.assert_called_with(
+        self.oneview_client.connection.post.assert_called_with(
+            '/rest/server-profiles',
             expected_server_profile_built)
 
-    def test_create_system_when_has_not_storage_and_controller(self):
+    @mock.patch.object(computer_system_service, 'time')
+    def test_create_system_when_has_not_storage_and_controller(self, _):
         """Tests create a System without Storage but with Storage Controller.
 
             This test should works well.
@@ -374,6 +433,13 @@ class TestCreateComputerSystem(BaseFlaskTest):
             local storage controller configured properly
         """
 
+        task = {
+            "associatedResource": {
+                "resourceUri": self.server_profile["uri"]
+            },
+            "uri": "/rest/tasks/123456"
+        }
+
         self.oneview_client.server_hardware.get.side_effect = [
             self.server_hardware,
             self.not_found_error,
@@ -381,7 +447,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.not_found_error
         ]
 
-        template_without_controller = copy.copy(self.server_profile_template)
+        template_without_controller = copy.deepcopy(
+            self.server_profile_template)
         template_without_controller["localStorage"]["controllers"] = []
         self.oneview_client.server_profile_templates.get.side_effect = [
             self.not_found_error,
@@ -397,8 +464,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.not_found_error,
             self.not_found_error
         ]
-        self.oneview_client.server_profiles.create.return_value = \
-            self.server_profile
+        self.oneview_client.connection.post.return_value = (task, None)
 
         response = self.client.post(
             "/redfish/v1/Systems/",
@@ -411,12 +477,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             "/redfish/v1/Systems/" + self.server_profile["uuid"],
             response.headers["Location"]
         )
-        self.oneview_client.server_hardware.get.assert_has_calls(
-            self.common_calls_to_assert_hardware)
-        self.oneview_client.server_profile_templates.get.assert_has_calls(
-            self.common_calls_to_assert_spt)
-        self.oneview_client.index_resources.get.assert_has_calls(
-            self.common_calls_to_assert_drives)
+        self.assert_common_calls()
 
     def test_create_system_when_a_generic_exception_is_raised(self):
         """Tests create a redfish System when occurs a generic exception"""
@@ -435,7 +496,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.oneview_client.server_profile_templates.get.assert_not_called()
         self.oneview_client.index_resources.get.assert_not_called()
 
-    def test_create_system_when_a_task_error_is_raised(self):
+    @mock.patch.object(computer_system_service, 'time')
+    def test_create_system_when_a_task_error_is_raised(self, _):
         """Tests create a System when the Oneview raises a task error.
 
             This test should return a http 403 with a error message.
@@ -443,30 +505,21 @@ class TestCreateComputerSystem(BaseFlaskTest):
             belongs to another enclosure.
         """
 
-        self.oneview_client.server_hardware.get.side_effect = [
-            self.server_hardware,
-            self.not_found_error,
-            self.not_found_error,
-            self.not_found_error
-        ]
-        self.oneview_client.server_profile_templates.get.side_effect = [
-            self.not_found_error,
-            self.server_profile_template,
-            self.not_found_error,
-            self.not_found_error,
-            self.server_profile_template,
-            self.server_profile_template  # Get for multiple oneview support
-        ]
-        self.oneview_client.index_resources.get.side_effect = [
-            self.not_found_error,
-            self.not_found_error,
-            self.drives[0],
-            self.drives[1]
-        ]
+        task = {
+            "associatedResource": {
+                "resourceUri": None
+            },
+            "uri": "/rest/tasks/123456",
+            "taskErrors": [
+                {"message": "The server hardware 123 is powered on"}
+            ]
+        }
 
-        error = HPOneViewTaskError('The server hardware 123 is powered on',)
+        self.run_common_mock_to_server_hardware()
+        self.run_common_mock_to_server_profile_template()
+        self.run_common_mock_to_drives()
 
-        self.oneview_client.server_profiles.create.side_effect = error
+        self.oneview_client.connection.post.return_value = (task, object())
 
         response = self.client.post(
             "/redfish/v1/Systems/",
@@ -478,13 +531,53 @@ class TestCreateComputerSystem(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-        self.assertIn(error.msg, response.data.decode())
-        self.oneview_client.server_hardware.get.assert_has_calls(
-            self.common_calls_to_assert_hardware)
-        self.oneview_client.server_profile_templates.get.assert_has_calls(
-            self.common_calls_to_assert_spt)
-        self.oneview_client.index_resources.get.assert_has_calls(
-            self.common_calls_to_assert_drives)
+        self.assertIn("The server hardware 123 is powered on",
+                      response.data.decode())
+
+        self.assert_common_calls()
+
+    @mock.patch.object(computer_system_service, 'time')
+    def test_when_has_more_than_one_task_error(self, _):
+        """Tests create a System when the Oneview raises two task errors.
+
+            This test should return a http 403 with a error message.
+            Some problems are server hardware is powered On and the drive used
+            belongs to another enclosure.
+        """
+
+        task = {
+            "associatedResource": {
+                "resourceUri": None
+            },
+            "uri": "/rest/tasks/123456",
+            "taskErrors": [
+                {"message": "The server hardware 123 is powered on"},
+                {"message": "The drive used belongs to another enclosure"}
+            ]
+        }
+
+        self.run_common_mock_to_server_hardware()
+        self.run_common_mock_to_server_profile_template()
+        self.run_common_mock_to_drives()
+
+        self.oneview_client.connection.post.return_value = (task, object())
+
+        response = self.client.post(
+            "/redfish/v1/Systems/",
+            data=json.dumps(self.data_to_create_system),
+            content_type='application/json')
+
+        expected_error_msg = "The server hardware 123 is powered on\\n" \
+                             "The drive used belongs to another enclosure\\n"
+
+        self.assertEqual(
+            status.HTTP_403_FORBIDDEN,
+            response.status_code
+        )
+        self.assertEqual("application/json", response.mimetype)
+        self.assertIn(expected_error_msg, response.data.decode())
+
+        self.assert_common_calls()
 
     def test_create_system_when_has_storage_but_not_valid_controller(self):
         """Tests when the Server Profile Template has not a valid storage controller.
@@ -496,14 +589,10 @@ class TestCreateComputerSystem(BaseFlaskTest):
             but the request has storage resource blocks to compose the system
         """
 
-        self.oneview_client.server_hardware.get.side_effect = [
-            self.server_hardware,
-            self.not_found_error,
-            self.not_found_error,
-            self.not_found_error
-        ]
+        self.run_common_mock_to_server_hardware()
 
-        template_without_controller = copy.copy(self.server_profile_template)
+        template_without_controller = copy.deepcopy(
+            self.server_profile_template)
         template_without_controller["localStorage"]["controllers"] = []
         self.oneview_client.server_profile_templates.get.side_effect = [
             self.not_found_error,
@@ -512,12 +601,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.not_found_error,
             template_without_controller
         ]
-        self.oneview_client.index_resources.get.side_effect = [
-            self.not_found_error,
-            self.not_found_error,
-            self.drives[0],
-            self.drives[1]
-        ]
+
+        self.run_common_mock_to_drives()
 
         response = self.client.post(
             "/redfish/v1/Systems/",
@@ -534,9 +619,4 @@ class TestCreateComputerSystem(BaseFlaskTest):
                       "Blocks passed",
                       response.data.decode())
 
-        self.oneview_client.server_hardware.get.assert_has_calls(
-            self.common_calls_to_assert_hardware)
-        self.oneview_client.server_profile_templates.get.assert_has_calls(
-            self.common_calls_to_assert_spt)
-        self.oneview_client.index_resources.get.assert_has_calls(
-            self.common_calls_to_assert_drives)
+        self.assert_common_calls()
