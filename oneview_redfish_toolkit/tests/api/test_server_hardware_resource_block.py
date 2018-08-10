@@ -40,41 +40,21 @@ class TestServerHardwareResourceBlock(BaseTest):
         ) as f:
             self.server_hardware = json.load(f)
 
-        # Loading ServerProfileTemplates mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview'
-            '/ServerProfileTemplates.json'
-        ) as f:
-            self.server_profile_templates = json.load(f)
-
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
-        try:
-            resource_block = ServerHardwareResourceBlock(
-                '30303437-3034-4D32-3230-313133364752',
-                self.server_hardware,
-                self.server_profile_templates)
-        except Exception as e:
-            self.fail(
-                "Failed to instantiate ServerHardwareResourceBlock class."
-                " Error: {}".format(e))
-
-        self.assertIsInstance(resource_block, ServerHardwareResourceBlock)
-
     def test_serialize(self):
         # Tests the serialize function result against known result
-        try:
-            resource_block = ServerHardwareResourceBlock(
-                '30303437-3034-4D32-3230-313133364752',
-                self.server_hardware,
-                self.server_profile_templates)
-        except Exception as e:
-            self.fail(
-                "Failed to instantiate ServerHardwareResourceBlock class."
-                " Error: {}".format(e))
-        try:
-            result = json.loads(resource_block.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: {}".format(e))
+
+        zone_ids = [
+            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101",
+            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66102",
+            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66103",
+            "75871d70-789e-4cf9-8bc8-6f4d73193578",
+        ]
+
+        resource_block = ServerHardwareResourceBlock(
+            '30303437-3034-4D32-3230-313133364752',
+            self.server_hardware,
+            zone_ids)
+
+        result = json.loads(resource_block.serialize())
 
         self.assertEqualMockup(self.resource_block_mockup, result)

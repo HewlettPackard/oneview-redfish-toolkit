@@ -19,7 +19,6 @@ from unittest import mock
 from flask_api import status
 
 from oneview_redfish_toolkit.blueprints import computer_system_collection
-from oneview_redfish_toolkit.blueprints import zone_collection
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -78,9 +77,8 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, result)
 
-    @mock.patch.object(zone_collection, 'g')
     @mock.patch.object(computer_system_collection, 'g')
-    def test_get_computer_system_collection(self, g, g_client_zone):
+    def test_get_computer_system_collection(self, g):
         """Tests ComputerSystemCollection with a known Server Hardware list"""
 
         with open(
@@ -118,9 +116,9 @@ class TestComputerSystemCollection(BaseFlaskTest):
         g.oneview_client.server_profile_templates.get_all.return_value = \
             server_profile_template_list
 
-        g_client_zone.oneview_client.connection.get\
+        g.oneview_client.connection.get\
             .return_value = logical_encl_assoc
-        g_client_zone.oneview_client.logical_enclosures.get\
+        g.oneview_client.logical_enclosures.get\
             .return_value = logical_encl
 
         response = self.client.get("/redfish/v1/Systems/")
@@ -133,11 +131,12 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         g.oneview_client.server_hardware.get_all.assert_called_with(
             filter="state=ProfileApplied")
+        g.oneview_client.server_profile_templates.get_all.assert_called_with()
 
         spt_with_storage_ctrler = server_profile_template_list[0]
-        g_client_zone.oneview_client.connection.get.assert_called_with(
+        g.oneview_client.connection.get.assert_called_with(
             "/rest/index/associations/resources"
             "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
             + "&category=logical-enclosures")
-        g_client_zone.oneview_client.logical_enclosures.get.assert_called_with(
+        g.oneview_client.logical_enclosures.get.assert_called_with(
             logical_encl["uri"])

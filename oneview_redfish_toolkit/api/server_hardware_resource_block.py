@@ -16,6 +16,7 @@
 import collections
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
+from oneview_redfish_toolkit.services.zone_service import ZoneService
 
 STATE_TO_STATUS_MAPPING = {
     "NoProfileApplied": "Unused",
@@ -32,7 +33,7 @@ class ServerHardwareResourceBlock(ResourceBlock):
         values and with Server Hardware data retrieved from OneView.
     """
 
-    def __init__(self, uuid, server_hardware, server_profile_templates):
+    def __init__(self, uuid, server_hardware, zone_ids):
         """ServerHardwareResourceBlock constructor
 
             Populates self.redfish with the contents of server hardware
@@ -41,13 +42,12 @@ class ServerHardwareResourceBlock(ResourceBlock):
             Args:
                 uuid: server hardware UUID
                 server_hardware: ServerHardware dict from OneView
-                server_profile_templates: list of OneView server profile
-                templates
+                zone_ids: list of Zone ids
         """
         super().__init__(uuid, server_hardware)
 
         self.server_hardware = server_hardware
-        self.server_profile_templates = server_profile_templates
+        self.zone_ids = zone_ids
 
         self.redfish["ResourceBlockType"] = ["ComputerSystem"]
 
@@ -91,14 +91,18 @@ class ServerHardwareResourceBlock(ResourceBlock):
             self.redfish["Links"]["ComputerSystems"] = list()
             self.redfish["Links"]["ComputerSystems"].append(system)
 
-        if self.server_profile_templates:
+        if self.zone_ids:
             self.redfish["Links"]["Zones"] = list()
+            location_id = self.server_hardware["locationUri"].split("/")[-1]
 
-            for spt in self.server_profile_templates:
-                spt_id = spt["uri"].split("/")[-1]
+            for zone_id in self.zone_ids:
+                _, encl_id = ZoneService\
+                    .split_zone_id_to_spt_uuid_and_enclosure_id(zone_id)
 
                 zone = dict()
-                zone["@odata.id"] = \
-                    "/redfish/v1/CompositionService/ResourceZones/" + spt_id
+                if (encl_id and encl_id == location_id) or not encl_id:
+                    zone["@odata.id"] = \
+                        "/redfish/v1/CompositionService/ResourceZones/" \
+                        + zone_id
 
-                self.redfish["Links"]["Zones"].append(zone)
+                    self.redfish["Links"]["Zones"].append(zone)

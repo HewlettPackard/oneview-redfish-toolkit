@@ -67,11 +67,26 @@ class RedfishJsonValidator(object):
                 OneViewRedfishError: Raises this exception if
                 schema is not found.
         """
+        self.validate(self.redfish, self.schema_name)
+
+    @staticmethod
+    def validate(dict_to_validate, schema_name):
+        """Validates a dict against a schema corresponding to the schema_name
+
+            Returns:
+                None
+
+            Exception:
+                ValidationError: Raises this exception on validation failure.
+
+                OneViewRedfishError: Raises this exception if
+                schema is not found.
+        """
         stored_schemas = config.get_stored_schemas()
-        schema_obj = self.get_schema_obj(self.schema_name)
+        schema_obj = RedfishJsonValidator.get_schema_obj(schema_name)
 
         resolver = jsonschema.RefResolver('', schema_obj, store=stored_schemas)
-        jsonschema.validate(self.redfish, schema_obj, resolver=resolver)
+        jsonschema.validate(dict_to_validate, schema_obj, resolver=resolver)
 
     def serialize(self):
         """Generates a json string from redfish content
@@ -152,7 +167,8 @@ class RedfishJsonValidator(object):
         schema_obj = self.get_schema_obj(schema_name)
         return schema_obj['title']
 
-    def get_schema_obj(self, schema_name):
+    @staticmethod
+    def get_schema_obj(schema_name):
         """Retrieves schemas object for the schema name
 
             Retrieves the schema file content loaded

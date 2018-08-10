@@ -188,23 +188,10 @@ def create_composed_system():
 
     body = request.get_json()
 
-    #  TODO(@ricardogpsf) use redfish validation instead of this intern class
-    class ComposedSystem(RedfishJsonValidator):
-        SCHEMA_NAME = 'ComputerSystem'
-
-        def __init__(self, composed_system):
-            super().__init__(self.SCHEMA_NAME)
-
-            self.redfish = composed_system
-
-        def validate(self):
-            self._validate()
-
     try:
-        resource = ComposedSystem(body)
-        resource.validate()
+        RedfishJsonValidator.validate(body, 'ComputerSystem')
 
-        blocks = resource.redfish["Links"]["ResourceBlocks"]
+        blocks = body["Links"]["ResourceBlocks"]
         block_ids = [block["@odata.id"].split("/")[-1] for block in blocks]
 
         # Should contain only one computer system entry
@@ -215,17 +202,23 @@ def create_composed_system():
 
         # Check network block id with the Id attribute in the request
         network_blocks = _get_network_resource_blocks(block_ids)
-        if not (network_blocks and body["Id"] in network_blocks[0]["uri"]):
+        spt_id = body["Id"]
+
+        if not (network_blocks and spt_id in network_blocks[0]["uri"]):
             raise ValidationError(
                 "Should have a valid Network Resource Block")
 
         # It can contain zero or more Storage Block
         storage_blocks = _get_storage_resource_blocks(block_ids)
 
-        spt = g.oneview_client.server_profile_templates.get(body["Id"])
+        spt = g.oneview_client.server_profile_templates.get(spt_id)
 
         server_profile = ComputerSystem.build_server_profile(
-            body["Name"], spt, system_blocks, network_blocks, storage_blocks)
+            body["Name"],
+            spt,
+            system_blocks,
+            network_blocks,
+            storage_blocks)
 
         result = g.oneview_client.server_profiles.create(server_profile)
 

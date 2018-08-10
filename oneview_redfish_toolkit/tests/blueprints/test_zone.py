@@ -109,7 +109,12 @@ class TestZone(BaseFlaskTest):
             ]
         )
         api_client.server_hardware.get_all.assert_called_with(
-            filter="locationUri='/rest/enclosures/0000000000A66101'")
+            filter=[
+                "locationUri='/rest/enclosures/0000000000A66101'",
+
+                "serverHardwareTypeUri='"
+                + self.server_profile_template["serverHardwareTypeUri"] + "'"
+            ])
 
     @mock.patch.object(zone, 'g')
     def test_get_zone_when_uuid_is_only_template_id(self, g_mock):
@@ -145,8 +150,13 @@ class TestZone(BaseFlaskTest):
         api_client.server_profile_templates.get.assert_called_with(self.spt_id)
         api_client.connection.get.assert_not_called()
         api_client.server_hardware.get_all.assert_called_with(
-            filter="serverGroupUri='"
-                   + self.server_profile_template["enclosureGroupUri"] + "'")
+            filter=[
+                "serverGroupUri='"
+                + self.server_profile_template["enclosureGroupUri"] + "'",
+
+                "serverHardwareTypeUri='"
+                + self.server_profile_template["serverHardwareTypeUri"] + "'"
+            ])
 
     @mock.patch.object(zone, 'g')
     def test_get_zone_when_drive_enclosures_assoc_is_empty(self, g_mock):
@@ -191,7 +201,12 @@ class TestZone(BaseFlaskTest):
                  + "&category=drive-enclosures")
         ])
         api_client.server_hardware.get_all.assert_called_with(
-            filter="locationUri='/rest/enclosures/0000000000A66101'")
+            filter=[
+                "locationUri='/rest/enclosures/0000000000A66101'",
+
+                "serverHardwareTypeUri='"
+                + self.server_profile_template["serverHardwareTypeUri"] + "'"
+            ])
 
     @mock.patch.object(zone, 'g')
     def test_get_zone_not_found(self, g_mock):

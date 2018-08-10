@@ -25,7 +25,7 @@ class ServerProfileTemplateResourceBlock(ResourceBlock):
         values and with Server Profile Template data retrieved from OneView.
     """
 
-    def __init__(self, uuid, server_profile_template):
+    def __init__(self, uuid, server_profile_template, zone_ids):
         """ServerProfileTemplateResourceBlock constructor
 
             Populates self.redfish with the contents of server profile
@@ -34,6 +34,7 @@ class ServerProfileTemplateResourceBlock(ResourceBlock):
             Args:
                 uuid: server profile template UUID
                 server_profile_template: OneView server profile template
+                zone_ids: Ids of Zones that this resource block belongs to
         """
         super().__init__(uuid, server_profile_template)
 
@@ -48,11 +49,14 @@ class ServerProfileTemplateResourceBlock(ResourceBlock):
         self.redfish["Links"] = dict()
         self.redfish["Links"]["Zones"] = list()
 
-        zone = dict()
-        zone["@odata.id"] = \
-            ZoneCollection.BASE_URI + "/" + uuid
+        self._fill_link_members(zone_ids)
 
-        self.redfish["Links"]["Zones"].append(zone)
+    def _fill_link_members(self, zone_ids):
+        for zone_id in zone_ids:
+            zone = {
+                "@odata.id": ZoneCollection.BASE_URI + "/" + zone_id
+            }
+            self.redfish["Links"]["Zones"].append(zone)
 
     def _fill_ethernet_networks(self):
         self.redfish["EthernetInterfaces"] = list()

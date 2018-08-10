@@ -16,10 +16,12 @@
 
 import collections
 import logging
+
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 from oneview_redfish_toolkit.api import status_mapping
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
+from oneview_redfish_toolkit.services.zone_service import ZoneService
 
 
 class StorageResourceBlock(ResourceBlock):
@@ -28,7 +30,7 @@ class StorageResourceBlock(ResourceBlock):
         Populates self.redfish with Drive data retrieved from OneView.
     """
 
-    def __init__(self, drive, drive_index_trees, server_profile_templates):
+    def __init__(self, drive, drive_index_trees, zone_ids):
         """StorageResourceBlock constructor
 
             Populates self.redfish with the contents of drive
@@ -36,8 +38,7 @@ class StorageResourceBlock(ResourceBlock):
             Args:
                 drive: OneView Drive dict
                 drive_index_trees: Drives index trees dict
-                server_profile_templates: Oneview's server profile
-                templates list
+                zone_ids: List of Zone Ids that this Resource Block belongs to
         """
         uuid = drive["uri"].split("/")[-1]
         super().__init__(uuid, drive)
@@ -53,7 +54,7 @@ class StorageResourceBlock(ResourceBlock):
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["ComputerSystems"] = list()
         self.redfish["Links"]["Zones"] = list()
-        self._fill_link_members(drive_index_trees, server_profile_templates)
+        self._fill_link_members(drive_index_trees, zone_ids)
 
         self.redfish["Storage"] = [
             {
@@ -63,23 +64,25 @@ class StorageResourceBlock(ResourceBlock):
 
         self._validate()
 
-    def _fill_link_members(self, drive_index_trees, server_profile_templates):
+    def _fill_link_members(self, drive_index_trees, zone_ids):
         sp_uuid = self._get_server_profile_uuid(drive_index_trees)
         if sp_uuid:
-            self.redfish["Links"]["ComputerSystems"].append(
-                {"@odata.id": ComputerSystem.BASE_URI + "/" + sp_uuid}
-            )
+            system_dict = {
+                "@odata.id": ComputerSystem.BASE_URI + "/" + sp_uuid
+            }
+            self.redfish["Links"]["ComputerSystems"].append(system_dict)
 
-        for spt in server_profile_templates:
-            has_valid_controller = ComputerSystem.get_storage_controller(spt)
-            if has_valid_controller:
-                server_profile_template_uuid = spt["uri"].split("/")[-1]
-                self.redfish["Links"]["Zones"].append(
-                    {"@odata.id":
-                        ZoneCollection.BASE_URI + "/"
-                        + server_profile_template_uuid
-                     }
-                )
+        current_encl_id = self._get_enclosure_uuid(drive_index_trees)
+        if current_encl_id:
+            for zone_id in zone_ids:
+                _, encl_id = ZoneService\
+                    .split_zone_id_to_spt_uuid_and_enclosure_id(zone_id)
+
+                if encl_id == current_encl_id:
+                    zone_dict = {
+                        "@odata.id": ZoneCollection.BASE_URI + "/" + zone_id
+                    }
+                    self.redfish["Links"]["Zones"].append(zone_dict)
 
     def _get_server_profile_uuid(self, drive_index_trees):
         try:
@@ -98,3 +101,21 @@ class StorageResourceBlock(ResourceBlock):
             server_profile_uuid = None
 
         return server_profile_uuid
+
+    def _get_enclosure_uuid(self, drive_index_trees):
+        try:
+            bay = drive_index_trees["parents"]["DRIVE_BAY_TO_DRIVE_ASSOC"][0]
+            drive_encl = \
+                bay["parents"]["DRIVE_ENCLOSURE_TO_DRIVE_BAY_ASSOC"][0]
+            enclosure = \
+                drive_encl["parents"]["ENCLOSURE_TO_BLADE"][0]
+            enclosure_id = \
+                enclosure["resource"]["attributes"]["uuid"]
+        except KeyError as e:
+            logging.info("The key {} was not found inside "
+                         "'drive index trees dict' from the Oneview when "
+                         "trying get the enclosure uuid"
+                         .format(e.args[0]))
+            enclosure_id = None
+
+        return enclosure_id

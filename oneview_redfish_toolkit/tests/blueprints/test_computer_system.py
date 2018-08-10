@@ -30,21 +30,7 @@ from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
 class TestComputerSystem(BaseFlaskTest):
-    """Tests for ComputerSystem blueprint
-
-        Tests:
-            - server hardware not found
-            - server hardware types not found
-            - oneview exception server hardware
-            - oneview exception server hardware type
-            - oneview unexpected exception
-            - know computer system
-            - change power state with valid power value
-            - change power state with invalid power value
-            - change power state with unexpected exception
-            - change power state with SH not found
-            - change power state with SHT not found
-    """
+    """Tests for ComputerSystem blueprint"""
 
     @classmethod
     def setUpClass(self):
