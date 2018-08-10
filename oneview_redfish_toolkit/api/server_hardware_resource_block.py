@@ -13,8 +13,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import collections
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
+import oneview_redfish_toolkit.api.status_mapping as status_mapping
 
 STATE_TO_STATUS_MAPPING = {
     "NoProfileApplied": "Unused",
@@ -51,18 +52,19 @@ class ServerHardwareResourceBlock(ResourceBlock):
         self.redfish["ResourceBlockType"] = ["ComputerSystem"]
 
         self.redfish["CompositionStatus"]["SharingCapable"] = False
-        self.redfish["CompositionStatus"]["CompositionState"] = \
-            self._get_composition_state()
+        self.redfish["CompositionStatus"]["CompositionState"] = status_mapping.\
+            get_redfish_composition_state(self.server_hardware)
+
+        self.redfish["Status"] = collections.OrderedDict()
+        state, health = status_mapping.\
+            get_redfish_server_hardware_status_struct(server_hardware)
+        self.redfish["Status"]["State"] = state
+        self.redfish["Status"]["Health"] = health
 
         self._fill_computer_system()
         self._fill_links()
 
         self._validate()
-
-    def _get_composition_state(self):
-        sh_state = self.server_hardware["state"]
-
-        return STATE_TO_STATUS_MAPPING.get(sh_state, None)
 
     def _fill_computer_system(self):
         self.redfish["ComputerSystems"] = list()

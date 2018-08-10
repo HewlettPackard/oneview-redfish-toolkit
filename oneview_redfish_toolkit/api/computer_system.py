@@ -26,6 +26,12 @@ import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.api.util.power_option import \
     RESET_ALLOWABLE_VALUES_LIST
 
+CRITICALITY_STATUS_MAPPING = {
+    "OK": 1,
+    "Warning": 2,
+    "Critical": 3
+}
+
 
 class ComputerSystem(RedfishJsonValidator):
     """Creates a Computer System Redfish dict
@@ -60,10 +66,14 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Model"] = server_hardware["model"]
         self.redfish["SerialNumber"] = server_hardware["serialNumber"]
         self.redfish["Status"] = collections.OrderedDict()
-        self.redfish["Status"]["State"] = \
-            status_mapping.get_redfish_state(base_resource["status"])
-        self.redfish["Status"]["Health"] = \
-            status_mapping.get_redfish_health(server_hardware["status"])
+        health = self._get_highest_status_for_sp_and_sh(
+            status_mapping.HEALTH_STATE_MAPPING.get(base_resource["status"]),
+            status_mapping.HEALTH_STATE_MAPPING.get(server_hardware["status"])
+        )
+        state, _ = status_mapping.\
+            get_redfish_server_profile_state(base_resource)
+        self.redfish["Status"]["State"] = state
+        self.redfish["Status"]["Health"] = health
         self.redfish["PowerState"] = server_hardware["powerState"]
         self.redfish["Boot"] = collections.OrderedDict()
         self.redfish["Boot"]["BootSourceOverrideTarget@Redfish."
@@ -120,6 +130,15 @@ class ComputerSystem(RedfishJsonValidator):
             + base_resource["uuid"]
 
         self._validate()
+
+    def _get_highest_status_for_sp_and_sh(self, sp_status, sh_status):
+        all_status = dict()
+        all_status[sp_status] = CRITICALITY_STATUS_MAPPING[sp_status]
+        all_status[sh_status] = CRITICALITY_STATUS_MAPPING[sh_status]
+
+        highest_status = max(all_status, key=(lambda key: all_status[key]))
+
+        return highest_status
 
     def map_boot(self, boot_list):
         """Maps Oneview's boot options to Redfish's boot option

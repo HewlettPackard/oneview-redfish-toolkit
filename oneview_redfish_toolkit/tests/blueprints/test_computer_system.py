@@ -24,12 +24,27 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
+import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.blueprints import computer_system
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
 class TestComputerSystem(BaseFlaskTest):
-    """Tests for ComputerSystem blueprint"""
+    """Tests for ComputerSystem blueprint
+
+        Tests:
+            - server hardware not found
+            - server hardware types not found
+            - oneview exception server hardware
+            - oneview exception server hardware type
+            - oneview unexpected exception
+            - know computer system
+            - change power state with valid power value
+            - change power state with invalid power value
+            - change power state with unexpected exception
+            - change power state with SH not found
+            - change power state with SHT not found
+    """
 
     @classmethod
     def setUpClass(self):
@@ -320,64 +335,6 @@ class TestComputerSystem(BaseFlaskTest):
             .assert_called_with("1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
 
     @mock.patch.object(computer_system, 'g')
-    def test_get_capabilities_when_uuid_is_spt_id_and_encl_id(self, g):
-        """Tests get CapabilitiesObject when uuid is SPT Id + Enclosure Id"""
-
-        with open('oneview_redfish_toolkit/mockups/oneview/'
-                  'ServerProfileTemplate.json') as f:
-            server_profile_template = json.load(f)
-
-        with open('oneview_redfish_toolkit/mockups/redfish/'
-                  'CapabilitiesObjectWithSPTIdAndEnclId.json') as f:
-            capabilities_obj_mockup = json.load(f)
-
-        g.oneview_client.server_profiles.get.side_effect = self.not_found_error
-        g.oneview_client.server_profile_templates.get.return_value = \
-            server_profile_template
-
-        response = self.client.get(
-            "/redfish/v1/Systems/"
-            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101")
-
-        result = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(capabilities_obj_mockup, result)
-        g.oneview_client.server_profiles.get \
-            .assert_called_with("1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
-        g.oneview_client.server_profile_templates.get \
-            .assert_called_with("1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
-        g.oneview_client.server_hardware.get.assert_not_called()
-        g.oneview_client.server_hardware_types.get.assert_not_called()
-        g.oneview_client.sas_logical_jbods.get_drives.assert_not_called()
-
-    @mock.patch.object(computer_system, 'g')
-    def test_get_computer_system_sp_when_uuid_is_spt_id_and_encl_id(self, g):
-        """Tests get ComputerSystem when uuid is SPT Id + Enclosure Id
-
-            This should raise 404
-        """
-
-        g.oneview_client.server_profiles.get.return_value = self.server_profile
-
-        response = self.client.get(
-            "/redfish/v1/Systems/"
-            "b425802b-a6a5-4941-8885-aab68dfa2ee2-0000000000A66101")
-
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertIn("Computer System UUID "
-                      "b425802b-a6a5-4941-8885-aab68dfa2ee2-0000000000A66101 "
-                      "not found", response.data.decode("utf-8"))
-        g.oneview_client.server_profiles.get \
-            .assert_called_with("b425802b-a6a5-4941-8885-aab68dfa2ee2")
-        g.oneview_client.server_profile_templates.get.assert_not_called()
-        g.oneview_client.server_hardware.get.assert_not_called()
-        g.oneview_client.server_hardware_types.get.assert_not_called()
-        g.oneview_client.sas_logical_jbods.get_drives.assert_not_called()
-
-    @mock.patch.object(computer_system, 'g')
     def test_change_power_state(self, g):
         """Tests change SH power state with valid power values
 
@@ -639,3 +596,65 @@ class TestComputerSystem(BaseFlaskTest):
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(computer_system, 'g')
+    def test_all_computer_system_health_status(self, g):
+        server_hardware = copy.deepcopy(self.server_hardware)
+        expected_cs = copy.deepcopy(self.computer_system_mockup)
+        server_profile = copy.deepcopy(self.server_profile)
+        server_profile["localStorage"]["sasLogicalJBODs"].pop(0)
+
+        for oneview_status, redfish_status in \
+                status_mapping.HEALTH_STATE_MAPPING.items():
+            server_hardware["status"] = oneview_status
+            expected_cs["Status"]["Health"] = redfish_status
+
+            g.oneview_client.server_profiles.get.return_value = \
+                server_profile
+            g.oneview_client.server_hardware.get.return_value = \
+                server_hardware
+            g.oneview_client.server_hardware_types.get.return_value = \
+                self.server_hardware_types
+            g.oneview_client.sas_logical_jbods.get_drives.return_value = \
+                [self.drives[4]]
+
+            response = self.client.get(
+                "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
+            )
+
+            result = json.loads(response.data.decode("utf-8"))
+
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual("application/json", response.mimetype)
+            self.assertEqualMockup(expected_cs, result)
+
+    @mock.patch.object(computer_system, 'g')
+    def test_all_computer_system_states(self, g):
+        expected_cs = copy.deepcopy(self.computer_system_mockup)
+        server_profile = copy.deepcopy(self.server_profile)
+        server_profile["localStorage"]["sasLogicalJBODs"].pop(0)
+
+        for oneview_status, redfish_status in status_mapping.\
+                SERVER_PROFILE_STATE_TO_REDFISH_STATE_MAPPING.items():
+
+            server_profile["state"] = oneview_status
+            expected_cs["Status"]["State"] = redfish_status
+
+            g.oneview_client.server_profiles.get.return_value = \
+                server_profile
+            g.oneview_client.server_hardware.get.return_value = \
+                self.server_hardware
+            g.oneview_client.server_hardware_types.get.return_value = \
+                self.server_hardware_types
+            g.oneview_client.sas_logical_jbods.get_drives.return_value = \
+                [self.drives[4]]
+
+            response = self.client.get(
+                "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
+            )
+
+            result = json.loads(response.data.decode("utf-8"))
+
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual("application/json", response.mimetype)
+            self.assertEqualMockup(expected_cs, result)

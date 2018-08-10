@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -37,14 +37,65 @@ STATUS_MAP = {
     }
 }
 
+HEALTH_STATE_MAPPING = {
+    "Critical": "Critical",
+    "OK": "OK",
+    "Unknown": "Warning",
+    "Disabled": "Warning",
+    "Warning": "Warning",
+}
 
-def get_redfish_state(oneview_status):
-    """Gets corresponding Redfish State"""
+COMPOSITION_STATE_MAPPING = {
+    "NoProfileApplied": "Unused",
+    "ApplyingProfile": "Composing",
+    "ProfileApplied": "Composed",
+    "ProfileError": "Failed"
+}
 
-    return STATUS_MAP[oneview_status]["State"]
+SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING = {
+    "NoProfileApplied": "Enabled",
+    "Monitored": "Enabled",
+    "ProfileApplied": "Enabled",
+    "Unsupported": "UnavailableOffline",
+    "Unknown": "Absent",
+    "RemoveFailed": "StandbyOffline",
+    "ProfileError": "StandbyOffline",
+    "Unmanaged": "StandbyOffline",
+    "Removing": "Updating",
+    "ApplyingProfile": "Updating",
+    "RemovingProfile": "Updating",
+    "UpdatingFirmware": "Updating",
+    "Adding": "Updating",
+    "Removed": "Disabled"
+}
+
+SERVER_PROFILE_STATE_TO_REDFISH_STATE_MAPPING = {
+    "Normal": "Enabled",
+    "Creating": "Updating",
+    "Updating": "Updating",
+    "Deleting": "Updating",
+    "CreateFailed": "StandbyOffline",
+    "UpdateFailed": "StandbyOffline",
+    "DeleteFailed": "StandbyOffline"
+}
 
 
-def get_redfish_health(oneview_status):
-    """Gets corresponding Redfish Health"""
+def get_redfish_server_hardware_status_struct(resource):
+    sh_state = SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING.get(
+        resource["state"])
+    health_status = HEALTH_STATE_MAPPING.get(resource["status"])
 
-    return STATUS_MAP[oneview_status]["Health"]
+    return sh_state, health_status
+
+
+def get_redfish_server_profile_state(resource):
+    sp_state = SERVER_PROFILE_STATE_TO_REDFISH_STATE_MAPPING.get(
+        resource["state"])
+    health_status = HEALTH_STATE_MAPPING.get(resource["status"])
+    return sp_state, health_status
+
+
+def get_redfish_composition_state(resource):
+    composition_state = COMPOSITION_STATE_MAPPING.get(
+        resource["state"], None)
+    return composition_state

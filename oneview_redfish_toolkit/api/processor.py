@@ -46,10 +46,10 @@ class Processor(RedfishJsonValidator):
         self.redfish["Id"] = processor_id
         self.redfish["Name"] = "Processor " + processor_id
         self.redfish["Status"] = dict()
-        self.redfish["Status"]["State"] = \
-            status_mapping.get_redfish_state(server_hardware["status"])
-        self.redfish["Status"]["Health"] = \
-            status_mapping.get_redfish_health(server_hardware["status"])
+        state, health = status_mapping.\
+            get_redfish_server_hardware_status_struct(server_hardware)
+        self.redfish["Status"]["State"] = state
+        self.redfish["Status"]["Health"] = health
         self.redfish["ProcessorType"] = "CPU"
         self.redfish["Model"] = server_hardware["processorType"]
         self.redfish["MaxSpeedMHz"] = server_hardware["processorSpeedMhz"]

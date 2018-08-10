@@ -3,10 +3,6 @@
     "Id": "0000000000A66101",
     "Description": "HPE OneView Manager",
     "FirmwareVersion": "3.00.07-0288219",
-    "Status": {
-        "State": "Enabled",
-        "Health": "OK"
-    },
     "@odata.context": "/redfish/v1/$metadata#Manager.Manager",
     "@odata.id": "/redfish/v1/Managers/0000000000A66101",
     "ManagerType": "EnclosureManager",

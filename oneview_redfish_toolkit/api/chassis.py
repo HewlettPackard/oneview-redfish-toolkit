@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -50,10 +50,10 @@ class Chassis(RedfishJsonValidator):
         self.redfish["SerialNumber"] = oneview_resource["serialNumber"]
         self.redfish["PartNumber"] = oneview_resource["partNumber"]
         self.redfish["Status"] = collections.OrderedDict()
-        self.redfish["Status"]["State"] = \
-            status_mapping.get_redfish_state(oneview_resource["status"])
-        self.redfish["Status"]["Health"] = \
-            status_mapping.get_redfish_health(oneview_resource["status"])
+        state, health = status_mapping.\
+            get_redfish_server_hardware_status_struct(oneview_resource)
+        self.redfish["Status"]["State"] = state
+        self.redfish["Status"]["Health"] = health
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Chassis.Chassis"
