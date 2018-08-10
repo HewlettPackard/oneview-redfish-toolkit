@@ -45,6 +45,13 @@ class TestComputerSystemCollection(BaseTest):
         ) as f:
             self.computer_system_collection_mockup = json.load(f)
 
+        # Loading ServerProfileTemplates result mockup
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'ServerProfileTemplates.json'
+        ) as f:
+            self.server_profile_template_list = json.load(f)
+
     def test_serialize(self):
         # Tests the serialize function result against known result
 
@@ -56,7 +63,10 @@ class TestComputerSystemCollection(BaseTest):
         ]
 
         computer_system_collection = ComputerSystemCollection(
-            self.server_hardware_list, zone_ids)
+            self.server_hardware_list,
+            self.server_profile_template_list,
+            zone_ids
+        )
 
         result = json.loads(computer_system_collection.serialize())
 

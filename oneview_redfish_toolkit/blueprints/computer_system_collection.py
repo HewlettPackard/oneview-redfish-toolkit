@@ -37,18 +37,17 @@ def get_computer_system_collection():
         Returns:
                 JSON: JSON with ComputerSystemCollection.
     """
-    # Gets all server hardware
-    server_hardware_list = g.oneview_client.server_hardware.get_all()
+    server_hardware_list = g.oneview_client.server_hardware.get_all(
+        filter="state=ProfileApplied"
+    )
 
-    # Gets all server profile template
-    server_profile_templates = \
+    server_profile_tmpls = \
         g.oneview_client.server_profile_templates.get_all()
 
-    zone_ids = zone_collection.get_zone_ids_by_templates(
-        server_profile_templates)
+    zone_ids = zone_collection.get_zone_ids_by_templates(server_profile_tmpls)
 
-    # Build Computer System Collection object and validates it
-    csc = ComputerSystemCollection(server_hardware_list, zone_ids)
+    csc = ComputerSystemCollection(server_hardware_list,
+                                   server_profile_tmpls,
+                                   zone_ids)
 
-    # Build response and returns it
     return ResponseBuilder.success(csc)

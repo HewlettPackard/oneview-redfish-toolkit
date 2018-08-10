@@ -20,43 +20,17 @@
         "Capabilities": [
             {
                 "CapabilitiesObject": {
-                    "@odata.id": "/redfish/v1/Systems/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101"
+                    "@odata.id": "/redfish/v1/Systems/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
                 },
                 "UseCase": "ComputerSystemComposition",
                 "Links": {
                     "RelatedItem": [
                         {
                             "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101"
-                        }
-                    ],
-                    "TargetCollection": {
-                        "@odata.id": "/redfish/v1/Systems"
-                    }
-                }
-            },
-            {
-                "CapabilitiesObject": {
-                    "@odata.id": "/redfish/v1/Systems/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66102"
-                },
-                "UseCase": "ComputerSystemComposition",
-                "Links": {
-                    "RelatedItem": [
+                        },
                         {
                             "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66102"
-                        }
-                    ],
-                    "TargetCollection": {
-                        "@odata.id": "/redfish/v1/Systems"
-                    }
-                }
-            },
-            {
-                "CapabilitiesObject": {
-                    "@odata.id": "/redfish/v1/Systems/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66103"
-                },
-                "UseCase": "ComputerSystemComposition",
-                "Links": {
-                    "RelatedItem": [
+                        },
                         {
                             "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66103"
                         }
