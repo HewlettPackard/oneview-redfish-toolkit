@@ -126,7 +126,8 @@ class TestResourceBlock(BaseFlaskTest):
         ]
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        g.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.\
+            logical_enclosures.get.return_value = self.log_encl
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -149,11 +150,12 @@ class TestResourceBlock(BaseFlaskTest):
                      "bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa"
                      "&category=logical-enclosures"),
             ])
-        self.oneview_client.server_profile_templates.get_all.assert_called_with()
+        self.oneview_client.\
+            server_profile_templates.get_all.assert_called_with()
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
 
-    def test_get_storage_resource_block_when_drive_is_composed(self, g):
+    def test_get_storage_resource_block_when_drive_is_composed(self):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
             'StorageResourceBlockComposed.json'
@@ -174,7 +176,7 @@ class TestResourceBlock(BaseFlaskTest):
         ]
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        g.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -197,7 +199,8 @@ class TestResourceBlock(BaseFlaskTest):
                      "bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa"
                      "&category=logical-enclosures"),
             ])
-        self.oneview_client.server_profile_templates.get_all.assert_called_with()
+        self.oneview_client.\
+            server_profile_templates.get_all.assert_called_with()
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
 
@@ -206,9 +209,9 @@ class TestResourceBlock(BaseFlaskTest):
             self.server_hardware
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        g.oneview_client.connection.get.return_value = \
+        self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
-        g.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -225,11 +228,11 @@ class TestResourceBlock(BaseFlaskTest):
         server_hardware = copy.deepcopy(self.server_hardware)
         expected_rb = copy.deepcopy(self.expected_sh_resource_block)
 
-        g.oneview_client.server_profile_templates.get_all.return_value = \
+        self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        g.oneview_client.connection.get.return_value = \
+        self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
-        g.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
 
         for oneview_state, redfish_state in status_mapping.\
                 SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING.items():
@@ -256,11 +259,11 @@ class TestResourceBlock(BaseFlaskTest):
         server_hardware = copy.deepcopy(self.server_hardware)
         expected_cs = copy.deepcopy(self.expected_sh_resource_block)
 
-        g.oneview_client.server_profile_templates.get_all.return_value = \
+        self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        g.oneview_client.connection.get.return_value = \
+        self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
-        g.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
 
         for oneview_status, redfish_status in \
                 status_mapping.HEALTH_STATE_MAPPING.items():
@@ -291,10 +294,11 @@ class TestResourceBlock(BaseFlaskTest):
 
         encl_group_uri = self.server_hardware["serverGroupUri"]
         sh_type_uri = self.server_hardware["serverHardwareTypeUri"]
-        self.oneview_client.server_profile_templates.get_all.assert_called_with(
-            filter=["enclosureGroupUri='" + encl_group_uri + "'",
-                    "serverHardwareTypeUri='" + sh_type_uri + "'"]
-        )
+        self.oneview_client.\
+            server_profile_templates.get_all.assert_called_with(
+                filter=["enclosureGroupUri='" + encl_group_uri + "'",
+                        "serverHardwareTypeUri='" + sh_type_uri + "'"]
+                )
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
 
@@ -309,9 +313,9 @@ class TestResourceBlock(BaseFlaskTest):
             self.resource_not_found
         self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
-        g.oneview_client.connection.get.return_value = \
+        self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
-        g.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"

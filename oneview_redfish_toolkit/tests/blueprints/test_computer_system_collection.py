@@ -127,7 +127,8 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         self.oneview_client.server_hardware.get_all.assert_called_with(
             filter="state=ProfileApplied")
-        g.oneview_client.server_profile_templates.get_all.assert_called_with()
+        self.oneview_client.\
+            server_profile_templates.get_all.assert_called_with()
 
         spt_with_storage_ctrler = server_profile_template_list[0]
         self.oneview_client.connection.get.assert_called_with(
