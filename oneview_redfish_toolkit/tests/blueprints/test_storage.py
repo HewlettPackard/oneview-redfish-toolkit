@@ -291,16 +291,15 @@ class TestStorage(BaseFlaskTest):
         self.oneview_client.server_profiles.get.assert_not_called()
         self.oneview_client.sas_logical_jbods.get.assert_not_called()
 
-    @mock.patch.object(storage, 'g')
-    def test_composed_system_without_drives(self, g):
+    def test_composed_system_without_drives(self):
         """Tests Storage when it does not have drives"""
         server_profile = copy.deepcopy(self.server_profile)
         server_profile["localStorage"]["sasLogicalJBODs"] = []
         storage_mockup_without_drives = copy.deepcopy(self.storage_mockup)
         storage_mockup_without_drives["Drives"] = []
         storage_mockup_without_drives["Drives@odata.count"] = 0
-        g.oneview_client.server_profiles.get.return_value = server_profile
-        g.oneview_client.server_hardware_types.get.return_value \
+        self.oneview_client.server_profiles.get.return_value = server_profile
+        self.oneview_client.server_hardware_types.get.return_value \
             = self.server_hardware_type
 
         response = self.client.get(
@@ -315,8 +314,8 @@ class TestStorage(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(storage_mockup_without_drives, result)
-        g.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
-        g.oneview_client.server_hardware_types.get.assert_called_with(
+        self.oneview_client.server_hardware_types.get.assert_called_with(
             self.server_hardware_type["uri"])
-        g.oneview_client.sas_logical_jbods.get.assert_not_called()
+        self.oneview_client.sas_logical_jbods.get.assert_not_called()
