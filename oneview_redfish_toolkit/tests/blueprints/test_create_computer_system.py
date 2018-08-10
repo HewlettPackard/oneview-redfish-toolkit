@@ -323,6 +323,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.oneview_client.server_profile_templates.get.side_effect = [
             self.not_found_error,
             spt,
+            spt,
             spt
         ]
         self.oneview_client.index_resources.get.side_effect = [
