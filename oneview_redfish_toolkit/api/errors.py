@@ -15,6 +15,10 @@
 # under the License.
 
 
+NOT_FOUND_ONEVIEW_ERRORS = ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException',
+                            'DFRM_SAS_LOGICAL_JBOD_NOT_FOUND']
+
+
 class OneViewRedfishError(Exception):
 
     def __init__(self, msg):

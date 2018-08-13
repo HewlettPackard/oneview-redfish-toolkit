@@ -82,6 +82,7 @@ def get_oneview_client_conf_mode(ip_oneview, api_version=None):
                 return ov_client
         # if failed abort
         except Exception:
+            logging.exception("Failed to recover session based connection")
             raise
 
 

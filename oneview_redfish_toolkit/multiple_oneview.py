@@ -21,15 +21,12 @@ import logging
 from hpOneView.exceptions import HPOneViewException
 
 # Modules own libs
+from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 from oneview_redfish_toolkit import authentication
 from oneview_redfish_toolkit import connection
 
 # Globals vars:
 #   globals()['map_resources_ov']
-
-
-NOT_FOUND_ERROR = ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException',
-                   'DFRM_SAS_LOGICAL_JBOD_NOT_FOUND']
 
 
 def init_map_resources():
@@ -77,12 +74,7 @@ def get_ov_ip_by_resource(resource_id):
     """Get cached OneView's IP by resource ID"""
     map_resources = get_map_resources()
 
-    if resource_id not in map_resources:
-        return None
-
-    ip_oneview = map_resources[resource_id]
-
-    return ip_oneview
+    return map_resources.get(resource_id)
 
 
 def search_resource_multiple_ov(resource, function, resource_id,
@@ -144,7 +136,7 @@ def search_resource_multiple_ov(resource, function, resource_id,
                         result.append(expected_resource)
         except HPOneViewException as e:
             # If get any error that is not a notFoundError
-            if e.oneview_response["errorCode"] not in NOT_FOUND_ERROR:
+            if e.oneview_response["errorCode"] not in NOT_FOUND_ONEVIEW_ERRORS:
                 logging.exception("Error while searching on multiple "
                                   "OneViews for Oneview {}: {}".
                                   format(ov_ip, e))
