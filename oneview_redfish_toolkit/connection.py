@@ -108,22 +108,7 @@ def check_oneview_availability(oneview_ip):
 
     for attempt_counter in range(attempts):
         try:
-            connection = HTTPSConnection(
-                oneview_ip, context=ssl.SSLContext(ssl.PROTOCOL_TLSv1_2))
-
-            connection.request(
-                method='GET', url='/controller-state.json',
-                headers={'Content-Type': 'application/json'})
-
-            response = connection.getresponse()
-
-            if response.status != status.HTTP_200_OK:
-                message = "OneView is unreachable at {}".format(
-                    oneview_ip)
-                raise OneViewRedfishError(message)
-
-            text = response.read().decode('UTF-8')
-            status_ov = json.loads(text)
+            status_ov = request_oneview(oneview_ip, '/controller-state.json')
 
             if status_ov['state'] != 'OK':
                 message = "OneView state is not OK at {}".format(
@@ -138,12 +123,36 @@ def check_oneview_availability(oneview_ip):
 
             if attempt_counter + 1 < attempts:
                 time.sleep(retry_interval_sec)
-        finally:
-            connection.close()
 
     message = "After {} attempts OneView is unreachable at {}".format(
         attempts, oneview_ip)
     raise OneViewRedfishError(message)
+
+
+def request_oneview(oneview_ip, rest_url):
+    try:
+        connection = HTTPSConnection(
+            oneview_ip, context=ssl.SSLContext(ssl.PROTOCOL_TLSv1_2))
+
+        connection.request(
+            method='GET', url=rest_url,
+            headers={'Content-Type': 'application/json',
+                     'X-API-Version': config.get_api_version()}
+            )
+
+        response = connection.getresponse()
+
+        if response.status != status.HTTP_200_OK:
+            message = "OneView is unreachable at {}".format(
+                oneview_ip)
+            raise OneViewRedfishError(message)
+
+        text_response = response.read().decode('UTF-8')
+        json_response = json.loads(text_response)
+
+        return json_response
+    finally:
+        connection.close()
 
 
 def create_oneview_config(ip, session_token=None, api_version=None,
