@@ -20,13 +20,14 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
-from flask import g
 from flask import Response
 from flask_api import status
 
 # own libs
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.service_root import ServiceRoot
+from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit import connection
 
 service_root = Blueprint('service_root', __name__)
 
@@ -40,8 +41,10 @@ def get_service_root():
     """
 
     try:
+        ov_ip = config.get_oneview_multiple_ips()[0]
         appliance_node_information = \
-            g.oneview_client.appliance_node_information.get_version()
+            connection.request_oneview(ov_ip,
+                                       '/rest/appliance/nodeinfo/version')
         uuid = appliance_node_information['uuid']
 
         sr = ServiceRoot(uuid)

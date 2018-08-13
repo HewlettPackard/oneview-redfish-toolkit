@@ -25,6 +25,7 @@ from hpOneView.exceptions import HPOneViewException
 # Module libs
 from oneview_redfish_toolkit.blueprints import service_root
 from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -38,8 +39,8 @@ class TestServiceRoot(BaseFlaskTest):
         self.app.register_blueprint(
             service_root.service_root, url_prefix='/redfish/v1/')
 
-    @mock.patch.object(service_root, 'g')
-    def test_service_root_oneview_exception(self, g):
+    @mock.patch.object(service_root, 'connection')
+    def test_service_root_oneview_exception(self, connection):
         """Tests ServiceROOT with an exception"""
 
         e = HPOneViewException({
@@ -47,27 +48,7 @@ class TestServiceRoot(BaseFlaskTest):
             'message': 'appliance error',
         })
 
-        g.oneview_client.appliance_node_information.get_version.side_effect = e
-
-        response = self.client.get("/redfish/v1/")
-
-        self.assertEqual(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-            response.status_code
-        )
-
-        self.assertEqual("application/json", response.mimetype)
-
-    @mock.patch.object(service_root, 'g')
-    def test_service_root_exception(self, g):
-        """Tests ServiceROOT with an exception"""
-
-        e = HPOneViewException({
-            'errorCode': 'ANOTHER_ERROR',
-            'message': 'appliance error',
-        })
-
-        g.oneview_client.appliance_node_information.get_version.side_effect = e
+        connection.request_oneview.side_effect = e
 
         response = self.client.get("/redfish/v1/")
 
@@ -79,13 +60,22 @@ class TestServiceRoot(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(config, 'get_authentication_mode')
-    @mock.patch.object(service_root, 'g')
-    def test_get_service_root(self, g, get_authentication_mode):
+    @mock.patch.object(config, 'get_oneview_multiple_ips')
+    @mock.patch.object(config, 'get_credentials')
+    @mock.patch.object(connection, 'request_oneview')
+    @mock.patch.object(connection, 'get_oneview_client')
+    def test_get_service_root(self, get_oneview_client, request_oneview,
+                              get_credentials,
+                              get_oneview_multiple_ips,
+                              get_authentication_mode):
         """Tests ServiceRoot blueprint result against know value """
 
-        g.oneview_client.appliance_node_information.get_version.return_value = \
+        get_authentication_mode.return_value = 'conf'
+        request_oneview.return_value = \
             {'uuid': '00000000-0000-0000-0000-000000000000'}
-        get_authentication_mode.return_value = "conf"
+        get_oneview_multiple_ips.return_value = ['10.0.0.1']
+        get_credentials.return_value = {'userName': '',
+                                        'password': ''}
 
         result = self.client.get("/redfish/v1/")
 
@@ -95,4 +85,7 @@ class TestServiceRoot(BaseFlaskTest):
             'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
         ) as f:
             service_root_mockup = json.load(f)
+
         self.assertEqualMockup(service_root_mockup, result)
+        get_credentials.assert_not_called()
+        get_oneview_client.assert_not_called()
