@@ -86,11 +86,13 @@ def update_power_state_server_hardware(resource, function, *args, **kwargs):
 def _run_action(resource_id, resource_get, function_get, resource,
                 function, *args, **kwargs):
 
-    # Mapping OneView for the resource_id
-    multiple_oneview.query_ov_client_by_resource(resource_id,
-                                                 resource_get,
-                                                 function_get,
-                                                 resource_id, None)
+    # Check if the resource_id is already mapped
+    if not multiple_oneview.get_ov_ip_by_resource(resource_id):
+        # Mapping OneView for the resource_id
+        multiple_oneview.query_ov_client_by_resource(resource_id,
+                                                     resource_get,
+                                                     function_get,
+                                                     resource_id, None)
 
     # Running action on OneView already mapped for resource_id
     return multiple_oneview.query_ov_client_by_resource(resource_id,
