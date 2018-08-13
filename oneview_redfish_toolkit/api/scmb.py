@@ -52,7 +52,7 @@ def get_oneview_client():
     # Workaround for #328
     # Create OneView client using API 500 just to retrieve OneView certificates
     ov_config = connection.create_oneview_config(
-        # TODO(victorhugorodrigues): Remove after implentation for handling
+        # TODO(victorhugorodrigues): Remove after implementation for handling
         # multiple OneViews for events service
         ip=config.get_oneview_multiple_ips()[0],
         credentials=config.get_credentials(),
@@ -99,7 +99,7 @@ def get_cert():
 
 
 def scmb_connect():
-    # TODO(victorhugorodrigues): Remove after implentation for handling
+    # TODO(victorhugorodrigues): Remove after implementation for handling
     # multiple OneViews for events service
     scmb_server = config.get_oneview_multiple_ips()[0]
 
