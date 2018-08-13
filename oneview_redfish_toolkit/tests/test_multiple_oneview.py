@@ -15,7 +15,8 @@
 # under the License.
 
 """
-    Tests for store_schema and load_registry function from util.py
+    Tests for query_ov_client_by_resource and
+    search_resource_multiple_ov function from multiple_oneview.py
 """
 import collections
 import json
