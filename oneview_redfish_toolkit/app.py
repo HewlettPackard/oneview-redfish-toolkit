@@ -94,6 +94,7 @@ from oneview_redfish_toolkit.blueprints.vlan_network_interface import \
 from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
 from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import handler_multiple_oneview
 from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit import util
@@ -171,6 +172,9 @@ def main(config_file_path, logging_config_file_path):
         # If authenticating do not check for anything
         if request.path == "/redfish/v1/SessionService/Sessions" and \
             request.method == "POST":
+            return None
+
+        if connection.is_service_root():
             return None
 
         x_auth_token = request.headers.get('x-auth-token')
