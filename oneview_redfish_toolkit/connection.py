@@ -44,7 +44,9 @@ def get_oneview_client(ip_oneview, token=None,
     ov_config = None
 
     if auth_mode == "conf":
-        return get_oneview_client_conf_mode(ip_oneview, api_version)
+        create_oneview_config(ip=ip_oneview,
+                              api_version=api_version,
+                              credentials=config.get_credentials())
 
     if auth_mode == "session":
         ov_config = create_oneview_config(ip=ip_oneview,
@@ -57,29 +59,6 @@ def get_oneview_client(ip_oneview, token=None,
     except Exception:
         logging.exception("Failed to recover session based connection")
         raise
-
-
-def get_oneview_client_conf_mode(ip_oneview, api_version=None):
-    ov_client = None
-    # Check if connection is ok yet
-    try:
-        ov_config = \
-            create_oneview_config(ip=ip_oneview,
-                                  api_version=api_version,
-                                  credentials=config.get_credentials())
-
-        ov_client = OneViewClient(ov_config)
-        return ov_client
-    except Exception:
-        try:
-            logging.exception('Re-authenticated')
-            if ov_client:
-                ov_client.connection.login(config.get_credentials())
-                return ov_client
-        # if failed abort
-        except Exception:
-            logging.exception("Failed to recover session based connection")
-            raise
 
 
 def is_service_root():
