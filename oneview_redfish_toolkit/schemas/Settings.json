@@ -1,10 +1,75 @@
 {
-    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
-    "title": "#Settings",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_4_0.json",
+    "copyright": "Copyright 2014-2018 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
     "definitions": {
+        "MaintenanceWindow": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_2_0.json#/definitions/MaintenanceWindow"
+                }
+            ]
+        },
+        "OperationApplyTime": {
+            "enum": [
+                "Immediate",
+                "OnReset",
+                "AtMaintenanceWindowStart",
+                "InMaintenanceWindowOnReset"
+            ],
+            "enumDescriptions": {
+                "AtMaintenanceWindowStart": "Apply the requested operation during a maintenance window as specified by an administrator.",
+                "Immediate": "Apply the requested operation immediately.",
+                "InMaintenanceWindowOnReset": "Apply the requested operation after a reset but within maintenance window as specified by an adminstrator.",
+                "OnReset": "Apply the requested operation on a reset."
+            },
+            "enumLongDescriptions": {
+                "AtMaintenanceWindowStart": "This OperationApplyTime value shall be used to indicate the requested Create, Delete, or Action operation is applied during the maintenance window specified by the MaintenanceWindowStartTime and MaintenanceWindowDurationInSeconds properties.  A service may perform resets during this maintenance window.",
+                "Immediate": "This OperationApplyTime value shall be used to indicate the requested Create, Delete, or Action operation is applied immediately.",
+                "InMaintenanceWindowOnReset": "This OperationApplyTime value shall be used to indicate the requested Create, Delete, or Action operation is applied during the maintenance window specified by the MaintenanceWindowStartTime and MaintenanceWindowDurationInSeconds properties, and if a reset occurs within the maintenance window.",
+                "OnReset": "This OperationApplyTime value shall be used to indicate the requested Create, Delete, or Action operation is applied when the system or service is reset."
+            },
+            "type": "string"
+        },
+        "OperationApplyTimeSupport": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_2_0.json#/definitions/OperationApplyTimeSupport"
+                }
+            ]
+        },
+        "PreferredApplyTime": {
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_1_0.json#/definitions/PreferredApplyTime"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_2_0.json#/definitions/PreferredApplyTime"
+                }
+            ]
+        },
         "Settings": {
-                "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_0_0.json#/definitions/Settings"
+            "anyOf": [
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_0_0.json#/definitions/Settings"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_0_2.json#/definitions/Settings"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_0_3.json#/definitions/Settings"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_0_4.json#/definitions/Settings"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_1_0.json#/definitions/Settings"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Settings.v1_2_0.json#/definitions/Settings"
+                }
+            ]
         }
     },
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
+    "owningEntity": "DMTF",
+    "title": "#Settings"
 }

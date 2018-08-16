@@ -19,7 +19,11 @@
     "EventService": {
         "@odata.id": "/redfish/v1/EventService"
     },
-    "Links": {},
+    "Links": {
+        "Sessions": {
+            "@odata.id": "/redfish/v1/SessionService/Sessions"
+        }
+    },
     "@odata.context": "/redfish/v1/$metadata#ServiceRoot.ServiceRoot",
     "@odata.id": "/redfish/v1/",
     "@Redfish.Copyright": "Copyright (2017) Hewlett Packard Enterprise Development LP"

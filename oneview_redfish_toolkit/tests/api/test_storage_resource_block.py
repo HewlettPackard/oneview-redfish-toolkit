@@ -59,7 +59,7 @@ class TestStorageResourceBlock(BaseTest):
             self.drive, self.drive_index_tree, zone_ids)
         result = json.loads(resource_block.serialize())
 
-        self.assertEqual(self.resource_block_mockup, result)
+        self.assertEqualMockup(self.resource_block_mockup, result)
 
     def test_when_server_profile_template_has_not_storage_controller(self):
         """This test is a invalid state (it should never occur)

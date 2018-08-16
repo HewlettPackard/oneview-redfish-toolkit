@@ -9,6 +9,7 @@
     ],
     "Context": null,
     "Protocol": "Redfish",
+    "SubscriptionType": "RedfishEvent",
     "@odata.context": "/redfish/v1/$metadata#EventDestination.EventDestination",
     "@odata.id": "/redfish/v1/EventService/EventSubscriptions/e7f93fa2-0cb4-11e8-9060-e839359bc36a"
 }

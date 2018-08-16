@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -56,6 +56,7 @@ class Subscription(RedfishJsonValidator):
             _remove_duplicated_event_types(event_types)
         self.redfish["Context"] = context
         self.redfish["Protocol"] = "Redfish"
+        self.redfish["SubscriptionType"] = "RedfishEvent"
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#EventDestination.EventDestination"
         self.redfish["@odata.id"] = \
