@@ -92,7 +92,7 @@ def _run_action(resource_id, resource_get, function_get, resource,
         multiple_oneview.query_ov_client_by_resource(resource_id,
                                                      resource_get,
                                                      function_get,
-                                                     resource_id, None)
+                                                     resource_id, **{})
 
     # Running action on OneView already mapped for resource_id
     return multiple_oneview.query_ov_client_by_resource(resource_id,
