@@ -64,9 +64,9 @@ class ServiceRoot(RedfishJsonValidator):
         self.add_event_service_api()
 
         self.redfish['Links'] = collections.OrderedDict()
-        # self.redfish['Links']['Sessions'] = collections.OrderedDict()
-        # self.redfish['Links']['Sessions']['@odata.id'] = \
-        #    "/redfish/v1/SessionService/Sessions"
+        self.redfish['Links']['Sessions'] = collections.OrderedDict()
+        self.redfish['Links']['Sessions']['@odata.id'] = \
+            "/redfish/v1/SessionService/Sessions"
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ServiceRoot.ServiceRoot"
         self.redfish["@odata.id"] = "/redfish/v1/"

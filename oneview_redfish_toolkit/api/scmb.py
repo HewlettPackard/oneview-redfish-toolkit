@@ -56,7 +56,7 @@ def get_oneview_client():
         # multiple OneViews for events service
         ip=config.get_oneview_multiple_ips()[0],
         credentials=config.get_credentials(),
-        api_version=500
+        api_version=300
     )
     ov_client = OneViewClient(ov_config)
     ov_client.connection.login(config.get_credentials())

@@ -1,12 +1,12 @@
 {
-    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
-    "title": "#Role.Role",
     "$ref": "#/definitions/Role",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_4_0.json",
+    "copyright": "Copyright 2014-2018 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
     "definitions": {
         "Role": {
             "anyOf": [
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.v4_0_2.json#/definitions/idRef"
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Role.v1_0_0.json#/definitions/Role"
@@ -15,10 +15,25 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Role.v1_0_2.json#/definitions/Role"
                 },
                 {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Role.v1_0_3.json#/definitions/Role"
+                },
+                {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Role.v1_1_0.json#/definitions/Role"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Role.v1_1_1.json#/definitions/Role"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Role.v1_2_0.json#/definitions/Role"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Role.v1_2_1.json#/definitions/Role"
                 }
-            ]
+            ],
+            "description": "This schema defines a user role to be used in conjunction with a manager account.",
+            "longDescription": "This resource shall be used to represent resources that represent the user role for the user account."
         }
     },
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
+    "owningEntity": "DMTF",
+    "title": "#Role.Role"
 }

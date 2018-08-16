@@ -40,11 +40,7 @@ class VLanNetworkInterfaceCollection(RedfishJsonValidator):
 
         super().__init__(self.SCHEMA_NAME)
 
-        network_set_id = \
-            network_set["uri"].split("/")[-1]
-
         self.redfish["@odata.type"] = self.get_odata_type()
-        self.redfish["Id"] = network_set_id
         self.redfish["Name"] = network_set["name"]
         self.redfish["Members@odata.count"] = len(network_set["networkUris"])
         self.redfish["Members"] = list()
@@ -72,5 +68,5 @@ class VLanNetworkInterfaceCollection(RedfishJsonValidator):
 
         for ethernet_uri in ethernet_networks_uri:
             vlan = dict()
-            vlan["@data.id"] = endpoint + "/" + ethernet_uri.split("/")[-1]
+            vlan["@odata.id"] = endpoint + "/" + ethernet_uri.split("/")[-1]
             self.redfish["Members"].append(vlan)

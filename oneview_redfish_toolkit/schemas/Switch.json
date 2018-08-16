@@ -1,12 +1,12 @@
 {
-    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
-    "title": "#Switch.Switch",
     "$ref": "#/definitions/Switch",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_4_0.json",
+    "copyright": "Copyright 2014-2018 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
     "definitions": {
         "Switch": {
             "anyOf": [
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.v4_0_2.json#/definitions/idRef"
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Switch.v1_0_0.json#/definitions/Switch"
@@ -16,9 +16,18 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/Switch.v1_0_2.json#/definitions/Switch"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Switch.v1_0_3.json#/definitions/Switch"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/Switch.v1_1_0.json#/definitions/Switch"
                 }
-            ]
+            ],
+            "description": "Switch contains properties describing a simple fabric switch.",
+            "longDescription": "This resource shall be used to represent a simple switch for a Redfish implementation."
         }
     },
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
+    "owningEntity": "DMTF",
+    "title": "#Switch.Switch"
 }

@@ -232,7 +232,7 @@ class TestVLanNetworkInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(self.expected_vlan_network_interface_sp, result)
+        self.assertEqualMockup(self.expected_vlan_network_interface_sp, result)
         self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uri"].split("/")[-1])
         self.oneview_client.ethernet_networks.get.assert_called_with(

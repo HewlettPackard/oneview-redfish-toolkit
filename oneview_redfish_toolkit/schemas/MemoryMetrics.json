@@ -1,12 +1,12 @@
 {
-    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_2_0.json",
-    "title": "#MemoryMetrics.MemoryMetrics",
     "$ref": "#/definitions/MemoryMetrics",
+    "$schema": "http://redfish.dmtf.org/schemas/v1/redfish-schema.v1_4_0.json",
+    "copyright": "Copyright 2014-2018 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright",
     "definitions": {
         "MemoryMetrics": {
             "anyOf": [
                 {
-                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.4.0.0.json#/definitions/idRef"
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/odata.v4_0_2.json#/definitions/idRef"
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryMetrics.v1_0_0.json#/definitions/MemoryMetrics"
@@ -18,6 +18,9 @@
                     "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryMetrics.v1_0_2.json#/definitions/MemoryMetrics"
                 },
                 {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryMetrics.v1_0_3.json#/definitions/MemoryMetrics"
+                },
+                {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryMetrics.v1_1_0.json#/definitions/MemoryMetrics"
                 },
                 {
@@ -25,9 +28,15 @@
                 },
                 {
                     "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryMetrics.v1_1_2.json#/definitions/MemoryMetrics"
+                },
+                {
+                    "$ref": "http://redfish.dmtf.org/schemas/v1/MemoryMetrics.v1_1_3.json#/definitions/MemoryMetrics"
                 }
-            ]
+            ],
+            "description": "MemoryMetrics contains usage and health statistics for a single Memory module or device instance.",
+            "longDescription": "This resource shall be used to represent the Memory Metrics for a single Memory device in a Redfish implementation."
         }
     },
-    "copyright": "Copyright 2014-2017 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright"
+    "owningEntity": "DMTF",
+    "title": "#MemoryMetrics.MemoryMetrics"
 }
