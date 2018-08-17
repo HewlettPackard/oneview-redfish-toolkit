@@ -260,7 +260,7 @@ class TestResourceBlock(BaseFlaskTest):
             self.assertEqual("application/json", response.mimetype)
             self.assertEqualMockup(expected_rb, result)
 
-    def test_all_server_hardware_resouce_block_states_without_sp(self, g):
+    def test_all_server_hardware_resouce_block_states_without_sp(self):
         server_hardware = copy.deepcopy(self.server_hardware)
         server_hardware["serverProfileUri"] = None
         expected_rb = copy.deepcopy(self.expected_sh_resource_block)
