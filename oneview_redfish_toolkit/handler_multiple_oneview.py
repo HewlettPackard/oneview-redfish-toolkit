@@ -59,7 +59,6 @@ RESOURCE_STRATEGY = {
         },
     "server_hardware_types": {"get": st.first_parameter_resource},
     "server_profiles": {
-        "create": st.create_server_profile,
         "delete": st.delete_server_profile,
         "get": st.first_parameter_resource,
         "get_available_targets": st.first_parameter_resource,
