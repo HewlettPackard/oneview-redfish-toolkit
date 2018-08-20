@@ -234,6 +234,7 @@ def main(config_file_path, logging_config_file_path):
     @app.errorhandler(status.HTTP_403_FORBIDDEN)
     def forbidden(error):
         """Creates a Forbidden Error response"""
+        logging.error(error.description)
         return ResponseBuilder.error_403(error)
 
     @app.errorhandler(status.HTTP_404_NOT_FOUND)

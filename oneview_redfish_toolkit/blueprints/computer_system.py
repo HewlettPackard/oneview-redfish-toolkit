@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+from functools import reduce
 import logging
 
 # 3rd party libs
@@ -39,6 +40,8 @@ from oneview_redfish_toolkit.api.redfish_json_validator \
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit.services.computer_system_service import \
+    ComputerSystemService
 
 computer_system = Blueprint("computer_system", __name__)
 
@@ -187,6 +190,7 @@ def create_composed_system():
               "The request content should be a valida JSON")
 
     body = request.get_json()
+    result_location_uri = None
 
     try:
         RedfishJsonValidator.validate(body, 'ComputerSystem')
@@ -220,7 +224,18 @@ def create_composed_system():
             network_blocks,
             storage_blocks)
 
-        result = g.oneview_client.server_profiles.create(server_profile)
+        service = ComputerSystemService(g.oneview_client)
+        task, resource_uri = service.create_composed_system(server_profile)
+
+        if resource_uri:
+            result_uuid = resource_uri.split("/")[-1]
+            result_location_uri = ComputerSystem.BASE_URI + "/" + result_uuid
+        elif task.get("taskErrors"):
+            err_msg = reduce(
+                lambda result, msg: result + msg["message"] + "\n",
+                task["taskErrors"],
+                "")
+            raise OneViewRedfishError(err_msg)
 
     except ValidationError as e:
         abort(status.HTTP_400_BAD_REQUEST, e.message)
@@ -230,10 +245,13 @@ def create_composed_system():
     except (HPOneViewTaskError, OneViewRedfishError) as e:
         abort(status.HTTP_403_FORBIDDEN, e.msg)
 
-    location_uri = ComputerSystem.BASE_URI + "/" + result["uuid"]
+    if not result_location_uri:
+        logging.error("It was not possible get the server profile URI when "
+                      "creating a composed system")
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     return Response(status=status.HTTP_201_CREATED,
-                    headers={"Location": location_uri},
+                    headers={"Location": result_location_uri},
                     mimetype="application/json")
 
 
@@ -300,8 +318,9 @@ def _get_drives_from_sp(server_profile):
     """Gets Drives from Server Profile"""
     jbods_drives = list()
     for sas_logical_jbod in server_profile["localStorage"]["sasLogicalJBODs"]:
-        drives_by_sas_logical_uuid = g.oneview_client.sas_logical_jbods. \
-            get_drives(sas_logical_jbod["sasLogicalJBODUri"])
-        jbods_drives.extend(drives_by_sas_logical_uuid)
+        if sas_logical_jbod["sasLogicalJBODUri"]:
+            drives_by_sas_logical_uuid = g.oneview_client.sas_logical_jbods. \
+                get_drives(sas_logical_jbod["sasLogicalJBODUri"])
+            jbods_drives.extend(drives_by_sas_logical_uuid)
 
     return jbods_drives

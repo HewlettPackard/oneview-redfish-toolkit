@@ -122,8 +122,9 @@ def _get_logical_jbod(drive_id_int, logical_jbod, sas_logical_jbods):
 def _find_sas_logical_jbods_by(server_profile):
     sas_logical_jbods = []
     for logical_jbod in server_profile["localStorage"]["sasLogicalJBODs"]:
-        item = g.oneview_client.sas_logical_jbods\
-            .get(logical_jbod["sasLogicalJBODUri"])
-        sas_logical_jbods.append(item)
+        if logical_jbod["sasLogicalJBODUri"]:
+            item = g.oneview_client.sas_logical_jbods\
+                .get(logical_jbod["sasLogicalJBODUri"])
+            sas_logical_jbods.append(item)
 
     return sas_logical_jbods

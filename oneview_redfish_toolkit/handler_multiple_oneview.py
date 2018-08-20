@@ -24,7 +24,10 @@ from oneview_redfish_toolkit import strategy_multiple_oneview as st
 
 RESOURCE_STRATEGY = {
     "appliance_node_information": {"get_version": st.all_oneviews_resource},
-    "connection": {"get": st.first_parameter_resource},
+    "connection": {
+        "get": st.first_parameter_resource,
+        "post": st.create_server_profile,
+        },
     "drive_enclosures": {"get": st.first_parameter_resource},
     "enclosures": {
         "get": st.first_parameter_resource,
@@ -56,7 +59,6 @@ RESOURCE_STRATEGY = {
         },
     "server_hardware_types": {"get": st.first_parameter_resource},
     "server_profiles": {
-        "create": st.create_server_profile,
         "delete": st.delete_server_profile,
         "get": st.first_parameter_resource,
         "get_available_targets": st.first_parameter_resource,
@@ -64,6 +66,9 @@ RESOURCE_STRATEGY = {
     "server_profile_templates": {
         "get": st.first_parameter_resource,
         "get_all": st.spt_get_all_with_filter,
+        },
+    "tasks": {
+        "get": st.first_parameter_resource
         },
 }
 

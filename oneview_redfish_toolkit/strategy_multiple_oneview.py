@@ -65,7 +65,10 @@ def spt_get_all_with_filter(resource, function, *args, **kwargs):
 
 
 def create_server_profile(resource, function, *args, **kwargs):
-    sp = args[0]
+    # In this case, args are resulted by the connection.post call;
+    # The second index of args represents the resource object;
+    # The first index represents the URI to access;
+    sp = args[1]
     spt_uuid = sp['description']
     return _run_action(spt_uuid, 'server_profile_templates', 'get', resource,
                        function, *args, **kwargs)
