@@ -45,6 +45,11 @@ class BaseFlaskTest(BaseTest):
         cls.mock_ov_token = cls.patcher_auth.start()
         cls.mock_ov_token.return_value = {'123': 'abc'}
 
+        cls.patcher_get_oneview_token = mock.patch(
+            'oneview_redfish_toolkit.authentication.get_oneview_token')
+        mock_get_oneview_token = cls.patcher_get_oneview_token.start()
+        mock_get_oneview_token.return_value = 'abc'
+
         cls.oneview_client = mock.MagicMock()
 
         cls.patcher_conn = mock.patch('oneview_redfish_toolkit.connection.'
@@ -126,4 +131,5 @@ class BaseFlaskTest(BaseTest):
     @classmethod
     def tearDownClass(cls):
         cls.patcher_auth.stop()
+        cls.patcher_get_oneview_token.stop()
         cls.patcher_conn.stop()
