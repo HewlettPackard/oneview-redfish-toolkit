@@ -1,7 +1,7 @@
 {
     "@odata.type": "#Zone.v1_1_0.Zone",
     "Id": "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101",
-    "Name": "Apache_Template",
+    "Name": "Apache_Template - 0000000000A66101",
     "Status": {
         "State": "Enabled",
         "Health": "OK"

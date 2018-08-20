@@ -63,7 +63,8 @@ class Zone(RedfishJsonValidator):
 
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = resource_id
-        self.redfish["Name"] = profile_template["name"]
+        self.redfish["Name"] = self.get_zone_name(
+            profile_template["name"], resource_id)
         status_from_ov = profile_template["status"]
         self.redfish["Status"] = status_mapping.STATUS_MAP[status_from_ov]
 
@@ -86,6 +87,15 @@ class Zone(RedfishJsonValidator):
             self.redfish["Id"]
 
         self._validate()
+
+    def get_zone_name(self, spt_name, resource_id):
+        zone_name = spt_name
+        resource_id_group = resource_id.split("-")
+        # if resource group len is more than 5
+        # it means that exists an enclosure
+        if len(resource_id_group) > 5:
+            zone_name = spt_name + " - " + resource_id_group[-1]
+        return zone_name
 
     def fill_resource_blocks(self, profile_template, server_hardware_list,
                              drives):
