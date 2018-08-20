@@ -17,6 +17,7 @@
 # Python libs
 import logging
 import logging.config
+from threading import Lock
 
 # 3rd party libs
 from flask import abort
@@ -33,6 +34,7 @@ from oneview_redfish_toolkit import connection
 # Globals vars:
 #   globals()['map_tokens']
 
+
 def _get_map_tokens():
     return globals()['map_tokens']
 
@@ -42,7 +44,12 @@ def init_map_tokens():
 
 
 def _set_new_token(redfish_token, tokens_ov_by_ip):
-    globals()['map_tokens'][redfish_token] = tokens_ov_by_ip
+    lock = Lock()
+    lock.acquire()
+    try:
+        globals()['map_tokens'][redfish_token] = tokens_ov_by_ip
+    finally:
+        lock.release()
 
 
 def login(username, password):
