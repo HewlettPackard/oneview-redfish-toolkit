@@ -49,7 +49,8 @@ COMPOSITION_STATE_MAPPING = {
     "NoProfileApplied": "Unused",
     "ApplyingProfile": "Composing",
     "ProfileApplied": "Composed",
-    "ProfileError": "Failed"
+    "ProfileError": "Failed",
+    "RemovingProfile": "Composed"
 }
 
 SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING = {
@@ -97,5 +98,5 @@ def get_redfish_server_profile_state(resource):
 
 def get_redfish_composition_state(resource):
     composition_state = COMPOSITION_STATE_MAPPING.get(
-        resource["state"], None)
+        resource["state"])
     return composition_state

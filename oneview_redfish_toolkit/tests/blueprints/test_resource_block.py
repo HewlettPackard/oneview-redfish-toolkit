@@ -223,11 +223,9 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(self.expected_sh_resource_block, result)
 
-    def test_all_server_hardware_resouce_block_states(self):
-        self.maxDiff = None
+    def test_all_server_hardware_resouce_block_states_with_sp(self):
         server_hardware = copy.deepcopy(self.server_hardware)
         expected_rb = copy.deepcopy(self.expected_sh_resource_block)
-
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
         self.oneview_client.connection.get.return_value = \
@@ -239,8 +237,55 @@ class TestResourceBlock(BaseFlaskTest):
 
             server_hardware["state"] = oneview_state
             expected_rb["Status"]["State"] = redfish_state
+            expected_composition_state = status_mapping.\
+                COMPOSITION_STATE_MAPPING.get(oneview_state)
+
+            if not expected_composition_state:
+                expected_composition_state = \
+                    status_mapping.COMPOSITION_STATE_MAPPING["ProfileApplied"]
+
             expected_rb["CompositionStatus"]["CompositionState"] = \
-                status_mapping.COMPOSITION_STATE_MAPPING.get(oneview_state)
+                expected_composition_state
+
+            self.oneview_client.server_hardware.get.return_value = \
+                server_hardware
+
+            response = self.client.get(
+                "/redfish/v1/CompositionService/ResourceBlocks"
+                "/30303437-3034-4D32-3230-313133364752")
+
+            result = json.loads(response.data.decode("utf-8"))
+
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual("application/json", response.mimetype)
+            self.assertEqualMockup(expected_rb, result)
+
+    def test_all_server_hardware_resouce_block_states_without_sp(self):
+        server_hardware = copy.deepcopy(self.server_hardware)
+        server_hardware["serverProfileUri"] = None
+        expected_rb = copy.deepcopy(self.expected_sh_resource_block)
+        expected_rb["Links"].pop("ComputerSystems")
+        self.oneview_client.server_profile_templates.get_all.return_value = \
+            self.server_profile_templates
+        self.oneview_client.connection.get.return_value = \
+            self.log_encl_index_assoc
+        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+
+        for oneview_state, redfish_state in status_mapping.\
+                SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING.items():
+
+            server_hardware["state"] = oneview_state
+            expected_rb["Status"]["State"] = redfish_state
+
+            expected_composition_state = status_mapping.\
+                COMPOSITION_STATE_MAPPING.get(oneview_state)
+
+            if not expected_composition_state:
+                expected_composition_state = status_mapping.\
+                    COMPOSITION_STATE_MAPPING["NoProfileApplied"]
+
+            expected_rb["CompositionStatus"]["CompositionState"] = \
+                expected_composition_state
 
             self.oneview_client.server_hardware.get.return_value = \
                 server_hardware

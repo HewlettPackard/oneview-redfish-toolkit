@@ -52,9 +52,10 @@ class ServerHardwareResourceBlock(ResourceBlock):
         self.redfish["ResourceBlockType"] = ["ComputerSystem"]
 
         self.redfish["CompositionStatus"]["SharingCapable"] = False
-        self.redfish["CompositionStatus"]["CompositionState"] = status_mapping.\
-            get_redfish_composition_state(self.server_hardware)
 
+        composition_state = self._get_composition_state()
+        self.redfish["CompositionStatus"]["CompositionState"] = \
+            composition_state
         self.redfish["Status"] = collections.OrderedDict()
         state, health = status_mapping.\
             get_redfish_server_hardware_status_struct(server_hardware)
@@ -65,6 +66,23 @@ class ServerHardwareResourceBlock(ResourceBlock):
         self._fill_links()
 
         self._validate()
+
+    def _get_composition_state(self):
+        composition_state = status_mapping.\
+            get_redfish_composition_state(self.server_hardware)
+
+        if not composition_state:
+            composition_state = self._get_server_profile_state()
+
+        return composition_state
+
+    def _get_server_profile_state(self):
+        server_profile_uri = self.server_hardware["serverProfileUri"]
+
+        if server_profile_uri:
+            return status_mapping.COMPOSITION_STATE_MAPPING["ProfileApplied"]
+        else:
+            return status_mapping.COMPOSITION_STATE_MAPPING["NoProfileApplied"]
 
     def _fill_computer_system(self):
         self.redfish["ComputerSystems"] = list()
