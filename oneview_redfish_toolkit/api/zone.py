@@ -53,7 +53,7 @@ class Zone(RedfishJsonValidator):
                 server_hardware_list: Oneview's server hardware list
                 (servers and empty bays) for assignment to a server profile
                 enclosure_name: Enclosure name associated with a Zone.
-                If Zone has not enclosure it will be empty.
+                If Zone has not enclosure it will be None.
                 drives: Oneview's dict drives list
         """
         super().__init__(self.SCHEMA_NAME)
