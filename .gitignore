@@ -67,6 +67,9 @@ ChangeLog
 # Created logging file
 *.log
 
+# The app can create a pid file
+*.pid
+
 # Files created when running the API
 oneview_redfish_toolkit/__pycache__/
 oneview_redfish_toolkit/tests/__pycache__/

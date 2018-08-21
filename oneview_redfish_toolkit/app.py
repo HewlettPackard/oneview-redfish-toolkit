@@ -22,17 +22,19 @@ import os
 from threading import Thread
 
 # 3rd party libs
+import cherrypy
+from cherrypy.process.plugins import Daemonizer
+from cherrypy.process.plugins import PIDFile
 from flask import abort
 from flask import Flask
 from flask import g
 from flask import request
 from flask import Response
 from flask_api import status
-import cherrypy
-from paste.translogger import TransLogger
 
 # own libs
 from hpOneView import HPOneViewException
+from paste.translogger import TransLogger
 
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.api import scmb
@@ -102,7 +104,7 @@ from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit import util
 
 
-def main(config_file_path, logging_config_file_path):
+def main(config_file_path, logging_config_file_path, is_dev_env=False):
     # Load config file, schemas and creates a OV connection
     try:
         config.configure_logging(logging_config_file_path)
@@ -371,32 +373,48 @@ def main(config_file_path, logging_config_file_path):
                 "the config file. SSLCertFile: {}, SSLKeyFile: {}.".
                 format(ssl_cert_file, ssl_key_file))
 
-        ssl_context = (ssl_cert_file, ssl_key_file)
-        # app.run(host=host, port=port, debug=debug, ssl_context=ssl_context)
-        run_server(app, host, port, ssl_cert_file, ssl_key_file)
+        if is_dev_env:
+            ssl_context = (ssl_cert_file, ssl_key_file)
+            app.run(host=host, port=port, debug=debug, ssl_context=ssl_context)
+        else:
+            start_cherrypy(app,
+                           host=host,
+                           port=port,
+                           ssl_cert_file=ssl_cert_file,
+                           ssl_key_file=ssl_key_file)
 
 
-def run_server(app, host, port, ssl_cert_file, ssl_key_file):
-    # Enable WSGI access logging via Paste
-    app_logged = TransLogger(app)
-
-    # Mount the WSGI callable object (app) on the root directory
-    cherrypy.tree.graft(app_logged, '/')
-
-    # Set the configuration of the web server
+def start_cherrypy(app,
+                   host='0.0.0.0',
+                   port=5000,
+                   ssl_cert_file=None,
+                   ssl_key_file=None):
     cherrypy.config.update({
-        # 'engine.autoreload_on': True,
-        'log.screen': True,
+        'environment': 'production',
+        'log.screen': False,
         'server.socket_port': port,
         'server.socket_host': host,
-        # 'server.ssl_module':'bultin',
-        # 'server.ssl_certificate':ssl_cert_file,
-        # 'server.ssl_private_key':ssl_key_file,
-        'log.error_file': './error.log',
-        'log.access_file': './access.log'
+        'server.ssl_certificate': ssl_cert_file,
+        'server.ssl_private_key': ssl_key_file
     })
 
-    # Start the CherryPy WSGI web server
+    app_logged = TransLogger(app.wsgi_app,
+                             setup_console_handler=False)
+    cherrypy.tree.graft(app_logged, '/')
+
+    file_handler = [handler for handler in logging.root.handlers
+                    if isinstance(handler, logging.FileHandler)][0]
+    file_base_name = os.path.basename(file_handler.baseFilename)\
+        .rsplit('.', maxsplit=1)[0]
+    base_dir = os.path.dirname(file_handler.baseFilename)
+
+    daemon_log_file = os.path.join(base_dir, file_base_name + 'd.log')
+    Daemonizer(cherrypy.engine, stderr=daemon_log_file)\
+        .subscribe()
+
+    PIDFile(cherrypy.engine, os.path.join(base_dir, file_base_name + '.pid'))\
+        .subscribe()
+
     cherrypy.engine.start()
     cherrypy.engine.block()
 
