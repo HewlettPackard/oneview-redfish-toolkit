@@ -126,7 +126,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.assertEqualMockup(computer_system_collection_mockup, result)
 
         self.oneview_client.server_hardware.get_all.assert_called_with(
-            filter="state=ProfileApplied")
+            filter="NOT 'serverProfileUri' = NULL")
         self.oneview_client.\
             server_profile_templates.get_all.assert_called_with()
 

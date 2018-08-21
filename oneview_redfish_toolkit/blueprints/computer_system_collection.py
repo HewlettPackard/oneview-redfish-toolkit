@@ -37,7 +37,7 @@ def get_computer_system_collection():
                 JSON: JSON with ComputerSystemCollection.
     """
     server_hardware_list = g.oneview_client.server_hardware.get_all(
-        filter="state=ProfileApplied"
+        filter="NOT 'serverProfileUri' = NULL"
     )
 
     server_profile_tmpls = \
