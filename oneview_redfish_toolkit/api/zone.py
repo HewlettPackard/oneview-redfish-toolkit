@@ -40,6 +40,7 @@ class Zone(RedfishJsonValidator):
                  resource_id,
                  profile_template,
                  server_hardware_list,
+                 enclosure_name,
                  drives=[]):
         """Zone constructor
 
@@ -51,6 +52,8 @@ class Zone(RedfishJsonValidator):
                 profile_template: Oneview's server profile template dict
                 server_hardware_list: Oneview's server hardware list
                 (servers and empty bays) for assignment to a server profile
+                enclosure_name: Enclosure name associated with a Zone.
+                If Zone has not enclosure it will be empty.
                 drives: Oneview's dict drives list
         """
         super().__init__(self.SCHEMA_NAME)
@@ -64,7 +67,7 @@ class Zone(RedfishJsonValidator):
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = resource_id
         self.redfish["Name"] = self.get_zone_name(
-            profile_template["name"], resource_id)
+            profile_template["name"], enclosure_name)
         status_from_ov = profile_template["status"]
         self.redfish["Status"] = status_mapping.STATUS_MAP[status_from_ov]
 
@@ -88,13 +91,11 @@ class Zone(RedfishJsonValidator):
 
         self._validate()
 
-    def get_zone_name(self, spt_name, resource_id):
+    @staticmethod
+    def get_zone_name(spt_name, enclosure_name):
         zone_name = spt_name
-        resource_id_group = resource_id.split("-")
-        # if resource group len is more than 5
-        # it means that exists an enclosure
-        if len(resource_id_group) > 5:
-            zone_name = spt_name + " - " + resource_id_group[-1]
+        if enclosure_name:
+            zone_name = spt_name + " - " + enclosure_name
         return zone_name
 
     def fill_resource_blocks(self, profile_template, server_hardware_list,

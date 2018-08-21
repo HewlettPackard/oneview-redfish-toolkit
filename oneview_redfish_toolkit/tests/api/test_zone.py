@@ -47,10 +47,10 @@ class TestZone(BaseTest):
               'ZoneWithoutNetwork.json') as f:
         zone_without_network_mockup = json.load(f)
 
+        enclosure_name = "0000A66101"
+
     def test_drives_with_network_and_drive_links(self):
         """Tests when all is configured properly"""
-
-        self.maxDiff = None
 
         profile_template = copy.deepcopy(self.server_profile_template)
         zone_id = "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101"
@@ -58,6 +58,7 @@ class TestZone(BaseTest):
         zone = Zone(zone_id,
                     profile_template,
                     self.server_hardware_list,
+                    self.enclosure_name,
                     self.drives)
         result = json.loads(zone.serialize())
 
@@ -77,6 +78,7 @@ class TestZone(BaseTest):
         zone = Zone(zone_id,
                     profile_template,
                     self.server_hardware_list,
+                    self.enclosure_name,
                     self.drives)
         result = json.loads(zone.serialize())
 
@@ -102,6 +104,7 @@ class TestZone(BaseTest):
         zone = Zone(zone_id,
                     profile_template,
                     self.server_hardware_list,
+                    self.enclosure_name,
                     self.drives)
         result = json.loads(zone.serialize())
         self.assertEqualMockup(self.zone_without_drives_mockup, result)
@@ -120,6 +123,7 @@ class TestZone(BaseTest):
         zone = Zone(zone_id,
                     profile_template,
                     self.server_hardware_list,
+                    self.enclosure_name,
                     self.drives)
         result = json.loads(zone.serialize())
         self.assertEqualMockup(self.zone_without_network_mockup, result)
