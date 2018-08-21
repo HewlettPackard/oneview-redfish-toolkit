@@ -125,10 +125,6 @@ class TestZone(BaseFlaskTest):
         ) as f:
             zone_without_drives_mockup = json.load(f)
 
-        zone_name_only_template_name = \
-            zone_without_drives_mockup["Name"].split(" - ")[0]
-        zone_without_drives_mockup["Name"] = zone_name_only_template_name
-
         api_client.server_profile_templates.get.return_value = \
             self.server_profile_template
         api_client.server_hardware.get_all.return_value = \
