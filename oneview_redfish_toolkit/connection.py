@@ -44,9 +44,9 @@ def get_oneview_client(ip_oneview, token=None,
     ov_config = None
 
     if auth_mode == "conf":
-        create_oneview_config(ip=ip_oneview,
-                              api_version=api_version,
-                              credentials=config.get_credentials())
+        ov_config = create_oneview_config(ip=ip_oneview,
+                                          api_version=api_version,
+                                          credentials=config.get_credentials())
 
     if auth_mode == "session":
         ov_config = create_oneview_config(ip=ip_oneview,
