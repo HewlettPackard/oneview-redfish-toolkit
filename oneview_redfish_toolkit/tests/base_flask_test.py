@@ -115,6 +115,9 @@ class BaseFlaskTest(BaseTest):
 
         @cls.app.before_request
         def check_authentication():
+            # Cached OneView's connections for the same request
+            g.ov_connections = dict()
+
             g.oneview_client = \
                 handler_multiple_oneview.MultipleOneViewResource()
 

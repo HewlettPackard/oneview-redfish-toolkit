@@ -22,6 +22,7 @@ import ssl
 import time
 
 # 3rd party libs
+from flask import g
 from flask import request
 from flask_api import status
 from hpOneView.oneview_client import OneViewClient
@@ -39,6 +40,27 @@ SERVICE_ROOT_ENDPOINTS = ["/redfish/v1",
 
 
 def get_oneview_client(ip_oneview, token=None,
+                       api_version=None):
+    """Returns checking for already opened connections.
+
+    If on the same request was already opened a connection for the OneView's
+    IP received as parameter it returns the opened connection, if not
+    it creates a new connection.
+
+    """
+    ov_client = g.ov_connections.get(ip_oneview)
+
+    if ov_client:
+        return ov_client
+
+    ov_client = new_oneview_client(
+        ip_oneview, token=token, api_version=api_version)
+    g.ov_connections[ip_oneview] = ov_client
+
+    return ov_client
+
+
+def new_oneview_client(ip_oneview, token=None,
                        api_version=None):
     auth_mode = config.get_authentication_mode()
     ov_config = None
