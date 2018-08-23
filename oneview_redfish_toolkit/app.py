@@ -169,6 +169,9 @@ def main(config_file_path, logging_config_file_path):
 
     @app.before_request
     def check_authentication():
+        # Cached OneView's connections for the same request
+        g.ov_connections = dict()
+
         # If authenticating do not check for anything
         if request.path == "/redfish/v1/SessionService/Sessions" and \
             request.method == "POST":
