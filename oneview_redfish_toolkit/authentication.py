@@ -45,11 +45,8 @@ def init_map_tokens():
 
 def _set_new_token(redfish_token, tokens_ov_by_ip):
     lock = Lock()
-    lock.acquire()
-    try:
+    with lock:
         globals()['map_tokens'][redfish_token] = tokens_ov_by_ip
-    finally:
-        lock.release()
 
 
 def login(username, password):
