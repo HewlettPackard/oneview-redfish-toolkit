@@ -89,6 +89,18 @@ class TestResourceBlock(BaseFlaskTest):
         ) as f:
             self.expected_sh_resource_block = json.load(f)
 
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview'
+                '/Enclosures.json'
+        ) as f:
+            self.enclosures = json.load(f)
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview'
+                '/DriveEnclosure.json'
+        ) as f:
+            self.drive_enclosure = json.load(f)
+
         self.resource_not_found = HPOneViewException({
             "errorCode": "RESOURCE_NOT_FOUND",
             "message": "Any resource not found message"
@@ -128,6 +140,8 @@ class TestResourceBlock(BaseFlaskTest):
             self.server_profile_templates
         self.oneview_client.\
             logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -177,6 +191,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -212,6 +228,9 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.enclosures.get_all.return_value = self.enclosures
+
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -231,6 +250,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         for oneview_state, redfish_state in status_mapping.\
                 SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING.items():
@@ -270,6 +291,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         for oneview_state, redfish_state in status_mapping.\
                 SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING.items():
@@ -309,6 +332,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         for oneview_status, redfish_status in \
                 status_mapping.HEALTH_STATE_MAPPING.items():
@@ -361,6 +386,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"

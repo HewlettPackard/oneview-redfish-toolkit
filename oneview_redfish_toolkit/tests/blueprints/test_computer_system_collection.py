@@ -106,6 +106,18 @@ class TestComputerSystemCollection(BaseFlaskTest):
         ) as f:
             computer_system_collection_mockup = json.load(f)
 
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'DriveEnclosure.json'
+        ) as f:
+            drive_enclosure = json.load(f)
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'Enclosures.json'
+        ) as f:
+            enclosures = json.load(f)
+
         self.oneview_client.server_hardware.get_all.return_value = \
             server_hardware_list
 
@@ -116,6 +128,8 @@ class TestComputerSystemCollection(BaseFlaskTest):
             .return_value = logical_encl_assoc
         self.oneview_client.logical_enclosures.get\
             .return_value = logical_encl
+        self.oneview_client.drive_enclosures.get_all.return_value = drive_enclosure
+        self.oneview_client.enclosures.get_all.return_value = enclosures
 
         response = self.client.get("/redfish/v1/Systems/")
 

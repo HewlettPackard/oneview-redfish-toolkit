@@ -37,6 +37,34 @@ class TestZoneCollection(BaseFlaskTest):
         ) as f:
             self.server_profile_template_list = json.load(f)
 
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/ZoneCollection.json'
+        ) as f:
+            self.zone_collection_mockup = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'LogicalEnclByIndexAssociationWithEnclGroup.json'
+        ) as f:
+            self.logical_encl_assoc = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosure.json'
+        ) as f:
+            self.logical_encl = json.load(f)
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview'
+                '/Enclosures.json'
+        ) as f:
+            self.enclosures = json.load(f)
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview'
+                '/DriveEnclosureList.json'
+        ) as f:
+            self.drive_enclosure_list = json.load(f)
+
     def test_get_zone_collection_when_get_templates_raises_error(self):
         """Tests ZoneCollection when server profile templates raises error"""
 
@@ -62,31 +90,15 @@ class TestZoneCollection(BaseFlaskTest):
     def test_get_zone_collection(self):
         """Tests ZoneCollection"""
 
-        self.maxDiff = None
-
         ov_api = self.oneview_client
 
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/ZoneCollection.json'
-        ) as f:
-            zone_collection_mockup = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'LogicalEnclByIndexAssociationWithEnclGroup.json'
-        ) as f:
-            logical_encl_assoc = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosure.json'
-        ) as f:
-            logical_encl = json.load(f)
-
-        ov_api.connection.get.return_value = logical_encl_assoc
-        ov_api.logical_enclosures.get.return_value = logical_encl
+        ov_api.connection.get.return_value = self.logical_encl_assoc
+        ov_api.logical_enclosures.get.return_value = self.logical_encl
 
         ov_api.server_profile_templates.get_all.return_value = \
             self.server_profile_template_list
+        ov_api.drive_enclosures.get_all.return_value = self.drive_enclosure_list
+        ov_api.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
@@ -95,7 +107,8 @@ class TestZoneCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(zone_collection_mockup, result)
+        import pdb; pdb.set_trace()
+        self.assertEqualMockup(self.zone_collection_mockup, result)
 
         spt_with_storage_ctrler = self.server_profile_template_list[0]
         ov_api.connection.get.assert_called_with(
@@ -106,7 +119,10 @@ class TestZoneCollection(BaseFlaskTest):
             "/rest/index/associations/resources"
             "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
             + "&category=logical-enclosures")
-        ov_api.logical_enclosures.get.assert_called_with(logical_encl["uri"])
+        ov_api.logical_enclosures.get.assert_called_with(self.logical_encl["uri"])
+        ov_api.drive_enclosures.get_all.assert_called_with(
+            filter="locationUri='/rest/enclosures/0000000000A66101'")
+        ov_api.enclosures.get_all.assert_called_with()
 
     def test_get_zone_collection_empty(self):
         """Tests ZoneCollection with an empty list"""
@@ -127,3 +143,34 @@ class TestZoneCollection(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(zone_collection_empty_mockup, result)
+
+    def test_get_zone_collection_enclosure_without_drives(self):
+        ov_api = self.oneview_client
+        import pdb; pdb.set_trace()
+        ov_api.connection.get.return_value = self.logical_encl_assoc
+        ov_api.logical_enclosures.get.return_value = self.logical_encl
+
+        ov_api.server_profile_templates.get_all.return_value = \
+            self.server_profile_template_list
+        ov_api.drive_enclosures.get_all.return_value = self.drive_enclosure_list
+        ov_api.enclosures.get_all.return_value = self.enclosures
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceZones/")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(self.zone_collection_mockup, result)
+
+        spt_with_storage_ctrler = self.server_profile_template_list[0]
+        ov_api.connection.get.assert_called_with(
+            "/rest/index/associations/resources"
+            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
+            + "&category=logical-enclosures")
+        ov_api.connection.get.assert_called_with(
+            "/rest/index/associations/resources"
+            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
+            + "&category=logical-enclosures")
+        ov_api.logical_enclosures.get.assert_called_with(self.logical_encl["uri"])
