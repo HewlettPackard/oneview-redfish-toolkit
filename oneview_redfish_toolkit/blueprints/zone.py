@@ -44,9 +44,11 @@ def get_zone(zone_uuid):
     profile_template = g.oneview_client.server_profile_templates.get(
         template_id)
     sh_type_uri = profile_template['serverHardwareTypeUri']
+    enclosure_name = None
 
     if enclosure_id:
         enclosure = g.oneview_client.enclosures.get(enclosure_id)
+        enclosure_name = enclosure["name"]
         drives = _get_drives(enclosure)
         sh_filter = [
             "locationUri='{}'".format(enclosure['uri']),
@@ -63,7 +65,8 @@ def get_zone(zone_uuid):
     server_hardware_list = g.oneview_client.server_hardware.get_all(
         filter=sh_filter)
 
-    zone_data = Zone(zone_uuid, profile_template, server_hardware_list, drives)
+    zone_data = Zone(zone_uuid, profile_template, server_hardware_list,
+                     enclosure_name, drives)
 
     return ResponseBuilder.success(zone_data)
 
