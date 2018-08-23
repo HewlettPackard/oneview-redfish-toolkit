@@ -41,11 +41,8 @@ def get_map_resources():
 
 def set_map_resources_entry(resource_id, ip_oneview):
     lock = Lock()
-    lock.acquire()
-    try:
+    with lock:
         get_map_resources()[resource_id] = ip_oneview
-    finally:
-        lock.release()
 
 
 def query_ov_client_by_resource(resource_id, resource, function,
