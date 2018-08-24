@@ -28,7 +28,10 @@ RESOURCE_STRATEGY = {
         "get": st.first_parameter_resource,
         "post": st.create_server_profile,
         },
-    "drive_enclosures": {"get": st.first_parameter_resource},
+    "drive_enclosures": {
+        "get": st.first_parameter_resource,
+        "get_all": st.drive_enclosures_get_all_with_filter,
+    },
     "enclosures": {
         "get": st.first_parameter_resource,
         "get_all": st.all_oneviews_resource,

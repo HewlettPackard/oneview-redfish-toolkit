@@ -80,6 +80,8 @@ class ZoneService(object):
             log_encl_uri = member["childResource"]["uri"]
             logical_encl = self.ov_client.logical_enclosures.get(
                 log_encl_uri)
+            self.ov_client.logical_enclosures.get(
+                log_encl_uri)
             enclosure_uris += logical_encl["enclosureUris"]
 
         #  the set keeps the elements without repetition
@@ -97,16 +99,40 @@ class ZoneService(object):
                 server_profile_templates: the list of Server Profile Template
         """
         zone_ids = []
+        valid_logical_enclosures = self._get_valid_logical_enclosures()
         for template in server_profile_templates:
             template_id = template["uri"].split("/")[-1]
             controller = ComputerSystemService.get_storage_controller(template)
             if controller:
-                enclosures_uris = self._get_enclosures_uris_by_template(
+                enclosures_uris_by_spt = self._get_enclosures_uris_by_template(
                     template)
-                for encl_uri in enclosures_uris:
+                enclosures_uris = set(enclosures_uris_by_spt)\
+                    .intersection(valid_logical_enclosures)
+
+                for encl_uri in sorted(enclosures_uris):
                     zone_id = ZoneService.build_zone_id(template_id, encl_uri)
                     zone_ids.append(zone_id)
             else:
                 zone_ids.append(template_id)
 
         return zone_ids
+
+    def _get_valid_logical_enclosures(self):
+        all_logical_enclosures_uris = self._get_all_enclosures_uris()
+        valid_logical_enclosures = list()
+        for logical_enclosure_uri in all_logical_enclosures_uris:
+            logical_encl_has_drives = self.ov_client.drive_enclosures.get_all(
+                filter="locationUri='{}'".format(logical_enclosure_uri))
+
+            if logical_encl_has_drives:
+                valid_logical_enclosures.append(logical_enclosure_uri)
+
+        return valid_logical_enclosures
+
+    def _get_all_enclosures_uris(self):
+        all_enclosures_uris = list()
+        all_logical_enclosures = self.ov_client.enclosures.get_all()
+        for logical_enclosure in all_logical_enclosures:
+            all_enclosures_uris.append(logical_enclosure["uri"])
+
+        return all_enclosures_uris

@@ -30,8 +30,7 @@ def filter_uuid_parameter_resource(resource, function, *args, **kwargs):
     if 'filter' not in kwargs:
         return all_oneviews_resource(resource, function, *args, **kwargs)
 
-    filter_parameter = kwargs['filter']
-    resource_id = filter_parameter.split('=')[1]
+    resource_id = _get_resource_id_by_filter(kwargs, None)
 
     return multiple_oneview.query_ov_client_by_resource(resource_id, resource,
                                                         function, *args,
@@ -51,17 +50,26 @@ def spt_get_all_with_filter(resource, function, *args, **kwargs):
     if 'filter' not in kwargs:
         return all_oneviews_resource(resource, function, *args, **kwargs)
 
-    filter_parameter = kwargs['filter']
+    resource_id = _get_resource_id_by_filter(kwargs, "enclosureGroupUri")
 
-    for filters in filter_parameter:
-        filter_data = filters.split('=')
-        if filter_data[0] == 'enclosureGroupUri':
-            resource_id = filter_data[1]
-            return \
-                multiple_oneview.query_ov_client_by_resource(resource_id,
-                                                             resource,
-                                                             function,
-                                                             *args, **kwargs)
+    return \
+        multiple_oneview.query_ov_client_by_resource(resource_id,
+                                                     resource,
+                                                     function,
+                                                     *args, **kwargs)
+
+
+def drive_enclosures_get_all_with_filter(resource, function, *args, **kwargs):
+    if 'filter' not in kwargs:
+        return all_oneviews_resource(resource, function, *args, **kwargs)
+
+    resource_id = _get_resource_id_by_filter(kwargs, "locationUri")
+
+    return \
+        multiple_oneview.query_ov_client_by_resource(resource_id,
+                                                     resource,
+                                                     function,
+                                                     *args, **kwargs)
 
 
 def create_server_profile(resource, function, *args, **kwargs):
@@ -101,3 +109,22 @@ def _run_action(resource_id, resource_get, function_get, resource,
     return multiple_oneview.query_ov_client_by_resource(resource_id,
                                                         resource, function,
                                                         *args, **kwargs)
+
+
+def _get_resource_id_by_filter(kwargs, resource_uri):
+    filter_parameter = kwargs['filter']
+
+    # Check if filter is composed by a list. If it is true
+    # sets the resource_id based on a resource_uri;
+    # Otherwise just splits the filter string and sets its value
+    # into resource_id
+    if isinstance(filter_parameter, list):
+        for filters in filter_parameter:
+            filter_data = filters.split('=')
+            if filter_data[0] == resource_uri:
+                resource_id = filter_data[1]
+    else:
+        filter_data = filter_parameter.split('=')
+        resource_id = filter_data[1]
+
+    return resource_id
