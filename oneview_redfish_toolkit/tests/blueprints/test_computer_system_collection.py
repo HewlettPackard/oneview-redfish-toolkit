@@ -79,7 +79,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
-                'ServerProfilesApplied.json'
+                'ServerHardwareListWithServerProfileApplied.json'
         ) as f:
             server_hardware_list = json.load(f)
 
