@@ -108,7 +108,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
-                'DriveEnclosure.json'
+                'DriveEnclosureList.json'
         ) as f:
             drive_enclosure = json.load(f)
 

@@ -121,9 +121,11 @@ class ZoneService(object):
         valid_enclosures_uris = list()
 
         for enclosure_uri in all_enclosures_uris:
-            encl_has_drives = self.ov_client.drive_enclosures.get_all(
+            drive_enclosures = self.ov_client.drive_enclosures.get_all(
                 filter="locationUri='{}'".format(enclosure_uri))
-            if encl_has_drives:
-                valid_enclosures_uris.append(enclosure_uri)
+
+            for drive_enclosure in drive_enclosures:
+                if drive_enclosure["driveBays"]:
+                    valid_enclosures_uris.append(enclosure_uri)
 
         return valid_enclosures_uris
