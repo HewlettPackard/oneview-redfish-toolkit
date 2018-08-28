@@ -24,7 +24,6 @@ from threading import Thread
 # 3rd party libs
 import cherrypy
 from cherrypy.process.plugins import Daemonizer
-from cherrypy.process.plugins import PIDFile
 from flask import abort
 from flask import Flask
 from flask import g
@@ -385,8 +384,8 @@ def main(config_file_path, logging_config_file_path, is_dev_env=False):
 
 
 def start_cherrypy(app,
-                   host='0.0.0.0',
-                   port=5000,
+                   host=None,
+                   port=None,
                    ssl_cert_file=None,
                    ssl_key_file=None):
     cherrypy.config.update({
@@ -398,22 +397,10 @@ def start_cherrypy(app,
         'server.ssl_private_key': ssl_key_file
     })
 
-    app_logged = TransLogger(app.wsgi_app,
-                             setup_console_handler=False)
+    app_logged = TransLogger(app.wsgi_app, setup_console_handler=False)
     cherrypy.tree.graft(app_logged, '/')
 
-    file_handler = [handler for handler in logging.root.handlers
-                    if isinstance(handler, logging.FileHandler)][0]
-    file_base_name = os.path.basename(file_handler.baseFilename)\
-        .rsplit('.', maxsplit=1)[0]
-    base_dir = os.path.dirname(file_handler.baseFilename)
-
-    daemon_log_file = os.path.join(base_dir, file_base_name + 'd.log')
-    Daemonizer(cherrypy.engine, stderr=daemon_log_file)\
-        .subscribe()
-
-    PIDFile(cherrypy.engine, os.path.join(base_dir, file_base_name + '.pid'))\
-        .subscribe()
+    Daemonizer(cherrypy.engine).subscribe()
 
     cherrypy.engine.start()
     cherrypy.engine.block()
@@ -427,4 +414,4 @@ if __name__ == '__main__':
                         help='A required path to logging config file')
     args = parser.parse_args()
 
-    main(args.config, args.log_config)
+    main(args.config, args.log_config, True)
