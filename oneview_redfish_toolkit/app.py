@@ -103,7 +103,8 @@ from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit import util
 
 
-def main(config_file_path, logging_config_file_path, is_dev_env=False):
+def main(config_file_path, logging_config_file_path,
+         is_dev_env=False, is_debug_mode=False):
     # Load config file, schemas and creates a OV connection
     try:
         config.configure_logging(logging_config_file_path)
@@ -331,26 +332,10 @@ def main(config_file_path, logging_config_file_path, is_dev_env=False):
             format(ssl_type))
         exit(1)
 
-    try:
-        debug = app_config["redfish"]["debug"]
-
-        if debug not in ('false', 'true'):
-            logging.warning(
-                "Debug option must be either \'true\' or \'false\'. "
-                "Defaulting to \'false\'.")
-            debug = False
-        else:
-            debug = (debug == "true")
-    except Exception:
-        logging.warning(
-            "Invalid debug configuration. "
-            "Defaulting to \'false\'.")
-        debug = False
-
     if ssl_type == 'disabled':
-        app.run(host=host, port=port, debug=debug)
+        app.run(host=host, port=port, debug=is_debug_mode)
     elif ssl_type == 'adhoc':
-        app.run(host=host, port=port, debug=debug, ssl_context="adhoc")
+        app.run(host=host, port=port, debug=is_debug_mode, ssl_context="adhoc")
     else:
         # We should use certs file provided by the user
         ssl_cert_file = app_config["ssl"]["SSLCertFile"]
@@ -372,24 +357,30 @@ def main(config_file_path, logging_config_file_path, is_dev_env=False):
                 "the config file. SSLCertFile: {}, SSLKeyFile: {}.".
                 format(ssl_cert_file, ssl_key_file))
 
-        if is_dev_env:
+        if is_dev_env and is_debug_mode:
             ssl_context = (ssl_cert_file, ssl_key_file)
-            app.run(host=host, port=port, debug=debug, ssl_context=ssl_context)
+            app.run(host=host, port=port, debug=is_debug_mode,
+                    ssl_context=ssl_context)
         else:
             start_cherrypy(app,
                            host=host,
                            port=port,
                            ssl_cert_file=ssl_cert_file,
-                           ssl_key_file=ssl_key_file)
+                           ssl_key_file=ssl_key_file,
+                           is_dev_env=is_dev_env)
 
 
 def start_cherrypy(app,
                    host=None,
                    port=None,
                    ssl_cert_file=None,
-                   ssl_key_file=None):
+                   ssl_key_file=None,
+                   is_dev_env=None):
+
+    if not is_dev_env:
+        cherrypy.config.update({'environment': 'production'})
+
     cherrypy.config.update({
-        'environment': 'production',
         'log.screen': False,
         'server.socket_port': port,
         'server.socket_host': host,
@@ -400,7 +391,8 @@ def start_cherrypy(app,
     app_logged = TransLogger(app.wsgi_app, setup_console_handler=False)
     cherrypy.tree.graft(app_logged, '/')
 
-    Daemonizer(cherrypy.engine).subscribe()
+    if not is_dev_env:
+        Daemonizer(cherrypy.engine).subscribe()
 
     cherrypy.engine.start()
     cherrypy.engine.block()
@@ -412,6 +404,19 @@ if __name__ == '__main__':
                         help='A required path to config file')
     parser.add_argument('--log-config', type=str,
                         help='A required path to logging config file')
+    parser.add_argument('--dev', type=bool,
+                        default=False, choices=[True, False],
+                        help='A optional value True or False to say if the '
+                             'application should run in a development mode. '
+                             'This will run a CherryPy server.')
+    parser.add_argument('--debug', type=bool,
+                        default=False, choices=[True, False],
+                        help='A optional value True or False to say if the '
+                             'application should run in a debug mode, this '
+                             'option only is valid when the development mode '
+                             'is set to True too, otherwise it is ignored. '
+                             'This will run a Flask server')
     args = parser.parse_args()
 
-    main(args.config, args.log_config, True)
+    main(args.config, args.log_config,
+         is_dev_env=args.dev, is_debug_mode=args.debug)
