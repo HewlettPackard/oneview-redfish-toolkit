@@ -46,6 +46,8 @@ class CapabilitiesObject(RedfishJsonValidator):
         self.redfish["Id"] = uuid
         self.redfish["Name"] = profile_template["name"]
 
+        self.redfish["Description@Redfish.OptionalOnCreate"] = True
+        self.redfish["Description@Redfish.UpdatableAfterCreate"] = True
         self.redfish["Id@Redfish.RequiredOnCreate"] = True
         self.redfish["Id@Redfish.AllowableValues"] = [uuid]
         self.redfish["Name@Redfish.RequiredOnCreate"] = True

@@ -79,8 +79,8 @@ def create_server_profile(resource, function, *args, **kwargs):
     # The second index of args represents the resource object;
     # The first index represents the URI to access;
     sp = args[1]
-    spt_uuid = sp['description']
-    return _run_action(spt_uuid, 'server_profile_templates', 'get', resource,
+    server_hardware_uri = sp['serverHardwareUri']
+    return _run_action(server_hardware_uri, 'server_hardware', 'get', resource,
                        function, *args, **kwargs)
 
 
