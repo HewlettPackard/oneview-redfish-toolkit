@@ -105,7 +105,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_hardware,
             self.not_found_error,
             self.not_found_error,
-            self.not_found_error
+            self.not_found_error,
+            self.server_hardware  # Get for multiple oneview support
         ]
 
     def run_common_mock_to_server_profile_template(self):
@@ -114,8 +115,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_profile_template,
             self.not_found_error,
             self.not_found_error,
-            self.server_profile_template,
-            self.server_profile_template  # Get for multiple oneview support
+            self.server_profile_template
         ]
 
     def run_common_mock_to_drives(self):

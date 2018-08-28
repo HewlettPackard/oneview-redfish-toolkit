@@ -2,6 +2,8 @@
     "@odata.type": "#ComputerSystem.v1_4_0.ComputerSystem",
     "Name": "Apache_Template",
     "Id": "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0",
+    "Description@Redfish.OptionalOnCreate": true,
+    "Description@Redfish.UpdatableAfterCreate": true,
     "Id@Redfish.RequiredOnCreate": true,
     "Id@Redfish.AllowableValues": ["1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"],
     "Name@Redfish.RequiredOnCreate": true,
