@@ -1,6 +1,7 @@
 {
     "@odata.type": "#ComputerSystem.v1_4_0.ComputerSystem",
     "Id": "b425802b-a6a5-4941-8885-aab68dfa2ee2",
+    "Description" : "Description for Composed System",
     "Name": "Apache_Primary",
     "SystemType": "Composed",
     "Manufacturer": "HPE",
