@@ -97,7 +97,7 @@ class ZoneService(object):
                 server_profile_templates: the list of Server Profile Template
         """
         zone_ids = []
-        valid_enclosures_uris = self._get_enclosures_uris()
+        expected_enclosures_uris = self._get_enclosures_uris()
         for template in server_profile_templates:
             template_id = template["uri"].split("/")[-1]
             controller = ComputerSystemService.get_storage_controller(template)
@@ -105,7 +105,7 @@ class ZoneService(object):
                 enclosures_uris_by_spt = self._get_enclosures_uris_by_template(
                     template)
                 enclosures_uris = set(enclosures_uris_by_spt)\
-                    .intersection(valid_enclosures_uris)
+                    .intersection(expected_enclosures_uris)
 
                 for encl_uri in sorted(enclosures_uris):
                     zone_id = ZoneService.build_zone_id(template_id, encl_uri)
@@ -118,7 +118,7 @@ class ZoneService(object):
     def _get_enclosures_uris(self):
         all_enclosures_uris = [enclosure["uri"] for enclosure in
                                self.ov_client.enclosures.get_all()]
-        valid_enclosures_uris = list()
+        expected_enclosures_uris = list()
 
         for enclosure_uri in all_enclosures_uris:
             drive_enclosures = self.ov_client.drive_enclosures.get_all(
@@ -126,6 +126,6 @@ class ZoneService(object):
 
             for drive_enclosure in drive_enclosures:
                 if drive_enclosure["driveBays"]:
-                    valid_enclosures_uris.append(enclosure_uri)
+                    expected_enclosures_uris.append(enclosure_uri)
 
-        return valid_enclosures_uris
+        return expected_enclosures_uris
