@@ -63,6 +63,8 @@ class ComputerSystem(RedfishJsonValidator):
         base_resource = server_profile
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = base_resource["uuid"]
+        if base_resource["description"]:
+            self.redfish["Description"] = base_resource["description"]
         self.redfish["Name"] = base_resource["name"]
         self.redfish["SystemType"] = "Composed"
         self.redfish["Manufacturer"] = "HPE"
@@ -176,6 +178,7 @@ class ComputerSystem(RedfishJsonValidator):
 
     @staticmethod
     def build_server_profile(profile_name,
+                             profile_description,
                              server_profile_template,
                              system_blocks,
                              network_blocks,
@@ -194,7 +197,8 @@ class ComputerSystem(RedfishJsonValidator):
             server_profile["connectionSettings"].pop('manageConnections', None)
 
         server_profile["name"] = profile_name
-        server_profile["description"] = server_profile_template["uri"]
+        if profile_description:
+            server_profile["description"] = profile_description
         server_profile["type"] = "ServerProfileV8"
         server_profile["category"] = "server-profiles"
         server_profile["serverHardwareUri"] = \

@@ -223,6 +223,7 @@ def create_composed_system():
 
         server_profile = ComputerSystem.build_server_profile(
             body["Name"],
+            body.get("Description"),
             spt,
             system_blocks,
             network_blocks,
