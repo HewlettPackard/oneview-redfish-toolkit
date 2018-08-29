@@ -16,6 +16,7 @@
 
 # Python libs
 import logging
+from threading import Lock
 
 # 3rd party libs
 from hpOneView.exceptions import HPOneViewException
@@ -23,6 +24,7 @@ from hpOneView.exceptions import HPOneViewException
 # Modules own libs
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 from oneview_redfish_toolkit import authentication
+from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
 
 # Globals vars:
@@ -38,7 +40,9 @@ def get_map_resources():
 
 
 def set_map_resources_entry(resource_id, ip_oneview):
-    get_map_resources()[resource_id] = ip_oneview
+    lock = Lock()
+    with lock:
+        get_map_resources()[resource_id] = ip_oneview
 
 
 def query_ov_client_by_resource(resource_id, resource, function,
@@ -61,8 +65,10 @@ def query_ov_client_by_resource(resource_id, resource, function,
         return search_resource_multiple_ov(resource, function, resource_id,
                                            *args, **kwargs)
 
-    # Get cached OneView's token
-    ov_token = authentication.get_oneview_token(ip_oneview)
+    ov_token = None
+    if config.auth_mode_is_session():
+        # Get cached OneView's token
+        ov_token = authentication.get_oneview_token(ip_oneview)
 
     ov_client = connection.get_oneview_client(ip_oneview, token=ov_token)
 
@@ -107,13 +113,16 @@ def search_resource_multiple_ov(resource, function, resource_id,
             HPOneViewException: When occur an error on any OneViews which is
             not an not found error.
     """
-    # Get all OneView's IP and tokens cached by Redfish's token
-    ov_ip_tokens = authentication.get_multiple_oneview_token()
     result = []
     error_not_found = []
 
-    # Loop in all OneView's IP and token
-    for ov_ip, ov_token in ov_ip_tokens.items():
+    # Loop in all OneView's IP
+    for ov_ip in config.get_oneview_multiple_ips():
+
+        ov_token = None
+        if config.auth_mode_is_session():
+            ov_token = authentication.get_oneview_token(ov_ip)
+
         ov_client = connection.get_oneview_client(ov_ip,
                                                   token=ov_token)
 

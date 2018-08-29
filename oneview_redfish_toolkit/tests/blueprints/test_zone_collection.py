@@ -14,6 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import copy
 import json
 
 from flask_api import status
@@ -97,7 +98,8 @@ class TestZoneCollection(BaseFlaskTest):
 
         ov_api.server_profile_templates.get_all.return_value = \
             self.server_profile_template_list
-        ov_api.drive_enclosures.get_all.return_value = self.drive_enclosure_list
+        ov_api.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
         ov_api.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
@@ -107,7 +109,7 @@ class TestZoneCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        import pdb; pdb.set_trace()
+
         self.assertEqualMockup(self.zone_collection_mockup, result)
 
         spt_with_storage_ctrler = self.server_profile_template_list[0]
@@ -119,7 +121,8 @@ class TestZoneCollection(BaseFlaskTest):
             "/rest/index/associations/resources"
             "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
             + "&category=logical-enclosures")
-        ov_api.logical_enclosures.get.assert_called_with(self.logical_encl["uri"])
+        ov_api.logical_enclosures.get.assert_called_with(
+            self.logical_encl["uri"])
         ov_api.drive_enclosures.get_all.assert_called_with(
             filter="locationUri='/rest/enclosures/0000000000A66101'")
         ov_api.enclosures.get_all.assert_called_with()
@@ -144,15 +147,18 @@ class TestZoneCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(zone_collection_empty_mockup, result)
 
-    def test_get_zone_collection_enclosure_without_drives(self):
+    def test_get_zone_collection_without_drive_enclosure_associated(self):
         ov_api = self.oneview_client
-        import pdb; pdb.set_trace()
         ov_api.connection.get.return_value = self.logical_encl_assoc
         ov_api.logical_enclosures.get.return_value = self.logical_encl
 
+        zone_collection_mockup = copy.deepcopy(self.zone_collection_mockup)
+        zone_collection_mockup["Members@odata.count"] = 1
+        del zone_collection_mockup["Members"][:3]
+
         ov_api.server_profile_templates.get_all.return_value = \
             self.server_profile_template_list
-        ov_api.drive_enclosures.get_all.return_value = self.drive_enclosure_list
+        ov_api.drive_enclosures.get_all.return_value = []
         ov_api.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
@@ -162,7 +168,7 @@ class TestZoneCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(self.zone_collection_mockup, result)
+        self.assertEqualMockup(zone_collection_mockup, result)
 
         spt_with_storage_ctrler = self.server_profile_template_list[0]
         ov_api.connection.get.assert_called_with(
@@ -173,4 +179,52 @@ class TestZoneCollection(BaseFlaskTest):
             "/rest/index/associations/resources"
             "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
             + "&category=logical-enclosures")
-        ov_api.logical_enclosures.get.assert_called_with(self.logical_encl["uri"])
+        ov_api.logical_enclosures.get.assert_called_with(
+            self.logical_encl["uri"])
+        ov_api.drive_enclosures.get_all.assert_called_with(
+            filter="locationUri='/rest/enclosures/0000000000A66101'")
+        ov_api.enclosures.get_all.assert_called_with()
+
+    def test_get_zone_collection_with_drive_enclosure_without_drives(self):
+        ov_api = self.oneview_client
+
+        ov_api.connection.get.return_value = self.logical_encl_assoc
+        ov_api.logical_enclosures.get.return_value = self.logical_encl
+
+        zone_collection_mockup = copy.deepcopy(self.zone_collection_mockup)
+        zone_collection_mockup["Members@odata.count"] = 1
+        del zone_collection_mockup["Members"][:3]
+        drive_enclosure_list = copy.deepcopy(self.drive_enclosure_list)
+        del drive_enclosure_list[:1]
+        drive_enclosure_list[0]["driveBays"] = 0
+
+        ov_api.server_profile_templates.get_all.return_value = \
+            self.server_profile_template_list
+        ov_api.drive_enclosures.get_all.return_value = \
+            drive_enclosure_list
+        ov_api.enclosures.get_all.return_value = self.enclosures
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceZones/")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        self.assertEqualMockup(zone_collection_mockup, result)
+
+        spt_with_storage_ctrler = self.server_profile_template_list[0]
+        ov_api.connection.get.assert_called_with(
+            "/rest/index/associations/resources"
+            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
+            + "&category=logical-enclosures")
+        ov_api.connection.get.assert_called_with(
+            "/rest/index/associations/resources"
+            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
+            + "&category=logical-enclosures")
+        ov_api.logical_enclosures.get.assert_called_with(
+            self.logical_encl["uri"])
+        ov_api.drive_enclosures.get_all.assert_called_with(
+            filter="locationUri='/rest/enclosures/0000000000A66101'")
+        ov_api.enclosures.get_all.assert_called_with()

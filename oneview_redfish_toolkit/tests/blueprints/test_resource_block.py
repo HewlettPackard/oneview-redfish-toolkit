@@ -97,9 +97,9 @@ class TestResourceBlock(BaseFlaskTest):
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview'
-                '/DriveEnclosure.json'
+                '/DriveEnclosureList.json'
         ) as f:
-            self.drive_enclosure = json.load(f)
+            self.drive_enclosure_list = json.load(f)
 
         self.resource_not_found = HPOneViewException({
             "errorCode": "RESOURCE_NOT_FOUND",
@@ -140,7 +140,8 @@ class TestResourceBlock(BaseFlaskTest):
             self.server_profile_templates
         self.oneview_client.\
             logical_enclosures.get.return_value = self.log_encl
-        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
         self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
@@ -168,6 +169,9 @@ class TestResourceBlock(BaseFlaskTest):
             server_profile_templates.get_all.assert_called_with()
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
+        self.oneview_client.drive_enclosures.get_all.assert_called_with(
+            filter="locationUri='/rest/enclosures/0000000000A66101'")
+        self.oneview_client.enclosures.get_all.assert_called_with()
 
     def test_get_storage_resource_block_when_drive_is_composed(self):
         with open(
@@ -191,7 +195,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
-        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
         self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
@@ -219,6 +224,9 @@ class TestResourceBlock(BaseFlaskTest):
             server_profile_templates.get_all.assert_called_with()
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
+        self.oneview_client.drive_enclosures.get_all.assert_called_with(
+            filter="locationUri='/rest/enclosures/0000000000A66101'")
+        self.oneview_client.enclosures.get_all.assert_called_with()
 
     def test_get_server_hardware_resource_block(self):
         self.oneview_client.server_hardware.get.return_value = \
@@ -228,9 +236,9 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
-        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
         self.oneview_client.enclosures.get_all.return_value = self.enclosures
-
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -250,7 +258,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
-        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
         self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         for oneview_state, redfish_state in status_mapping.\
@@ -291,7 +300,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
-        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
         self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         for oneview_state, redfish_state in status_mapping.\
@@ -332,7 +342,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
-        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
         self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         for oneview_status, redfish_status in \
@@ -371,6 +382,9 @@ class TestResourceBlock(BaseFlaskTest):
                 )
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
+        self.oneview_client.drive_enclosures.get_all.assert_called_with(
+            filter="locationUri='/rest/enclosures/0000000000A66101'")
+        self.oneview_client.enclosures.get_all.assert_called_with()
 
     def test_get_spt_resource_block(self):
         with open(
@@ -386,7 +400,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.connection.get.return_value = \
             self.log_encl_index_assoc
         self.oneview_client.logical_enclosures.get.return_value = self.log_encl
-        self.oneview_client.drive_enclosures.get_all.return_value = self.drive_enclosure
+        self.oneview_client.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
         self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
@@ -401,6 +416,9 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
+        self.oneview_client.drive_enclosures.get_all.assert_called_with(
+            filter="locationUri='/rest/enclosures/0000000000A66101'")
+        self.oneview_client.enclosures.get_all.assert_called_with()
 
     def test_get_spt_resource_when_template_has_not_valid_controller(self):
         with open(

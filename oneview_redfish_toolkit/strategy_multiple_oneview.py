@@ -30,7 +30,7 @@ def filter_uuid_parameter_resource(resource, function, *args, **kwargs):
     if 'filter' not in kwargs:
         return all_oneviews_resource(resource, function, *args, **kwargs)
 
-    resource_id = _get_resource_id_by_filter(kwargs, None)
+    resource_id = _get_resource_id_by_filter(kwargs["filter"], None)
 
     return multiple_oneview.query_ov_client_by_resource(resource_id, resource,
                                                         function, *args,
@@ -50,7 +50,8 @@ def spt_get_all_with_filter(resource, function, *args, **kwargs):
     if 'filter' not in kwargs:
         return all_oneviews_resource(resource, function, *args, **kwargs)
 
-    resource_id = _get_resource_id_by_filter(kwargs, "enclosureGroupUri")
+    resource_id = \
+        _get_resource_id_by_filter(kwargs["filter"], "enclosureGroupUri")
 
     return \
         multiple_oneview.query_ov_client_by_resource(resource_id,
@@ -63,7 +64,8 @@ def drive_enclosures_get_all_with_filter(resource, function, *args, **kwargs):
     if 'filter' not in kwargs:
         return all_oneviews_resource(resource, function, *args, **kwargs)
 
-    resource_id = _get_resource_id_by_filter(kwargs, "locationUri")
+    resource_id = \
+        _get_resource_id_by_filter(kwargs["filter"], "locationUri")
 
     return \
         multiple_oneview.query_ov_client_by_resource(resource_id,
@@ -111,9 +113,7 @@ def _run_action(resource_id, resource_get, function_get, resource,
                                                         *args, **kwargs)
 
 
-def _get_resource_id_by_filter(kwargs, resource_uri):
-    filter_parameter = kwargs['filter']
-
+def _get_resource_id_by_filter(filter_parameter, resource_property):
     # Check if filter is composed by a list. If it is true
     # sets the resource_id based on a resource_uri;
     # Otherwise just splits the filter string and sets its value
@@ -121,7 +121,7 @@ def _get_resource_id_by_filter(kwargs, resource_uri):
     if isinstance(filter_parameter, list):
         for filters in filter_parameter:
             filter_data = filters.split('=')
-            if filter_data[0] == resource_uri:
+            if filter_data[0] == resource_property:
                 resource_id = filter_data[1]
     else:
         filter_data = filter_parameter.split('=')

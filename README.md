@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/HewlettPackard/oneview-redfish-toolkit.png?label=ready&title=Ready)](http://waffle.io/HewlettPackard/oneview-redfish-toolkit) [![Build Status](https://travis-ci.org/HewlettPackard/oneview-redfish-toolkit.svg?branch=master)](https://travis-ci.org/HewlettPackard/oneview-redfish-toolkit)
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/HewlettPackard/oneview-redfish-toolkit.svg?columns=Ready,In%20Progress,Under%20Review)](https://waffle.io/HewlettPackard/oneview-redfish-toolkit) [![Build Status](https://travis-ci.org/HewlettPackard/oneview-redfish-toolkit.svg?branch=master)](https://travis-ci.org/HewlettPackard/oneview-redfish-toolkit)
 
 # HPE OneView Redfish Toolkit
 

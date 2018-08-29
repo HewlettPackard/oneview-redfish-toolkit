@@ -19,6 +19,7 @@
     search_resource_multiple_ov function from multiple_oneview.py
 """
 import collections
+import configparser
 import json
 import unittest
 
@@ -28,11 +29,16 @@ from unittest.mock import call
 from hpOneView.exceptions import HPOneViewException
 
 from oneview_redfish_toolkit import authentication
+from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import handler_multiple_oneview
 from oneview_redfish_toolkit import multiple_oneview
 
 
+@mock.patch.object(config, 'get_config')
+@mock.patch.object(authentication, 'request')
+@mock.patch.object(connection, 'OneViewClient')
+@mock.patch.object(connection, 'get_oneview_client')
 class TestMultipleOneView(unittest.TestCase):
     """Test class for multiple_oneview"""
 
@@ -60,15 +66,25 @@ class TestMultipleOneView(unittest.TestCase):
         self.ov_tokens["10.0.0.2"] = "ov_tk2"
         self.ov_tokens["10.0.0.3"] = "ov_tk3"
 
-    @mock.patch.object(authentication, 'request')
-    @mock.patch.object(connection, 'OneViewClient')
-    @mock.patch.object(connection, 'get_oneview_client')
-    def test_search_in_all_ov_found_on_second(self, get_oneview_client,
-                                              oneview_client_mockup,
-                                              request):
+    def setUp(self):
         # Initializing caches
         multiple_oneview.init_map_resources()
         authentication.init_map_tokens()
+
+        self.config_obj = configparser.ConfigParser()
+        self.config_obj.add_section('oneview_config')
+        self.config_obj.add_section('redfish')
+
+    def test_search_in_all_ov_found_on_second(self, get_oneview_client,
+                                              oneview_client_mockup,
+                                              request,
+                                              get_config):
+        # Mocking configuration read from config file
+        self.config_obj.set('oneview_config', 'ip', '10.0.0.1, 10.0.0.2')
+        self.config_obj.set('redfish', 'authentication_mode', 'session')
+
+        # Mocking globals['config'] of config file
+        get_config.return_value = self.config_obj
 
         # Mocking redfish->Oneview tokens
         authentication._set_new_token(self.redfish_token, self.ov_tokens)
@@ -106,15 +122,61 @@ class TestMultipleOneView(unittest.TestCase):
              call("10.0.0.2", token="ov_tk2")]
         )
 
-    @mock.patch.object(authentication, 'request')
-    @mock.patch.object(connection, 'OneViewClient')
-    @mock.patch.object(connection, 'get_oneview_client')
+    def test_search_in_all_ov_when_auth_mode_is_conf(self,
+                                                     get_oneview_client,
+                                                     oneview_client_mockup,
+                                                     request,
+                                                     get_config):
+        # Mocking configuration read from config file
+        self.config_obj.set('oneview_config', 'ip', '10.0.0.1, oneview.com')
+        self.config_obj.set('redfish', 'authentication_mode', 'conf')
+
+        # Mocking globals['config'] of config file
+        get_config.return_value = self.config_obj
+
+        # Mocking redfish token on request to be None due the conf mode
+        request.headers.get.return_value = None
+
+        # Mocking OneView client call returning resource for the second
+        # one, ip: 10.0.0.2
+        oneview_client_mockup.server_profiles.get.side_effect = [
+            self.not_found_server_profile,
+            self.server_profile,
+        ]
+
+        # Mocking connection.get_oneview_client() to return mocked
+        # OneView Client
+        get_oneview_client.return_value = oneview_client_mockup
+
+        # Create new handler for multiple OneView support
+        handler_multiple_ov = \
+            handler_multiple_oneview.MultipleOneViewResource()
+
+        # Query resource
+        handler_multiple_ov.server_profiles.get(self.sp_uuid)
+
+        # Check if resource was queried on two of three OneViews
+        oneview_client_mockup.server_profiles.get.assert_has_calls(
+            [call(self.sp_uuid),
+             call(self.sp_uuid)]
+        )
+
+        get_oneview_client.assert_has_calls(
+            [call("10.0.0.1", token=None),
+             call("oneview.com", token=None)]
+        )
+
     def test_search_mapped_after_search_in_all(self, get_oneview_client,
                                                oneview_client_mockup,
-                                               request):
-        # Initializing caches
-        multiple_oneview.init_map_resources()
-        authentication.init_map_tokens()
+                                               request,
+                                               get_config):
+        # Mocking configuration read from config file
+        self.config_obj.set('oneview_config', 'ip',
+                            '10.0.0.1, 10.0.0.2, 10.0.0.3')
+        self.config_obj.set('redfish', 'authentication_mode', 'session')
+
+        # Mocking globals['config'] of config file
+        get_config.return_value = self.config_obj
 
         # Mocking redfish->Oneview tokens
         authentication._set_new_token(self.redfish_token, self.ov_tokens)

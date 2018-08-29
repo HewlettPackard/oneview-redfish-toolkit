@@ -177,8 +177,9 @@ def main(config_file_path, logging_config_file_path):
         if connection.is_service_root():
             return None
 
-        x_auth_token = request.headers.get('x-auth-token')
-        authentication.check_authentication(x_auth_token)
+        if config.auth_mode_is_session():
+            x_auth_token = request.headers.get('x-auth-token')
+            authentication.check_authentication(x_auth_token)
 
         g.oneview_client = \
             handler_multiple_oneview.MultipleOneViewResource()

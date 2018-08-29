@@ -108,7 +108,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
-                'DriveEnclosure.json'
+                'DriveEnclosureList.json'
         ) as f:
             drive_enclosure = json.load(f)
 
@@ -128,7 +128,8 @@ class TestComputerSystemCollection(BaseFlaskTest):
             .return_value = logical_encl_assoc
         self.oneview_client.logical_enclosures.get\
             .return_value = logical_encl
-        self.oneview_client.drive_enclosures.get_all.return_value = drive_enclosure
+        self.oneview_client.drive_enclosures.get_all.return_value = \
+            drive_enclosure
         self.oneview_client.enclosures.get_all.return_value = enclosures
 
         response = self.client.get("/redfish/v1/Systems/")
@@ -151,3 +152,6 @@ class TestComputerSystemCollection(BaseFlaskTest):
             + "&category=logical-enclosures")
         self.oneview_client.logical_enclosures.get.assert_called_with(
             logical_encl["uri"])
+        self.oneview_client.drive_enclosures.get_all.assert_called_with(
+            filter="locationUri='/rest/enclosures/0000000000A66101'")
+        self.oneview_client.enclosures.get_all.assert_called_with()

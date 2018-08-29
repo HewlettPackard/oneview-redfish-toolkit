@@ -64,6 +64,10 @@ def get_authentication_mode():
     return get_config().get('redfish', 'authentication_mode')
 
 
+def auth_mode_is_session():
+    return get_authentication_mode() == 'session'
+
+
 def get_registry_dict():
     return globals()['registry_dict']
 
