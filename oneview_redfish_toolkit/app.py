@@ -406,16 +406,14 @@ if __name__ == '__main__':
                         help='A required path to logging config file')
     parser.add_argument('--dev', type=bool,
                         default=False, choices=[True, False],
-                        help='A optional value True or False to say if the '
-                             'application should run in a development mode. '
-                             'This will run a CherryPy server.')
+                        help='Optional value True or False to say if the '
+                             'application should run in development mode.')
     parser.add_argument('--debug', type=bool,
                         default=False, choices=[True, False],
-                        help='A optional value True or False to say if the '
-                             'application should run in a debug mode, this '
+                        help='Optional value True or False to say if the '
+                             'application should run in debug mode, this '
                              'option only is valid when the development mode '
-                             'is set to True too, otherwise it is ignored. '
-                             'This will run a Flask server')
+                             'is set to True too, otherwise it is ignored.')
     args = parser.parse_args()
 
     main(args.config, args.log_config,
