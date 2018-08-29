@@ -16,6 +16,7 @@
 
 import collections
 from oneview_redfish_toolkit.api.chassis import Chassis
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.util.power_option import \
     RESET_ALLOWABLE_VALUES_LIST
 
@@ -44,23 +45,34 @@ class BladeChassis(Chassis):
         self.redfish["Model"] = server_hardware["model"]
         self.redfish["IndicatorLED"] = self. \
             _map_indicator_led(server_hardware["uidState"])
+
         self.redfish["Links"]["ComputerSystems"] = list()
-        self.redfish["Links"]["ComputerSystems"] \
-            .append(collections.OrderedDict())
-        self.redfish["Links"]["ComputerSystems"][0]["@odata.id"] = \
-            "/redfish/v1/Systems/" + server_hardware['uuid']
+
+        server_profile_uri = server_hardware["serverProfileUri"]
+        if server_profile_uri:
+            system_id = server_profile_uri.split("/")[-1]
+            self.redfish["Links"]["ComputerSystems"].append(
+                {
+                    "@odata.id": ComputerSystem.BASE_URI + "/" + system_id
+                }
+            )
+
         self.redfish["Links"]["ManagedBy"] = list()
         self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
             "/redfish/v1/Managers/" + server_hardware['uuid']
+
         if server_hardware["locationUri"] is not None:
             self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
-            self.redfish["Links"]["ContainedBy"]["@odata.id"] = "/redfish/v1/Chassis/" \
+            self.redfish["Links"]["ContainedBy"]["@odata.id"] = \
+                "/redfish/v1/Chassis/" \
                 + server_hardware["locationUri"].split("/")[-1]
+
         self.redfish["NetworkAdapters"] = dict()
         self.redfish["NetworkAdapters"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + server_hardware["uuid"] + \
             "/NetworkAdapters/"
+
         self.redfish["Actions"] = collections.OrderedDict()
         self.redfish["Actions"]["#Chassis.Reset"] = \
             collections.OrderedDict()

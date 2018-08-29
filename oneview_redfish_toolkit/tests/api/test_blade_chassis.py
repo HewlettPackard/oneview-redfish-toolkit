@@ -13,7 +13,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import copy
 import json
 
 from oneview_redfish_toolkit.api.blade_chassis import BladeChassis
@@ -38,28 +38,28 @@ class TestBladeChassis(BaseTest):
         ) as f:
             self.blade_chassis_mockup = json.load(f)
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
+    def test_serialize_when_blade_chassis_has_computer_system(self):
+        blade_chassis = BladeChassis(self.server_hardware)
 
-        try:
-            blade_chassis = BladeChassis(self.server_hardware)
-        except Exception as e:
-            self.fail("Failed to instantiate Chassis class."
-                      " Error: {}".format(e))
-        self.assertIsInstance(blade_chassis, BladeChassis)
-
-    def test_serialize(self):
-        # Tests the serialize function result against known result
-
-        try:
-            blade_chassis = BladeChassis(self.server_hardware)
-        except Exception as e:
-            self.fail("Failed to instantiate Chassis class."
-                      " Error: {}".format(e))
-
-        try:
-            result = json.loads(blade_chassis.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(blade_chassis.serialize())
 
         self.assertEqualMockup(self.blade_chassis_mockup, result)
+
+    def test_serialize_when_blade_chassis_has_not_computer_system(self):
+        server_hardware = copy.deepcopy(self.server_hardware)
+        server_hardware["serverProfileUri"] = None
+
+        blade_chassis = BladeChassis(server_hardware)
+        result = json.loads(blade_chassis.serialize())
+
+        expected_blade_result = copy.deepcopy(self.blade_chassis_mockup)
+        expected_blade_result["Links"]["ComputerSystems"] = []
+
+        self.assertEqualMockup(expected_blade_result, result)
+
+        server_hardware["serverProfileUri"] = ""
+
+        blade_chassis = BladeChassis(server_hardware)
+        result = json.loads(blade_chassis.serialize())
+
+        self.assertEqualMockup(expected_blade_result, result)
