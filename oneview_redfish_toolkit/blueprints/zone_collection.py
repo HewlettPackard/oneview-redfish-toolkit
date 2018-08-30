@@ -47,22 +47,3 @@ def get_zone_collection():
     zc = ZoneCollection(zone_ids)
 
     return ResponseBuilder.success(zc)
-
-
-def _get_enclosures_uris_by_template(server_profile_template):
-    log_encl_assoc_uri = "/rest/index/associations/resources" \
-        "?parenturi={}&category=logical-enclosures"\
-        .format(server_profile_template["enclosureGroupUri"])
-    logical_encl_assoc = g.oneview_client.connection.get(log_encl_assoc_uri)
-    members = logical_encl_assoc["members"]
-    enclosure_uris = []
-    for member in members:
-        log_encl_uri = member["childResource"]["uri"]
-        logical_encl = g.oneview_client.logical_enclosures.get(log_encl_uri)
-        enclosure_uris += logical_encl["enclosureUris"]
-
-    #  the set keeps the elements without repetition
-    enclosure_uris = list(set(enclosure_uris))
-    enclosure_uris.sort()
-
-    return enclosure_uris
