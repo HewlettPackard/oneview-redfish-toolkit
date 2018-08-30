@@ -84,6 +84,13 @@ class TestComputerSystem(BaseFlaskTest):
         ) as f:
             self.drives = json.load(f)
 
+        # Loading ServerProfileWithLabels mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview'
+                '/ServerProfileWithLabels.json'
+        ) as f:
+            self.server_profile_labels = json.load(f)
+
     def test_get_computer_system_not_found(self):
         """Tests ComputerSystem with ServerProfileTemplates not found"""
 
@@ -240,6 +247,8 @@ class TestComputerSystem(BaseFlaskTest):
             self.server_hardware_types
         self.oneview_client.sas_logical_jbods.get_drives.return_value = \
             [self.drives[4]]
+        self.oneview_client.labels.get_by_resource.return_value = \
+            self.server_profile_labels
 
         # Get ComputerSystem
         response = self.client.get(
@@ -270,6 +279,10 @@ class TestComputerSystem(BaseFlaskTest):
         )
         self.oneview_client.server_profile_templates.get \
             .assert_not_called()
+
+        self.oneview_client.labels.get_by_resource.assert_called_with(
+            "/rest/server-profiles/b425802b-a6a5-4941-8885-aab68dfa2ee2"
+        )
 
     def test_get_computer_system_spt(self):
         """Tests ComputerSystem with a known Server Profile Templates"""
@@ -578,6 +591,8 @@ class TestComputerSystem(BaseFlaskTest):
                 self.server_hardware_types
             self.oneview_client.sas_logical_jbods.get_drives.return_value = \
                 [self.drives[4]]
+            self.oneview_client.labels.get_by_resource.return_value = \
+                self.server_profile_labels
 
             response = self.client.get(
                 "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
@@ -608,6 +623,8 @@ class TestComputerSystem(BaseFlaskTest):
                 self.server_hardware_types
             self.oneview_client.sas_logical_jbods.get_drives.return_value = \
                 [self.drives[4]]
+            self.oneview_client.labels.get_by_resource.return_value = \
+                self.server_profile_labels
 
             response = self.client.get(
                 "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"

@@ -50,6 +50,13 @@ class TestComputerSystem(BaseTest):
         ) as f:
             self.drives = json.load(f)
 
+        # Loading ServerProfileWithLabels mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview'
+                '/ServerProfileWithLabels.json'
+        ) as f:
+            self.server_profile_labels = json.load(f)
+
         # Loading ComputerSystem mockup result
         with open(
             'oneview_redfish_toolkit/mockups/redfish/ComputerSystem.json'
@@ -62,7 +69,8 @@ class TestComputerSystem(BaseTest):
             self.server_hardware,
             self.server_hardware_types,
             self.server_profile,
-            [self.drives[4]]
+            [self.drives[4]],
+            self.server_profile_labels
         )
 
         result = json.loads(computer_system.serialize())

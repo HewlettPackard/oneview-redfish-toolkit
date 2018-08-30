@@ -45,7 +45,7 @@ class ComputerSystem(RedfishJsonValidator):
     BASE_URI = '/redfish/v1/Systems'
 
     def __init__(self, server_hardware, server_hardware_types,
-                 server_profile, drives):
+                 server_profile, drives, server_profile_labels):
         """ComputerSystem constructor
 
             Populates self.redfish with the contents of ServerHardware and
@@ -56,6 +56,7 @@ class ComputerSystem(RedfishJsonValidator):
                 server_hardware_types: ServerHardwareTypes dict from OneView
                 server_profile: ServerProfile dict from OneView.
                 drives: Drives list from OneView
+                server_profile_labels: Server Profile labels from Oneview
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -113,9 +114,9 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
             "/redfish/v1/Managers/" + server_hardware['uuid']
         self.redfish["Links"]["ResourceBlocks"] = list()
-        self._fill_resource_block_members(base_resource,
-                                          drives,
-                                          server_hardware)
+        self._fill_resource_block_members(drives,
+                                          server_hardware,
+                                          server_profile_labels)
         self.redfish["Actions"] = collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
@@ -236,13 +237,13 @@ class ComputerSystem(RedfishJsonValidator):
         return sas_logical_jbods
 
     def _fill_resource_block_members(self,
-                                     server_profile,
                                      drives,
-                                     server_hardware):
+                                     server_hardware,
+                                     server_profile_labels):
         resource_block_uuids = \
-            self._get_resource_block_uuids(server_profile,
-                                           drives,
-                                           server_hardware)
+            self._get_resource_block_uuids(drives,
+                                           server_hardware,
+                                           server_profile_labels)
 
         base_uri = ResourceBlockCollection.BASE_URI + "/{}"
         blocks = self.redfish["Links"]["ResourceBlocks"]
@@ -250,16 +251,15 @@ class ComputerSystem(RedfishJsonValidator):
             blocks.append({"@odata.id": base_uri.format(resource_block_uuid)})
 
     def _get_resource_block_uuids(self,
-                                  server_profile,
                                   drives,
-                                  server_hardware):
+                                  server_hardware,
+                                  server_profile_labels):
         resource_block_uuids = list()
         resource_block_uuids.append(server_hardware["uuid"])
 
         # fill with network resource block
-        if server_profile["description"]:
-            spt_id = server_profile["description"].split("/")[-1]
-            resource_block_uuids.append(spt_id)
+        spt_id = server_profile_labels["labels"][0]["name"].replace(" ", "-")
+        resource_block_uuids.append(spt_id)
 
         for drive in drives:
             storage_resource_uuid = drive["uri"].split("/")[-1]
