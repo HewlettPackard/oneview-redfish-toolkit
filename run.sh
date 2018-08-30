@@ -16,4 +16,4 @@
 # under the License.
 PYTHONPATH=${PYTHONPATH:+$PYTHONPATH:}.
 export PYTHONPATH=$PYTHONPATH
-python3 oneview_redfish_toolkit/app.py --config oneview_redfish_toolkit/conf/redfish.conf --log-config oneview_redfish_toolkit/conf/logging.conf
+python3 oneview_redfish_toolkit/app.py --config oneview_redfish_toolkit/conf/redfish.conf --log-config oneview_redfish_toolkit/conf/logging.conf --dev
