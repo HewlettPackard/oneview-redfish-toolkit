@@ -404,16 +404,16 @@ if __name__ == '__main__':
                         help='A required path to config file')
     parser.add_argument('--log-config', type=str,
                         help='A required path to logging config file')
-    parser.add_argument('--dev', type=bool,
-                        default=False, choices=[True, False],
-                        help='Optional value True or False to say if the '
-                             'application should run in development mode.')
-    parser.add_argument('--debug', type=bool,
-                        default=False, choices=[True, False],
-                        help='Optional value True or False to say if the '
-                             'application should run in debug mode, this '
-                             'option only is valid when the development mode '
-                             'is set to True too, otherwise it is ignored.')
+    parser.add_argument('--dev', type=bool, nargs='?',
+                        default=False, const=True,
+                        help='Optional value to tell the application to run '
+                             'in development mode.')
+    parser.add_argument('--debug', type=bool, nargs='?',
+                        default=False, const=True,
+                        help='Optional value to tell the application to run '
+                             'in debug mode, this option only is valid when '
+                             'the development mode is set too, otherwise '
+                             'it is ignored.')
     args = parser.parse_args()
 
     main(args.config, args.log_config,
