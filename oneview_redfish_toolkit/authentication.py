@@ -53,7 +53,6 @@ def login(username, password):
     try:
         tokens_ov_by_ip = dict()
         credentials = create_credentials(username, password)
-
         for ip in config.get_oneview_multiple_ips():
             ov_config = \
                 connection.create_oneview_config(ip=ip,
@@ -103,6 +102,15 @@ def get_multiple_oneview_token():
 
 def create_credentials(username, password):
     credentials = dict()
+
+    try:
+        login_domain, username = username.split("\\")
+    except (AttributeError, ValueError):
+        logging.debug("Trying build credentials to login to Oneview, but "
+                      "userName '{}' has not authLoginDomain".format(username))
+    else:
+        credentials["authLoginDomain"] = login_domain
+
     credentials["userName"] = username
     credentials["password"] = password
     return credentials

@@ -29,6 +29,7 @@ from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit import authentication
 from oneview_redfish_toolkit.blueprints.session \
     import session as session_blueprint
+from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -59,9 +60,9 @@ class TestSession(BaseFlaskTest):
 
         # Loading Session mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/redfish/Session.json'
+                'oneview_redfish_toolkit/mockups/redfish/Session.json'
         ) as f:
-            session_mockup = json.load(f)
+            expected_session_mockup = json.load(f)
 
         authentication.init_map_tokens()
 
@@ -83,10 +84,66 @@ class TestSession(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(session_mockup, result)
+        self.assertEqualMockup(expected_session_mockup, result)
         self.assertIn("/redfish/v1/SessionService/Sessions/1",
                       response.headers["Location"])
         self.assertEqual("sessionId", response.headers["X-Auth-Token"])
+        oneview_client_mockup.assert_called_with(
+            {
+                'ip': config.get_oneview_multiple_ips()[0],
+                'credentials': {
+                    'userName': 'administrator',
+                    'password': 'password'
+                },
+                'api_version': config.get_api_version()
+            }
+        )
+
+    @mock.patch.object(authentication, 'OneViewClient')
+    def test_post_session_with_login_domain_data(self, oneview_client_mockup):
+        """Tests post Session when UserName has login domain information"""
+
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'SessionForLoginWithDomain.json'
+        ) as f:
+            expected_session_mockup = json.load(f)
+
+        authentication.init_map_tokens()
+
+        # Create mock response
+        oneview_client = oneview_client_mockup()
+        oneview_client.connection.get_session_id.return_value = "sessionId"
+
+        # POST Session
+        response = self.client.post(
+            "/redfish/v1/SessionService/Sessions",
+            data=json.dumps(dict(
+                UserName="LOCAL\\administrator",
+                Password="password")),
+            content_type='application/json')
+
+        # Gets json from response
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_session_mockup, result)
+        self.assertIn("/redfish/v1/SessionService/Sessions/1",
+                      response.headers["Location"])
+        self.assertEqual("sessionId", response.headers["X-Auth-Token"])
+        oneview_client_mockup.assert_called_with(
+            {
+                'ip': config.get_oneview_multiple_ips()[0],
+                'credentials': {
+                    'userName': 'administrator',
+                    'password': 'password',
+                    'authLoginDomain': 'LOCAL'
+                },
+                'api_version': config.get_api_version()
+            }
+        )
 
     @mock.patch.object(authentication, 'OneViewClient')
     def test_post_session_invalid_key(self, oneview_client_mockup):
