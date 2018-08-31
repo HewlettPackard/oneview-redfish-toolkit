@@ -377,12 +377,12 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.oneview_client.server_hardware.get.side_effect = [
             self.server_hardware,
             self.not_found_error,
+            self.server_hardware,
         ]
         self.oneview_client.server_profile_templates.get.side_effect = [
             self.not_found_error,
             spt,
             spt,
-            spt
         ]
         self.oneview_client.index_resources.get.side_effect = [
             self.not_found_error,
@@ -444,7 +444,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_hardware,
             self.not_found_error,
             self.not_found_error,
-            self.not_found_error
+            self.not_found_error,
+            self.server_hardware  # Get for multiple OneView support
         ]
 
         template_without_controller = copy.deepcopy(
@@ -455,8 +456,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             template_without_controller,
             self.not_found_error,
             self.not_found_error,
-            template_without_controller,
-            template_without_controller  # Get for multiple OneView support
+            template_without_controller
         ]
         self.oneview_client.index_resources.get.side_effect = [
             self.not_found_error,
