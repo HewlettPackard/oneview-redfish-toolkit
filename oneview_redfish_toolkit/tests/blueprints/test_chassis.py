@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 
 # 3rd party libs
@@ -196,7 +197,43 @@ class TestChassis(BaseFlaskTest):
     # Blade     #
     #############
 
-    def test_get_blade_chassis(self):
+    def test_get_blade_chassis_without_computer_system(self):
+        """"Tests BladeChassis with a known Server Hardware"""
+
+        server_hardware = copy.deepcopy(self.server_hardware)
+        server_hardware["serverProfileUri"] = None
+
+        self.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        self.oneview_client.server_hardware.get.return_value = server_hardware
+
+        response = self.client.get(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+        )
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        expected_blade_result = copy.deepcopy(self.blade_chassis_mockup)
+        expected_blade_result["Links"]["ComputerSystems"] = []
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_blade_result, result)
+        self.assertEqual(
+            "{}{}".format("W/", server_hardware["eTag"]),
+            response.headers["ETag"])
+        self.oneview_client.server_hardware.get \
+            .assert_called_with(server_hardware["uuid"])
+
+        server_hardware["serverProfileUri"] = ""
+        response = self.client.get(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+        )
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqualMockup(expected_blade_result, result)
+
+    def test_get_blade_chassis_with_computer_system(self):
         """"Tests BladeChassis with a known Server Hardware"""
 
         self.oneview_client.index_resources.get_all.return_value = \
