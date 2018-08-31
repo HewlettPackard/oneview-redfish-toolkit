@@ -28,7 +28,7 @@ from hpOneView.exceptions import HPOneViewException
 # own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.session import Session
-from oneview_redfish_toolkit import authentication
+from oneview_redfish_toolkit import client_session
 
 
 session = Blueprint('session', __name__)
@@ -69,7 +69,7 @@ def post_session():
                  "message": "Invalid JSON key. The JSON request body"
                             " must have the keys UserName and Password"})
 
-        session_id = authentication.login(username, password)
+        session_id = client_session.login(username, password)
 
         sess = Session(username)
 

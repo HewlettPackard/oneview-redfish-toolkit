@@ -24,6 +24,7 @@ from hpOneView.exceptions import HPOneViewException
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import service_root
+from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
@@ -63,7 +64,7 @@ class TestServiceRoot(BaseFlaskTest):
     @mock.patch.object(config, 'get_oneview_multiple_ips')
     @mock.patch.object(config, 'get_credentials')
     @mock.patch.object(connection, 'request_oneview')
-    @mock.patch.object(connection, 'get_oneview_client')
+    @mock.patch.object(client_session, 'get_oneview_client')
     def test_get_service_root(self, get_oneview_client, request_oneview,
                               get_credentials,
                               get_oneview_multiple_ips,

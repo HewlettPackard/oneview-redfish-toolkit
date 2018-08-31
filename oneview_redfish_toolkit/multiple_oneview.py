@@ -23,7 +23,7 @@ from hpOneView.exceptions import HPOneViewException
 
 # Modules own libs
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
-from oneview_redfish_toolkit import authentication
+from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
 
@@ -65,12 +65,7 @@ def query_ov_client_by_resource(resource_id, resource, function,
         return search_resource_multiple_ov(resource, function, resource_id,
                                            *args, **kwargs)
 
-    ov_token = None
-    if config.auth_mode_is_session():
-        # Get cached OneView's token
-        ov_token = authentication.get_oneview_token(ip_oneview)
-
-    ov_client = connection.get_oneview_client(ip_oneview, token=ov_token)
+    ov_client = client_session.get_oneview_client(ip_oneview)
 
     return execute_query_ov_client(ov_client, resource, function,
                                    *args, **kwargs)
@@ -119,12 +114,7 @@ def search_resource_multiple_ov(resource, function, resource_id,
     # Loop in all OneView's IP
     for ov_ip in config.get_oneview_multiple_ips():
 
-        ov_token = None
-        if config.auth_mode_is_session():
-            ov_token = authentication.get_oneview_token(ov_ip)
-
-        ov_client = connection.get_oneview_client(ov_ip,
-                                                  token=ov_token)
+        ov_client = client_session.get_oneview_client(ov_ip)
 
         try:
             # Query resource on OneView

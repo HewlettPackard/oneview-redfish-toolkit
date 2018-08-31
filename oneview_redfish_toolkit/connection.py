@@ -39,42 +39,19 @@ SERVICE_ROOT_ENDPOINTS = ["/redfish/v1",
                           "/redfish/v1/$metadata"]
 
 
-def get_oneview_client(ip_oneview, token=None,
+def new_oneview_client(ip_oneview, username=None, password=None,
                        api_version=None):
-    """Returns checking for already opened connections.
+    credentials = None
 
-    If on the same request was already opened a connection for the OneView's
-    IP received as parameter it returns the opened connection, if not
-    it creates a new connection.
+    if config.auth_mode_is_conf():
+        credentials = config.get_credentials()
 
-    """
-    ov_client = g.ov_connections.get(ip_oneview)
+    if config.auth_mode_is_session():
+        credentials = create_credentials(username, password)
 
-    if ov_client:
-        return ov_client
-
-    ov_client = new_oneview_client(
-        ip_oneview, token=token, api_version=api_version)
-    g.ov_connections[ip_oneview] = ov_client
-
-    return ov_client
-
-
-def new_oneview_client(ip_oneview, token=None,
-                       api_version=None):
-    auth_mode = config.get_authentication_mode()
-    ov_config = None
-
-    if auth_mode == "conf":
-        ov_config = create_oneview_config(ip=ip_oneview,
-                                          api_version=api_version,
-                                          credentials=config.get_credentials())
-
-    if auth_mode == "session":
-        ov_config = create_oneview_config(ip=ip_oneview,
-                                          api_version=api_version,
-                                          token=token)
-
+    ov_config = create_oneview_config(ip=ip_oneview,
+                                        api_version=api_version,
+                                        credentials=credentials)
     try:
         oneview_client = OneViewClient(ov_config)
         return oneview_client
@@ -143,16 +120,26 @@ def request_oneview(oneview_ip, rest_url):
     finally:
         connection.close()
 
+def create_credentials(username, password):
+    credentials = dict()
 
-def create_oneview_config(ip, token=None, api_version=None,
-                          credentials=None):
+    try:
+        login_domain, username = username.split("\\")
+    except (AttributeError, ValueError):
+        logging.debug("AuthLoginDomain not specified on session creation")
+    else:
+        credentials["authLoginDomain"] = login_domain
+
+    credentials["userName"] = username
+    credentials["password"] = password
+    return credentials
+
+
+def create_oneview_config(ip, api_version=None, credentials=None):
     """Creates a dict to pass as argument on creating a new OneViewClient"""
     ov_config = {}
     ov_config['ip'] = ip
     ov_config['api_version'] = config.get_api_version()
-
-    if token:
-        ov_config['credentials'] = {"sessionID": token}
 
     if credentials:
         ov_config['credentials'] = credentials
