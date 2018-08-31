@@ -106,8 +106,7 @@ def create_credentials(username, password):
     try:
         login_domain, username = username.split("\\")
     except (AttributeError, ValueError):
-        logging.debug("Trying build credentials to login to Oneview, but "
-                      "userName '{}' has not authLoginDomain".format(username))
+        logging.debug("AuthLoginDomain not specified on session creation")
     else:
         credentials["authLoginDomain"] = login_domain
 

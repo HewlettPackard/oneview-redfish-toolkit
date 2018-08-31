@@ -19,16 +19,16 @@ import json
 from unittest import mock
 
 # 3rd party libs
-from flask import Response
 from flask_api import status
 from hpOneView import HPOneViewException
 
 
 # Module libs
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit import authentication
 from oneview_redfish_toolkit.blueprints.session \
     import session as session_blueprint
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
@@ -45,14 +45,7 @@ class TestSession(BaseFlaskTest):
         @self.app.errorhandler(status.HTTP_401_UNAUTHORIZED)
         def unauthorized_error(error):
             """Creates a Unauthorized Error response"""
-            redfish_error = RedfishError(
-                "GeneralError", error.description)
-
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_401_UNAUTHORIZED,
-                mimetype='application/json')
+            return ResponseBuilder.error_401(error)
 
     @mock.patch.object(authentication, 'OneViewClient')
     def test_post_session(self, oneview_client_mockup):
