@@ -230,14 +230,7 @@ def main(config_file_path, logging_config_file_path,
     @app.errorhandler(status.HTTP_401_UNAUTHORIZED)
     def unauthorized_error(error):
         """Creates a Unauthorized Error response"""
-        redfish_error = RedfishError(
-            "GeneralError", error.description)
-
-        error_str = redfish_error.serialize()
-        return Response(
-            response=error_str,
-            status=status.HTTP_401_UNAUTHORIZED,
-            mimetype='application/json')
+        return ResponseBuilder.error_401(error)
 
     @app.errorhandler(status.HTTP_403_FORBIDDEN)
     def forbidden(error):

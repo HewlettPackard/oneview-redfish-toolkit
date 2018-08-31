@@ -19,6 +19,7 @@ from collections import namedtuple
 from flask import Response
 from flask_api import status
 
+from oneview_redfish_toolkit.api.errors import AUTH_ONEVIEW_ERRORS
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 
@@ -47,12 +48,20 @@ class ResponseBuilder(object):
 
         if error_code in NOT_FOUND_ONEVIEW_ERRORS:
             http_error_code = status.HTTP_404_NOT_FOUND
+        elif error_code in AUTH_ONEVIEW_ERRORS:
+            http_error_code = status.HTTP_401_UNAUTHORIZED
 
         method_name = 'error_' + str(http_error_code)
         handler_method_to_call = getattr(ResponseBuilder, method_name)
 
         error_desc = ErrorDescription(description=exception.msg)
         return handler_method_to_call(error_desc)
+
+    @staticmethod
+    def error_401(error):
+        redfish_error = RedfishError("GeneralError", error.description)
+        return ResponseBuilder.response(redfish_error,
+                                        status.HTTP_401_UNAUTHORIZED)
 
     @staticmethod
     def error_403(error):
