@@ -193,6 +193,7 @@ class ComputerSystem(RedfishJsonValidator):
         server_profile.pop("state", None)
         server_profile.pop("scopesUri", None)
         server_profile.pop("eTag", None)
+        server_profile.pop("description", None)
         if isinstance(server_profile.get("connectionSettings"), dict):
             server_profile["connectionSettings"].pop('manageConnections', None)
 
