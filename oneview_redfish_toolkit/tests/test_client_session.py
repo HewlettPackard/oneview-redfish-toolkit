@@ -22,14 +22,15 @@ import unittest
 
 from unittest import mock
 
-from oneview_redfish_toolkit import authentication
+from oneview_redfish_toolkit import client_session
+from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import config
 
 
 class TestAuthentication(unittest.TestCase):
     """Test class for authentication"""
 
-    @mock.patch.object(authentication, 'OneViewClient')
+    @mock.patch.object(connection, 'OneViewClient')
     @mock.patch.object(config, 'get_oneview_multiple_ips')
     def test_map_token_redfish_for_multiple_ov(self, get_oneview_multiple_ips,
                                                oneview_client_mockup):
@@ -40,7 +41,7 @@ class TestAuthentication(unittest.TestCase):
         list_tokens = list(tokens_ov.values())
         iter_tokens_ov = iter(list_tokens)
 
-        authentication.init_map_tokens()
+        client_session.init_map_clients()
 
         get_oneview_multiple_ips.return_value = list_ips
 
@@ -48,11 +49,12 @@ class TestAuthentication(unittest.TestCase):
             return next(iter_tokens_ov)
 
         oneview_client = oneview_client_mockup()
-        oneview_client.connection.get_session_id.side_effect = \
+        oneview_client.side_effect = \
             function_returning_token
 
         # Check if redfish token return is one of the OneView's token
-        rf_token = authentication.login('user', 'password')
+        rf_token = client_session.login('user', 'password')
+        import pdb; pdb.set_trace()
         self.assertTrue(rf_token in list_tokens)
         oneview_client_mockup.assert_any_call(
             {
@@ -63,7 +65,7 @@ class TestAuthentication(unittest.TestCase):
         )
 
         # Check if cached token map has the Redfish token return on login
-        map_tokens = authentication._get_map_tokens()
+        map_tokens = client_session._get_map_clients()
         self.assertTrue(rf_token in map_tokens)
 
         # Check if cached token map has the correct OneViewIp/OneViewToken

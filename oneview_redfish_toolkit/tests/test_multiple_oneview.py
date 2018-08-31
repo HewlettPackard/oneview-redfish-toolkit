@@ -28,7 +28,7 @@ from unittest.mock import call
 
 from hpOneView.exceptions import HPOneViewException
 
-from oneview_redfish_toolkit import authentication
+from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import handler_multiple_oneview
@@ -36,9 +36,9 @@ from oneview_redfish_toolkit import multiple_oneview
 
 
 @mock.patch.object(config, 'get_config')
-@mock.patch.object(authentication, 'request')
+@mock.patch.object(client_session, 'request')
 @mock.patch.object(connection, 'OneViewClient')
-@mock.patch.object(connection, 'get_oneview_client')
+@mock.patch.object(client_session, 'get_oneview_client')
 class TestMultipleOneView(unittest.TestCase):
     """Test class for multiple_oneview"""
 
@@ -69,7 +69,7 @@ class TestMultipleOneView(unittest.TestCase):
     def setUp(self):
         # Initializing caches
         multiple_oneview.init_map_resources()
-        authentication.init_map_tokens()
+        client_session.init_map_clients()
 
         self.config_obj = configparser.ConfigParser()
         self.config_obj.add_section('oneview_config')
@@ -87,7 +87,8 @@ class TestMultipleOneView(unittest.TestCase):
         get_config.return_value = self.config_obj
 
         # Mocking redfish->Oneview tokens
-        authentication._set_new_token(self.redfish_token, self.ov_tokens)
+        client_session._set_new_client_by_token(self.redfish_token,
+                                                self.ov_tokens)
 
         # Mocking redfish token on request property
         request.headers.get.return_value = self.redfish_token
@@ -118,8 +119,8 @@ class TestMultipleOneView(unittest.TestCase):
 
         # Check if resource was queried on first and the second OneViews
         get_oneview_client.assert_has_calls(
-            [call("10.0.0.1", token="ov_tk1"),
-             call("10.0.0.2", token="ov_tk2")]
+            [call("10.0.0.1"),
+             call("10.0.0.2")]
         )
 
     def test_search_in_all_ov_when_auth_mode_is_conf(self,
@@ -162,8 +163,8 @@ class TestMultipleOneView(unittest.TestCase):
         )
 
         get_oneview_client.assert_has_calls(
-            [call("10.0.0.1", token=None),
-             call("oneview.com", token=None)]
+            [call("10.0.0.1"),
+             call("oneview.com")]
         )
 
     def test_search_mapped_after_search_in_all(self, get_oneview_client,
@@ -179,7 +180,8 @@ class TestMultipleOneView(unittest.TestCase):
         get_config.return_value = self.config_obj
 
         # Mocking redfish->Oneview tokens
-        authentication._set_new_token(self.redfish_token, self.ov_tokens)
+        client_session._set_new_client_by_token(self.redfish_token,
+                                                self.ov_tokens)
 
         # Mocking redfish token on request property
         request.headers.get.return_value = self.redfish_token
@@ -213,9 +215,9 @@ class TestMultipleOneView(unittest.TestCase):
 
         # Check if resource was queried on each one for all OneViews
         get_oneview_client.assert_has_calls(
-            [call("10.0.0.1", token="ov_tk1"),
-             call("10.0.0.2", token="ov_tk2"),
-             call("10.0.0.3", token="ov_tk3")]
+            [call("10.0.0.1"),
+             call("10.0.0.2"),
+             call("10.0.0.3")]
         )
 
         # Mocking OneView client call returning resource
@@ -235,7 +237,7 @@ class TestMultipleOneView(unittest.TestCase):
         # Check if resource was queried on just one OneViews that was mapped
         # for the resource
         get_oneview_client.assert_has_calls(
-            [call("10.0.0.3", token="ov_tk3")]
+            [call("10.0.0.3")]
         )
 
         # Get the OneView IP mapped for the resource

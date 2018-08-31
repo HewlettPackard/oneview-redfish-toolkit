@@ -24,7 +24,9 @@ from hpOneView import HPOneViewException
 
 
 # Module libs
-from oneview_redfish_toolkit import authentication
+from oneview_redfish_toolkit.api.redfish_error import RedfishError
+from oneview_redfish_toolkit import client_session
+from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit.blueprints.session \
     import session as session_blueprint
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
@@ -47,7 +49,7 @@ class TestSession(BaseFlaskTest):
             """Creates a Unauthorized Error response"""
             return ResponseBuilder.error_401(error)
 
-    @mock.patch.object(authentication, 'OneViewClient')
+    @mock.patch.object(connection, 'OneViewClient')
     def test_post_session(self, oneview_client_mockup):
         """Tests post Session"""
 
@@ -57,7 +59,7 @@ class TestSession(BaseFlaskTest):
         ) as f:
             expected_session_mockup = json.load(f)
 
-        authentication.init_map_tokens()
+        client_session.init_map_clients()
 
         # Create mock response
         oneview_client = oneview_client_mockup()
@@ -138,7 +140,7 @@ class TestSession(BaseFlaskTest):
             }
         )
 
-    @mock.patch.object(authentication, 'OneViewClient')
+    @mock.patch.object(connection, 'OneViewClient')
     def test_post_session_invalid_key(self, oneview_client_mockup):
         """Tests post session with an invalid JSON key"""
 
@@ -170,7 +172,7 @@ class TestSession(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(result, invalid_json_key)
 
-    @mock.patch.object(authentication, 'OneViewClient')
+    @mock.patch.object(connection, 'OneViewClient')
     def test_post_session_oneview_exception(self, oneview_client_mockup):
         """Tests post session with HPOneViewException"""
 
@@ -197,7 +199,7 @@ class TestSession(BaseFlaskTest):
         )
         self.assertEqual("application/json", response.mimetype)
 
-    @mock.patch.object(authentication, 'OneViewClient')
+    @mock.patch.object(connection, 'OneViewClient')
     def test_post_session_unexpected_error(self, oneview_client_mockup):
         """Tests post session with an unexpected error"""
 

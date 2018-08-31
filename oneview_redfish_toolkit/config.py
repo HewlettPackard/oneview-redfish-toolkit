@@ -67,6 +67,9 @@ def get_authentication_mode():
 def auth_mode_is_session():
     return get_authentication_mode() == 'session'
 
+def auth_mode_is_conf():
+    return get_authentication_mode() == 'conf'
+
 
 def get_registry_dict():
     return globals()['registry_dict']

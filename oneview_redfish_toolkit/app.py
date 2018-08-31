@@ -37,7 +37,6 @@ from paste.translogger import TransLogger
 
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.api import scmb
-from oneview_redfish_toolkit import authentication
 from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.chassis_collection \
     import chassis_collection
@@ -96,6 +95,7 @@ from oneview_redfish_toolkit.blueprints.vlan_network_interface import \
     vlan_network_interface
 from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
+from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import handler_multiple_oneview
@@ -163,13 +163,15 @@ def main(config_file_path, logging_config_file_path,
     app.register_blueprint(zone)
 
     # Init cached data
-    authentication.init_map_tokens()
+    client_session.init_map_clients()
     multiple_oneview.init_map_resources()
 
     if auth_mode == "conf":
         app.register_blueprint(event_service)
         app.register_blueprint(subscription_collection)
         app.register_blueprint(subscription)
+
+        client_session.login_conf_mode()
 
     @app.before_request
     def check_authentication():
@@ -186,7 +188,7 @@ def main(config_file_path, logging_config_file_path,
 
         if config.auth_mode_is_session():
             x_auth_token = request.headers.get('x-auth-token')
-            authentication.check_authentication(x_auth_token)
+            client_session.check_authentication(x_auth_token)
 
         g.oneview_client = \
             handler_multiple_oneview.MultipleOneViewResource()
