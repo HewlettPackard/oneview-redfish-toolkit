@@ -202,6 +202,78 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.assertEqual(self.oneview_client.tasks.get.call_count, 3)
         time_mock.sleep.assert_called_with(3)
 
+    @mock.patch.object(computer_system_service, 'time')
+    def test_create_system_without_description(self, time_mock):
+        """Tests create a redfish System with Network, Storage and Server"""
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerProfileBuiltFromTemplateToCreateASystem.json'
+        ) as f:
+            expected_server_profile_built = json.load(f)
+
+        task_without_resource_uri = {
+            "associatedResource": {
+                "resourceUri": None
+            },
+            "uri": "/rest/tasks/123456"
+        }
+
+        task_with_resource_uri = {
+            "associatedResource": {
+                "resourceUri": self.server_profile["uri"]
+            },
+            "uri": "/rest/tasks/123456"
+        }
+
+        data_to_create_without_desc = copy.deepcopy(self.data_to_create_system)
+        del expected_server_profile_built['description']
+        del data_to_create_without_desc['Description']
+
+        self.run_common_mock_to_server_hardware()
+        self.run_common_mock_to_server_profile_template()
+        self.run_common_mock_to_drives()
+
+        # The connection.post return for /rest/server-profiles is a tuple
+        self.oneview_client.connection.post.return_value = \
+            (task_without_resource_uri, None)
+
+        # The task will be requested 3 times in this case,
+        # simulating the checking of resource uri
+        self.oneview_client.tasks.get.side_effect = [
+            task_without_resource_uri,
+            task_without_resource_uri,
+            task_with_resource_uri
+        ]
+
+        response = self.client.post(
+            "/redfish/v1/Systems",
+            data=json.dumps(data_to_create_without_desc),
+            content_type='application/json')
+
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertIn(
+            "/redfish/v1/Systems/" + self.server_profile["uuid"],
+            response.headers["Location"]
+        )
+
+        self.oneview_client.server_hardware.get.assert_has_calls(
+            self.common_calls_to_assert_hardware)
+        self.oneview_client.server_profile_templates.get.assert_has_calls(
+            self.common_calls_to_assert_spt)
+        self.oneview_client.index_resources.get.assert_has_calls(
+            self.common_calls_to_assert_drives)
+        self.oneview_client.server_profiles.create.assert_not_called()
+
+        self.oneview_client.tasks.get.assert_called_with(
+            task_without_resource_uri["uri"])
+        self.oneview_client.connection.post.assert_called_once_with(
+            '/rest/server-profiles', expected_server_profile_built
+        )
+        self.assertEqual(self.oneview_client.tasks.get.call_count, 3)
+        time_mock.sleep.assert_called_with(3)
+
     def test_create_system_when_request_content_is_wrong(self):
         """Tests trying create a redfish System without Links"""
 
