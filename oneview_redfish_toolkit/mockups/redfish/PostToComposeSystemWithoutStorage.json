@@ -1,5 +1,6 @@
 {
   "Id": "75871d70-789e-4cf9-8bc8-6f4d73193578",
+  "Description": "Description for Composed System",
   "Name": "Composed System Using Redfish",
   "Links": {
     "ResourceBlocks": [
