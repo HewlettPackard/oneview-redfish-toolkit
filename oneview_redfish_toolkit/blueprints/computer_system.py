@@ -73,15 +73,14 @@ def get_computer_system(uuid):
                 .get(resource['serverHardwareTypeUri'])
 
             drives = _get_drives_from_sp(resource)
-            sp_labels = \
-                g.oneview_client.labels.get_by_resource(resource["uri"])
+            spt_uuid = _get_server_profile_template_from_sp(resource["uri"])
 
             # Build Computer System object and validates it
             computer_system_resource = ComputerSystem(server_hardware,
                                                       server_hardware_type,
                                                       resource,
                                                       drives,
-                                                      sp_labels)
+                                                      spt_uuid)
         else:
             raise OneViewRedfishError(
                 'Computer System UUID {} not found'.format(uuid))
@@ -330,3 +329,25 @@ def _get_drives_from_sp(server_profile):
             jbods_drives.extend(drives_by_sas_logical_uuid)
 
     return jbods_drives
+
+
+def _get_server_profile_template_from_sp(sp_uri):
+    """Gets Sever Profile Template uuid from Server Profile uri"""
+    all_sp_labels = g.oneview_client.labels.get_by_resource(sp_uri)
+    server_profile_template_uuid = ""
+
+    for label in all_sp_labels["labels"]:
+        try:
+            spt_uuid = label["name"].replace(" ", "-")
+            is_valid_spt = \
+                g.oneview_client.server_profile_templates.get(spt_uuid)
+            if is_valid_spt:
+                server_profile_template_uuid = spt_uuid
+                break
+        except HPOneViewException as e:
+            if e.oneview_response["errorCode"] == 'RESOURCE_NOT_FOUND':
+                pass
+            else:
+                raise
+
+    return server_profile_template_uuid

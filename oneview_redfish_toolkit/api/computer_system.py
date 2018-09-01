@@ -45,7 +45,7 @@ class ComputerSystem(RedfishJsonValidator):
     BASE_URI = '/redfish/v1/Systems'
 
     def __init__(self, server_hardware, server_hardware_types,
-                 server_profile, drives, server_profile_labels):
+                 server_profile, drives, server_profile_template_uuid):
         """ComputerSystem constructor
 
             Populates self.redfish with the contents of ServerHardware and
@@ -56,7 +56,7 @@ class ComputerSystem(RedfishJsonValidator):
                 server_hardware_types: ServerHardwareTypes dict from OneView
                 server_profile: ServerProfile dict from OneView.
                 drives: Drives list from OneView
-                server_profile_labels: Server Profile labels from Oneview
+                server_profile_template_uuid: ServerProfileTemplate uuid
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -116,7 +116,7 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["ResourceBlocks"] = list()
         self._fill_resource_block_members(drives,
                                           server_hardware,
-                                          server_profile_labels)
+                                          server_profile_template_uuid)
         self.redfish["Actions"] = collections.OrderedDict()
         self.redfish["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
@@ -239,11 +239,11 @@ class ComputerSystem(RedfishJsonValidator):
     def _fill_resource_block_members(self,
                                      drives,
                                      server_hardware,
-                                     server_profile_labels):
+                                     server_profile_template_uuid):
         resource_block_uuids = \
             self._get_resource_block_uuids(drives,
                                            server_hardware,
-                                           server_profile_labels)
+                                           server_profile_template_uuid)
 
         base_uri = ResourceBlockCollection.BASE_URI + "/{}"
         blocks = self.redfish["Links"]["ResourceBlocks"]
@@ -253,13 +253,13 @@ class ComputerSystem(RedfishJsonValidator):
     def _get_resource_block_uuids(self,
                                   drives,
                                   server_hardware,
-                                  server_profile_labels):
+                                  server_profile_template_uuid):
         resource_block_uuids = list()
         resource_block_uuids.append(server_hardware["uuid"])
 
         # fill with network resource block
-        spt_id = server_profile_labels["labels"][0]["name"].replace(" ", "-")
-        resource_block_uuids.append(spt_id)
+        if server_profile_template_uuid:
+            resource_block_uuids.append(server_profile_template_uuid)
 
         for drive in drives:
             storage_resource_uuid = drive["uri"].split("/")[-1]

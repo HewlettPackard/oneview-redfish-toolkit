@@ -84,12 +84,22 @@ class TestComputerSystem(BaseFlaskTest):
         ) as f:
             self.drives = json.load(f)
 
-        # Loading ServerProfileWithLabels mockup result
+        # Loading LabelForServerProfile mockup result
         with open(
                 'oneview_redfish_toolkit/mockups/oneview'
-                '/ServerProfileWithLabels.json'
+                '/LabelForServerProfile.json'
         ) as f:
-            self.server_profile_labels = json.load(f)
+            self.label_for_server_profile = json.load(f)
+
+        # Loading ServerProfileTemplate mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview'
+                '/ServerProfileTemplate.json'
+        ) as f:
+            self.server_profile_template = json.load(f)
+
+        self.spt_uri = "/rest/server-profile-templates/" \
+                       "61c3a463-1355-4c68-a4e3-4f08c322af1b"
 
     def test_get_computer_system_not_found(self):
         """Tests ComputerSystem with ServerProfileTemplates not found"""
@@ -239,6 +249,9 @@ class TestComputerSystem(BaseFlaskTest):
         server_profile = copy.deepcopy(self.server_profile)
         server_profile["localStorage"]["sasLogicalJBODs"].pop(0)
 
+        server_profile_template = copy.deepcopy(self.server_profile_template)
+        server_profile_template["uri"] = self.spt_uri
+
         # Create mock response
         self.oneview_client.server_profiles.get.return_value = server_profile
         self.oneview_client.server_hardware.get.return_value = \
@@ -248,7 +261,9 @@ class TestComputerSystem(BaseFlaskTest):
         self.oneview_client.sas_logical_jbods.get_drives.return_value = \
             [self.drives[4]]
         self.oneview_client.labels.get_by_resource.return_value = \
-            self.server_profile_labels
+            self.label_for_server_profile
+        self.oneview_client.server_profile_templates.get.return_value = \
+            server_profile_template
 
         # Get ComputerSystem
         response = self.client.get(
@@ -277,11 +292,13 @@ class TestComputerSystem(BaseFlaskTest):
         self.oneview_client.sas_logical_jbods.get_drives.assert_called_with(
             "/rest/sas-logical-jbods/9e83a03d-7a84-4f0d-a8d7-bd05a30c3175"
         )
-        self.oneview_client.server_profile_templates.get \
-            .assert_not_called()
 
         self.oneview_client.labels.get_by_resource.assert_called_with(
             "/rest/server-profiles/b425802b-a6a5-4941-8885-aab68dfa2ee2"
+        )
+
+        self.oneview_client.server_profile_templates.get.assert_called_with(
+            "61c3a463-1355-4c68-a4e3-4f08c322af1b"
         )
 
     def test_get_computer_system_spt(self):
@@ -592,7 +609,7 @@ class TestComputerSystem(BaseFlaskTest):
             self.oneview_client.sas_logical_jbods.get_drives.return_value = \
                 [self.drives[4]]
             self.oneview_client.labels.get_by_resource.return_value = \
-                self.server_profile_labels
+                self.label_for_server_profile
 
             response = self.client.get(
                 "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
@@ -624,7 +641,7 @@ class TestComputerSystem(BaseFlaskTest):
             self.oneview_client.sas_logical_jbods.get_drives.return_value = \
                 [self.drives[4]]
             self.oneview_client.labels.get_by_resource.return_value = \
-                self.server_profile_labels
+                self.label_for_server_profile
 
             response = self.client.get(
                 "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
@@ -635,3 +652,67 @@ class TestComputerSystem(BaseFlaskTest):
             self.assertEqual(status.HTTP_200_OK, response.status_code)
             self.assertEqual("application/json", response.mimetype)
             self.assertEqualMockup(expected_cs, result)
+
+    def test_get_computer_system_server_profile_with_invalid_labels(self):
+        """Tests ComputerSystem with a known SP with invalid labels"""
+
+        server_profile = copy.deepcopy(self.server_profile)
+        server_profile["localStorage"]["sasLogicalJBODs"].pop(0)
+        invalid_label = {
+            "uri": "/rest/labels/2",
+            "name": "invalid label abc123"
+        }
+
+        label_for_sp = copy.deepcopy(self.label_for_server_profile)
+        label_for_sp["labels"].extend(invalid_label)
+
+        server_profile_template = copy.deepcopy(self.server_profile_template)
+        server_profile_template["uri"] = self.spt_uri
+
+        # Create mock response
+        self.oneview_client.server_profiles.get.return_value = server_profile
+        self.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
+        self.oneview_client.server_hardware_types.get.return_value = \
+            self.server_hardware_types
+        self.oneview_client.sas_logical_jbods.get_drives.return_value = \
+            [self.drives[4]]
+        self.oneview_client.labels.get_by_resource.return_value = label_for_sp
+        self.oneview_client.server_profile_templates.get.return_value = \
+            server_profile_template
+
+        # Get ComputerSystem
+        response = self.client.get(
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
+        )
+
+        # Gets json from response
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(self.computer_system_mockup, result)
+        self.assertEqual(
+            "{}{}".format("W/", self.server_profile["eTag"]),
+            response.headers["ETag"])
+        self.oneview_client.server_profiles.get.assert_called_with(
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2"
+        )
+        self.oneview_client.server_hardware.get.assert_called_with(
+            "/rest/server-hardware/30303437-3034-4D32-3230-313130304752"
+        )
+        self.oneview_client.server_hardware_types.get.assert_called_with(
+            "/rest/server-hardware-types/FE50A6FE-B1AC-4E42-8D40-B73CA8CC0CD2"
+        )
+        self.oneview_client.sas_logical_jbods.get_drives.assert_called_with(
+            "/rest/sas-logical-jbods/9e83a03d-7a84-4f0d-a8d7-bd05a30c3175"
+        )
+
+        self.oneview_client.labels.get_by_resource.assert_called_with(
+            "/rest/server-profiles/b425802b-a6a5-4941-8885-aab68dfa2ee2"
+        )
+
+        self.oneview_client.server_profile_templates.get.assert_called_with(
+            "61c3a463-1355-4c68-a4e3-4f08c322af1b"
+        )
