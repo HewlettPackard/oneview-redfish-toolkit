@@ -34,6 +34,7 @@ from jsonschema import ValidationError
 
 from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
+from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
@@ -345,7 +346,7 @@ def _get_server_profile_template_from_sp(sp_uri):
                 server_profile_template_uuid = spt_uuid
                 break
         except HPOneViewException as e:
-            if e.oneview_response["errorCode"] == 'RESOURCE_NOT_FOUND':
+            if e.oneview_response["errorCode"] in NOT_FOUND_ONEVIEW_ERRORS:
                 pass
             else:
                 raise
