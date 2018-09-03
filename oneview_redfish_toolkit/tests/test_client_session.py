@@ -24,6 +24,7 @@ from unittest import mock
 
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit import connection
 
 
 class TestAuthentication(unittest.TestCase):
@@ -80,7 +81,7 @@ class TestAuthentication(unittest.TestCase):
         for ov_ip, ov_conn in map_clients[rf_token].items():
             self.assertEqual(connections_ov[ov_ip], ov_conn)
 
-    @mock.patch.object(authentication, 'OneViewClient')
+    @mock.patch.object(connection, 'OneViewClient')
     @mock.patch.object(config, 'get_oneview_multiple_ips')
     def test_login_with_specific_login_domain_for_multiple_ov(
             self, get_oneview_multiple_ips, oneview_client_mockup):
@@ -90,11 +91,11 @@ class TestAuthentication(unittest.TestCase):
                                              '10.0.0.3': 'ghi'})
         list_ips = list(tokens_ov.keys())
 
-        authentication.init_map_tokens()
+        client_session.init_map_clients()
 
         get_oneview_multiple_ips.return_value = list_ips
 
-        authentication.login('SOME_DOMAIN\\user', 'password123')
+        client_session.login('SOME_DOMAIN\\user', 'password123')
 
         oneview_client_mockup.assert_any_call(
             {
@@ -110,15 +111,15 @@ class TestAuthentication(unittest.TestCase):
 
     def test_create_credentials(self):
         # when username and password are simple values
-        result = authentication.create_credentials('administrator', 'pwd123')
+        result = connection.create_credentials('administrator', 'pwd123')
         self.assertEqual(result, {
             'userName': 'administrator',
             'password': 'pwd123'
         })
 
         # when username has auth login domain
-        result = authentication.create_credentials('LOCAL\\administrator',
-                                                   'pwd123')
+        result = connection.create_credentials('LOCAL\\administrator',
+                                               'pwd123')
         self.assertEqual(result, {
             'userName': 'administrator',
             'password': 'pwd123',
@@ -126,14 +127,14 @@ class TestAuthentication(unittest.TestCase):
         })
 
         # when username and password are empty values
-        result = authentication.create_credentials('', '')
+        result = connection.create_credentials('', '')
         self.assertEqual(result, {
             'userName': '',
             'password': ''
         })
 
         # when username and password are None
-        result = authentication.create_credentials(None, None)
+        result = connection.create_credentials(None, None)
         self.assertEqual(result, {
             'userName': None,
             'password': None
