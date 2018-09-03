@@ -22,7 +22,6 @@ import ssl
 import time
 
 # 3rd party libs
-from flask import g
 from flask import request
 from flask_api import status
 from hpOneView.oneview_client import OneViewClient
@@ -50,8 +49,8 @@ def new_oneview_client(ip_oneview, username=None, password=None,
         credentials = create_credentials(username, password)
 
     ov_config = create_oneview_config(ip=ip_oneview,
-                                        api_version=api_version,
-                                        credentials=credentials)
+                                      api_version=api_version,
+                                      credentials=credentials)
     try:
         oneview_client = OneViewClient(ov_config)
         return oneview_client
@@ -119,6 +118,7 @@ def request_oneview(oneview_ip, rest_url):
         return json_response
     finally:
         connection.close()
+
 
 def create_credentials(username, password):
     credentials = dict()

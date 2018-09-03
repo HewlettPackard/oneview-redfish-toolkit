@@ -25,13 +25,13 @@ from hpOneView import HPOneViewException
 
 # Module libs
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
-from oneview_redfish_toolkit import client_session
-from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit.blueprints.session \
     import session as session_blueprint
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit import client_session
+from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
