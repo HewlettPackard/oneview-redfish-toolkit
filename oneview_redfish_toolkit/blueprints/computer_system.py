@@ -34,7 +34,6 @@ from jsonschema import ValidationError
 
 from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
-from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
@@ -73,8 +72,10 @@ def get_computer_system(uuid):
             server_hardware_type = g.oneview_client.server_hardware_types\
                 .get(resource['serverHardwareTypeUri'])
 
+            computer_system_service = ComputerSystemService(g.oneview_client)
             drives = _get_drives_from_sp(resource)
-            spt_uuid = _get_server_profile_template_from_sp(resource["uri"])
+            spt_uuid = computer_system_service.\
+                get_server_profile_template_from_sp(resource["uri"])
 
             # Build Computer System object and validates it
             computer_system_resource = ComputerSystem(server_hardware,
@@ -330,25 +331,3 @@ def _get_drives_from_sp(server_profile):
             jbods_drives.extend(drives_by_sas_logical_uuid)
 
     return jbods_drives
-
-
-def _get_server_profile_template_from_sp(sp_uri):
-    """Gets Sever Profile Template uuid from Server Profile uri"""
-    all_sp_labels = g.oneview_client.labels.get_by_resource(sp_uri)
-    server_profile_template_uuid = ""
-
-    for label in all_sp_labels["labels"]:
-        try:
-            spt_uuid = label["name"].replace(" ", "-")
-            is_valid_spt = \
-                g.oneview_client.server_profile_templates.get(spt_uuid)
-            if is_valid_spt:
-                server_profile_template_uuid = spt_uuid
-                break
-        except HPOneViewException as e:
-            if e.oneview_response["errorCode"] in NOT_FOUND_ONEVIEW_ERRORS:
-                pass
-            else:
-                raise
-
-    return server_profile_template_uuid
