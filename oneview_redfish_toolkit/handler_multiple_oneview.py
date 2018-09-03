@@ -73,6 +73,10 @@ RESOURCE_STRATEGY = {
     "tasks": {
         "get": st.first_parameter_resource
         },
+    "labels": {
+        "create": st.create_labels,
+        "get_by_resource": st.first_parameter_resource
+        },
 }
 
 

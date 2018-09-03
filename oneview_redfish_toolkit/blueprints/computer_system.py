@@ -72,13 +72,17 @@ def get_computer_system(uuid):
             server_hardware_type = g.oneview_client.server_hardware_types\
                 .get(resource['serverHardwareTypeUri'])
 
+            computer_system_service = ComputerSystemService(g.oneview_client)
             drives = _get_drives_from_sp(resource)
+            spt_uuid = computer_system_service.\
+                get_server_profile_template_from_sp(resource["uri"])
 
             # Build Computer System object and validates it
             computer_system_resource = ComputerSystem(server_hardware,
                                                       server_hardware_type,
                                                       resource,
-                                                      drives)
+                                                      drives,
+                                                      spt_uuid)
         else:
             raise OneViewRedfishError(
                 'Computer System UUID {} not found'.format(uuid))
@@ -230,6 +234,9 @@ def create_composed_system():
         if resource_uri:
             result_uuid = resource_uri.split("/")[-1]
             result_location_uri = ComputerSystem.BASE_URI + "/" + result_uuid
+            server_profile_label = dict(
+                resourceUri=resource_uri, labels=[spt_id.replace("-", " ")])
+            g.oneview_client.labels.create(server_profile_label)
         elif task.get("taskErrors"):
             err_msg = reduce(
                 lambda result, msg: result + msg["message"] + "\n",

@@ -96,6 +96,14 @@ def update_power_state_server_hardware(resource, function, *args, **kwargs):
                        function, *args, **kwargs)
 
 
+def create_labels(resource, function, *args, **kwargs):
+    resource_id = args[0]["resourceUri"]
+
+    return \
+        _run_action(resource_id, 'server_profiles', 'get', resource,
+                    function, *args, **kwargs)
+
+
 def _run_action(resource_id, resource_get, function_get, resource,
                 function, *args, **kwargs):
 

@@ -1,0 +1,15 @@
+{
+   "resourceUri":"/rest/server-profiles/b425802b-a6a5-4941-8885-aab68dfa2ee2",
+   "type":"ResourceLabels",
+   "modified":"2018-08-30T16:49:29.397Z",
+   "created":"2018-08-30T16:49:29.397Z",
+   "uri":"/rest/labels/resources/rest/server-profiles/b425802b-a6a5-4941-8885-aab68dfa2ee2",
+   "labels":[
+      {
+         "uri":"/rest/labels/1",
+         "name":"61c3a463 1355 4c68 a4e3 4f08c322af1b"
+      }
+   ],
+   "eTag":"1",
+   "category":"server-profiles"
+}

@@ -15,8 +15,12 @@
 # under the License.
 import time
 
+from flask import g
+from hpOneView import HPOneViewException
+
 from hpOneView.resources.servers.server_profiles import ServerProfiles
 
+from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 
 DELAY_TO_WAIT_IN_SEC = 3
 
@@ -70,3 +74,25 @@ class ComputerSystemService(object):
             resource_uri = task["associatedResource"]["resourceUri"]
 
         return task, resource_uri
+
+    @staticmethod
+    def get_server_profile_template_from_sp(sp_uri):
+        """Gets Sever Profile Template uuid from Server Profile uri"""
+        all_sp_labels = g.oneview_client.labels.get_by_resource(sp_uri)
+        server_profile_template_uuid = ""
+
+        for label in all_sp_labels["labels"]:
+            try:
+                spt_uuid = label["name"].replace(" ", "-")
+                is_valid_spt = \
+                    g.oneview_client.server_profile_templates.get(spt_uuid)
+                if is_valid_spt:
+                    server_profile_template_uuid = spt_uuid
+                    break
+            except HPOneViewException as e:
+                if e.oneview_response["errorCode"] in NOT_FOUND_ONEVIEW_ERRORS:
+                    pass
+                else:
+                    raise
+
+        return server_profile_template_uuid
