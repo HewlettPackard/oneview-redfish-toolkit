@@ -43,7 +43,8 @@ class BaseFlaskTest(BaseTest):
         cls.oneview_client = mock.MagicMock()
 
         cls.patcher_get_oneview_client = mock.patch(
-            'oneview_redfish_toolkit.client_session._get_oneview_client_by_token')
+            'oneview_redfish_toolkit.client_session.'
+            '_get_oneview_client_by_token')
         cls.mock_get_oneview_token = cls.patcher_get_oneview_client.start()
         cls.mock_get_oneview_token.return_value = cls.oneview_client
 

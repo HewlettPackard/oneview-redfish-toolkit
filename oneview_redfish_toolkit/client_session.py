@@ -24,7 +24,6 @@ from flask import abort
 from flask import request
 from flask_api import status
 from hpOneView import HPOneViewException
-from hpOneView.oneview_client import OneViewClient
 
 # Modules own libs
 from oneview_redfish_toolkit import config
@@ -118,6 +117,6 @@ def _get_oneview_client_by_ip(ip_oneview):
 def get_oneview_client(ip_oneview):
     if config.auth_mode_is_session():
         return _get_oneview_client_by_token(ip_oneview)
-   
+
     if config.auth_mode_is_conf():
         return _get_oneview_client_by_ip(ip_oneview)

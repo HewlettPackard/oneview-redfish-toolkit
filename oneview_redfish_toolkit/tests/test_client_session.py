@@ -23,39 +23,45 @@ import unittest
 from unittest import mock
 
 from oneview_redfish_toolkit import client_session
-from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import config
 
 
 class TestAuthentication(unittest.TestCase):
     """Test class for authentication"""
 
-    @mock.patch.object(connection, 'OneViewClient')
+    @mock.patch('oneview_redfish_toolkit.connection.OneViewClient')
     @mock.patch.object(config, 'get_oneview_multiple_ips')
-    def test_map_token_redfish_for_multiple_ov(self, get_oneview_multiple_ips,
+    @mock.patch.object(config, 'auth_mode_is_conf')
+    @mock.patch.object(config, 'auth_mode_is_session')
+    def test_map_token_redfish_for_multiple_ov(self, conf_auth_mode,
+                                               session_auth_mode,
+                                               get_oneview_multiple_ips,
                                                oneview_client_mockup):
-        tokens_ov = collections.OrderedDict({'10.0.0.1': 'abc',
-                                             '10.0.0.2': 'def',
-                                             '10.0.0.3': 'ghi'})
-        list_ips = list(tokens_ov.keys())
-        list_tokens = list(tokens_ov.values())
-        iter_tokens_ov = iter(list_tokens)
+        conf_auth_mode.return_value = True
+        session_auth_mode.return_value = False
+        mocked_rf_token = "abc"
+        conn_1 = mock.MagicMock()
+
+        unsorted_conns_ov = {'10.0.0.1': conn_1,
+                             '10.0.0.2': mock.MagicMock(),
+                             '10.0.0.3': mock.MagicMock()}
+        connections_ov = collections.OrderedDict(
+            sorted(unsorted_conns_ov.items(), key=lambda t: t[0]))
+        list_ips = list(connections_ov.keys())
+        iter_conns_ov = iter(list(connections_ov.values()))
 
         client_session.init_map_clients()
 
         get_oneview_multiple_ips.return_value = list_ips
 
-        def function_returning_token():
-            return next(iter_tokens_ov)
+        def function_returning_token(ov_config):
+            return next(iter_conns_ov)
 
-        oneview_client = oneview_client_mockup()
-        oneview_client.side_effect = \
-            function_returning_token
+        oneview_client_mockup.side_effect = function_returning_token
+        conn_1.connection.get_session_id.return_value = mocked_rf_token
 
         # Check if redfish token return is one of the OneView's token
         rf_token = client_session.login('user', 'password')
-        import pdb; pdb.set_trace()
-        self.assertTrue(rf_token in list_tokens)
         oneview_client_mockup.assert_any_call(
             {
                 'ip': '10.0.0.1',
@@ -63,15 +69,16 @@ class TestAuthentication(unittest.TestCase):
                 'api_version': 600
             }
         )
+        self.assertEqual(rf_token, mocked_rf_token)
 
-        # Check if cached token map has the Redfish token return on login
-        map_tokens = client_session._get_map_clients()
-        self.assertTrue(rf_token in map_tokens)
+        # Check if cached connection map has the Redfish token return on login
+        map_clients = client_session._get_map_clients()
+        self.assertTrue(rf_token in map_clients)
 
-        # Check if cached token map has the correct OneViewIp/OneViewToken
-        # tuples
-        for ov_ip, ov_token in map_tokens[rf_token].items():
-            self.assertEqual(tokens_ov[ov_ip], ov_token)
+        # Check if cached connection map has the correct
+        # OneViewIp/OneViewConnection tuples
+        for ov_ip, ov_conn in map_clients[rf_token].items():
+            self.assertEqual(connections_ov[ov_ip], ov_conn)
 
     @mock.patch.object(authentication, 'OneViewClient')
     @mock.patch.object(config, 'get_oneview_multiple_ips')
