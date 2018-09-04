@@ -19,6 +19,7 @@ import argparse
 import ipaddress
 import logging
 import os
+import time
 from threading import Thread
 
 # 3rd party libs
@@ -95,6 +96,7 @@ from oneview_redfish_toolkit.blueprints.vlan_network_interface import \
     vlan_network_interface
 from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
+from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
@@ -194,6 +196,12 @@ def main(config_file_path, logging_config_file_path,
             handler_multiple_oneview.MultipleOneViewResource()
 
     @app.before_request
+    def init_performance_data():
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            g.start_time_req = time.time()
+            g.elapsed_time_ov = 0
+
+    @app.before_request
     def has_odata_version_header():
         """Deny request that specify a different OData-Version than 4.0"""
         odata_version_header = request.headers.get("OData-Version")
@@ -210,6 +218,19 @@ def main(config_file_path, logging_config_file_path,
     def set_odata_version_header(response):
         """Set OData-Version header for all responses"""
         response.headers["OData-Version"] = "4.0"
+        return response
+
+    @app.after_request
+    def log_performance_data(response):
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            end_time = time.time()
+            req_time = end_time - g.start_time_req
+            logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
+                "OneView process: {}".format(g.elapsed_time_ov))
+            logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
+                "Redfish process: {}".format(req_time - g.elapsed_time_ov))
+            logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
+                "Total process: {}".format(req_time))
         return response
 
     @app.errorhandler(status.HTTP_400_BAD_REQUEST)

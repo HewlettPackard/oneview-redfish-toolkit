@@ -36,6 +36,8 @@ from oneview_redfish_toolkit import util
 
 API_VERSION = 600
 
+PERFORMANCE_LOGGER_NAME = 'perf'
+
 # Globals vars:
 #   globals()['config']
 #   globals()['registry_dict']

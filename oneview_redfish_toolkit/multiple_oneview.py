@@ -16,13 +16,16 @@
 
 # Python libs
 import logging
+import time
 from threading import Lock
 
 # 3rd party libs
+from flask import g
 from hpOneView.exceptions import HPOneViewException
 
 # Modules own libs
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
+from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 
@@ -153,5 +156,17 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
     """Execute query for resource on OneView client received as parameter"""
     ov_resource = getattr(ov_client, resource)
     ov_function = getattr(ov_resource, function)
+
+    if logging.getLogger().isEnabledFor(logging.DEBUG):
+        start_time = time.time()
+        result = ov_function(*args, **kwargs)
+        elapsed_time = time.time() - start_time
+
+        g.elapsed_time_ov += elapsed_time
+
+        logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
+            "OneView request: {}.{}: {}".format(resource, function,
+                                                elapsed_time))
+        return result
 
     return ov_function(*args, **kwargs)
