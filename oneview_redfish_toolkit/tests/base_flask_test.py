@@ -109,6 +109,8 @@ class BaseFlaskTest(BaseTest):
             # Cached OneView's connections for the same request
             g.ov_connections = dict()
 
+            g.elapsed_time_ov = 0
+
             g.oneview_client = \
                 handler_multiple_oneview.MultipleOneViewResource()
 

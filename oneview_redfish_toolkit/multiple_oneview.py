@@ -16,8 +16,8 @@
 
 # Python libs
 import logging
-import time
 from threading import Lock
+import time
 
 # 3rd party libs
 from flask import g
@@ -25,9 +25,9 @@ from hpOneView.exceptions import HPOneViewException
 
 # Modules own libs
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
-from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 
 # Globals vars:
 #   globals()['map_resources_ov']

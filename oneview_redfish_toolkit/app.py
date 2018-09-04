@@ -19,8 +19,8 @@ import argparse
 import ipaddress
 import logging
 import os
-import time
 from threading import Thread
+import time
 
 # 3rd party libs
 import cherrypy
@@ -96,9 +96,9 @@ from oneview_redfish_toolkit.blueprints.vlan_network_interface import \
     vlan_network_interface
 from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
-from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import handler_multiple_oneview
 from oneview_redfish_toolkit import multiple_oneview
