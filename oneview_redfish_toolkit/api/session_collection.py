@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -16,34 +16,37 @@
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
-from oneview_redfish_toolkit.api.session_collection import SessionCollection
 
 
-class Session(RedfishJsonValidator):
-    """Super class of Session Service
+class SessionCollection(RedfishJsonValidator):
+    """Session Collection class
 
-        Populates self.redfish with Session response.
+        Populates self.redfish with a list of active sessions.
     """
 
-    SCHEMA_NAME = 'Session'
+    BASE_URI = "/redfish/v1/SessionService/Sessions/"
+    SCHEMA_NAME = 'SessionCollection'
 
-    def __init__(self, session_id):
+    def __init__(self, ids):
         """Session constructor
 
             Populates self.redfish with Session response.
 
             Args:
-                session_id: The session ID of the user logged in
+                ids: List with id of sessions
         """
 
         super().__init__(self.SCHEMA_NAME)
 
         self.redfish["@odata.context"] = \
-            "/redfish/v1/$metadata#Session.Session"
-        self.redfish["@odata.id"] = \
-            SessionCollection.BASE_URI + str(session_id)
+            "/redfish/v1/$metadata#SessionCollection.SessionCollection"
+        self.redfish["@odata.id"] = self.BASE_URI
         self.redfish["@odata.type"] = self.get_odata_type()
-        self.redfish["Id"] = str(session_id)
-        self.redfish["Name"] = "User Session"
+        self.redfish["Name"] = "Active sessions"
+        self.redfish["Members"] = [self._build_member(s_id) for s_id in ids]
+        self.redfish["Members@odata.count"] = len(self.redfish["Members"])
 
         self._validate()
+
+    def _build_member(self, session_id):
+        return {"@odata.id": self.BASE_URI + str(session_id)}

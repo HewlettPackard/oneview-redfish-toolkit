@@ -19,7 +19,8 @@ NOT_FOUND_ONEVIEW_ERRORS = ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException',
                             'DFRM_SAS_LOGICAL_JBOD_NOT_FOUND']
 
 AUTH_ONEVIEW_ERRORS = ['AUTHN_AUTH_FAIL',
-                       'AUTHN_AUTH_FAIL_LOGINDOMAINNOTFOUND']
+                       'AUTHN_AUTH_FAIL_LOGINDOMAINNOTFOUND',
+                       'AUTHORIZATION']
 
 
 class OneViewRedfishError(Exception):

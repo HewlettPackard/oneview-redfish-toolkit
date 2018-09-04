@@ -21,20 +21,35 @@ import logging
 from flask import abort
 from flask import Blueprint
 from flask import request
-from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.session import Session
+from oneview_redfish_toolkit.api.session_collection import SessionCollection
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 from oneview_redfish_toolkit import client_session
-
 
 session = Blueprint('session', __name__)
 
 
-@session.route('/redfish/v1/SessionService/Sessions', methods=["POST"])
+@session.route(SessionCollection.BASE_URI, methods=["GET"])
+def get_collection():
+    result = SessionCollection(client_session.get_session_ids())
+    return ResponseBuilder.success(result)
+
+
+@session.route(SessionCollection.BASE_URI + "<session_id>", methods=["GET"])
+def get_session(session_id):
+    if session_id not in client_session.get_session_ids():
+        abort(status.HTTP_404_NOT_FOUND)
+
+    return ResponseBuilder.success(Session(session_id))
+
+
+@session.route(SessionCollection.BASE_URI, methods=["POST"])
 def post_session():
     """Posts Session
 
@@ -53,9 +68,6 @@ def post_session():
 
             OneViewRedfishError: When occur a credential key mapping error.
             return abort(400)
-
-            Exception: Unexpected error.
-            return abort(500)
     """
 
     try:
@@ -69,21 +81,14 @@ def post_session():
                  "message": "Invalid JSON key. The JSON request body"
                             " must have the keys UserName and Password"})
 
-        session_id = client_session.login(username, password)
+        token, session_id = client_session.login(username, password)
 
-        sess = Session(username)
+        sess = Session(session_id)
 
-        json_str = sess.serialize()
-
-        response = Response(
-            response=json_str,
-            status=200,
-            mimetype='application/json')
-        response.headers.add(
-            "Location", "/redfish/v1/SessionService/Sessions/1")
-        response.headers.add("X-Auth-Token", session_id)
-
-        return response
+        return ResponseBuilder.success(sess, {
+            "Location": sess.redfish["@odata.id"],
+            "X-Auth-Token": token
+        })
 
     except HPOneViewException as e:
         logging.exception('Unauthorized error: {}'.format(e))
@@ -91,6 +96,3 @@ def post_session():
     except OneViewRedfishError as e:
         logging.exception('Mapping error: {}'.format(e))
         abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
-    except Exception as e:
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

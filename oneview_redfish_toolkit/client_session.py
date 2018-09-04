@@ -15,9 +15,11 @@
 # under the License.
 
 # Python libs
+from collections import OrderedDict
 import logging
 import logging.config
 from threading import Lock
+import uuid
 
 # 3rd party libs
 from flask import abort
@@ -39,19 +41,38 @@ def _get_map_clients():
 
 
 def init_map_clients():
-    globals()['map_clients'] = dict()
+    globals()['map_clients'] = OrderedDict()
 
 
 def _set_new_client_by_token(redfish_token, client_ov_by_ip):
     lock = Lock()
     with lock:
-        globals()['map_clients'][redfish_token] = client_ov_by_ip
+        globals()['map_clients'][redfish_token] = {
+            'client_ov_by_ip': client_ov_by_ip,
+            'session_id': str(uuid.uuid4())
+        }
+
+
+def _get_session_id_by_token(token):
+    check_authentication(token)
+    return globals()['map_clients'][token]['session_id']
 
 
 def _set_new_clients_by_ip(ov_clients_by_ip):
     lock = Lock()
     with lock:
         globals()['map_clients'] = ov_clients_by_ip
+
+
+def get_session_ids():
+    session_map_items = _get_map_clients().items()
+    return [sess_dict['session_id'] for _, sess_dict in session_map_items]
+
+
+def clear_session_by_token(token):
+    with Lock():
+        if token in _get_map_clients():
+            del _get_map_clients()[token]
 
 
 def login(username, password):
@@ -70,7 +91,7 @@ def login(username, password):
 
         _set_new_client_by_token(redfish_token, clients_ov_by_ip)
 
-        return redfish_token
+        return redfish_token, _get_session_id_by_token(redfish_token)
     except HPOneViewException as e:
         logging.exception('Unauthorized error: {}'.format(e))
         raise e
@@ -100,7 +121,8 @@ def check_authentication(rf_token):
 def _get_oneview_client_by_token(ip_oneview):
     try:
         rf_token = request.headers.get('x-auth-token')
-        oneview_client = _get_map_clients()[rf_token][ip_oneview]
+        client_ov_by_ip = _get_map_clients()[rf_token]['client_ov_by_ip']
+        oneview_client = client_ov_by_ip[ip_oneview]
         return oneview_client
     except KeyError:
         msg = 'Unauthorized error for redfish token {}' \

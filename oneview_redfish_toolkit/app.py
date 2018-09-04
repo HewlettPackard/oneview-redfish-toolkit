@@ -38,6 +38,7 @@ from paste.translogger import TransLogger
 
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.api import scmb
+from oneview_redfish_toolkit.api.session_collection import SessionCollection
 from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.chassis_collection \
     import chassis_collection
@@ -177,12 +178,9 @@ def main(config_file_path, logging_config_file_path,
 
     @app.before_request
     def check_authentication():
-        # Cached OneView's connections for the same request
-        g.ov_connections = dict()
-
         # If authenticating do not check for anything
-        if request.path == "/redfish/v1/SessionService/Sessions" and \
-            request.method == "POST":
+        if request.url_rule.rule == SessionCollection.BASE_URI and \
+           request.method == "POST":
             return None
 
         if connection.is_service_root():
@@ -293,9 +291,17 @@ def main(config_file_path, logging_config_file_path,
     @app.errorhandler(HPOneViewException)
     def hp_oneview_client_exception(exception):
         logging.exception(exception)
-        return ResponseBuilder.error_by_hp_oneview_exception(exception)
+        response = ResponseBuilder.error_by_hp_oneview_exception(exception)
 
-    if config.get_authentication_mode() == 'conf':
+        # checking if session has expired on Oneview
+        if config.auth_mode_is_session() and \
+                response.status_code == status.HTTP_401_UNAUTHORIZED:
+            token = request.headers.get('x-auth-token')
+            client_session.clear_session_by_token(token)
+
+        return response
+
+    if config.auth_mode_is_conf():
         # Loading scmb connection
         if scmb.check_cert_exist():
             logging.info('SCMB certs already exists testing connection...')

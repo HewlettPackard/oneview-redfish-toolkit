@@ -30,23 +30,34 @@ from oneview_redfish_toolkit import connection
 class TestAuthentication(unittest.TestCase):
     """Test class for authentication"""
 
+    @mock.patch.object(client_session, 'uuid')
     @mock.patch('oneview_redfish_toolkit.connection.OneViewClient')
     @mock.patch.object(config, 'get_oneview_multiple_ips')
     @mock.patch.object(config, 'get_authentication_mode')
     def test_map_token_redfish_for_multiple_ov(self, get_authentication_mode,
                                                get_oneview_multiple_ips,
-                                               oneview_client_mockup):
+                                               oneview_client_mockup,
+                                               uuid_mock):
         get_authentication_mode.return_value = 'session'
         mocked_rf_token = "abc"
+        session_id = '123456'
+        list_ips = ['10.0.0.1', '10.0.0.2', '10.0.0.3']
         conn_1 = mock.MagicMock()
 
-        unsorted_conns_ov = {'10.0.0.1': conn_1,
-                             '10.0.0.2': mock.MagicMock(),
-                             '10.0.0.3': mock.MagicMock()}
-        connections_ov = collections.OrderedDict(
-            sorted(unsorted_conns_ov.items(), key=lambda t: t[0]))
-        list_ips = list(connections_ov.keys())
-        iter_conns_ov = iter(list(connections_ov.values()))
+        connection_list = [conn_1, mock.MagicMock(), mock.MagicMock()]
+
+        connections_ov = collections.OrderedDict({
+            'client_ov_by_ip': {
+                list_ips[0]: connection_list[0],
+                list_ips[1]: connection_list[1],
+                list_ips[2]: connection_list[2]
+            },
+            'session_id': session_id
+        })
+
+        uuid_mock.uuid4.return_value = session_id
+
+        iter_conns_ov = iter(connection_list)
 
         client_session.init_map_clients()
 
@@ -59,7 +70,7 @@ class TestAuthentication(unittest.TestCase):
         conn_1.connection.get_session_id.return_value = mocked_rf_token
 
         # Check if redfish token return is one of the OneView's token
-        rf_token = client_session.login('user', 'password')
+        rf_token, _ = client_session.login('user', 'password')
         oneview_client_mockup.assert_any_call(
             {
                 'ip': '10.0.0.1',
