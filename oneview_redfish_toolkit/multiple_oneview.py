@@ -16,7 +16,7 @@
 
 # Python libs
 import logging
-from threading import Lock
+import threading
 import time
 
 # 3rd party libs
@@ -42,7 +42,7 @@ def get_map_resources():
 
 
 def set_map_resources_entry(resource_id, ip_oneview):
-    lock = Lock()
+    lock = threading.Lock()
     with lock:
         get_map_resources()[resource_id] = ip_oneview
 
@@ -165,8 +165,9 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
         g.elapsed_time_ov += elapsed_time
 
         logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-            "OneView request: {}.{}: {}".format(resource, function,
-                                                elapsed_time))
+            "Thread {} OneView request: {}.{}: {}".
+            format(threading.get_ident(), resource,
+                   function, elapsed_time))
         return result
 
     return ov_function(*args, **kwargs)

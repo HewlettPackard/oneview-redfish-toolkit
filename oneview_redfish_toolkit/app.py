@@ -19,7 +19,7 @@ import argparse
 import ipaddress
 import logging
 import os
-from threading import Thread
+import threading
 import time
 
 # 3rd party libs
@@ -225,12 +225,16 @@ def main(config_file_path, logging_config_file_path,
         if logging.getLogger().isEnabledFor(logging.DEBUG):
             end_time = time.time()
             req_time = end_time - g.start_time_req
+            thread_id = threading.get_ident()
             logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "OneView process: {}".format(g.elapsed_time_ov))
+                "Thread {} OneView process: {}".
+                format(thread_id, g.elapsed_time_ov))
             logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "Redfish process: {}".format(req_time - g.elapsed_time_ov))
+                "Thread {} Redfish process: {}".
+                format(thread_id, req_time - g.elapsed_time_ov))
             logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "Total process: {}".format(req_time))
+                "Thread {} Total process: {}".
+                format(thread_id, req_time))
         return response
 
     @app.errorhandler(status.HTTP_400_BAD_REQUEST)
@@ -302,7 +306,7 @@ def main(config_file_path, logging_config_file_path,
         if not scmb.is_cert_working_with_scmb():
             logging.error('Failed to connect to scmb. Aborting...')
             exit(1)
-        scmb_thread = Thread(target=scmb.listen_scmb)
+        scmb_thread = threading.Thread(target=scmb.listen_scmb)
         scmb_thread.daemon = True
         scmb_thread.start()
     else:
