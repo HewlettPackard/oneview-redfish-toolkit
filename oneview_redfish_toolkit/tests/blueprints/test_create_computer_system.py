@@ -228,7 +228,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
 
         data_to_create_without_desc = copy.deepcopy(self.data_to_create_system)
         del expected_server_profile_built['description']
-        del data_to_create_without_desc['Description']
+        data_to_create_without_desc['Description'] = ''
 
         self.run_common_mock_to_server_hardware()
         self.run_common_mock_to_server_profile_template()
