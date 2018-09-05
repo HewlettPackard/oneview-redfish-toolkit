@@ -63,8 +63,7 @@ class ComputerSystem(RedfishJsonValidator):
         base_resource = server_profile
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = base_resource["uuid"]
-        if base_resource["description"]:
-            self.redfish["Description"] = base_resource["description"]
+        self.redfish["Description"] = base_resource["description"]
         self.redfish["Name"] = base_resource["name"]
         self.redfish["SystemType"] = "Composed"
         self.redfish["Manufacturer"] = "HPE"
