@@ -80,6 +80,21 @@ SERVER_PROFILE_STATE_TO_REDFISH_STATE_MAPPING = {
     "DeleteFailed": "StandbyOffline"
 }
 
+APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING = {
+    "OK": "Enabled",
+    "UPGRADE": "Updating",
+    "RESTORE": "Updating",
+    "FACTORY_RESET": "Updating",
+    "FAILOVER": "Updating",
+    "CONFIGURATION_ERROR": "StandbyOffline",
+    "RESTORE_NO_RESET_ERROR": "StandbyOffline",
+    "NETWORK_ERROR": "StandbyOffline",
+    "INCOMPATIBLE_MODEL_ERROR": "UnavailableOffline",
+    "STOPPED": "UnavailableOffline",
+    "ERROR": "UnavailableOffline",
+    "STARTING": "Starting",
+}
+
 
 def get_redfish_server_hardware_status_struct(resource):
     sh_state = SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING.get(

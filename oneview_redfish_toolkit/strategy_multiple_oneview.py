@@ -21,6 +21,9 @@ from oneview_redfish_toolkit import multiple_oneview
 def first_parameter_resource(resource, function, *args, **kwargs):
     resource_id = args[0]
 
+    if "controller-state.json" in resource_id:
+        return all_oneviews_resource(resource, function, *args, **kwargs)
+
     return multiple_oneview.query_ov_client_by_resource(resource_id, resource,
                                                         function, *args,
                                                         **kwargs)
@@ -38,6 +41,8 @@ def filter_uuid_parameter_resource(resource, function, *args, **kwargs):
 
 
 def all_oneviews_resource(resource, function, *args, **kwargs):
+    if kwargs:
+        multiple_oneview.test(resource, function, *args, **kwargs)
     all_results = multiple_oneview.search_resource_multiple_ov(resource,
                                                                function, None,
                                                                *args,

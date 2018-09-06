@@ -26,8 +26,7 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Own libs
-from oneview_redfish_toolkit.api.blade_manager import BladeManager
-from oneview_redfish_toolkit.api.enclosure_manager import EnclosureManager
+from oneview_redfish_toolkit.api.manager import Manager
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 
 manager = Blueprint("manager", __name__)
@@ -44,30 +43,14 @@ def get_managers(uuid):
             JSON: JSON with Managers info for Enclosure or ServerHardware.
     """
     try:
-        appliance_information = \
-            g.oneview_client.appliance_node_information.get_version()
-        # TODO(victorhugorodrigues): Handle multiple OneViews
-        oneview_version = appliance_information[0]['softwareVersion']
+        oneview_appliances = \
+           g.oneview_client.appliance_node_information.get_version()
+        ov_appliance_info, appliance_index = _get_appliance_by_uuid(uuid, oneview_appliances)
 
-        resource_index = g.oneview_client.index_resources.get_all(
-            filter='uuid=' + uuid
-        )
+        state_url = "/controller-state.json"
+        oneview_appliances_statuses = g.oneview_client.connection.get(state_url)
 
-        if resource_index:
-            category = resource_index[0]["category"]
-        else:
-            raise OneViewRedfishError('Cannot find Index resource')
-
-        if category == 'server-hardware':
-            server_hardware = g.oneview_client.server_hardware.get(uuid)
-            etag = server_hardware['eTag']
-            manager = BladeManager(server_hardware)
-        elif category == 'enclosures':
-            enclosure = g.oneview_client.enclosures.get(uuid)
-            etag = enclosure['eTag']
-            manager = EnclosureManager(enclosure, oneview_version)
-        else:
-            raise OneViewRedfishError('Enclosure type not found')
+        manager = Manager(ov_appliance_info, oneview_appliances_statuses[appliance_index])
 
         json_str = manager.serialize()
 
@@ -75,7 +58,6 @@ def get_managers(uuid):
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
-        response.headers.add("ETag", "W/" + etag)
         return response
     except HPOneViewException as e:
         # In case of error log exception and abort
@@ -91,3 +73,15 @@ def get_managers(uuid):
         # In case of error log exception and abort
         logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def _get_appliance_by_uuid(uuid, oneview_appliances):
+    appliance = dict()
+    appliance_index = 0
+    for index, ov_appliance in enumerate(oneview_appliances):
+        if ov_appliance["uuid"] == uuid:
+            appliance = ov_appliance
+            appliance_index = index
+            break
+
+    return appliance, appliance_index
