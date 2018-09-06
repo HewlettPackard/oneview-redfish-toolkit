@@ -101,6 +101,13 @@ class TestComputerSystem(BaseFlaskTest):
         self.spt_uri = "/rest/server-profile-templates/" \
                        "61c3a463-1355-4c68-a4e3-4f08c322af1b"
 
+        # Loading ApplianceNodeInfoList mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ApplianceNodeInfoList.json'
+        ) as f:
+            self.appliance_info_list = json.load(f)
+
     def test_get_computer_system_not_found(self):
         """Tests ComputerSystem with ServerProfileTemplates not found"""
 
@@ -264,6 +271,8 @@ class TestComputerSystem(BaseFlaskTest):
             self.label_for_server_profile
         self.oneview_client.server_profile_templates.get.return_value = \
             server_profile_template
+        self.oneview_client.appliance_node_information.get_version.return_value = \
+            self.appliance_info_list
 
         # Get ComputerSystem
         response = self.client.get(
@@ -610,6 +619,8 @@ class TestComputerSystem(BaseFlaskTest):
                 [self.drives[4]]
             self.oneview_client.labels.get_by_resource.return_value = \
                 self.label_for_server_profile
+            self.oneview_client.appliance_node_information.get_version.return_value = \
+                self.appliance_info_list
 
             response = self.client.get(
                 "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
@@ -642,6 +653,8 @@ class TestComputerSystem(BaseFlaskTest):
                 [self.drives[4]]
             self.oneview_client.labels.get_by_resource.return_value = \
                 self.label_for_server_profile
+            self.oneview_client.appliance_node_information.get_version.return_value = \
+                self.appliance_info_list
 
             response = self.client.get(
                 "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
@@ -680,6 +693,8 @@ class TestComputerSystem(BaseFlaskTest):
         self.oneview_client.labels.get_by_resource.return_value = label_for_sp
         self.oneview_client.server_profile_templates.get.return_value = \
             server_profile_template
+        self.oneview_client.appliance_node_information.get_version.return_value = \
+            self.appliance_info_list
 
         # Get ComputerSystem
         response = self.client.get(

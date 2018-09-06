@@ -15,13 +15,14 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 
 # 3rd party libs
 from flask_api import status
-from hpOneView.exceptions import HPOneViewException
 
 # Module libs
+import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.blueprints import manager
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
@@ -30,11 +31,10 @@ class TestManager(BaseFlaskTest):
     """Tests for Managers blueprint
 
         Tests:
-            - enclosures
+            - manager
                 - know value
                 - not found error
                 - unexpected error
-            - blades
     """
 
     @classmethod
@@ -43,35 +43,44 @@ class TestManager(BaseFlaskTest):
 
         self.app.register_blueprint(manager.manager)
 
-    #############
-    # Enclosure #
-    #############
-
-    def test_get_enclosure_manager(
-            self):
-        """"Tests EnclosureManager with a known Enclosure"""
-
-        # Loading Enclosure mockup value
+        # Loading ApplianceNodeInfoList mockup result
         with open(
-                'oneview_redfish_toolkit/mockups/oneview/Enclosure.json'
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ApplianceNodeInfoList.json'
         ) as f:
-            ov_enclosure = json.load(f)
+            self.appliance_info_list = json.load(f)
 
-        # Loading EnclosureManager mockup result
+        # Loading ApplianceStateList mockup result
         with open(
-                'oneview_redfish_toolkit/mockups/redfish/EnclosureManager.json'
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ApplianceStateList.json'
         ) as f:
-            rf_enclosure_manager = json.load(f)
+            self.appliance_state_list = json.load(f)
 
-        self.oneview_client.index_resources.get_all.return_value = \
-            [{"category": "enclosures"}]
-        self.oneview_client.enclosures.get.return_value = ov_enclosure
-        self.oneview_client. appliance_node_information.get_version.return_value = \
-            {"softwareVersion": "3.00.07-0288219"}
+        # Loading ApplianceHealthStatusList mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ApplianceHealthStatusList.json'
+        ) as f:
+            self.appliance_health_status_list = json.load(f)
 
-        # Get EnclosureManager
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'Manager.json'
+        ) as f:
+            self.manager_mockup = json.load(f)
+
+    def test_get_manager(self):
+        """"Tests get Manager"""
+
+        self.oneview_client.appliance_node_information.get_version.return_value = \
+            self.appliance_info_list
+        self.oneview_client.connection.get.side_effect = \
+            [self.appliance_state_list, self.appliance_health_status_list]
+
+        # Get Manager
         response = self.client.get(
-            "/redfish/v1/Managers/0000000000A66101"
+            "/redfish/v1/Managers/b08eb206-a904-46cf-9172-dcdff2fa9639"
         )
 
         result = json.loads(response.data.decode("utf-8"))
@@ -79,119 +88,107 @@ class TestManager(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(rf_enclosure_manager, result)
-        self.assertEqual(
-            "{}{}".format("W/", ov_enclosure["eTag"]),
-            response.headers["ETag"])
+        self.assertEqualMockup(self.manager_mockup, result)
 
-    def test_get_enclosure_not_found(self):
-        """Tests EnclosureManager with Enclosure not found"""
+    def test_get_manager_states(self):
+        """"Tests get Manager with all possible States"""
 
-        self.oneview_client.index_resources.get_all.return_value = \
-            [{"category": "enclosures"}]
-        self.oneview_client.enclosures.get.return_value = \
-            {'enclosureUri': 'invalidUri'}
-        e = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'enclosure not found',
-        })
+        appliance_state_list = copy.deepcopy(self.appliance_info_list)
+        manager_mockup = copy.deepcopy(self.manager_mockup)
 
-        self.oneview_client.enclosures.get.side_effect = e
+        for oneview_state, redfish_state in status_mapping.\
+                APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING.items():
 
-        response = self.client.get(
-            "/redfish/v1/Managers/0000000000A66101"
-        )
+            appliance_state_list[0]["state"] = oneview_state
+            manager_mockup["Status"]["State"] = redfish_state
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
+            self.oneview_client.appliance_node_information.get_version.return_value = \
+                self.appliance_info_list
+            self.oneview_client.connection.get.side_effect = \
+                [appliance_state_list, self.appliance_health_status_list]
 
-    def test_enclosure_unexpected_error(self):
-        """Tests EnclosureManager with an unexpected error"""
+            # Get Manager
+            response = self.client.get(
+                "/redfish/v1/Managers/b08eb206-a904-46cf-9172-dcdff2fa9639"
+            )
 
-        self.oneview_client.index_resources.get_all.return_value = \
-            [{"category": "enclosures"}]
-        self.oneview_client.enclosures.get.side_effect = Exception()
+            result = json.loads(response.data.decode("utf-8"))
 
-        response = self.client.get(
-            "/redfish/v1/Managers/0000000000A66101"
-        )
+            # Tests response
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual("application/json", response.mimetype)
+            self.assertEqualMockup(manager_mockup, result)
 
-        self.assertEqual(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-            response.status_code)
-        self.assertEqual("application/json", response.mimetype)
+    def test_all_manager_states(self):
+        """"Tests get Manager with all possible States"""
 
-    #############
-    # Blade     #
-    #############
+        appliance_state_list = copy.deepcopy(self.appliance_info_list)
+        manager_mockup = copy.deepcopy(self.manager_mockup)
 
-    def test_get_blade_manager(
-            self):
-        """"Tests BladeManager with a known Server Hardware"""
+        for oneview_state, redfish_state in status_mapping.\
+                APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING.items():
 
-        # Loading ServerHardware mockup value
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            server_hardware = json.load(f)
+            appliance_state_list[0]["state"] = oneview_state
+            manager_mockup["Status"]["State"] = redfish_state
 
-        # Loading BladeManager mockup result
-        with open(
-                'oneview_redfish_toolkit/mockups/redfish/BladeManager.json'
-        ) as f:
-            blade_manager_mockup = json.load(f)
+            self.oneview_client.appliance_node_information.get_version.return_value = \
+                self.appliance_info_list
+            self.oneview_client.connection.get.side_effect = \
+                [appliance_state_list, self.appliance_health_status_list]
 
-        self.oneview_client.index_resources.get_all.return_value = \
-            [{"category": "server-hardware"}]
-        self.oneview_client.server_hardware.get.return_value = server_hardware
-        self.oneview_client. appliance_node_information.get_version.return_value = \
-            {"softwareVersion": "3.00.07-0288219"}
+            # Get Manager
+            response = self.client.get(
+                "/redfish/v1/Managers/b08eb206-a904-46cf-9172-dcdff2fa9639"
+            )
 
-        # Get BladeManager
-        response = self.client.get(
-            "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"
-        )
+            result = json.loads(response.data.decode("utf-8"))
 
-        result = json.loads(response.data.decode("utf-8"))
+            # Tests response
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual("application/json", response.mimetype)
+            self.assertEqualMockup(manager_mockup, result)
 
-        # Tests response
-        self.assertEqual(status.HTTP_200_OK, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(blade_manager_mockup, result)
-        self.assertEqual(
-            "{}{}".format("W/", server_hardware["eTag"]),
-            response.headers["ETag"])
+    def test_all_manager_health_status(self):
+        """Tests get Manager with all possible Health Status"""
 
-    def test_get_server_hardware_not_found(self):
-        """Tests BladeManager with Server Hardware not found"""
+        appliance_health_status_list = \
+            copy.deepcopy(self.appliance_health_status_list)
+        manager_mockup = copy.deepcopy(self.manager_mockup)
 
-        self.oneview_client.index_resources.get_all.return_value = [
-            {"category": "server-hardware"}]
-        self.oneview_client.server_hardware.get.return_value =\
-            {'serverHardwareUri': 'invalidUri'}
-        e = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server hardware not found',
-        })
+        for oneview_health_status, redfish_health_status in \
+                status_mapping.MANAGER_HEALTH_STATE_MAPPING.items():
 
-        self.oneview_client.server_hardware.get.side_effect = e
+            appliance_health_status_list[0]["members"][0]["severity"] = \
+                oneview_health_status
+            manager_mockup["Status"]["Health"] = redfish_health_status
 
-        response = self.client.get(
-            "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"
-        )
+            self.oneview_client.appliance_node_information.get_version.return_value = \
+                self.appliance_info_list
+            self.oneview_client.connection.get.side_effect = \
+                [self.appliance_state_list, appliance_health_status_list]
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
+            # Get Manager
+            response = self.client.get(
+                "/redfish/v1/Managers/b08eb206-a904-46cf-9172-dcdff2fa9639"
+            )
 
-    def test_server_hardware_unexpected_error(self):
-        """Tests BladeManager with an unexpected error"""
+            result = json.loads(response.data.decode("utf-8"))
 
-        self.oneview_client.index_resources.get_all.return_value = [
-            {"category": "server-hardware"}]
-        self.oneview_client.server_hardware.get.side_effect = Exception()
+            # Tests response
+            self.assertEqual(status.HTTP_200_OK, response.status_code)
+            self.assertEqual("application/json", response.mimetype)
+            self.assertEqualMockup(manager_mockup, result)
+
+    def test_manager_unexpected_error(self):
+        """Tests Manager with an unexpected error"""
+
+        self.oneview_client.appliance_node_information.get_version.side_effect = \
+            Exception()
+        self.oneview_client.connection.get.side_effect = \
+            [self.appliance_state_list, self.appliance_health_status_list]
 
         response = self.client.get(
-            "/redfish/v1/Managers/30303437-3034-4D32-3230-313133364752"
+            "/redfish/v1/Managers/b08eb206-a904-46cf-9172-dcdff2fa9639"
         )
 
         self.assertEqual(

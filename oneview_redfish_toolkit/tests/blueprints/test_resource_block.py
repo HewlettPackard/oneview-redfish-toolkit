@@ -466,8 +466,17 @@ class TestResourceBlock(BaseFlaskTest):
         ) as f:
             expected_computer_system = json.load(f)
 
+        # Loading ApplianceNodeInfoList mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ApplianceNodeInfoList.json'
+        ) as f:
+            self.appliance_info_list = json.load(f)
+
         self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
+        self.oneview_client.appliance_node_information.get_version.return_value = \
+            self.appliance_info_list
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"

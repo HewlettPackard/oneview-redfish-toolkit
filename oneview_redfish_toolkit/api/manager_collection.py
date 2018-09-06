@@ -29,7 +29,7 @@ class ManagerCollection(RedfishJsonValidator):
 
     SCHEMA_NAME = 'ManagerCollection'
 
-    def __init__(self, server_hardware, enclosures):
+    def __init__(self, oneview_appliances):
         """ManagerCollection constructor
 
             Populates self.redfish with a hardcoded ManagerCollection
@@ -37,30 +37,27 @@ class ManagerCollection(RedfishJsonValidator):
             enclosures resource.
 
             Args:
-                server_hardware: A list of dicts of server hardware.
-                enclosures: A list of dicts of enclosures.
+                oneview_appliances: A list of all Oneview's appliances.
         """
 
         super().__init__(self.SCHEMA_NAME)
 
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Manager Collection"
-        self.redfish["Members@odata.count"] = \
-            len(server_hardware) + len(enclosures)
+        self.redfish["Members@odata.count"] = len(oneview_appliances)
         self.redfish["Members"] = list()
-        self._set_resource_links(enclosures)
-        self._set_resource_links(server_hardware)
+        self._set_resource_links(oneview_appliances)
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ManagerCollection.ManagerCollection"
         self.redfish["@odata.id"] = "/redfish/v1/Managers"
 
         self._validate()
 
-    def _set_resource_links(self, oneview_resource):
+    def _set_resource_links(self, oneview_appliances):
         """Populates self.redfish["Members"] with the links resources"""
 
-        for resource in oneview_resource:
+        for appliance in oneview_appliances:
             link_dict = collections.OrderedDict()
             link_dict["@odata.id"] = \
-                "/redfish/v1/Managers/" + resource["uuid"]
+                "/redfish/v1/Managers/" + appliance["uuid"]
             self.redfish["Members"].append(link_dict)

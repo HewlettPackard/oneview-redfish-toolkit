@@ -38,8 +38,17 @@ class TestBladeChassis(BaseTest):
         ) as f:
             self.blade_chassis_mockup = json.load(f)
 
+        # Loading ApplianceNodeInfoList mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ApplianceNodeInfoList.json'
+        ) as f:
+            self.appliance_info_list = json.load(f)
+
     def test_serialize_when_blade_chassis_has_computer_system(self):
-        blade_chassis = BladeChassis(self.server_hardware)
+        blade_chassis = BladeChassis(
+            self.server_hardware, self.appliance_info_list[0]
+        )
 
         result = json.loads(blade_chassis.serialize())
 
@@ -49,7 +58,9 @@ class TestBladeChassis(BaseTest):
         server_hardware = copy.deepcopy(self.server_hardware)
         server_hardware["serverProfileUri"] = None
 
-        blade_chassis = BladeChassis(server_hardware)
+        blade_chassis = BladeChassis(
+            server_hardware, self.appliance_info_list[0]
+        )
         result = json.loads(blade_chassis.serialize())
 
         expected_blade_result = copy.deepcopy(self.blade_chassis_mockup)
@@ -59,7 +70,9 @@ class TestBladeChassis(BaseTest):
 
         server_hardware["serverProfileUri"] = ""
 
-        blade_chassis = BladeChassis(server_hardware)
+        blade_chassis = BladeChassis(
+            server_hardware, self.appliance_info_list[0]
+        )
         result = json.loads(blade_chassis.serialize())
 
         self.assertEqualMockup(expected_blade_result, result)

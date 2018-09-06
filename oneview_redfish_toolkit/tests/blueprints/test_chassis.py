@@ -89,6 +89,13 @@ class TestChassis(BaseFlaskTest):
         ) as f:
             self.rack_chassis_mockup = json.load(f)
 
+        # Loading ApplianceNodeInfoList mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ApplianceNodeInfoList.json'
+        ) as f:
+            self.appliance_info_list = json.load(f)
+
     #############
     # Enclosure #
     #############
@@ -101,6 +108,8 @@ class TestChassis(BaseFlaskTest):
         self.oneview_client.enclosures.get.return_value = self.enclosure
         self.oneview_client.enclosures.get_environmental_configuration.\
             return_value = self.enclosure_environment_configuration_mockup
+        self.oneview_client.appliance_node_information.get_version.return_value = \
+            self.appliance_info_list
 
         # Get EnclosureChassis
         response = self.client.get(
@@ -206,6 +215,8 @@ class TestChassis(BaseFlaskTest):
         self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "server-hardware"}]
         self.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.appliance_node_information.get_version.return_value = \
+            self.appliance_info_list
 
         response = self.client.get(
             "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
@@ -240,6 +251,8 @@ class TestChassis(BaseFlaskTest):
             [{"category": "server-hardware"}]
         self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
+        self.oneview_client.appliance_node_information.get_version.return_value = \
+            self.appliance_info_list
 
         # Get BladeChassis
         response = self.client.get(

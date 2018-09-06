@@ -31,6 +31,7 @@ from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.rack_chassis import RackChassis
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
+from oneview_redfish_toolkit.blueprints.manager import get_current_manager
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 
@@ -51,11 +52,12 @@ def get_chassis(uuid):
         filter='uuid=' + uuid
     )
     category = resource_index[0]["category"]
+    manager = get_current_manager()
 
     if category == 'server-hardware':
         server_hardware = g.oneview_client.server_hardware.get(uuid)
         etag = server_hardware['eTag']
-        ch = BladeChassis(server_hardware)
+        ch = BladeChassis(server_hardware, manager)
     elif category == 'enclosures':
         enclosure = g.oneview_client.enclosures.get(uuid)
         etag = enclosure['eTag']
@@ -63,7 +65,8 @@ def get_chassis(uuid):
             get_environmental_configuration(uuid)
         ch = EnclosureChassis(
             enclosure,
-            enclosure_environment_config
+            enclosure_environment_config,
+            manager
         )
     elif category == 'racks':
         racks = g.oneview_client.racks.get(uuid)

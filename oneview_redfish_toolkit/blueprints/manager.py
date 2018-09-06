@@ -26,9 +26,10 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Own libs
-from oneview_redfish_toolkit.api.blade_manager import BladeManager
-from oneview_redfish_toolkit.api.enclosure_manager import EnclosureManager
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.manager import Manager
+from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit import multiple_oneview
 
 manager = Blueprint("manager", __name__)
 
@@ -41,33 +42,25 @@ def get_managers(uuid):
         /redfish/v1/Managers/id is requested.
 
         Returns:
-            JSON: JSON with Managers info for Enclosure or ServerHardware.
+            JSON: JSON with Managers info.
     """
     try:
-        appliance_information = \
+        oneview_appliances_version = \
             g.oneview_client.appliance_node_information.get_version()
-        # TODO(victorhugorodrigues): Handle multiple OneViews
-        oneview_version = appliance_information[0]['softwareVersion']
+        ov_appliance_info, appliance_index = \
+            _get_appliance_by_uuid(uuid, oneview_appliances_version)
 
-        resource_index = g.oneview_client.index_resources.get_all(
-            filter='uuid=' + uuid
-        )
+        state_url = "/controller-state.json"
+        ov_appliances_state = g.oneview_client.connection.get(state_url)
 
-        if resource_index:
-            category = resource_index[0]["category"]
-        else:
-            raise OneViewRedfishError('Cannot find Index resource')
+        ov_health_state_url = "/rest/appliance/health-status"
+        ov_appliances_health_status = \
+            g.oneview_client.connection.get(ov_health_state_url)
 
-        if category == 'server-hardware':
-            server_hardware = g.oneview_client.server_hardware.get(uuid)
-            etag = server_hardware['eTag']
-            manager = BladeManager(server_hardware)
-        elif category == 'enclosures':
-            enclosure = g.oneview_client.enclosures.get(uuid)
-            etag = enclosure['eTag']
-            manager = EnclosureManager(enclosure, oneview_version)
-        else:
-            raise OneViewRedfishError('Enclosure type not found')
+        manager = Manager(ov_appliance_info,
+                          ov_appliances_state[appliance_index],
+                          ov_appliances_health_status[appliance_index]
+                          )
 
         json_str = manager.serialize()
 
@@ -75,7 +68,6 @@ def get_managers(uuid):
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
-        response.headers.add("ETag", "W/" + etag)
         return response
     except HPOneViewException as e:
         # In case of error log exception and abort
@@ -91,3 +83,31 @@ def get_managers(uuid):
         # In case of error log exception and abort
         logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+def _get_appliance_by_uuid(uuid, oneview_appliances):
+    appliance = dict()
+    appliance_index = 0
+
+    for index, ov_appliance in enumerate(oneview_appliances):
+        if ov_appliance["uuid"] == uuid:
+            appliance = ov_appliance
+            appliance_index = index
+            break
+
+    if not appliance:
+        raise OneViewRedfishError("Could not find manager with id " + uuid)
+
+    return appliance, appliance_index
+
+
+def get_current_manager():
+    oneview_appliances = \
+        g.oneview_client.appliance_node_information.get_version()
+    oneview_map_resources = multiple_oneview.get_map_resources()
+
+    current_appliance = next(iter(oneview_map_resources.values()))
+    appliance_index = \
+        config.get_oneview_multiple_ips().index(current_appliance)
+
+    return oneview_appliances[appliance_index]

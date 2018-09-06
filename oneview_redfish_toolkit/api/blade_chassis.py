@@ -28,7 +28,7 @@ class BladeChassis(Chassis):
          with the response of OneView server hardware resources.
     """
 
-    def __init__(self, server_hardware):
+    def __init__(self, server_hardware, manager):
         """BladeChassis constructor
 
         Populates self.redfish with hardcoded Chassis values
@@ -37,6 +37,7 @@ class BladeChassis(Chassis):
         Args:
             server_hardware: An object containing hardware to
                       create the Redfish JSON.
+            manager: Oneview's current manager.
         """
 
         super().__init__(server_hardware)
@@ -60,7 +61,7 @@ class BladeChassis(Chassis):
         self.redfish["Links"]["ManagedBy"] = list()
         self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
-            "/redfish/v1/Managers/" + server_hardware['uuid']
+            "/redfish/v1/Managers/" + manager['uuid']
 
         if server_hardware["locationUri"] is not None:
             self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
