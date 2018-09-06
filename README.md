@@ -97,16 +97,18 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 * `oneview` section
 
   * **ip**: HPE OneView's IP/FQDN address or comma separated list of OneView's IP/FQDN address for multiple instances.
+  
   Oneview Redfish Toolkit now also includes support for multiple OneView instances, allowing a single instance of the service manage more than one OneView instance instead of instantiating a new service for each HPE OneView that is part of the solution. It simplifies for the Redfish client that does not need to handle multiple connections to the Redfish services.
 
 * `credentials` section
-  Note: These credentials are used only for authentication_mode set to "conf". They are stored in clear-text. Make sure only authorized users can access this file. When handling multiple OneView instances, make sure all instances have this username/password enabled.
 
   * **username**: HPE OneView's username
   
   * **password**: HPE OneView's password
 
   * **authLoginDomain**: HPE OneView's authentication login domain. If not set, defaults to "Local".
+
+  Note: HPE OneView credentials are used only for authentication_mode set to "conf". They are stored in clear-text. Make sure only authorized users can access this file. When handling multiple OneView instances, make sure all instances have this username/password enabled.
 
 * `event_service` section
 
