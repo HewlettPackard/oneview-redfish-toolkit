@@ -12,6 +12,7 @@
  - #230 Check missing schemas from local repo
  - #236 Flask running in debug mode
  - #232 Implement CompositionService
+ - #251 Modify Event Subscription URI
  - #201 How are HPE OneView event types structured?
  - #214 Subscribe to each EventType
  - #215 Add TestEvent Action
@@ -42,16 +43,50 @@
  - #294 Include Network resource blocks in a Resource Zone
  - #335 Reset action to a System is not working properly
  - #317 Add support for Actions/Chassis.Reset in the Chassis for Server Hardware
+ - #344 Removing ExtendInfo from bad_request error
  - #271 Implement "@Redfish.CollectionCapabilities" in the Systems collection
  - #337 Include information about Storage and Network for a Composed System
  - #339 Network Resource Block: add support for network sets
  - #341 Composed system: update NetworkInterfaces
+ - #353 Fixes "get Zone" when avaialable targets returns empty bays
  - #349 Refactor Redfish.conf
  - #263 Implement POST to create a composed resource
  - #340 Composed System: Add ResourceBlocks in the Links
  - #308 Update Links in the Storage Resource Block
  - #350 Refactor odata.type
  - #357 Set API version 500 for Event Service (workaround)
+ - #361 Allows create properly a Composed System without Storage
+ - #266 Redfish config file should have a list of OneView IPs
+ - #355 Resource Blocks in a Zone should list all Computer System Resource Blocks that could be used in a composition and not just "Unused" ones
+ - #373 Avoid redirection to GET when we call POST redfish/v1/Systems
+ - #371 Storage Resource Block has Unused state even when should be Composed
+ - #313 Resource Blocks in a Zone: update list based on the enclosure
+ - #356 Resource Zones Collection: update list based on enclosure when storage controller is configured in the SPT
+ - #267 Authentication for each request should be based on the REDFISH_SESSION_TOKEN defined during Redfish session creation
+ - #368 Update GET capabilities object for the new ID
+ - #369 Update Capabilities Objects references in the System Collection
+ - #296 Update Status for Computer System Resource Block and for Composed System based on Oneview response
+ - #378 Update references for Zones in Resource Blocks and in the request Body to create Composed System
+ - #379 Update Status for Chassis based on OneView response
+ - #382 Fix Storage for Composed System when there are no drives
+ - #268 Redfish collection resources should return the list of resources from all OneView instances registered
+ - #286 Refactoring unit tests
+ - #393 Credentials should not be required in production mode
+ - #396 Error on create new Composed System
+ - #380 Update CompositionState of Computer System Resource Block
+ - #231 Check updates on the implemented endpoints (new schema versions)
+ - #375 Change POST to compose a system to return the new uuid as soon as profile uuid is available
+ - #391 Zone name must be unique
+ - #366 Concurrency for multiple OneView
+ - #414 Conf mode is requiring auth token
+ - #417 Request /redfish/v1/Systems list only Composed Systems (Server Profiles) without errors in Oneview
+ - #392 ZoneCollection is listing Zones even for enclosures that do not have Drive Enclosure
+ - #348 Change Oneview Redfish Toolkit to use CherryPy
+ - #389 Update Links to ComputerSytems in the Chassis resource
+ - #421 Add support for authLoginDomain in the Redfish.conf
+ - #370 Use a label to save template_UUID instead of Description attribute in the server profile
+ - #422 Save OneView Python SDK client for multiple requests
+
 
 # New Redfish resources
  - Event Service
