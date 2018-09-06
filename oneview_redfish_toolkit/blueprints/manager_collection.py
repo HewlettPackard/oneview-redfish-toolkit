@@ -28,6 +28,7 @@ from flask_api import status
 from oneview_redfish_toolkit.api.errors \
     import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.manager_collection import ManagerCollection
+from oneview_redfish_toolkit import config
 
 manager_collection = Blueprint("manager_collection", __name__)
 
@@ -54,22 +55,9 @@ def get_manager_collection():
     """
 
     try:
-        # Gets all enclosures
-        enclosures = g.oneview_client.enclosures.get_all()
-
-        if not enclosures:
-            raise OneViewRedfishResourceNotFoundError(
-                "enclosures", "Resource")
-
-        # Gets all server hardware
-        server_hardware_list = g.oneview_client.server_hardware.get_all()
-
-        if not server_hardware_list:
-            raise OneViewRedfishResourceNotFoundError(
-                "server-hardware-list", "Resource")
-
-        # Build Manager Collection object and validates it
-        mc = ManagerCollection(server_hardware_list, enclosures)
+        oneview_appliances = \
+            g.oneview_client.appliance_node_information.get_version()
+        mc = ManagerCollection(oneview_appliances)
 
         # Build redfish json
         json_str = mc.serialize()
