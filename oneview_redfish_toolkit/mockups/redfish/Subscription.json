@@ -5,7 +5,7 @@
     "Destination": "http://www.dnsname.com/Destination1",
     "EventTypes": [
         "Alert",
-        "StatusChange"
+        "ResourceUpdated"
     ],
     "Context": null,
     "Protocol": "Redfish",

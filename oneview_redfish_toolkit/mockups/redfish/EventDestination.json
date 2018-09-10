@@ -7,7 +7,6 @@
         "ResourceAdded",
         "ResourceUpdated",
         "ResourceRemoved",
-        "StatusChange",
         "Alert"
     ],
     "Context": "MyContext"

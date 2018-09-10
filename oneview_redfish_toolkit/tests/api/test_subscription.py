@@ -55,7 +55,7 @@ class TestSubscription(BaseTest):
             subscription = Subscription(
                 "e7f93fa2-0cb4-11e8-9060-e839359bc36a",
                 "http://www.dnsname.com/Destination1",
-                ["Alert", "StatusChange"], None)
+                ["Alert", "ResourceUpdated"], None)
         except Exception as e:
             self.fail("Failed to instantiate Subscription class."
                       " Error: {}".format(e))

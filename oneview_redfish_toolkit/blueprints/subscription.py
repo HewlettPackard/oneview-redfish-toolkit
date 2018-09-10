@@ -43,7 +43,6 @@ def add_subscription():
         an array of EventTypes. Context is optional.
 
         EventTypes:
-            - StatusChange
             - ResourceUpdated
             - ResourceAdded
             - ResourceRemoved

@@ -14,21 +14,18 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
-
 from copy import deepcopy
 from flask import abort
 from flask import Blueprint
 from flask import request
-from flask import Response
 from flask_api import status
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit.api.event_service import EventService
-
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
+from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import util
-
 
 event_service = Blueprint("event_service", __name__)
 
@@ -58,10 +55,7 @@ ONEVIEW_TEST_TASK = {
 REDFISH_TO_ONEVIEW_EVENTS = {
     "ResourceAdded": "Created",
     "ResourceUpdated": "Updated",
-    "ResourceRemoved": "Deleted",
-
-    # OneView does not have an equivalent change type to StatusChange
-    "StatusChange": "StatusChange"
+    "ResourceRemoved": "Deleted"
 }
 
 
@@ -78,23 +72,10 @@ def get_event_service():
         Exceptions:
             OneViewRedfishError: General error.
     """
-    try:
-        # Build Event Service object and validates it
-        evs = EventService(util.get_delivery_retry_attempts(),
-                           util.get_delivery_retry_interval())
+    evs = EventService(util.get_delivery_retry_attempts(),
+                       util.get_delivery_retry_interval())
 
-        # Build redfish json
-        json_str = evs.serialize()
-
-        # Build response and returns
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-    except OneViewRedfishError as e:
-        # In case of error print exception and abort
-        logging.exception(e)
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return ResponseBuilder.success(evs)
 
 
 @event_service.route(
@@ -117,38 +98,31 @@ def execute_test_event_action():
             return abort(500)
     """
 
+    if not config.auth_mode_is_conf():
+        abort(status.HTTP_404_NOT_FOUND,
+              "EventService is not enabled.")
+
+    event_type = None
     try:
-        try:
-            event_type = request.get_json()['EventType']
-        except Exception:
-            raise OneViewRedfishError(
-                {'message': 'Invalid JSON data. Missing EventType property.'})
+        event_type = request.get_json()['EventType']
+    except Exception:
+        abort(status.HTTP_400_BAD_REQUEST,
+              'Invalid JSON data. Missing EventType property.')
 
-        if (event_type not in util.get_subscriptions_by_type().keys()):
-            raise OneViewRedfishError(
-                {'message': 'Invalid EventType value: %s' % event_type})
+    if event_type not in util.get_subscriptions_by_type().keys():
+        abort(status.HTTP_400_BAD_REQUEST,
+              'Invalid EventType value: %s' % event_type)
 
-        # Creates a sample OneView SCMB message according to
-        # the value of 'event_type'
-        if (event_type == "Alert"):
-            message = deepcopy(ONEVIEW_TEST_ALERT)
-        else:
-            message = deepcopy(ONEVIEW_TEST_TASK)
-            message['changeType'] = REDFISH_TO_ONEVIEW_EVENTS[event_type]
+    # Creates a sample OneView SCMB message according to
+    # the value of 'event_type'
+    if event_type == "Alert":
+        message = deepcopy(ONEVIEW_TEST_ALERT)
+    else:
+        message = deepcopy(ONEVIEW_TEST_TASK)
+        message['changeType'] = REDFISH_TO_ONEVIEW_EVENTS[event_type]
 
-        event = Event(message)
+    event = Event(message)
 
-        util.dispatch_event(event)
+    util.dispatch_event(event)
 
-        json_str = event.serialize()
-
-        return Response(
-            response=json_str,
-            status=status.HTTP_202_ACCEPTED,
-            mimetype='application/json')
-    except OneViewRedfishError as e:
-        logging.exception('Mapping error: {}'.format(e))
-        abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
-    except Exception as e:
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return ResponseBuilder.response(event, status.HTTP_202_ACCEPTED)

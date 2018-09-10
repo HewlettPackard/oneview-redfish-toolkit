@@ -23,10 +23,12 @@ from flask_api import status
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import event_service
+from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 from oneview_redfish_toolkit import util
 
 
+@mock.patch.object(config, 'auth_mode_is_conf')
 class TestEventService(BaseFlaskTest):
     """Tests for EventService blueprint"""
 
@@ -38,11 +40,14 @@ class TestEventService(BaseFlaskTest):
 
     @mock.patch('oneview_redfish_toolkit.util.get_delivery_retry_attempts')
     @mock.patch('oneview_redfish_toolkit.util.get_delivery_retry_interval')
-    def test_get_event_service(self, get_delivery_retry_interval,
-                               get_delivery_retry_attempts):
-        """Tests EventService blueprint result against known value"""
+    def test_get_event_service_when_is_enabled(self,
+                                               get_delivery_retry_interval,
+                                               get_delivery_retry_attempts,
+                                               auth_mode_is_conf):
+        """Tests get EventService when Event Service is enabled"""
         get_delivery_retry_interval.return_value = 30
         get_delivery_retry_attempts.return_value = 3
+        auth_mode_is_conf.return_value = True
 
         response = self.client.get("/redfish/v1/EventService/")
 
@@ -57,8 +62,34 @@ class TestEventService(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(event_service_mockup, result)
 
-    def test_post_submit_event_without_event_type(self):
+    @mock.patch('oneview_redfish_toolkit.util.get_delivery_retry_attempts')
+    @mock.patch('oneview_redfish_toolkit.util.get_delivery_retry_interval')
+    def test_get_event_service_when_is_disabled(self,
+                                                get_delivery_retry_interval,
+                                                get_delivery_retry_attempts,
+                                                auth_mode_is_conf):
+        """Tests get EventService when Event Service is disabled"""
+        get_delivery_retry_interval.return_value = 10
+        get_delivery_retry_attempts.return_value = 2
+        auth_mode_is_conf.return_value = False
+
+        response = self.client.get("/redfish/v1/EventService/")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'EventServiceDisabled.json'
+        ) as f:
+            event_service_mockup = json.loads(f.read())
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(event_service_mockup, result)
+
+    def test_post_submit_event_without_event_type(self, auth_mode_is_conf):
         """Tests EventService SubmitTestEvent action without EventType"""
+        auth_mode_is_conf.return_value = True
 
         response = self.client.post(
             '/redfish/v1/EventService/Actions/EventService.SubmitTestEvent/')
@@ -66,8 +97,9 @@ class TestEventService(BaseFlaskTest):
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual('application/json', response.mimetype)
 
-    def test_submit_event_with_invalid_event_type(self):
+    def test_submit_event_with_invalid_event_type(self, auth_mode_is_conf):
         """Tests EventService SubmitTestEvent action with invalid EventType"""
+        auth_mode_is_conf.return_value = True
 
         response = self.client.post(
             '/redfish/v1/EventService/Actions/EventService.SubmitTestEvent/',
@@ -78,9 +110,10 @@ class TestEventService(BaseFlaskTest):
         self.assertEqual('application/json', response.mimetype)
 
     @mock.patch.object(util, 'dispatch_event')
-    def test_submit_event_with_exception(self, dispatch_event_mock):
+    def test_submit_event_with_exception(self, dispatch_event_mock,
+                                         auth_mode_is_conf):
         """Tests SubmitTestEvent when dispatch_event raises an exception"""
-
+        auth_mode_is_conf.return_value = True
         dispatch_event_mock.side_effect = Exception()
 
         response = self.client.post(
@@ -92,8 +125,9 @@ class TestEventService(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
 
     @mock.patch.object(util, 'dispatch_event')
-    def test_submit_event_correct_response(self, dispatch_event_mock):
+    def test_submit_event_correct_response(self, _, auth_mode_is_conf):
         """Tests SubmitTestEvent action with OneView SCMB alert"""
+        auth_mode_is_conf.return_value = True
 
         # Loading Alert mockup value
         with open(
@@ -110,4 +144,20 @@ class TestEventService(BaseFlaskTest):
 
         self.assertEqualMockup(self.alert_mockup, result)
         self.assertEqual(status.HTTP_202_ACCEPTED, response.status_code)
+        self.assertEqual('application/json', response.mimetype)
+
+    def test_submit_event_when_is_disabled(self, auth_mode_is_conf):
+        """Tests SubmitTestEvent when EventService is disabled"""
+        auth_mode_is_conf.return_value = False
+
+        response = self.client.post(
+            '/redfish/v1/EventService/Actions''/EventService.SubmitTestEvent/',
+            data='{"EventType": "Alert"}',
+            content_type='application/json')
+
+        result = response.data.decode("utf-8")
+
+        self.assertIn('EventService is not enabled.', str(result))
+        self.assertEqual(status.HTTP_404_NOT_FOUND,
+                         response.status_code)
         self.assertEqual('application/json', response.mimetype)

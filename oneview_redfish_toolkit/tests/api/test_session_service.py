@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -14,44 +14,38 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-"""
-    Tests for event_service.py
-"""
-
 import json
 from unittest import mock
 
-from oneview_redfish_toolkit.api import event_service
-from oneview_redfish_toolkit.api.event_service import EventService
+from oneview_redfish_toolkit.api import session_service
+from oneview_redfish_toolkit.api.session_service import SessionService
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-@mock.patch.object(event_service, 'config')
-class TestEventService(BaseTest):
-    """Tests for EventService class"""
+@mock.patch.object(session_service, 'config')
+class TestSessionService(BaseTest):
+    """Tests for SessionService class"""
 
     def test_when_enabled(self, config_mock):
-        config_mock.auth_mode_is_conf.return_value = True
+        config_mock.auth_mode_is_session.return_value = True
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
-            'EventService.json'
+            'SessionService.json'
         ) as f:
             event_service_mockup = json.load(f)
 
-        manager_collection = EventService(3, 30)
-        result = json.loads(manager_collection.serialize())
+        result = json.loads(SessionService().serialize())
 
         self.assertEqualMockup(event_service_mockup, result)
 
     def test_when_disabled(self, config_mock):
-        config_mock.auth_mode_is_conf.return_value = False
+        config_mock.auth_mode_is_session.return_value = False
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
-            'EventServiceDisabled.json'
+            'SessionServiceDisabled.json'
         ) as f:
             event_service_mockup = json.load(f)
 
-        manager_collection = EventService(2, 10)
-        result = json.loads(manager_collection.serialize())
+        result = json.loads(SessionService().serialize())
 
         self.assertEqualMockup(event_service_mockup, result)

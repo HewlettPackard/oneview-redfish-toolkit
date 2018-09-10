@@ -1,0 +1,11 @@
+{
+    "@odata.type": "#EventService.v1_0_4.EventService",
+    "Id": "EventService",
+    "Name": "Event Service",
+    "Description": "Event Subscription service",
+    "@odata.context": "/redfish/v1/$metadata#EventService.EventService",
+    "@odata.id": "/redfish/v1/EventService",
+    "DeliveryRetryAttempts": 2,
+    "DeliveryRetryIntervalSeconds": 10,
+    "ServiceEnabled": false
+}
