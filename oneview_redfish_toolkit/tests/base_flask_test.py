@@ -42,11 +42,15 @@ class BaseFlaskTest(BaseTest):
 
         cls.oneview_client = mock.MagicMock()
 
-        cls.patcher_get_oneview_client = mock.patch(
+        cls.patcher_get_client_by_token = mock.patch(
             'oneview_redfish_toolkit.client_session.'
             '_get_oneview_client_by_token')
-        cls.mock_get_oneview_token = cls.patcher_get_oneview_client.start()
-        cls.mock_get_oneview_token.return_value = cls.oneview_client
+        cls.mock_get_client_by_token = cls.patcher_get_client_by_token.start()
+
+        cls.patcher_get_client_by_ip = mock.patch(
+            'oneview_redfish_toolkit.client_session.'
+            '_get_oneview_client_by_ip')
+        cls.mock_get_client_by_ip = cls.patcher_get_client_by_ip.start()
 
         multiple_oneview.init_map_resources()
 
@@ -122,8 +126,10 @@ class BaseFlaskTest(BaseTest):
     @classmethod
     def setUp(cls):
         cls.oneview_client = mock.MagicMock()
-        cls.mock_get_oneview_token.return_value = cls.oneview_client
+        cls.mock_get_client_by_ip.return_value = cls.oneview_client
+        cls.mock_get_client_by_token.return_value = cls.oneview_client
 
     @classmethod
     def tearDownClass(cls):
-        cls.patcher_get_oneview_client.stop()
+        cls.patcher_get_client_by_ip.stop()
+        cls.patcher_get_client_by_token.stop()

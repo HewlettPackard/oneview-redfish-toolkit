@@ -32,14 +32,11 @@ class TestAuthentication(unittest.TestCase):
 
     @mock.patch('oneview_redfish_toolkit.connection.OneViewClient')
     @mock.patch.object(config, 'get_oneview_multiple_ips')
-    @mock.patch.object(config, 'auth_mode_is_conf')
-    @mock.patch.object(config, 'auth_mode_is_session')
-    def test_map_token_redfish_for_multiple_ov(self, conf_auth_mode,
-                                               session_auth_mode,
+    @mock.patch.object(config, 'get_authentication_mode')
+    def test_map_token_redfish_for_multiple_ov(self, get_authentication_mode,
                                                get_oneview_multiple_ips,
                                                oneview_client_mockup):
-        conf_auth_mode.return_value = True
-        session_auth_mode.return_value = False
+        get_authentication_mode.return_value = 'session'
         mocked_rf_token = "abc"
         conn_1 = mock.MagicMock()
 
@@ -83,14 +80,12 @@ class TestAuthentication(unittest.TestCase):
 
     @mock.patch.object(connection, 'OneViewClient')
     @mock.patch.object(config, 'get_oneview_multiple_ips')
-    @mock.patch.object(config, 'auth_mode_is_conf')
-    @mock.patch.object(config, 'auth_mode_is_session')
+    @mock.patch.object(config, 'get_authentication_mode')
     def test_login_with_specific_login_domain_for_multiple_ov(
-            self, conf_auth_mode, session_auth_mode,
+            self, get_authentication_mode,
             get_oneview_multiple_ips, oneview_client_mockup):
 
-        conf_auth_mode.return_value = True
-        session_auth_mode.return_value = False
+        get_authentication_mode.return_value = 'session'
         tokens_ov = collections.OrderedDict({'10.0.0.1': 'abc',
                                              '10.0.0.2': 'def',
                                              '10.0.0.3': 'ghi'})
