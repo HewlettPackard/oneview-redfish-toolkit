@@ -81,6 +81,7 @@ from oneview_redfish_toolkit.blueprints.resource_block_collection \
     import resource_block_collection
 from oneview_redfish_toolkit.blueprints.service_root import service_root
 from oneview_redfish_toolkit.blueprints.session import session
+from oneview_redfish_toolkit.blueprints.session_service import session_service
 from oneview_redfish_toolkit.blueprints.storage import storage
 from oneview_redfish_toolkit.blueprints.storage_collection \
     import storage_collection
@@ -133,6 +134,8 @@ def main(config_file_path, logging_config_file_path,
     # Register blueprints
     app.register_blueprint(redfish_base, url_prefix="/redfish/")
     app.register_blueprint(service_root, url_prefix='/redfish/v1/')
+    app.register_blueprint(event_service)
+    app.register_blueprint(session_service)
     app.register_blueprint(chassis_collection)
     app.register_blueprint(computer_system_collection)
     app.register_blueprint(computer_system)
@@ -157,7 +160,6 @@ def main(config_file_path, logging_config_file_path,
     app.register_blueprint(network_port)
     app.register_blueprint(processor)
     app.register_blueprint(processor_collection)
-    app.register_blueprint(session)
     app.register_blueprint(storage_composition_details)
     app.register_blueprint(resource_block_collection)
     app.register_blueprint(resource_block)
@@ -171,11 +173,12 @@ def main(config_file_path, logging_config_file_path,
     multiple_oneview.init_map_resources()
 
     if auth_mode == "conf":
-        app.register_blueprint(event_service)
         app.register_blueprint(subscription_collection)
         app.register_blueprint(subscription)
 
         client_session.login_conf_mode()
+    else:
+        app.register_blueprint(session)
 
     @app.before_request
     def check_authentication():

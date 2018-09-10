@@ -26,7 +26,7 @@ from flask_api import status
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit.api.event_service import EventService
-
+from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import util
 
 
@@ -58,10 +58,7 @@ ONEVIEW_TEST_TASK = {
 REDFISH_TO_ONEVIEW_EVENTS = {
     "ResourceAdded": "Created",
     "ResourceUpdated": "Updated",
-    "ResourceRemoved": "Deleted",
-
-    # OneView does not have an equivalent change type to StatusChange
-    "StatusChange": "StatusChange"
+    "ResourceRemoved": "Deleted"
 }
 
 
@@ -118,6 +115,9 @@ def execute_test_event_action():
     """
 
     try:
+        if config.auth_mode_is_session():
+            abort(status.HTTP_404_NOT_FOUND, "EventService is not enabled.")
+
         try:
             event_type = request.get_json()['EventType']
         except Exception:

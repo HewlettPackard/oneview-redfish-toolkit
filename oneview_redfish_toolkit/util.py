@@ -35,7 +35,6 @@ from oneview_redfish_toolkit.event_dispatcher import EventDispatcher
 #   globals()['delivery_retry_interval']
 
 globals()['subscriptions_by_type'] = {
-    "StatusChange": {},
     "ResourceUpdated": {},
     "ResourceAdded": {},
     "ResourceRemoved": {},

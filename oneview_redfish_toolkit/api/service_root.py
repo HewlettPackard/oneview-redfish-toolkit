@@ -17,8 +17,10 @@
 
 import collections
 
+from oneview_redfish_toolkit.api.event_service import EventService
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
+from oneview_redfish_toolkit.api.session_service import SessionService
 from oneview_redfish_toolkit import config
 
 
@@ -59,14 +61,9 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["CompositionService"]["@odata.id"] = \
             "/redfish/v1/CompositionService"
 
-        # Add the Redfish EventService API according to the
-        # configured authentication mode
         self.add_event_service_api()
+        self.add_session_service_endpoints()
 
-        self.redfish['Links'] = collections.OrderedDict()
-        self.redfish['Links']['Sessions'] = collections.OrderedDict()
-        self.redfish['Links']['Sessions']['@odata.id'] = \
-            "/redfish/v1/SessionService/Sessions"
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ServiceRoot.ServiceRoot"
         self.redfish["@odata.id"] = "/redfish/v1/"
@@ -76,9 +73,17 @@ class ServiceRoot(RedfishJsonValidator):
         self._validate()
 
     def add_event_service_api(self):
-        auth_mode = config.get_authentication_mode()
+        self.redfish["EventService"] = collections.OrderedDict()
+        self.redfish["EventService"]["@odata.id"] = \
+            EventService.BASE_URI
 
-        if auth_mode == "conf":
-            self.redfish["EventService"] = collections.OrderedDict()
-            self.redfish["EventService"]["@odata.id"] = \
-                "/redfish/v1/EventService"
+    def add_session_service_endpoints(self):
+        self.redfish["SessionService"] = collections.OrderedDict()
+        self.redfish["SessionService"]["@odata.id"] = \
+            SessionService.BASE_URI
+        self.redfish['Links'] = collections.OrderedDict()
+        self.redfish['Links']['Sessions'] = collections.OrderedDict()
+        auth_mode = config.get_authentication_mode()
+        if auth_mode == "session":
+            self.redfish['Links']['Sessions']['@odata.id'] = \
+                SessionService.BASE_URI + "/Sessions"

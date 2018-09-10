@@ -16,6 +16,8 @@
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit import util
 
 
 class EventService(RedfishJsonValidator):
@@ -25,9 +27,10 @@ class EventService(RedfishJsonValidator):
     """
 
     SCHEMA_NAME = 'EventService'
+    BASE_URI = '/redfish/v1/EventService'
 
     def __init__(self, delivery_retry_attempts, delivery_retry_interval):
-        """Manager constructor
+        """Constructor
 
             Populates self.redfish with some hardcoded EventService
             values and values from redfish.conf.
@@ -38,44 +41,43 @@ class EventService(RedfishJsonValidator):
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["@odata.context"] = "/redfish/v1/$metadata" \
             "#EventService.EventService"
-        self.redfish["@odata.id"] = "/redfish/v1/EventService/"
-
-        submit_test_event = dict()
-        submit_test_event["EventType@Redfish.AllowableValues"] = [
-            "StatusChange",
-            "ResourceUpdated",
-            "ResourceAdded",
-            "ResourceRemoved",
-            "Alert"
-        ]
-        submit_test_event["target"] = "/redfish/v1/EventService" \
-            "/Actions/EventService.SubmitTestEvent/"
-
-        self.redfish["Actions"] = dict()
-        self.redfish["Actions"]["#EventService.SubmitTestEvent"] = \
-            submit_test_event
+        self.redfish["@odata.id"] = self.BASE_URI
 
         self.redfish["Id"] = "EventService"
         self.redfish["Name"] = "Event Service"
         self.redfish["Description"] = "Event Subscription service"
 
-        self.redfish["Subscriptions"] = dict()
-        self.redfish["Subscriptions"]["@odata.id"] = \
-            "/redfish/v1/EventService/EventSubscriptions/"
-        self.redfish["EventTypesForSubscription"] = \
-            ["StatusChange", "ResourceUpdated", "ResourceAdded",
-             "ResourceRemoved", "Alert"]
         self.redfish["DeliveryRetryAttempts"] = delivery_retry_attempts
         self.redfish["DeliveryRetryIntervalSeconds"] = delivery_retry_interval
+
         # All information bellow is hard-coded
         # until we decide where to find it
-        self.redfish["Status"] = dict()
-        self.redfish["Status"]["Health"] = "OK"
-        self.redfish["Status"]["HealthRollup"] = "OK"
-        self.redfish["Status"]["State"] = "Enabled"
-        self.redfish["ServiceEnabled"] = self.set_service_status()
+        # self.redfish["Status"] = dict()
+        # self.redfish["Status"]["Health"] = "OK"
+        # self.redfish["Status"]["HealthRollup"] = "OK"
+        # self.redfish["Status"]["State"] = "Enabled"
+
+        # Disable Event Service if authentication mode is conf
+        auth_mode = config.get_authentication_mode()
+        if auth_mode == "session":
+            self.redfish["ServiceEnabled"] = False
+        else:
+            self.redfish["ServiceEnabled"] = True
+
+            submit_test_event = dict()
+            submit_test_event["EventType@Redfish.AllowableValues"] = \
+                list(util.get_subscriptions_by_type().keys())
+            submit_test_event["target"] = self.BASE_URI + \
+                "/Actions/EventService.SubmitTestEvent/"
+
+            self.redfish["Actions"] = dict()
+            self.redfish["Actions"]["#EventService.SubmitTestEvent"] = \
+                submit_test_event
+
+            self.redfish["Subscriptions"] = dict()
+            self.redfish["Subscriptions"]["@odata.id"] = \
+                self.BASE_URI + "/EventSubscriptions/"
+            self.redfish["EventTypesForSubscription"] = \
+                list(util.get_subscriptions_by_type().keys())
 
         self._validate()
-
-    def set_service_status(self):
-        return True
