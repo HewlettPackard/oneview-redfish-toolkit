@@ -49,7 +49,9 @@ class TestSession(BaseFlaskTest):
             return ResponseBuilder.error_401(error)
 
     @mock.patch.object(connection, 'OneViewClient')
-    def test_post_session(self, oneview_client_mockup):
+    @mock.patch.object(config, 'get_authentication_mode')
+    def test_post_session(self, get_authentication_mode,
+                          oneview_client_mockup):
         """Tests post Session"""
 
         # Loading Session mockup result
@@ -59,6 +61,7 @@ class TestSession(BaseFlaskTest):
             expected_session_mockup = json.load(f)
 
         client_session.init_map_clients()
+        get_authentication_mode.return_value = 'session'
 
         # Create mock response
         oneview_client = oneview_client_mockup()
@@ -94,7 +97,9 @@ class TestSession(BaseFlaskTest):
         )
 
     @mock.patch.object(connection, 'OneViewClient')
-    def test_post_session_with_login_domain_data(self, oneview_client_mockup):
+    @mock.patch.object(config, 'get_authentication_mode')
+    def test_post_session_with_login_domain_data(self, get_authentication_mode,
+                                                 oneview_client_mockup):
         """Tests post Session when UserName has login domain information"""
 
         with open(
@@ -104,6 +109,7 @@ class TestSession(BaseFlaskTest):
             expected_session_mockup = json.load(f)
 
         client_session.init_map_clients()
+        get_authentication_mode.return_value = 'session'
 
         # Create mock response
         oneview_client = oneview_client_mockup()
