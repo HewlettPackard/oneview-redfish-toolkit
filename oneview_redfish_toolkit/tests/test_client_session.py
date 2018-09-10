@@ -83,9 +83,14 @@ class TestAuthentication(unittest.TestCase):
 
     @mock.patch.object(connection, 'OneViewClient')
     @mock.patch.object(config, 'get_oneview_multiple_ips')
+    @mock.patch.object(config, 'auth_mode_is_conf')
+    @mock.patch.object(config, 'auth_mode_is_session')
     def test_login_with_specific_login_domain_for_multiple_ov(
-            self, get_oneview_multiple_ips, oneview_client_mockup):
+            self, conf_auth_mode, session_auth_mode,
+            get_oneview_multiple_ips, oneview_client_mockup):
 
+        conf_auth_mode.return_value = True
+        session_auth_mode.return_value = False
         tokens_ov = collections.OrderedDict({'10.0.0.1': 'abc',
                                              '10.0.0.2': 'def',
                                              '10.0.0.3': 'ghi'})
