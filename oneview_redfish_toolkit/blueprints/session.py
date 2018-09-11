@@ -41,7 +41,8 @@ def get_collection():
     return ResponseBuilder.success(result)
 
 
-@session.route(SessionCollection.BASE_URI + "<session_id>", methods=["GET"])
+@session.route(SessionCollection.BASE_URI + "/" + "<session_id>",
+               methods=["GET"])
 def get_session(session_id):
     if session_id not in client_session.get_session_ids():
         abort(status.HTTP_404_NOT_FOUND)

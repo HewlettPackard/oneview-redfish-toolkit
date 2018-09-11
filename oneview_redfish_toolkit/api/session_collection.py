@@ -24,7 +24,7 @@ class SessionCollection(RedfishJsonValidator):
         Populates self.redfish with a list of active sessions.
     """
 
-    BASE_URI = "/redfish/v1/SessionService/Sessions/"
+    BASE_URI = "/redfish/v1/SessionService/Sessions"
     SCHEMA_NAME = 'SessionCollection'
 
     def __init__(self, ids):
@@ -49,4 +49,4 @@ class SessionCollection(RedfishJsonValidator):
         self._validate()
 
     def _build_member(self, session_id):
-        return {"@odata.id": self.BASE_URI + str(session_id)}
+        return {"@odata.id": self.BASE_URI + "/" + str(session_id)}

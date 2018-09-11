@@ -41,7 +41,7 @@ class Session(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Session.Session"
         self.redfish["@odata.id"] = \
-            SessionCollection.BASE_URI + str(session_id)
+            SessionCollection.BASE_URI + "/" + str(session_id)
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = str(session_id)
         self.redfish["Name"] = "User Session"
