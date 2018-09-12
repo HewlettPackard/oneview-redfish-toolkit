@@ -32,7 +32,8 @@ class Manager(RedfishJsonValidator):
 
     SCHEMA_NAME = 'Manager'
 
-    def __init__(self, oneview_appliance_info, oneview_appliance_status):
+    def __init__(self, oneview_appliance_info, oneview_appliance_state,
+                 oneview_appliance_health_status):
         """Manager constructor
 
             Populates self.redfish with some hardcoded Manager
@@ -40,21 +41,37 @@ class Manager(RedfishJsonValidator):
 
             Args:
                 oneview_appliance_info: An Oneview's appliance info dict
-                oneview_appliance_status: An Oneview's appliance status dict
+                oneview_appliance_state: An Oneview's appliance status dict
+                oneview_appliance_health_status: An Oneview's appliance health state dict
         """
 
         super().__init__(self.SCHEMA_NAME)
 
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = oneview_appliance_info['uuid']
-        self.redfish["Description"] = None
+        self.redfish["Description"] = oneview_appliance_info["family"]
         self.redfish["ManagerType"] = "Service"
         self.redfish["FirmwareVersion"] = oneview_appliance_info["softwareVersion"]
         self.redfish["Status"] = collections.OrderedDict()
         state = status_mapping.APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING.\
-            get(oneview_appliance_status["state"])
+            get(oneview_appliance_state["state"])
+        health = self._get_highest_health_state(
+            oneview_appliance_health_status["members"])
         self.redfish["Status"]["State"] = state
+        self.redfish["Status"]["Health"] = health
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#Manager.Manager"
         self.redfish["@odata.id"] = \
             "/redfish/v1/Managers/" + oneview_appliance_info['uuid']
+
+    @staticmethod
+    def _get_highest_health_state(health_state_members):
+        health_states = dict()
+
+        for member in health_state_members:
+            redfish_health_state = status_mapping.MANAGER_HEALTH_STATE_MAPPING.get(member["severity"])
+            health_states[redfish_health_state] = status_mapping.CRITICALITY_STATUS_MAPPING[redfish_health_state]
+
+        highest_status = max(health_states, key=(lambda key: health_states[key]))
+
+        return highest_status

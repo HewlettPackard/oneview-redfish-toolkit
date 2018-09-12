@@ -45,6 +45,12 @@ HEALTH_STATE_MAPPING = {
     "Warning": "Warning",
 }
 
+MANAGER_HEALTH_STATE_MAPPING = {
+    "INFO": "OK",
+    "WARNING": "Warning",
+    "CRITICAL": "Critical",
+}
+
 COMPOSITION_STATE_MAPPING = {
     "NoProfileApplied": "Unused",
     "ApplyingProfile": "Composing",
@@ -52,6 +58,7 @@ COMPOSITION_STATE_MAPPING = {
     "ProfileError": "Failed",
     "RemovingProfile": "Composed"
 }
+
 
 SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING = {
     "NoProfileApplied": "Enabled",
@@ -93,6 +100,12 @@ APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING = {
     "STOPPED": "UnavailableOffline",
     "ERROR": "UnavailableOffline",
     "STARTING": "Starting",
+}
+
+CRITICALITY_STATUS_MAPPING = {
+    "OK": 1,
+    "Warning": 2,
+    "Critical": 3
 }
 
 

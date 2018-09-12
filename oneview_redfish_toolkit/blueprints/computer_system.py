@@ -38,6 +38,7 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
+from oneview_redfish_toolkit.blueprints.manager import get_current_manager
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 from oneview_redfish_toolkit.services.computer_system_service import \
@@ -76,13 +77,15 @@ def get_computer_system(uuid):
             drives = _get_drives_from_sp(resource)
             spt_uuid = computer_system_service.\
                 get_server_profile_template_from_sp(resource["uri"])
+            manager = get_current_manager()
 
             # Build Computer System object and validates it
             computer_system_resource = ComputerSystem(server_hardware,
                                                       server_hardware_type,
                                                       resource,
                                                       drives,
-                                                      spt_uuid)
+                                                      spt_uuid,
+                                                      manager)
         else:
             raise OneViewRedfishError(
                 'Computer System UUID {} not found'.format(uuid))

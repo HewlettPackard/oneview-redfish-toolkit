@@ -23,7 +23,10 @@ from oneview_redfish_toolkit import strategy_multiple_oneview as st
 
 
 RESOURCE_STRATEGY = {
-    "appliance_node_information": {"get_version": st.all_oneviews_resource},
+    "appliance_node_information": {
+        "get_version": st.all_oneviews_resource,
+        "get_status": st.all_oneviews_resource
+    },
     "connection": {
         "get": st.first_parameter_resource,
         "post": st.create_server_profile,

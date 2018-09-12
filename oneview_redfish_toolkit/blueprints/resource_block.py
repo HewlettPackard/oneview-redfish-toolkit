@@ -34,6 +34,7 @@ from oneview_redfish_toolkit.api.server_profile_template_resource_block \
     import ServerProfileTemplateResourceBlock
 from oneview_redfish_toolkit.api.storage_resource_block \
     import StorageResourceBlock
+from oneview_redfish_toolkit.blueprints.manager import get_current_manager
 from oneview_redfish_toolkit.blueprints.util.response_builder \
     import ResponseBuilder
 from oneview_redfish_toolkit.services.zone_service import ZoneService
@@ -113,8 +114,9 @@ def get_resource_block_computer_system(uuid):
     """
 
     server_hardware = g.oneview_client.server_hardware.get(uuid)
+    manager = get_current_manager()
 
-    computer_system = ResourceBlockComputerSystem(server_hardware)
+    computer_system = ResourceBlockComputerSystem(server_hardware, manager)
 
     return ResponseBuilder.success(
         computer_system,

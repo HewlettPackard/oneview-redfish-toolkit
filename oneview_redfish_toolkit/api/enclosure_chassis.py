@@ -28,7 +28,7 @@ class EnclosureChassis(Chassis):
          values and with the response of OneView enclosure resources.
     """
 
-    def __init__(self, enclosure, environmental_configuration):
+    def __init__(self, enclosure, environmental_configuration, manager):
         """Enclosure Chassis constructor
 
         Populates self.redfish with hardcoded Enclosure Chassis
@@ -40,6 +40,7 @@ class EnclosureChassis(Chassis):
 
             environmental_configuration: An object having information
             about the rack that containing the enclosure.
+            manager: Oneview's current manager.
         """
 
         super().__init__(enclosure)
@@ -54,7 +55,7 @@ class EnclosureChassis(Chassis):
         self.redfish["Links"]["ManagedBy"] = list()
         self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
-            "/redfish/v1/Managers/" + enclosure['uuid']
+            "/redfish/v1/Managers/" + manager['uuid']
         self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
         self.redfish["Links"]["ContainedBy"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + environmental_configuration["rackId"]
