@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -24,19 +24,10 @@ from oneview_redfish_toolkit.tests.base_test import BaseTest
 class TestSession(BaseTest):
     """Tests for Session class"""
 
-    def test_class_instantiation(self):
-        """Tests class instantiation and validation"""
-
-        try:
-            session = Session("administrator")
-        except Exception as e:
-            self.fail("Failed to instantiate Session. Error: ".format(e))
-        self.assertIsInstance(session, Session)
-
     def test_serialize(self):
         """Tests the serialize function result against known result"""
 
-        session = Session("administrator")
+        session = Session("e2807c0b-87d6-4304-a773-6ec33521fb1c")
         result = json.loads(session.serialize())
 
         with open(

@@ -56,6 +56,7 @@ SCHEMAS = {
     "ZoneCollection": "ZoneCollection.json",
     "Zone": "Zone.v1_2_0.json",
     "Session": "Session.v1_1_0.json",
+    "SessionCollection": "SessionCollection.json",
     "EventDestinationCollection": "EventDestinationCollection.json",
 }
 
