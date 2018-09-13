@@ -15,12 +15,14 @@
 # under the License.
 import time
 
-from flask import g
 from hpOneView import HPOneViewException
+from jsonschema import ValidationError
 
 from hpOneView.resources.servers.server_profiles import ServerProfiles
 
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
+from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
+from oneview_redfish_toolkit import config
 
 DELAY_TO_WAIT_IN_SEC = 3
 
@@ -51,6 +53,50 @@ class ComputerSystemService(object):
 
         return None
 
+    def power_off_server_hardware(self, sh_uuid_or_uri, on_compose=False):
+        """Power off a Oneview Server Hardware based on app configuration
+
+            Args:
+                sh_uuid_or_uri: the UUID or URI of Server Hardware to be
+                powered off
+                on_compose: if True gets configuration for the situation when
+                 want to Compose a System; if False gets configuration for the
+                 situation when want to Decompose a System
+
+            Returns:
+                True|False: if powering off action was applied to Oneview
+        """
+        if on_compose:
+            config_key = 'PowerOffServerOnCompose'
+        else:
+            config_key = 'PowerOffServerOnDecompose'
+
+        power_off = config.get_composition_settings()[config_key]
+
+        if power_off:
+            power_state = \
+                OneViewPowerOption.get_power_state_by_reset_type(power_off)
+
+            self.ov_client.server_hardware.update_power_state(power_state,
+                                                              sh_uuid_or_uri)
+
+            return True
+
+        return False
+
+    def validate_computer_system_resource_block_to_composition(self,
+                                                               system_block):
+        """Validates a Computer System Resource Block to be used in a composition
+
+            Args:
+                system_block: the Server Hardware that represents a Computer
+                System Resource Block
+        """
+        if system_block["serverProfileUri"]:
+            raise ValidationError(
+                "Computer System Resource Block already belongs to a "
+                "Composed System")
+
     def create_composed_system(self, server_profile):
         """Creates a Composed System to Redfish (Creating a Server Profile to OV)
 
@@ -75,17 +121,16 @@ class ComputerSystemService(object):
 
         return task, resource_uri
 
-    @staticmethod
-    def get_server_profile_template_from_sp(sp_uri):
+    def get_server_profile_template_from_sp(self, sp_uri):
         """Gets Sever Profile Template uuid from Server Profile uri"""
-        all_sp_labels = g.oneview_client.labels.get_by_resource(sp_uri)
+        all_sp_labels = self.ov_client.labels.get_by_resource(sp_uri)
         server_profile_template_uuid = ""
 
         for label in all_sp_labels["labels"]:
             try:
                 spt_uuid = label["name"].replace(" ", "-")
                 is_valid_spt = \
-                    g.oneview_client.server_profile_templates.get(spt_uuid)
+                    self.ov_client.server_profile_templates.get(spt_uuid)
                 if is_valid_spt:
                     server_profile_template_uuid = spt_uuid
                     break
