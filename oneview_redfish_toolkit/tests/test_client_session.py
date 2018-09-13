@@ -34,16 +34,6 @@ class TestAuthentication(unittest.TestCase):
     def setUp(self):
         client_session.init_map_clients()
 
-        target_method_to_test = client_session._gc_for_expired_sessions
-
-        def wrapper_for_target_method():
-            # calls the target method only once time, avoiding recursion depth
-            if client_session._gc_for_expired_sessions.call_count < 5:
-                target_method_to_test()
-
-        client_session._gc_for_expired_sessions = mock.Mock(
-            wraps=wrapper_for_target_method)
-
     @mock.patch.object(client_session, 'uuid')
     @mock.patch('oneview_redfish_toolkit.connection.OneViewClient')
     @mock.patch.object(config, 'get_oneview_multiple_ips')
@@ -172,8 +162,11 @@ class TestAuthentication(unittest.TestCase):
                                                     threading_mock,
                                                     time_mock,
                                                     uuid_mock):
-        thread_obj_mock = mock.Mock(daemon=False)
+        thread_obj_mock = mock.Mock()
         threading_mock.Thread.return_value = thread_obj_mock
+
+        # using time.sleep to exit from loop raising an InterruptedError
+        time_mock.sleep.side_effect = [None, InterruptedError]
 
         # Client 1 will represents the success request, must be in the cache
         # Client 2 will represents the fail request, must be removed from
@@ -201,14 +194,17 @@ class TestAuthentication(unittest.TestCase):
         }
 
         client_session.init_gc_for_expired_sessions()
-        client_session._gc_for_expired_sessions()
+        try:
+            client_session._gc_for_expired_sessions()
+        except InterruptedError:
+            pass
 
         self.assertEqual(expected_map_client,
                          client_session._get_map_clients())
-        self.assertEqual(thread_obj_mock.daemon, True)
 
         threading_mock.Thread.assert_called_with(
-            target=client_session._gc_for_expired_sessions)
+            target=client_session._gc_for_expired_sessions,
+            daemon=True)
         thread_obj_mock.start.assert_called_with()
         time_mock.sleep.assert_called_with(client_session.GC_FREQUENCY_IN_SEC)
 
@@ -224,18 +220,24 @@ class TestAuthentication(unittest.TestCase):
                                                         'ov_session_def'})
 
     @mock.patch.object(client_session, 'time')
-    def test_garbage_collector_recursion(self, time_mock):
-        client_session._gc_for_expired_sessions()
+    def test_garbage_collector_loop(self, time_mock):
+        time_mock.sleep.side_effect = [None, None, None, InterruptedError]
+
+        try:
+            client_session._gc_for_expired_sessions()
+        except InterruptedError:
+            pass
 
         time_mock.sleep.assert_called_with(client_session.GC_FREQUENCY_IN_SEC)
         self.assertEqual(4, time_mock.sleep.call_count)
-        self.assertEqual(5, client_session._gc_for_expired_sessions.call_count)
 
     @mock.patch.object(client_session, 'uuid')
     @mock.patch.object(client_session, 'logging')
     @mock.patch.object(client_session, 'time')
     def test_garbage_collector_for_expired_sessions_when_raises_exception(
-            self, _, logging_mock, uuid_mock):
+            self, time_mock, logging_mock, uuid_mock):
+        time_mock.sleep.side_effect = [None, InterruptedError]
+
         uuid_mock.uuid4.return_value = 'session_id_1'
 
         client = mock.Mock()
@@ -248,7 +250,10 @@ class TestAuthentication(unittest.TestCase):
             'session_id': 'session_id_1'
         }
 
-        client_session._gc_for_expired_sessions()
+        try:
+            client_session._gc_for_expired_sessions()
+        except InterruptedError:
+            pass
 
         logging_mock.exception.assert_called_with(
             'Unexpected error: Some error message')
@@ -259,7 +264,10 @@ class TestAuthentication(unittest.TestCase):
     @mock.patch.object(client_session, 'logging')
     @mock.patch.object(client_session, 'time')
     def test_garbage_collector_when_ov_request_status_is_not_200_neither_404(
-            self, _, logging_mock, uuid_mock):
+            self, time_mock, logging_mock, uuid_mock):
+        time_mock.sleep.side_effect = [None, None, None, None,
+                                       InterruptedError]
+
         client = mock.Mock()
         client.connection.do_http.side_effect = [
             (mock.Mock(status=400), 'request body 1'),
@@ -276,7 +284,10 @@ class TestAuthentication(unittest.TestCase):
             'session_id': 'session_id_1'
         }
 
-        client_session._gc_for_expired_sessions()
+        try:
+            client_session._gc_for_expired_sessions()
+        except InterruptedError:
+            pass
 
         logging_mock.error.assert_has_calls([
             call(
