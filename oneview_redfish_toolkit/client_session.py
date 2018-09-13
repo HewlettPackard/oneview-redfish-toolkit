@@ -63,13 +63,16 @@ def _gc_for_expired_sessions():
     map_items = _get_map_clients().items()
     for token, dict_by_token in map_items:
         ov_clients = iter(dict_by_token['client_ov_by_ip'].values())
-        ov_client = next(ov_clients)
+        ov_client = next(ov_clients)  # ov_clients can be in any order
+        ov_session_id = ov_client.connection.get_session_id()
         try:
             # request that does not increment the life of Oneview session
-            resp, body = ov_client.connection.do_http('GET',
-                                                      '/rest/sessions/',
-                                                      '',
-                                                      {'Session-Id': token})
+            resp, body = ov_client.connection.do_http(
+                'GET',
+                '/rest/sessions/',
+                '',
+                {'Session-Id': ov_session_id}
+            )
 
             # when is not a success
             if resp.status not in range(200, 300):

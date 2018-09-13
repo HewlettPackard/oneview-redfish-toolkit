@@ -185,6 +185,9 @@ class TestAuthentication(unittest.TestCase):
         resp_2 = mock.Mock(status=404)
         uuid_mock.uuid4.side_effect = ['session_id_1', 'session_id_2']
 
+        client_1.connection.get_session_id.return_value = 'ov_session_abc'
+        client_2.connection.get_session_id.return_value = 'ov_session_def'
+
         client_1.connection.do_http.return_value = (resp_1, None)
         client_2.connection.do_http.return_value = (resp_2, None)
 
@@ -212,11 +215,13 @@ class TestAuthentication(unittest.TestCase):
         client_1.connection.do_http.assert_called_with('GET',
                                                        '/rest/sessions/',
                                                        '',
-                                                       {'Session-Id': 'abc'})
+                                                       {'Session-Id':
+                                                        'ov_session_abc'})
         client_2.connection.do_http.assert_called_with('GET',
                                                        '/rest/sessions/',
                                                        '',
-                                                       {'Session-Id': 'def'})
+                                                       {'Session-Id':
+                                                        'ov_session_def'})
 
     @mock.patch.object(client_session, 'time')
     def test_garbage_collector_recursion(self, time_mock):
