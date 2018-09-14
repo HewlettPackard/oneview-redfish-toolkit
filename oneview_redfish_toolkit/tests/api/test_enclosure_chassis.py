@@ -39,6 +39,13 @@ class TestEnclosureChassis(BaseTest):
         ) as f:
             self.environment_config = json.load(f)
 
+        # Loading ApplianceNodeInfoList mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ApplianceNodeInfoList.json'
+        ) as f:
+            self.appliance_info_list = json.load(f)
+
         # Loading enclosure_mockup mockup result
         with open(
             'oneview_redfish_toolkit/mockups/redfish/EnclosureChassis.json'
@@ -51,7 +58,8 @@ class TestEnclosureChassis(BaseTest):
         try:
             enclosure_chassis = EnclosureChassis(
                 self.enclosure,
-                self.environment_config
+                self.environment_config,
+                self.appliance_info_list[0]
             )
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
@@ -64,7 +72,8 @@ class TestEnclosureChassis(BaseTest):
         try:
             enclosure_chassis = EnclosureChassis(
                 self.enclosure,
-                self.environment_config
+                self.environment_config,
+                self.appliance_info_list[0]
             )
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."

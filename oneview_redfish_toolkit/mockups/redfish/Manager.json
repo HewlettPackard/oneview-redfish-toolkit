@@ -1,0 +1,13 @@
+{
+    "@odata.type": "#Manager.v1_4_0.Manager",
+    "Id": "b08eb206-a904-46cf-9172-dcdff2fa9639",
+    "Description": "HPE OneView VM",
+    "ManagerType": "Service",
+    "FirmwareVersion": "4.10.02-0351081",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "@odata.context": "/redfish/v1/$metadata#Manager.Manager",
+    "@odata.id": "/redfish/v1/Managers/b08eb206-a904-46cf-9172-dcdff2fa9639"
+}

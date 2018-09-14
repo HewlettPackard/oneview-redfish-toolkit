@@ -25,8 +25,6 @@ from flask import Response
 from flask_api import status
 
 # own libs
-from oneview_redfish_toolkit.api.errors \
-    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.manager_collection import ManagerCollection
 from oneview_redfish_toolkit import config
 
@@ -43,14 +41,8 @@ def get_manager_collection():
 
         Returns:
             JSON: Redfish json with ManagerCollection.
-            When Server hardware or enclosures is not found
-            calls abort(404).
 
         Exceptions:
-            OneViewRedfishResourceNotFoundError: if have some oneview resource
-            with empty value (ServerHardware or Enclosures).
-            Logs the exception and call abort(404).
-
             Exception: Generic error, logs the exception and call abort(500).
     """
 
@@ -66,11 +58,6 @@ def get_manager_collection():
             response=json_str,
             status=status.HTTP_200_OK,
             mimetype="application/json")
-
-    except OneViewRedfishResourceNotFoundError as e:
-        # In case of error print exception and abort
-        logging.exception(e)
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
 
     except Exception as e:
         # In case of error print exception and abort

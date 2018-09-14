@@ -26,10 +26,10 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Own libs
+from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.manager import Manager
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import multiple_oneview
-from oneview_redfish_toolkit.api.manager import Manager
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 
 manager = Blueprint("manager", __name__)
 
@@ -42,21 +42,25 @@ def get_managers(uuid):
         /redfish/v1/Managers/id is requested.
 
         Returns:
-            JSON: JSON with Managers info for Enclosure or ServerHardware.
+            JSON: JSON with Managers info.
     """
     try:
         oneview_appliances_version = \
-           g.oneview_client.appliance_node_information.get_version()
-        ov_appliance_info, appliance_index = _get_appliance_by_uuid(uuid, oneview_appliances_version)
+            g.oneview_client.appliance_node_information.get_version()
+        ov_appliance_info, appliance_index = \
+            _get_appliance_by_uuid(uuid, oneview_appliances_version)
 
         state_url = "/controller-state.json"
-        ov_appliances_statuses = g.oneview_client.connection.get(state_url)
+        ov_appliances_state = g.oneview_client.connection.get(state_url)
 
         ov_health_state_url = "/rest/appliance/health-status"
-        ov_appliances_health_state = g.oneview_client.connection.get(ov_health_state_url)
+        ov_appliances_health_status = \
+            g.oneview_client.connection.get(ov_health_state_url)
 
-        manager = Manager(ov_appliance_info, ov_appliances_statuses[appliance_index],
-                          ov_appliances_health_state[appliance_index])
+        manager = Manager(ov_appliance_info,
+                          ov_appliances_state[appliance_index],
+                          ov_appliances_health_status[appliance_index]
+                          )
 
         json_str = manager.serialize()
 
@@ -84,25 +88,26 @@ def get_managers(uuid):
 def _get_appliance_by_uuid(uuid, oneview_appliances):
     appliance = dict()
     appliance_index = 0
+
     for index, ov_appliance in enumerate(oneview_appliances):
         if ov_appliance["uuid"] == uuid:
             appliance = ov_appliance
             appliance_index = index
             break
 
+    if not appliance:
+        raise OneViewRedfishError("Could not find manager with id " + uuid)
+
     return appliance, appliance_index
 
 
 def get_current_manager():
-    oneview_appliances = g.oneview_client.appliance_node_information.get_version()
+    oneview_appliances = \
+        g.oneview_client.appliance_node_information.get_version()
     oneview_map_resources = multiple_oneview.get_map_resources()
+
     current_appliance = next(iter(oneview_map_resources.values()))
-    appliance_index = config.get_oneview_multiple_ips().index(current_appliance)
+    appliance_index = \
+        config.get_oneview_multiple_ips().index(current_appliance)
 
     return oneview_appliances[appliance_index]
-
-
-
-
-
-

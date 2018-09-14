@@ -38,7 +38,7 @@
         ],
         "ManagedBy": [
             {
-                "@odata.id": "/redfish/v1/Managers/0000000000A66101"
+                "@odata.id": "/redfish/v1/Managers/b08eb206-a904-46cf-9172-dcdff2fa9639"
             }
         ],
         "ContainedBy": {

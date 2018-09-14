@@ -40,10 +40,19 @@ class TestResourceBlockComputerSystem(BaseTest):
         ) as f:
             self.server_hardware = json.load(f)
 
+        # Loading ApplianceNodeInfoList mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ApplianceNodeInfoList.json'
+        ) as f:
+            self.appliance_info_list = json.load(f)
+
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
         try:
-            computer_system = ResourceBlockComputerSystem(self.server_hardware)
+            computer_system = ResourceBlockComputerSystem(
+                self.server_hardware, self.appliance_info_list[0]
+            )
         except Exception as e:
             self.fail(
                 "Failed to instantiate ResourceBlockComputerSystem class."
@@ -54,7 +63,9 @@ class TestResourceBlockComputerSystem(BaseTest):
     def test_serialize(self):
         # Tests the serialize function result against known result
         try:
-            computer_system = ResourceBlockComputerSystem(self.server_hardware)
+            computer_system = ResourceBlockComputerSystem(
+                self.server_hardware, self.appliance_info_list[0]
+            )
         except Exception as e:
             self.fail(
                 "Failed to instantiate ResourceBlockComputerSystem class."

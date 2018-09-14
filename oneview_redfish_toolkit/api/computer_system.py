@@ -131,10 +131,13 @@ class ComputerSystem(RedfishJsonValidator):
 
         self._validate()
 
-    def _get_highest_status_for_sp_and_sh(self, sp_status, sh_status):
+    @staticmethod
+    def _get_highest_status_for_sp_and_sh(sp_status, sh_status):
         all_status = dict()
-        all_status[sp_status] = status_mapping.CRITICALITY_STATUS_MAPPING[sp_status]
-        all_status[sh_status] = status_mapping.CRITICALITY_STATUS_MAPPING[sh_status]
+        all_status[sp_status] = \
+            status_mapping.CRITICALITY_STATUS_MAPPING[sp_status]
+        all_status[sh_status] = \
+            status_mapping.CRITICALITY_STATUS_MAPPING[sh_status]
 
         highest_status = max(all_status, key=(lambda key: all_status[key]))
 

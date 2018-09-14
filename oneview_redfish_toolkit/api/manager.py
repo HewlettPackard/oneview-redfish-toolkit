@@ -42,7 +42,8 @@ class Manager(RedfishJsonValidator):
             Args:
                 oneview_appliance_info: An Oneview's appliance info dict
                 oneview_appliance_state: An Oneview's appliance status dict
-                oneview_appliance_health_status: An Oneview's appliance health state dict
+                oneview_appliance_health_status: An Oneview's appliance
+                health state dict
         """
 
         super().__init__(self.SCHEMA_NAME)
@@ -51,7 +52,8 @@ class Manager(RedfishJsonValidator):
         self.redfish["Id"] = oneview_appliance_info['uuid']
         self.redfish["Description"] = oneview_appliance_info["family"]
         self.redfish["ManagerType"] = "Service"
-        self.redfish["FirmwareVersion"] = oneview_appliance_info["softwareVersion"]
+        self.redfish["FirmwareVersion"] = \
+            oneview_appliance_info["softwareVersion"]
         self.redfish["Status"] = collections.OrderedDict()
         state = status_mapping.APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING.\
             get(oneview_appliance_state["state"])
@@ -69,9 +71,12 @@ class Manager(RedfishJsonValidator):
         health_states = dict()
 
         for member in health_state_members:
-            redfish_health_state = status_mapping.MANAGER_HEALTH_STATE_MAPPING.get(member["severity"])
-            health_states[redfish_health_state] = status_mapping.CRITICALITY_STATUS_MAPPING[redfish_health_state]
+            redfish_health_state = status_mapping.MANAGER_HEALTH_STATE_MAPPING.\
+                get(member["severity"])
+            health_states[redfish_health_state] = \
+                status_mapping.CRITICALITY_STATUS_MAPPING[redfish_health_state]
 
-        highest_status = max(health_states, key=(lambda key: health_states[key]))
+        highest_status = \
+            max(health_states, key=(lambda key: health_states[key]))
 
         return highest_status

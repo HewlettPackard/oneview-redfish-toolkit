@@ -31,19 +31,12 @@ class TestManagerCollection(BaseTest):
     def setUp(self):
         """Tests preparation"""
 
-        # Loading server_hardware mockup value
+        # Loading ApplianceNodeInfoList mockup result
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerHardwareList.json'
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ApplianceNodeInfoList.json'
         ) as f:
-            self.server_hardware = json.load(f)
-
-        # Loading enclosures mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'Enclosures.json'
-        ) as f:
-            self.enclosures = json.load(f)
+            self.appliance_info_list = json.load(f)
 
         # Loading ManagerCollection result mockup
         with open(
@@ -57,8 +50,7 @@ class TestManagerCollection(BaseTest):
 
         try:
             manager_collection = ManagerCollection(
-                self.server_hardware,
-                self.enclosures
+                self.appliance_info_list
             )
         except Exception as e:
             self.fail("Failed to instantiate ManagerCollection class."
@@ -70,8 +62,7 @@ class TestManagerCollection(BaseTest):
 
         try:
             manager_collection = ManagerCollection(
-                self.server_hardware,
-                self.enclosures
+                self.appliance_info_list
             )
         except Exception as e:
             self.fail("Failed to instantiate ManagerCollection class."

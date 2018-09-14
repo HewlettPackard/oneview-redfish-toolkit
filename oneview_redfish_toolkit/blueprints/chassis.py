@@ -26,12 +26,12 @@ from flask import Response
 from flask_api import status
 
 # Own libs
-from oneview_redfish_toolkit.blueprints.manager import get_current_manager
 from oneview_redfish_toolkit.api.blade_chassis import BladeChassis
 from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.rack_chassis import RackChassis
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
+from oneview_redfish_toolkit.blueprints.manager import get_current_manager
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 
@@ -53,7 +53,6 @@ def get_chassis(uuid):
     )
     category = resource_index[0]["category"]
     manager = get_current_manager()
-    import pdb; pdb.set_trace()
 
     if category == 'server-hardware':
         server_hardware = g.oneview_client.server_hardware.get(uuid)
