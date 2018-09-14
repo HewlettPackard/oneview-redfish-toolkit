@@ -20,7 +20,8 @@ NOT_FOUND_ONEVIEW_ERRORS = ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException',
 
 AUTH_ONEVIEW_ERRORS = ['AUTHN_AUTH_FAIL',
                        'AUTHN_AUTH_FAIL_LOGINDOMAINNOTFOUND',
-                       'AUTHORIZATION']
+                       'AUTHORIZATION',
+                       'Session.INVALID']
 
 
 class OneViewRedfishError(Exception):

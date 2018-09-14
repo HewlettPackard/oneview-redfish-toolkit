@@ -18,7 +18,9 @@
 from collections import OrderedDict
 import logging
 import logging.config
+import threading
 from threading import Lock
+import time
 import uuid
 
 # 3rd party libs
@@ -36,12 +38,56 @@ from oneview_redfish_toolkit import connection
 #   globals()['map_clients']
 
 
+GC_FREQUENCY_IN_SEC = 12 * 60 * 60
+
+
 def _get_map_clients():
     return globals()['map_clients']
 
 
 def init_map_clients():
     globals()['map_clients'] = OrderedDict()
+
+
+def init_gc_for_expired_sessions():
+    gc_thread = threading.Thread(target=_gc_for_expired_sessions, daemon=True)
+    gc_thread.start()
+
+
+def _gc_for_expired_sessions():
+    while True:
+        time.sleep(GC_FREQUENCY_IN_SEC)
+        logging.debug('Verifying expired sessions...')
+
+        tokens_to_remove = []
+        map_items = _get_map_clients().items()
+        for token, dict_by_token in map_items:
+            ov_clients = iter(dict_by_token['client_ov_by_ip'].values())
+            ov_client = next(ov_clients)  # ov_clients can be in any order
+            ov_session_id = ov_client.connection.get_session_id()
+            try:
+                # request that does not increment the life of Oneview session
+                resp, body = ov_client.connection.do_http(
+                    'GET',
+                    '/rest/sessions/',
+                    '',
+                    {'Session-Id': ov_session_id}
+                )
+
+                # when is not a success
+                if resp.status not in range(200, 300):
+                    if resp.status == 404:
+                        tokens_to_remove.append(token)
+                    else:
+                        logging.error('Unexpected response with status {} '
+                                      'of Oneview sessions endpoint: {}'
+                                      .format(resp.status, body))
+
+            except Exception as e:
+                logging.exception('Unexpected error: {}'.format(e))
+
+        for token in tokens_to_remove:
+            clear_session_by_token(token)
 
 
 def _set_new_client_by_token(redfish_token, client_ov_by_ip):

@@ -18,9 +18,10 @@
     Tests for store_schema and load_registry function from util.py
 """
 import collections
+from collections import OrderedDict
 import unittest
-
 from unittest import mock
+from unittest.mock import call
 
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
@@ -29,6 +30,9 @@ from oneview_redfish_toolkit import connection
 
 class TestAuthentication(unittest.TestCase):
     """Test class for authentication"""
+
+    def setUp(self):
+        client_session.init_map_clients()
 
     @mock.patch.object(client_session, 'uuid')
     @mock.patch('oneview_redfish_toolkit.connection.OneViewClient')
@@ -150,3 +154,158 @@ class TestAuthentication(unittest.TestCase):
             'userName': None,
             'password': None
         })
+
+    @mock.patch.object(client_session, 'uuid')
+    @mock.patch.object(client_session, 'time')
+    @mock.patch.object(client_session, 'threading')
+    def test_garbage_collector_for_expired_sessions(self,
+                                                    threading_mock,
+                                                    time_mock,
+                                                    uuid_mock):
+        thread_obj_mock = mock.Mock()
+        threading_mock.Thread.return_value = thread_obj_mock
+
+        # using time.sleep to exit from loop raising an InterruptedError
+        time_mock.sleep.side_effect = [None, InterruptedError]
+
+        # Client 1 will represents the success request, must be in the cache
+        # Client 2 will represents the fail request, must be removed from
+        # the cache
+
+        client_1 = mock.Mock()
+        client_2 = mock.Mock()
+        resp_1 = mock.Mock(status=200)
+        resp_2 = mock.Mock(status=404)
+        uuid_mock.uuid4.side_effect = ['session_id_1', 'session_id_2']
+
+        client_1.connection.get_session_id.return_value = 'ov_session_abc'
+        client_2.connection.get_session_id.return_value = 'ov_session_def'
+
+        client_1.connection.do_http.return_value = (resp_1, None)
+        client_2.connection.do_http.return_value = (resp_2, None)
+
+        client_session._set_new_client_by_token('abc', {'10.0.0.11': client_1})
+        client_session._set_new_client_by_token('def', {'10.0.0.12': client_2})
+
+        expected_map_client = OrderedDict()
+        expected_map_client['abc'] = {
+            'client_ov_by_ip': {'10.0.0.11': client_1},
+            'session_id': 'session_id_1'
+        }
+
+        client_session.init_gc_for_expired_sessions()
+        try:
+            client_session._gc_for_expired_sessions()
+        except InterruptedError:
+            pass
+
+        self.assertEqual(expected_map_client,
+                         client_session._get_map_clients())
+
+        threading_mock.Thread.assert_called_with(
+            target=client_session._gc_for_expired_sessions,
+            daemon=True)
+        thread_obj_mock.start.assert_called_with()
+        time_mock.sleep.assert_called_with(client_session.GC_FREQUENCY_IN_SEC)
+
+        client_1.connection.do_http.assert_called_with('GET',
+                                                       '/rest/sessions/',
+                                                       '',
+                                                       {'Session-Id':
+                                                        'ov_session_abc'})
+        client_2.connection.do_http.assert_called_with('GET',
+                                                       '/rest/sessions/',
+                                                       '',
+                                                       {'Session-Id':
+                                                        'ov_session_def'})
+
+    @mock.patch.object(client_session, 'time')
+    def test_garbage_collector_loop(self, time_mock):
+        time_mock.sleep.side_effect = [None, None, None, InterruptedError]
+
+        try:
+            client_session._gc_for_expired_sessions()
+        except InterruptedError:
+            pass
+
+        time_mock.sleep.assert_called_with(client_session.GC_FREQUENCY_IN_SEC)
+        self.assertEqual(4, time_mock.sleep.call_count)
+
+    @mock.patch.object(client_session, 'uuid')
+    @mock.patch.object(client_session, 'logging')
+    @mock.patch.object(client_session, 'time')
+    def test_garbage_collector_for_expired_sessions_when_raises_exception(
+            self, time_mock, logging_mock, uuid_mock):
+        time_mock.sleep.side_effect = [None, InterruptedError]
+
+        uuid_mock.uuid4.return_value = 'session_id_1'
+
+        client = mock.Mock()
+        client.connection.do_http.side_effect = Exception('Some error message')
+        client_session._set_new_client_by_token('abc', {'10.0.0.11': client})
+
+        expected_map_client = OrderedDict()
+        expected_map_client['abc'] = {
+            'client_ov_by_ip': {'10.0.0.11': client},
+            'session_id': 'session_id_1'
+        }
+
+        try:
+            client_session._gc_for_expired_sessions()
+        except InterruptedError:
+            pass
+
+        logging_mock.exception.assert_called_with(
+            'Unexpected error: Some error message')
+        self.assertEqual(expected_map_client,
+                         client_session._get_map_clients())
+
+    @mock.patch.object(client_session, 'uuid')
+    @mock.patch.object(client_session, 'logging')
+    @mock.patch.object(client_session, 'time')
+    def test_garbage_collector_when_ov_request_status_is_not_200_neither_404(
+            self, time_mock, logging_mock, uuid_mock):
+        time_mock.sleep.side_effect = [None, None, None, None,
+                                       InterruptedError]
+
+        client = mock.Mock()
+        client.connection.do_http.side_effect = [
+            (mock.Mock(status=400), 'request body 1'),
+            (mock.Mock(status=401), 'request body 2'),
+            (mock.Mock(status=403), 'request body 3'),
+            (mock.Mock(status=500), 'request body 4')
+        ]
+        uuid_mock.uuid4.return_value = 'session_id_1'
+        client_session._set_new_client_by_token('abc', {'10.0.0.11': client})
+
+        expected_map_client = OrderedDict()
+        expected_map_client['abc'] = {
+            'client_ov_by_ip': {'10.0.0.11': client},
+            'session_id': 'session_id_1'
+        }
+
+        try:
+            client_session._gc_for_expired_sessions()
+        except InterruptedError:
+            pass
+
+        logging_mock.error.assert_has_calls([
+            call(
+                'Unexpected response with status 400 of Oneview sessions '
+                'endpoint: request body 1'
+            ),
+            call(
+                'Unexpected response with status 401 of Oneview sessions '
+                'endpoint: request body 2'
+            ),
+            call(
+                'Unexpected response with status 403 of Oneview sessions '
+                'endpoint: request body 3'
+            ),
+            call(
+                'Unexpected response with status 500 of Oneview sessions '
+                'endpoint: request body 4'
+            )
+        ])
+        self.assertEqual(expected_map_client,
+                         client_session._get_map_clients())

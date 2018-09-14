@@ -167,6 +167,7 @@ def main(config_file_path, logging_config_file_path,
 
     # Init cached data
     client_session.init_map_clients()
+    client_session.init_gc_for_expired_sessions()
     multiple_oneview.init_map_resources()
 
     if auth_mode == "conf":
