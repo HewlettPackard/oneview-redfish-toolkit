@@ -74,6 +74,16 @@ def auth_mode_is_conf():
     return get_authentication_mode() == 'conf'
 
 
+def get_cherrypy_config():
+    cherrypy_config = dict(get_config().items('cherrypy_config'))
+
+    for key, val in cherrypy_config.items():
+        if val.isdigit() or (val.startswith('-') and val[1:].isdigit()):
+            cherrypy_config[key] = int(val)
+
+    return cherrypy_config
+
+
 def get_registry_dict():
     return globals()['registry_dict']
 
