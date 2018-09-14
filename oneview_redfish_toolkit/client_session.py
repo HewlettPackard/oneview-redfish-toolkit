@@ -28,6 +28,7 @@ from hpOneView import HPOneViewException
 # Modules own libs
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
+from oneview_redfish_toolkit import multiple_oneview
 
 
 # Globals vars:
@@ -65,6 +66,9 @@ def login(username, password):
             tokens.append(oneview_client.connection.get_session_id())
 
             clients_ov_by_ip[ip] = oneview_client
+            manager = oneview_client.appliance_node_information.get_version()
+            multiple_oneview.set_map_resources_entry(manager["uuid"], ip)
+            multiple_oneview.get_map_resources()
 
         redfish_token = tokens[0]
 

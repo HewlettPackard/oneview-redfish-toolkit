@@ -52,12 +52,12 @@ def get_chassis(uuid):
         filter='uuid=' + uuid
     )
     category = resource_index[0]["category"]
-    manager = get_current_manager()
+    manager_uuid = get_current_manager()
 
     if category == 'server-hardware':
         server_hardware = g.oneview_client.server_hardware.get(uuid)
         etag = server_hardware['eTag']
-        ch = BladeChassis(server_hardware, manager)
+        ch = BladeChassis(server_hardware, manager_uuid)
     elif category == 'enclosures':
         enclosure = g.oneview_client.enclosures.get(uuid)
         etag = enclosure['eTag']
@@ -66,7 +66,7 @@ def get_chassis(uuid):
         ch = EnclosureChassis(
             enclosure,
             enclosure_environment_config,
-            manager
+            manager_uuid
         )
     elif category == 'racks':
         racks = g.oneview_client.racks.get(uuid)

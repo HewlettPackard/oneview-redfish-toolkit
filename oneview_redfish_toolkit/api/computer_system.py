@@ -40,7 +40,7 @@ class ComputerSystem(RedfishJsonValidator):
 
     def __init__(self, server_hardware, server_hardware_types,
                  server_profile, drives, server_profile_template_uuid,
-                 manager):
+                 manager_uuid):
         """ComputerSystem constructor
 
             Populates self.redfish with the contents of ServerHardware and
@@ -52,7 +52,7 @@ class ComputerSystem(RedfishJsonValidator):
                 server_profile: ServerProfile dict from OneView.
                 drives: Drives list from OneView
                 server_profile_template_uuid: ServerProfileTemplate uuid
-                manager: Oneview's current manager
+                manager_uuid: Oneview's current manager uuid
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -109,7 +109,7 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["ManagedBy"] = list()
         self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
-            "/redfish/v1/Managers/" + manager['uuid']
+            "/redfish/v1/Managers/" + manager_uuid
         self.redfish["Links"]["ResourceBlocks"] = list()
         self._fill_resource_block_members(drives,
                                           server_hardware,

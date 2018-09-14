@@ -102,12 +102,8 @@ def _get_appliance_by_uuid(uuid, oneview_appliances):
 
 
 def get_current_manager():
-    oneview_appliances = \
-        g.oneview_client.appliance_node_information.get_version()
-    oneview_map_resources = multiple_oneview.get_map_resources()
+    map_resources = multiple_oneview.get_map_resources()
+    manager_uuid = list(map_resources.keys())[0]
+    import pdb; pdb.set_trace()
 
-    current_appliance = next(iter(oneview_map_resources.values()))
-    appliance_index = \
-        config.get_oneview_multiple_ips().index(current_appliance)
-
-    return oneview_appliances[appliance_index]
+    return manager_uuid

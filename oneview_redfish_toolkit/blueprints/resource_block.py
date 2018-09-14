@@ -114,9 +114,9 @@ def get_resource_block_computer_system(uuid):
     """
 
     server_hardware = g.oneview_client.server_hardware.get(uuid)
-    manager = get_current_manager()
+    manager_uuid = get_current_manager()
 
-    computer_system = ResourceBlockComputerSystem(server_hardware, manager)
+    computer_system = ResourceBlockComputerSystem(server_hardware, manager_uuid)
 
     return ResponseBuilder.success(
         computer_system,
