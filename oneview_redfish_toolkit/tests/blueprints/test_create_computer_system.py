@@ -237,7 +237,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertIn("Computer System Resource Block already belongs to a "
-                      "Composed System", str(result))
+                      "Composed System with ID uuid_1", str(result))
 
         self.oneview_client.connection.post.assert_not_called()
 

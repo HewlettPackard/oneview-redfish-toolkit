@@ -93,9 +93,10 @@ class ComputerSystemService(object):
                 System Resource Block
         """
         if system_block["serverProfileUri"]:
+            sp_uuid = system_block["serverProfileUri"].split("/")[-1]
             raise ValidationError(
                 "Computer System Resource Block already belongs to a "
-                "Composed System")
+                "Composed System with ID {}".format(sp_uuid))
 
     def create_composed_system(self, server_profile):
         """Creates a Composed System to Redfish (Creating a Server Profile to OV)
