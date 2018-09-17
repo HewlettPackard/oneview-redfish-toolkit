@@ -28,7 +28,6 @@ from hpOneView.exceptions import HPOneViewException
 # Own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.manager import Manager
-from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import multiple_oneview
 
 manager = Blueprint("manager", __name__)
@@ -104,6 +103,5 @@ def _get_appliance_by_uuid(uuid, oneview_appliances):
 def get_current_manager():
     map_resources = multiple_oneview.get_map_resources()
     manager_uuid = list(map_resources.keys())[0]
-    import pdb; pdb.set_trace()
 
     return manager_uuid

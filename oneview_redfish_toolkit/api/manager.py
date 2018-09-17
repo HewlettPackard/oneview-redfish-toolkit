@@ -55,7 +55,7 @@ class Manager(RedfishJsonValidator):
         self.redfish["FirmwareVersion"] = \
             oneview_appliance_info["softwareVersion"]
         self.redfish["Status"] = collections.OrderedDict()
-        state = status_mapping.APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING.\
+        state = status_mapping.APPLIANCE_STATE_TO_REDFISH_STATE.\
             get(oneview_appliance_state["state"])
         health = self._get_highest_health_state(
             oneview_appliance_health_status["members"])
@@ -71,10 +71,10 @@ class Manager(RedfishJsonValidator):
         health_states = dict()
 
         for member in health_state_members:
-            redfish_health_state = status_mapping.MANAGER_HEALTH_STATE_MAPPING.\
+            redfish_health_state = status_mapping.MANAGER_HEALTH_STATE.\
                 get(member["severity"])
             health_states[redfish_health_state] = \
-                status_mapping.CRITICALITY_STATUS_MAPPING[redfish_health_state]
+                status_mapping.CRITICALITY_STATUS[redfish_health_state]
 
         highest_status = \
             max(health_states, key=(lambda key: health_states[key]))

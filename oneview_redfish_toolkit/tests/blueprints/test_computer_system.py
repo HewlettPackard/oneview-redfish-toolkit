@@ -15,8 +15,10 @@
 # under the License.
 
 # Python libs
+from collections import OrderedDict
 import copy
 import json
+from unittest import mock
 
 # 3rd party libs
 from flask_api import status
@@ -26,6 +28,7 @@ from unittest.mock import call
 # Module libs
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.blueprints import computer_system
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -107,6 +110,8 @@ class TestComputerSystem(BaseFlaskTest):
                 'ApplianceNodeInfoList.json'
         ) as f:
             self.appliance_info_list = json.load(f)
+
+        self.appliance_ip = "10.0.0.1"
 
     def test_get_computer_system_not_found(self):
         """Tests ComputerSystem with ServerProfileTemplates not found"""
@@ -250,7 +255,8 @@ class TestComputerSystem(BaseFlaskTest):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    def test_get_computer_system_server_profile(self):
+    @mock.patch.object(multiple_oneview, 'get_map_resources')
+    def test_get_computer_system_server_profile(self, get_map_resources):
         """Tests ComputerSystem with a known Server Profile"""
 
         server_profile = copy.deepcopy(self.server_profile)
@@ -260,6 +266,9 @@ class TestComputerSystem(BaseFlaskTest):
         server_profile_template["uri"] = self.spt_uri
 
         # Create mock response
+        get_map_resources.return_value = OrderedDict({
+            self.appliance_info_list[0]["uuid"]: self.appliance_ip
+        })
         self.oneview_client.server_profiles.get.return_value = server_profile
         self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
@@ -598,17 +607,21 @@ class TestComputerSystem(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    def test_all_computer_system_health_status(self):
+    @mock.patch.object(multiple_oneview, 'get_map_resources')
+    def test_all_computer_system_health_status(self, get_map_resources):
         server_hardware = copy.deepcopy(self.server_hardware)
         expected_cs = copy.deepcopy(self.computer_system_mockup)
         server_profile = copy.deepcopy(self.server_profile)
         server_profile["localStorage"]["sasLogicalJBODs"].pop(0)
 
         for oneview_status, redfish_status in \
-                status_mapping.HEALTH_STATE_MAPPING.items():
+                status_mapping.HEALTH_STATE.items():
             server_hardware["status"] = oneview_status
             expected_cs["Status"]["Health"] = redfish_status
 
+            get_map_resources.return_value = OrderedDict({
+                self.appliance_info_list[0]["uuid"]: self.appliance_ip
+            })
             self.oneview_client.server_profiles.get.return_value = \
                 server_profile
             self.oneview_client.server_hardware.get.return_value = \
@@ -632,17 +645,21 @@ class TestComputerSystem(BaseFlaskTest):
             self.assertEqual("application/json", response.mimetype)
             self.assertEqualMockup(expected_cs, result)
 
-    def test_all_computer_system_states(self):
+    @mock.patch.object(multiple_oneview, 'get_map_resources')
+    def test_all_computer_system_states(self, get_map_resources):
         expected_cs = copy.deepcopy(self.computer_system_mockup)
         server_profile = copy.deepcopy(self.server_profile)
         server_profile["localStorage"]["sasLogicalJBODs"].pop(0)
 
         for oneview_status, redfish_status in status_mapping.\
-                SERVER_PROFILE_STATE_TO_REDFISH_STATE_MAPPING.items():
+                SERVER_PROFILE_STATE_TO_REDFISH_STATE.items():
 
             server_profile["state"] = oneview_status
             expected_cs["Status"]["State"] = redfish_status
 
+            get_map_resources.return_value = OrderedDict({
+                self.appliance_info_list[0]["uuid"]: self.appliance_ip
+            })
             self.oneview_client.server_profiles.get.return_value = \
                 server_profile
             self.oneview_client.server_hardware.get.return_value = \
@@ -666,7 +683,9 @@ class TestComputerSystem(BaseFlaskTest):
             self.assertEqual("application/json", response.mimetype)
             self.assertEqualMockup(expected_cs, result)
 
-    def test_get_computer_system_server_profile_with_invalid_labels(self):
+    @mock.patch.object(multiple_oneview, 'get_map_resources')
+    def test_get_computer_system_sp_with_invalid_labels(self,
+                                                        get_map_resources):
         """Tests ComputerSystem with a known SP with invalid labels"""
 
         server_profile = copy.deepcopy(self.server_profile)
@@ -683,6 +702,9 @@ class TestComputerSystem(BaseFlaskTest):
         server_profile_template["uri"] = self.spt_uri
 
         # Create mock response
+        get_map_resources.return_value = OrderedDict({
+            self.appliance_info_list[0]["uuid"]: self.appliance_ip
+        })
         self.oneview_client.server_profiles.get.return_value = server_profile
         self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware

@@ -26,7 +26,6 @@ from flask_api import status
 
 # own libs
 from oneview_redfish_toolkit.api.manager_collection import ManagerCollection
-from oneview_redfish_toolkit import config
 
 manager_collection = Blueprint("manager_collection", __name__)
 

@@ -67,8 +67,8 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["SerialNumber"] = server_hardware["serialNumber"]
         self.redfish["Status"] = collections.OrderedDict()
         health = self._get_highest_status_for_sp_and_sh(
-            status_mapping.HEALTH_STATE_MAPPING.get(base_resource["status"]),
-            status_mapping.HEALTH_STATE_MAPPING.get(server_hardware["status"])
+            status_mapping.HEALTH_STATE.get(base_resource["status"]),
+            status_mapping.HEALTH_STATE.get(server_hardware["status"])
         )
         state, _ = status_mapping.\
             get_redfish_server_profile_state(base_resource)
@@ -135,9 +135,9 @@ class ComputerSystem(RedfishJsonValidator):
     def _get_highest_status_for_sp_and_sh(sp_status, sh_status):
         all_status = dict()
         all_status[sp_status] = \
-            status_mapping.CRITICALITY_STATUS_MAPPING[sp_status]
+            status_mapping.CRITICALITY_STATUS[sp_status]
         all_status[sh_status] = \
-            status_mapping.CRITICALITY_STATUS_MAPPING[sh_status]
+            status_mapping.CRITICALITY_STATUS[sh_status]
 
         highest_status = max(all_status, key=(lambda key: all_status[key]))
 

@@ -57,18 +57,13 @@ class TestComputerSystem(BaseTest):
         ) as f:
             self.label_for_server_profile = json.load(f)
 
-        # Loading ApplianceNodeInfoList mockup result
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview'
-                '/ApplianceNodeInfoList.json'
-        ) as f:
-            self.appliance_info_list = json.load(f)
-
         # Loading ComputerSystem mockup result
         with open(
             'oneview_redfish_toolkit/mockups/redfish/ComputerSystem.json'
         ) as f:
             self.computer_system_mockup = json.load(f)
+
+        self.manager_uuid = "b08eb206-a904-46cf-9172-dcdff2fa9639"
 
     def test_serialize(self):
         # Tests the serialize function result against known result
@@ -79,7 +74,7 @@ class TestComputerSystem(BaseTest):
             self.server_profile,
             [self.drives[4]],
             spt_uuid,
-            self.appliance_info_list[0]
+            self.manager_uuid
         )
 
         result = json.loads(computer_system.serialize())

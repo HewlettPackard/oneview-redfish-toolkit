@@ -37,7 +37,7 @@ STATUS_MAP = {
     }
 }
 
-HEALTH_STATE_MAPPING = {
+HEALTH_STATE = {
     "Critical": "Critical",
     "OK": "OK",
     "Unknown": "Warning",
@@ -45,13 +45,13 @@ HEALTH_STATE_MAPPING = {
     "Warning": "Warning",
 }
 
-MANAGER_HEALTH_STATE_MAPPING = {
+MANAGER_HEALTH_STATE = {
     "INFO": "OK",
     "WARNING": "Warning",
     "CRITICAL": "Critical",
 }
 
-COMPOSITION_STATE_MAPPING = {
+COMPOSITION_STATE = {
     "NoProfileApplied": "Unused",
     "ApplyingProfile": "Composing",
     "ProfileApplied": "Composed",
@@ -60,7 +60,7 @@ COMPOSITION_STATE_MAPPING = {
 }
 
 
-SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING = {
+SERVER_HARDWARE_STATE_TO_REDFISH_STATE = {
     "NoProfileApplied": "Enabled",
     "Monitored": "Enabled",
     "ProfileApplied": "Enabled",
@@ -77,7 +77,7 @@ SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING = {
     "Removed": "Disabled"
 }
 
-SERVER_PROFILE_STATE_TO_REDFISH_STATE_MAPPING = {
+SERVER_PROFILE_STATE_TO_REDFISH_STATE = {
     "Normal": "Enabled",
     "Creating": "Updating",
     "Updating": "Updating",
@@ -87,7 +87,7 @@ SERVER_PROFILE_STATE_TO_REDFISH_STATE_MAPPING = {
     "DeleteFailed": "StandbyOffline"
 }
 
-APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING = {
+APPLIANCE_STATE_TO_REDFISH_STATE = {
     "OK": "Enabled",
     "UPGRADE": "Updating",
     "RESTORE": "Updating",
@@ -102,7 +102,7 @@ APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING = {
     "STARTING": "Starting",
 }
 
-CRITICALITY_STATUS_MAPPING = {
+CRITICALITY_STATUS = {
     "OK": 1,
     "Warning": 2,
     "Critical": 3
@@ -110,21 +110,21 @@ CRITICALITY_STATUS_MAPPING = {
 
 
 def get_redfish_server_hardware_status_struct(resource):
-    sh_state = SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING.get(
+    sh_state = SERVER_HARDWARE_STATE_TO_REDFISH_STATE.get(
         resource["state"])
-    health_status = HEALTH_STATE_MAPPING.get(resource["status"])
+    health_status = HEALTH_STATE.get(resource["status"])
 
     return sh_state, health_status
 
 
 def get_redfish_server_profile_state(resource):
-    sp_state = SERVER_PROFILE_STATE_TO_REDFISH_STATE_MAPPING.get(
+    sp_state = SERVER_PROFILE_STATE_TO_REDFISH_STATE.get(
         resource["state"])
-    health_status = HEALTH_STATE_MAPPING.get(resource["status"])
+    health_status = HEALTH_STATE.get(resource["status"])
     return sp_state, health_status
 
 
 def get_redfish_composition_state(resource):
-    composition_state = COMPOSITION_STATE_MAPPING.get(
+    composition_state = COMPOSITION_STATE.get(
         resource["state"])
     return composition_state

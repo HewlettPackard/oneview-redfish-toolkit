@@ -97,7 +97,7 @@ class TestManager(BaseFlaskTest):
         manager_mockup = copy.deepcopy(self.manager_mockup)
 
         for oneview_state, redfish_state in status_mapping.\
-                APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING.items():
+                APPLIANCE_STATE_TO_REDFISH_STATE.items():
 
             appliance_state_list[0]["state"] = oneview_state
             manager_mockup["Status"]["State"] = redfish_state
@@ -126,7 +126,7 @@ class TestManager(BaseFlaskTest):
         manager_mockup = copy.deepcopy(self.manager_mockup)
 
         for oneview_state, redfish_state in status_mapping.\
-                APPLIANCE_STATE_TO_REDFISH_STATE_MAPPING.items():
+                APPLIANCE_STATE_TO_REDFISH_STATE.items():
 
             appliance_state_list[0]["state"] = oneview_state
             manager_mockup["Status"]["State"] = redfish_state
@@ -156,7 +156,7 @@ class TestManager(BaseFlaskTest):
         manager_mockup = copy.deepcopy(self.manager_mockup)
 
         for oneview_health_status, redfish_health_status in \
-                status_mapping.MANAGER_HEALTH_STATE_MAPPING.items():
+                status_mapping.MANAGER_HEALTH_STATE.items():
 
             appliance_health_status_list[0]["members"][0]["severity"] = \
                 oneview_health_status

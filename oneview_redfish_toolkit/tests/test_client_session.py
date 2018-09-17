@@ -25,6 +25,7 @@ from unittest import mock
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
+from oneview_redfish_toolkit import multiple_oneview
 
 
 class TestAuthentication(unittest.TestCase):
@@ -49,6 +50,7 @@ class TestAuthentication(unittest.TestCase):
         iter_conns_ov = iter(list(connections_ov.values()))
 
         client_session.init_map_clients()
+        multiple_oneview.init_map_resources()
 
         get_oneview_multiple_ips.return_value = list_ips
 
@@ -92,6 +94,7 @@ class TestAuthentication(unittest.TestCase):
         list_ips = list(tokens_ov.keys())
 
         client_session.init_map_clients()
+        multiple_oneview.init_map_resources()
 
         get_oneview_multiple_ips.return_value = list_ips
 

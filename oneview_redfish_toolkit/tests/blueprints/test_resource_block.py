@@ -15,8 +15,10 @@
 # under the License.
 
 # Python libs
+from collections import OrderedDict
 import copy
 import json
+from unittest import mock
 
 # 3rd party libs
 from unittest.mock import call
@@ -27,6 +29,7 @@ from hpOneView.exceptions import HPOneViewException
 # Module libs
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.blueprints import resource_block
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -263,16 +266,16 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         for oneview_state, redfish_state in status_mapping.\
-                SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING.items():
+                SERVER_HARDWARE_STATE_TO_REDFISH_STATE.items():
 
             server_hardware["state"] = oneview_state
             expected_rb["Status"]["State"] = redfish_state
             expected_composition_state = status_mapping.\
-                COMPOSITION_STATE_MAPPING.get(oneview_state)
+                COMPOSITION_STATE.get(oneview_state)
 
             if not expected_composition_state:
                 expected_composition_state = \
-                    status_mapping.COMPOSITION_STATE_MAPPING["ProfileApplied"]
+                    status_mapping.COMPOSITION_STATE["ProfileApplied"]
 
             expected_rb["CompositionStatus"]["CompositionState"] = \
                 expected_composition_state
@@ -305,17 +308,17 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         for oneview_state, redfish_state in status_mapping.\
-                SERVER_HARDWARE_STATE_TO_REDFISH_STATE_MAPPING.items():
+                SERVER_HARDWARE_STATE_TO_REDFISH_STATE.items():
 
             server_hardware["state"] = oneview_state
             expected_rb["Status"]["State"] = redfish_state
 
             expected_composition_state = status_mapping.\
-                COMPOSITION_STATE_MAPPING.get(oneview_state)
+                COMPOSITION_STATE.get(oneview_state)
 
             if not expected_composition_state:
                 expected_composition_state = status_mapping.\
-                    COMPOSITION_STATE_MAPPING["NoProfileApplied"]
+                    COMPOSITION_STATE["NoProfileApplied"]
 
             expected_rb["CompositionStatus"]["CompositionState"] = \
                 expected_composition_state
@@ -347,7 +350,7 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.enclosures.get_all.return_value = self.enclosures
 
         for oneview_status, redfish_status in \
-                status_mapping.HEALTH_STATE_MAPPING.items():
+                status_mapping.HEALTH_STATE.items():
             server_hardware["status"] = oneview_status
             expected_cs["Status"]["Health"] = redfish_status
 
@@ -459,7 +462,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-    def test_get_computer_system(self):
+    @mock.patch.object(multiple_oneview, 'get_map_resources')
+    def test_get_computer_system(self, get_map_resources):
         with open(
             'oneview_redfish_toolkit/mockups/redfish'
             '/ResourceBlockComputerSystem.json'
@@ -473,6 +477,11 @@ class TestResourceBlock(BaseFlaskTest):
         ) as f:
             self.appliance_info_list = json.load(f)
 
+        appliance_ip = "10.0.0.1"
+
+        get_map_resources.return_value = OrderedDict({
+            self.appliance_info_list[0]["uuid"]: appliance_ip
+        })
         self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
         self.oneview_client.appliance_node_information.get_version.return_value = \
