@@ -180,7 +180,8 @@ def main(config_file_path, logging_config_file_path,
     @app.before_request
     def check_authentication():
         # If authenticating do not check for anything
-        if request.url_rule.rule == SessionCollection.BASE_URI and \
+        if request.url_rule and \
+           request.url_rule.rule == SessionCollection.BASE_URI and \
            request.method == "POST":
             return None
 

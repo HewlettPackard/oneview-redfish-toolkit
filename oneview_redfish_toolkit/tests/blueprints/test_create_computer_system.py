@@ -54,6 +54,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
                 'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             self.server_hardware = json.load(f)
+            self.server_hardware['serverProfileUri'] = None
 
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
@@ -101,13 +102,16 @@ class TestCreateComputerSystem(BaseFlaskTest):
         ]
 
     def run_common_mock_to_server_hardware(self):
-        self.oneview_client.server_hardware.get.side_effect = [
+        ov_client = self.oneview_client
+        ov_client.server_hardware.get.side_effect = [
             self.server_hardware,
             self.not_found_error,
             self.not_found_error,
             self.not_found_error,
-            self.server_hardware  # Get for multiple oneview support
+            self.server_hardware,  # for multiple oneview (power update status)
+            self.server_hardware  # for multiple oneview (create profile)
         ]
+        ov_client.server_hardware.update_power_state.return_value = None
 
     def run_common_mock_to_server_profile_template(self):
         self.oneview_client.server_profile_templates.get.side_effect = [
@@ -194,6 +198,10 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.common_calls_to_assert_drives)
         self.oneview_client.server_profiles.create.assert_not_called()
 
+        self.oneview_client.server_hardware.update_power_state \
+            .assert_called_with({
+                'powerControl': 'PressAndHold', 'powerState': 'Off'
+            }, self.server_hardware['uuid'])
         self.oneview_client.tasks.get.assert_called_with(
             task_without_resource_uri["uri"])
         self.oneview_client.connection.post.assert_called_once_with(
@@ -201,6 +209,108 @@ class TestCreateComputerSystem(BaseFlaskTest):
         )
         self.assertEqual(self.oneview_client.tasks.get.call_count, 3)
         time_mock.sleep.assert_called_with(3)
+
+    def test_create_when_server_hardware_already_belongs_to_system(self,):
+        """Tests create when server profile already applied to the server"""
+        sh_with_profile_uri = copy.deepcopy(self.server_hardware)
+        sh_with_profile_uri["serverProfileUri"] = "/server-profiles/uuid_1"
+
+        self.oneview_client.server_hardware.get.side_effect = [
+            sh_with_profile_uri,
+            self.not_found_error,
+            self.not_found_error,
+            self.not_found_error,
+            sh_with_profile_uri,
+            sh_with_profile_uri
+        ]
+
+        self.run_common_mock_to_server_profile_template()
+        self.run_common_mock_to_drives()
+
+        response = self.client.post(
+            "/redfish/v1/Systems",
+            data=json.dumps(self.data_to_create_system),
+            content_type="application/json")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertIn("Computer System Resource Block already belongs to a "
+                      "Composed System with ID uuid_1", str(result))
+
+        self.oneview_client.connection.post.assert_not_called()
+
+    @mock.patch.object(computer_system_service, 'config')
+    def test_create_when_power_off_on_compose_is_not_configured(self,
+                                                                config_mock):
+        """Tests create when power_off is blank, should below a normal flow"""
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerProfileBuiltFromTemplateToCreateASystem.json'
+        ) as f:
+            expected_server_profile_built = json.load(f)
+
+        self.run_common_mock_to_server_hardware()
+        self.run_common_mock_to_server_profile_template()
+        self.run_common_mock_to_drives()
+
+        config_mock.get_composition_settings.return_value = {
+            'PowerOffServerOnCompose': ''
+        }
+
+        task_with_resource_uri = {
+            "associatedResource": {
+                "resourceUri": self.server_profile["uri"]
+            },
+            "uri": "/rest/tasks/123456"
+        }
+
+        self.oneview_client.connection.post.return_value = \
+            (task_with_resource_uri, None)
+
+        response = self.client.post(
+            "/redfish/v1/Systems",
+            data=json.dumps(self.data_to_create_system),
+            content_type="application/json")
+
+        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        self.oneview_client.server_hardware.update_power_state \
+            .assert_not_called()
+        self.oneview_client.connection.post.assert_called_once_with(
+            '/rest/server-profiles', expected_server_profile_built
+        )
+
+    @mock.patch.object(computer_system_service, 'config')
+    def test_create_when_power_off_on_compose_has_wrong_configuration(
+            self, config_mock):
+        """Tests create when power_off is blank, should below a normal flow"""
+
+        self.run_common_mock_to_server_hardware()
+        self.run_common_mock_to_server_profile_template()
+        self.run_common_mock_to_drives()
+
+        config_mock.get_composition_settings.return_value = {
+            'PowerOffServerOnCompose': 'ForceOffff'
+        }
+
+        response = self.client.post(
+            "/redfish/v1/Systems",
+            data=json.dumps(self.data_to_create_system),
+            content_type="application/json")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertIn('There is no mapping for ForceOffff on the OneView',
+                      str(result))
+
+        self.oneview_client.server_hardware.update_power_state \
+            .assert_not_called()
+        self.oneview_client.connection.post.assert_not_called()
 
     @mock.patch.object(computer_system_service, 'time')
     def test_create_system_without_description(self, time_mock):
@@ -449,7 +559,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.oneview_client.server_hardware.get.side_effect = [
             self.server_hardware,
             self.not_found_error,
-            self.server_hardware,
+            self.server_hardware,  # for multiple oneview (power update status)
+            self.server_hardware
         ]
         self.oneview_client.server_profile_templates.get.side_effect = [
             self.not_found_error,
@@ -517,6 +628,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.not_found_error,
             self.not_found_error,
             self.not_found_error,
+            self.server_hardware,  # for multiple oneview (power update status)
             self.server_hardware  # Get for multiple OneView support
         ]
 

@@ -19,6 +19,8 @@ import copy
 import json
 
 # 3rd party libs
+from unittest import mock
+
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 from unittest.mock import call
@@ -26,6 +28,7 @@ from unittest.mock import call
 # Module libs
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.blueprints import computer_system
+from oneview_redfish_toolkit.services import computer_system_service
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -504,6 +507,9 @@ class TestComputerSystem(BaseFlaskTest):
     def test_remove_computer_system(self):
         """Tests delete computer system"""
 
+        self.oneview_client.server_profiles.get.return_value = {
+            'serverHardwareUri': '/rest/server-hardware/uuid_1'
+        }
         self.oneview_client.server_profiles.delete.return_value = True
 
         response = self.client.delete(
@@ -514,6 +520,60 @@ class TestComputerSystem(BaseFlaskTest):
             status.HTTP_204_NO_CONTENT,
             response.status_code
         )
+        self.oneview_client.server_hardware.update_power_state\
+            .assert_called_with({
+                'powerControl': 'PressAndHold', 'powerState': 'Off'
+            }, '/rest/server-hardware/uuid_1')
+
+    @mock.patch.object(computer_system_service, 'config')
+    def test_remove_when_power_off_on_decompose_is_not_configured(self,
+                                                                  config_mock):
+        """Tests delete that should does not power off server"""
+
+        self.oneview_client.server_profiles.get.return_value = {
+            'serverHardwareUri': '/rest/server-hardware/uuid_1'
+        }
+        config_mock.get_composition_settings.return_value = {
+            'PowerOffServerOnDecompose': ''
+        }
+        self.oneview_client.server_profiles.delete.return_value = True
+
+        response = self.client.delete(
+            "/redfish/v1/Systems/"
+            "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
+
+        self.assertEqual(
+            status.HTTP_204_NO_CONTENT,
+            response.status_code
+        )
+        self.oneview_client.server_hardware.update_power_state\
+            .assert_not_called()
+
+    @mock.patch.object(computer_system_service, 'config')
+    def test_remove_when_power_off_on_decompose_has_wrong_configuration(
+            self, config_mock):
+        """Tests delete that should raise a validation error"""
+
+        self.oneview_client.server_profiles.get.return_value = {
+            'serverHardwareUri': '/rest/server-hardware/uuid_1'
+        }
+        config_mock.get_composition_settings.return_value = {
+            'PowerOffServerOnDecompose': 'ForceOffff'
+        }
+
+        response = self.client.delete(
+            "/redfish/v1/Systems/"
+            "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertIn('There is no mapping for ForceOffff on the OneView',
+                      str(result))
+
+        self.oneview_client.server_hardware.update_power_state\
+            .assert_not_called()
+        self.oneview_client.server_profiles.delete.assert_not_called()
 
     def test_remove_computer_system_sp_not_found(self):
         """Tests remove ComputerSystem with ServerProfile not found"""

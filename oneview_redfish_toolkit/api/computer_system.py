@@ -179,7 +179,7 @@ class ComputerSystem(RedfishJsonValidator):
     def build_server_profile(profile_name,
                              profile_description,
                              server_profile_template,
-                             system_blocks,
+                             system_block,
                              network_blocks,
                              storage_blocks):
         server_profile = deepcopy(server_profile_template)
@@ -202,7 +202,7 @@ class ComputerSystem(RedfishJsonValidator):
         server_profile["type"] = "ServerProfileV8"
         server_profile["category"] = "server-profiles"
         server_profile["serverHardwareUri"] = \
-            "/rest/server-hardware/" + system_blocks[0]["uuid"]
+            "/rest/server-hardware/" + system_block["uuid"]
         server_profile["localStorage"]["sasLogicalJBODs"] = \
             ComputerSystem._build_sas_logical_jbods(server_profile_template,
                                                     storage_blocks)
