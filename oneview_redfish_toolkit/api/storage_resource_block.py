@@ -95,9 +95,9 @@ class StorageResourceBlock(ResourceBlock):
                 server_profile["resource"]["uri"].split("/")[-1]
         except KeyError as e:
             logging.debug("The key {} was not found inside "
-                          "'drive index trees dict' from the Oneview when "
-                          "trying get the server profile uuid"
-                          .format(e.args[0]))
+                         "'drive index trees dict' from the Oneview when "
+                         "trying get the server profile uuid"
+                         .format(e.args[0]))
             server_profile_uuid = None
 
         return server_profile_uuid
@@ -113,9 +113,9 @@ class StorageResourceBlock(ResourceBlock):
                 enclosure["resource"]["attributes"]["uuid"]
         except KeyError as e:
             logging.debug("The key {} was not found inside "
-                          "'drive index trees dict' from the Oneview when "
-                          "trying get the enclosure uuid"
-                          .format(e.args[0]))
+                         "'drive index trees dict' from the Oneview when "
+                         "trying get the enclosure uuid"
+                         .format(e.args[0]))
             enclosure_id = None
 
         return enclosure_id
