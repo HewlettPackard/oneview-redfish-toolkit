@@ -68,15 +68,18 @@ class Manager(RedfishJsonValidator):
 
     @staticmethod
     def _get_highest_health_state(health_state_members):
-        health_states = dict()
+        highest_status = 0
 
         for member in health_state_members:
             redfish_health_state = status_mapping.MANAGER_HEALTH_STATE.\
                 get(member["severity"])
-            health_states[redfish_health_state] = \
+            highest_status = max(
+                highest_status,
                 status_mapping.CRITICALITY_STATUS[redfish_health_state]
+            )
 
-        highest_status = \
-            max(health_states, key=(lambda key: health_states[key]))
+        health_state = [key for key, value in
+                        status_mapping.CRITICALITY_STATUS.items()
+                        if value == highest_status]
 
-        return highest_status
+        return health_state[0]
