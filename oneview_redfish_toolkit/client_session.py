@@ -115,6 +115,14 @@ def get_session_ids():
     return [sess_dict['session_id'] for _, sess_dict in session_map_items]
 
 
+def get_session_by_token(token):
+    session_dict = _get_map_clients().get(token)
+    if session_dict:
+        return session_dict['session_id']
+
+    return None
+
+
 def clear_session_by_token(token):
     with Lock():
         if token in _get_map_clients():
