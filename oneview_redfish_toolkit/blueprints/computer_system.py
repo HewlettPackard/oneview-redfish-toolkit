@@ -166,8 +166,22 @@ def remove_computer_system(uuid):
         Args:
             uuid: The System ID.
     """
+
+    profile = g.oneview_client.server_profiles.get(uuid)
+    sh_uuid = profile['serverHardwareUri']
+    if sh_uuid:
+        service = ComputerSystemService(g.oneview_client)
+        try:
+            service.power_off_server_hardware(sh_uuid)
+        except OneViewRedfishError as e:
+            abort(status.HTTP_403_FORBIDDEN, e.msg)
+
     # Deletes server profile for given UUID
-    response = g.oneview_client.server_profiles.delete(uuid)
+    response = None
+    try:
+        response = g.oneview_client.server_profiles.delete(uuid)
+    except HPOneViewTaskError as e:
+        abort(status.HTTP_403_FORBIDDEN, e.msg)
 
     if response is True:
         return Response(status=status.HTTP_204_NO_CONTENT,
@@ -201,6 +215,7 @@ def create_composed_system():
 
     try:
         RedfishJsonValidator.validate(body, 'ComputerSystem')
+        service = ComputerSystemService(g.oneview_client)
 
         blocks = body["Links"]["ResourceBlocks"]
         block_ids = [block["@odata.id"].split("/")[-1] for block in blocks]
@@ -210,6 +225,10 @@ def create_composed_system():
         if not system_blocks:
             raise ValidationError(
                 "Should have a Computer System Resource Block")
+
+        system_block = system_blocks[0]
+        service.validate_computer_system_resource_block_to_composition(
+            system_block)
 
         # Check network block id with the Id attribute in the request
         network_blocks = _get_network_resource_blocks(block_ids)
@@ -228,11 +247,13 @@ def create_composed_system():
             body["Name"],
             body.get("Description"),
             spt,
-            system_blocks,
+            system_block,
             network_blocks,
             storage_blocks)
 
-        service = ComputerSystemService(g.oneview_client)
+        service.power_off_server_hardware(system_block["uuid"],
+                                          on_compose=True)
+
         task, resource_uri = service.create_composed_system(server_profile)
 
         if resource_uri:

@@ -13,9 +13,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import logging
 
 from flask import Flask
 from flask import g
+from flask import request
 from flask import Response
 from flask_api import status
 from unittest import mock
@@ -25,6 +27,8 @@ from hpOneView import HPOneViewException
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit import client_session
+from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import handler_multiple_oneview
 from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_test import BaseTest
@@ -106,7 +110,16 @@ class BaseFlaskTest(BaseTest):
 
         @cls.app.errorhandler(HPOneViewException)
         def hp_oneview_client_exception(exception):
-            return ResponseBuilder.error_by_hp_oneview_exception(exception)
+            logging.exception(exception)
+            response = ResponseBuilder.error_by_hp_oneview_exception(exception)
+
+            # checking if session has expired on Oneview
+            if config.auth_mode_is_session() and \
+                    response.status_code == status.HTTP_401_UNAUTHORIZED:
+                token = request.headers.get('x-auth-token')
+                client_session.clear_session_by_token(token)
+
+            return response
 
         @cls.app.before_request
         def check_authentication():

@@ -52,6 +52,17 @@ POWER_STATE_MAP = {
 class OneViewPowerOption(object):
 
     @staticmethod
+    def get_power_state_by_reset_type(reset_type):
+        try:
+            return copy.copy(POWER_STATE_MAP[reset_type])
+        except Exception:
+            raise OneViewRedfishError({
+                "errorCode": "INVALID_INFORMATION",
+                "message": "There is no mapping for {} on the OneView".format(
+                    reset_type
+                )})
+
+    @staticmethod
     def get_oneview_power_configuration(server_hardware, reset_type):
         """Maps Redfish's power options to OneView's power option
 
@@ -74,14 +85,9 @@ class OneViewPowerOption(object):
             raise OneViewRedfishError({
                 "errorCode": "NOT_IMPLEMENTED",
                 "message": "{} not mapped to OneView".format(reset_type)})
-        try:
-            power_state_map = copy.copy(POWER_STATE_MAP[reset_type])
-        except Exception:
-            raise OneViewRedfishError({
-                "errorCode": "INVALID_INFORMATION",
-                "message": "There is no mapping for {} on the OneView".format(
-                    reset_type
-                )})
+
+        power_state_map = OneViewPowerOption.\
+            get_power_state_by_reset_type(reset_type)
 
         if reset_type == "PushPowerButton":
             if server_hardware["powerState"] == "On":

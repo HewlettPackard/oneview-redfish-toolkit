@@ -15,9 +15,13 @@
 # under the License.
 
 # Python libs
+from collections import OrderedDict
 import logging
 import logging.config
+import threading
 from threading import Lock
+import time
+import uuid
 
 # 3rd party libs
 from flask import abort
@@ -35,24 +39,87 @@ from oneview_redfish_toolkit import multiple_oneview
 #   globals()['map_clients']
 
 
+GC_FREQUENCY_IN_SEC = 12 * 60 * 60
+
+
 def _get_map_clients():
     return globals()['map_clients']
 
 
 def init_map_clients():
-    globals()['map_clients'] = dict()
+    globals()['map_clients'] = OrderedDict()
+
+
+def init_gc_for_expired_sessions():
+    gc_thread = threading.Thread(target=_gc_for_expired_sessions, daemon=True)
+    gc_thread.start()
+
+
+def _gc_for_expired_sessions():
+    while True:
+        time.sleep(GC_FREQUENCY_IN_SEC)
+        logging.debug('Verifying expired sessions...')
+
+        tokens_to_remove = []
+        map_items = _get_map_clients().items()
+        for token, dict_by_token in map_items:
+            ov_clients = iter(dict_by_token['client_ov_by_ip'].values())
+            ov_client = next(ov_clients)  # ov_clients can be in any order
+            ov_session_id = ov_client.connection.get_session_id()
+            try:
+                # request that does not increment the life of Oneview session
+                resp, body = ov_client.connection.do_http(
+                    'GET',
+                    '/rest/sessions/',
+                    '',
+                    {'Session-Id': ov_session_id}
+                )
+
+                # when is not a success
+                if resp.status not in range(200, 300):
+                    if resp.status == 404:
+                        tokens_to_remove.append(token)
+                    else:
+                        logging.error('Unexpected response with status {} '
+                                      'of Oneview sessions endpoint: {}'
+                                      .format(resp.status, body))
+
+            except Exception as e:
+                logging.exception('Unexpected error: {}'.format(e))
+
+        for token in tokens_to_remove:
+            clear_session_by_token(token)
 
 
 def _set_new_client_by_token(redfish_token, client_ov_by_ip):
     lock = Lock()
     with lock:
-        globals()['map_clients'][redfish_token] = client_ov_by_ip
+        globals()['map_clients'][redfish_token] = {
+            'client_ov_by_ip': client_ov_by_ip,
+            'session_id': str(uuid.uuid4())
+        }
+
+
+def _get_session_id_by_token(token):
+    check_authentication(token)
+    return globals()['map_clients'][token]['session_id']
 
 
 def _set_new_clients_by_ip(ov_clients_by_ip):
     lock = Lock()
     with lock:
         globals()['map_clients'] = ov_clients_by_ip
+
+
+def get_session_ids():
+    session_map_items = _get_map_clients().items()
+    return [sess_dict['session_id'] for _, sess_dict in session_map_items]
+
+
+def clear_session_by_token(token):
+    with Lock():
+        if token in _get_map_clients():
+            del _get_map_clients()[token]
 
 
 def login(username, password):
@@ -72,7 +139,7 @@ def login(username, password):
 
         _set_new_client_by_token(redfish_token, clients_ov_by_ip)
 
-        return redfish_token
+        return redfish_token, _get_session_id_by_token(redfish_token)
     except HPOneViewException as e:
         logging.exception('Unauthorized error: {}'.format(e))
         raise e
@@ -104,7 +171,8 @@ def check_authentication(rf_token):
 def _get_oneview_client_by_token(ip_oneview):
     try:
         rf_token = request.headers.get('x-auth-token')
-        oneview_client = _get_map_clients()[rf_token][ip_oneview]
+        client_ov_by_ip = _get_map_clients()[rf_token]['client_ov_by_ip']
+        oneview_client = client_ov_by_ip[ip_oneview]
         return oneview_client
     except KeyError:
         msg = 'Unauthorized error for redfish token {}' \

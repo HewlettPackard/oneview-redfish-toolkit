@@ -86,6 +86,10 @@ def get_api_version():
     return API_VERSION
 
 
+def get_composition_settings():
+    return dict(get_config().items('redfish-composition'))
+
+
 def configure_logging(log_file_path):
     """Loads logging.conf file
 

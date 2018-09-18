@@ -1,0 +1,18 @@
+{
+  "@odata.context": "/redfish/v1/$metadata#SessionCollection.SessionCollection",
+  "@odata.id": "/redfish/v1/SessionService/Sessions",
+  "@odata.type": "#SessionCollection.SessionCollection",
+  "Name": "Active sessions",
+  "Members": [
+    {
+      "@odata.id": "/redfish/v1/SessionService/Sessions/e2807c0b-87d6-4304-a773-6ec33521fb1c"
+    },
+    {
+      "@odata.id": "/redfish/v1/SessionService/Sessions/709cf49b-f367-417e-af70-ede782e0fa3c"
+    },
+    {
+      "@odata.id": "/redfish/v1/SessionService/Sessions/cd825af3-05c5-44a1-85f7-84e6e2e9fcb3"
+    }
+  ],
+  "Members@odata.count": 3
+}
