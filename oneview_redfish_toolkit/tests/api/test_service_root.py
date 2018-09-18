@@ -52,4 +52,5 @@ class TestServiceRoot(BaseTest):
             'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
         ) as f:
             service_root_mockup = json.load(f)
+
         self.assertEqualMockup(service_root_mockup, result)
