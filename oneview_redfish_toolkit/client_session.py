@@ -40,6 +40,8 @@ from oneview_redfish_toolkit import connection
 
 GC_FREQUENCY_IN_SEC = 12 * 60 * 60
 
+lock = Lock()
+
 
 def _get_map_clients():
     return globals()['map_clients']
@@ -91,7 +93,6 @@ def _gc_for_expired_sessions():
 
 
 def _set_new_client_by_token(redfish_token, client_ov_by_ip):
-    lock = Lock()
     with lock:
         globals()['map_clients'][redfish_token] = {
             'client_ov_by_ip': client_ov_by_ip,
@@ -105,7 +106,6 @@ def _get_session_id_by_token(token):
 
 
 def _set_new_clients_by_ip(ov_clients_by_ip):
-    lock = Lock()
     with lock:
         globals()['map_clients'] = ov_clients_by_ip
 
@@ -116,7 +116,7 @@ def get_session_ids():
 
 
 def clear_session_by_token(token):
-    with Lock():
+    with lock:
         if token in _get_map_clients():
             del _get_map_clients()[token]
 
