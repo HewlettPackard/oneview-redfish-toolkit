@@ -31,9 +31,10 @@ from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.rack_chassis import RackChassis
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
-from oneview_redfish_toolkit.blueprints.manager import get_current_manager
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit.services.manager_service import \
+    get_current_manager
 
 chassis = Blueprint("chassis", __name__)
 

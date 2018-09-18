@@ -96,6 +96,6 @@ class ResourceBlockComputerSystem(RedfishJsonValidator):
 
         self.redfish["Links"]["ManagedBy"] = list()
         manager = dict()
-        manager["@odata.id"] = "/redfish/v1/Managers/{}" \
-            .format(manager_uuid)
+        manager["@odata.id"] = "/redfish/v1/Managers/" \
+                               + manager_uuid
         self.redfish["Links"]["ManagedBy"].append(manager)

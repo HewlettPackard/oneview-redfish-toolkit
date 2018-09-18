@@ -29,8 +29,8 @@ from unittest.mock import call
 # Module libs
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.blueprints import computer_system
-from oneview_redfish_toolkit.services import computer_system_service
 from oneview_redfish_toolkit import multiple_oneview
+from oneview_redfish_toolkit.services import computer_system_service
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 

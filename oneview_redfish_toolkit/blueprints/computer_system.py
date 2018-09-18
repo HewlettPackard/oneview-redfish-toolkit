@@ -38,11 +38,12 @@ from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
-from oneview_redfish_toolkit.blueprints.manager import get_current_manager
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 from oneview_redfish_toolkit.services.computer_system_service import \
     ComputerSystemService
+from oneview_redfish_toolkit.services.manager_service import \
+    get_current_manager
 
 computer_system = Blueprint("computer_system", __name__)
 

@@ -34,9 +34,10 @@ from oneview_redfish_toolkit.api.server_profile_template_resource_block \
     import ServerProfileTemplateResourceBlock
 from oneview_redfish_toolkit.api.storage_resource_block \
     import StorageResourceBlock
-from oneview_redfish_toolkit.blueprints.manager import get_current_manager
 from oneview_redfish_toolkit.blueprints.util.response_builder \
     import ResponseBuilder
+from oneview_redfish_toolkit.services.manager_service import \
+    get_current_manager
 from oneview_redfish_toolkit.services.zone_service import ZoneService
 
 resource_block = Blueprint("resource_block", __name__)

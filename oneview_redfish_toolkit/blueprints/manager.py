@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -28,7 +28,6 @@ from hpOneView.exceptions import HPOneViewException
 # Own libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.manager import Manager
-from oneview_redfish_toolkit import multiple_oneview
 
 manager = Blueprint("manager", __name__)
 
@@ -98,10 +97,3 @@ def _get_appliance_by_uuid(uuid, oneview_appliances):
         raise OneViewRedfishError("Could not find manager with id " + uuid)
 
     return appliance, appliance_index
-
-
-def get_current_manager():
-    map_resources = multiple_oneview.get_map_resources()
-    manager_uuid = list(map_resources.keys())[0]
-
-    return manager_uuid

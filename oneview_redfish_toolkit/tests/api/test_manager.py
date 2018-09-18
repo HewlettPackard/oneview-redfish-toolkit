@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -47,12 +47,12 @@ class TestManager(BaseTest):
         ) as f:
             self.appliance_health_status_list = json.load(f)
 
-            # Loading Manager mockup result
-            with open(
-                    'oneview_redfish_toolkit/mockups/redfish/'
-                    'Manager.json'
-            ) as f:
-                self.manager_mockup = json.load(f)
+        # Loading Manager mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'Manager.json'
+        ) as f:
+            self.manager_mockup = json.load(f)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
