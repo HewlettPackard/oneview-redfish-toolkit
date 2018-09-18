@@ -20,6 +20,9 @@ from flask import g
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit.services import logging_service
+from oneview_redfish_toolkit.services.logging_service import \
+    COUNTER_LOGGER_NAME
 from oneview_redfish_toolkit.services.zone_service import ZoneService
 
 zone_collection = Blueprint("zone_collection", __name__)
@@ -45,5 +48,12 @@ def get_zone_collection():
     zone_ids = zone_service.get_zone_ids_by_templates(server_profile_templates)
 
     zc = ZoneCollection(zone_ids)
+
+    spt_count = len(server_profile_templates)
+    zone_count = len(zc.redfish["Members"])
+    logging_service.debug(
+        COUNTER_LOGGER_NAME,
+        "ServerProfileTemplates retrieved: " + str(spt_count),
+        "Zones listed: " + str(zone_count))
 
     return ResponseBuilder.success(zc)

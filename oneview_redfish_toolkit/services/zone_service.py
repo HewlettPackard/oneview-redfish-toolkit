@@ -15,6 +15,9 @@
 # under the License.
 from oneview_redfish_toolkit.services.computer_system_service import \
     ComputerSystemService
+from oneview_redfish_toolkit.services import logging_service
+from oneview_redfish_toolkit.services.logging_service import \
+    COUNTER_LOGGER_NAME
 
 
 class ZoneService(object):
@@ -119,6 +122,7 @@ class ZoneService(object):
     def _get_enclosures_uris_with_valid_drive_enclosures(self):
         all_enclosures_uris = [enclosure["uri"] for enclosure in
                                self.ov_client.enclosures.get_all()]
+
         valid_enclosures_uris = list()
 
         for enclosure_uri in all_enclosures_uris:
@@ -128,5 +132,11 @@ class ZoneService(object):
             for drive_enclosure in drive_enclosures:
                 if drive_enclosure["driveBays"]:
                     valid_enclosures_uris.append(enclosure_uri)
+
+        encl_count = len(all_enclosures_uris)
+        valid_encl_count = len(valid_enclosures_uris)
+        logging_service.debug(COUNTER_LOGGER_NAME,
+                              "Enclosures retrieved: " + str(encl_count),
+                              "Valid Enclosures: " + str(valid_encl_count))
 
         return valid_enclosures_uris
