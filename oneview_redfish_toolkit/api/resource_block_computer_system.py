@@ -32,14 +32,14 @@ class ResourceBlockComputerSystem(RedfishJsonValidator):
 
     SCHEMA_NAME = 'ComputerSystem'
 
-    def __init__(self, server_hardware, manager_uuid):
+    def __init__(self, server_hardware, managers):
         """ResourceBlock ComputerSystem constructor
 
             Populates self.redfish with the contents of server hardware dict.
 
             Args:
                 server_hardware: server hardware dict from OneView
-                manager_uuid: Oneview's current manager
+                managers: Managers list from Oneview
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -74,7 +74,7 @@ class ResourceBlockComputerSystem(RedfishJsonValidator):
         self.redfish["MemorySummary"]["TotalSystemMemoryGiB"] = \
             server_hardware["memoryMb"] / 1024
 
-        self._fill_links(manager_uuid)
+        self._fill_links(managers)
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ComputerSystem.ComputerSystem"
@@ -85,7 +85,7 @@ class ResourceBlockComputerSystem(RedfishJsonValidator):
 
         self._validate()
 
-    def _fill_links(self, manager_uuid):
+    def _fill_links(self, managers):
         self.redfish["Links"] = collections.OrderedDict()
 
         self.redfish["Links"]["Chassis"] = list()
@@ -95,7 +95,8 @@ class ResourceBlockComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["Chassis"].append(chassi)
 
         self.redfish["Links"]["ManagedBy"] = list()
-        manager = dict()
-        manager["@odata.id"] = "/redfish/v1/Managers/" \
-                               + manager_uuid
-        self.redfish["Links"]["ManagedBy"].append(manager)
+        for manager in managers:
+            manager_dict = collections.OrderedDict()
+            manager_dict["@odata.id"] = \
+                "/redfish/v1/Managers/" + manager["uuid"]
+            self.redfish["Links"]["ManagedBy"].append(manager_dict)

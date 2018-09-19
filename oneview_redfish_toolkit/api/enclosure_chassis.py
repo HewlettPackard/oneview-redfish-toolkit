@@ -28,7 +28,7 @@ class EnclosureChassis(Chassis):
          values and with the response of OneView enclosure resources.
     """
 
-    def __init__(self, enclosure, environmental_configuration, manager_uuid):
+    def __init__(self, enclosure, environmental_configuration, managers):
         """Enclosure Chassis constructor
 
         Populates self.redfish with hardcoded Enclosure Chassis
@@ -40,7 +40,7 @@ class EnclosureChassis(Chassis):
 
             environmental_configuration: An object having information
             about the rack that containing the enclosure.
-            manager_uuid: Oneview's current manager uuid.
+            managers: Managers list from Oneview.
         """
 
         super().__init__(enclosure)
@@ -53,9 +53,7 @@ class EnclosureChassis(Chassis):
         self._set_links_to_computer_system(
             enclosure["deviceBays"])
         self.redfish["Links"]["ManagedBy"] = list()
-        self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
-        self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
-            "/redfish/v1/Managers/" + manager_uuid
+        self._set_links_to_manager(managers)
         self.redfish["Links"]["ContainedBy"] = collections.OrderedDict()
         self.redfish["Links"]["ContainedBy"]["@odata.id"] = \
             "/redfish/v1/Chassis/" + environmental_configuration["rackId"]
@@ -81,6 +79,13 @@ class EnclosureChassis(Chassis):
             link_dict["@odata.id"] = \
                 "/redfish/v1/Chassis/" + computer_system_uuid
             self.redfish["Links"]["Contains"].append(link_dict)
+
+    def _set_links_to_manager(self, managers):
+        for manager in managers:
+            manager_dict = collections.OrderedDict()
+            manager_dict["@odata.id"] = \
+                "/redfish/v1/Managers/" + manager["uuid"]
+            self.redfish["Links"]["ManagedBy"].append(manager_dict)
 
     def _filter_by_computer_system_uuid(self, oneview_device_bays):
         """Return Computer Systems UUID

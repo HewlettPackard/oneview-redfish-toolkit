@@ -18,8 +18,9 @@
 from oneview_redfish_toolkit import multiple_oneview
 
 
-def get_current_manager():
+def get_oneview_ip_by_manager_uuid(uuid):
     map_resources = multiple_oneview.get_map_resources()
-    manager_uuid = list(map_resources.keys())[0]
+    manager_ip = map_resources[uuid]
 
-    return manager_uuid
+    return manager_ip
+

@@ -40,7 +40,7 @@ class ComputerSystem(RedfishJsonValidator):
 
     def __init__(self, server_hardware, server_hardware_types,
                  server_profile, drives, server_profile_template_uuid,
-                 manager_uuid):
+                 managers):
         """ComputerSystem constructor
 
             Populates self.redfish with the contents of ServerHardware and
@@ -52,7 +52,7 @@ class ComputerSystem(RedfishJsonValidator):
                 server_profile: ServerProfile dict from OneView.
                 drives: Drives list from OneView
                 server_profile_template_uuid: ServerProfileTemplate uuid
-                manager_uuid: Oneview's current manager uuid
+                managers: Managers list from Oneview
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -107,9 +107,7 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["Chassis"][0]["@odata.id"] = \
             "/redfish/v1/Chassis/" + server_hardware['uuid']
         self.redfish["Links"]["ManagedBy"] = list()
-        self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
-        self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
-            "/redfish/v1/Managers/" + manager_uuid
+        self._set_links_to_manager(managers)
         self.redfish["Links"]["ResourceBlocks"] = list()
         self._fill_resource_block_members(drives,
                                           server_hardware,
@@ -252,6 +250,13 @@ class ComputerSystem(RedfishJsonValidator):
         blocks = self.redfish["Links"]["ResourceBlocks"]
         for resource_block_uuid in resource_block_uuids:
             blocks.append({"@odata.id": base_uri.format(resource_block_uuid)})
+
+    def _set_links_to_manager(self, managers):
+        for manager in managers:
+            manager_dict = collections.OrderedDict()
+            manager_dict["@odata.id"] = \
+                "/redfish/v1/Managers/" + manager["uuid"]
+            self.redfish["Links"]["ManagedBy"].append(manager_dict)
 
     def _get_resource_block_uuids(self,
                                   drives,
