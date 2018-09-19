@@ -55,7 +55,7 @@ def get_session(session_id):
                methods=["DELETE"])
 def delete_session(session_id):
     token = request.headers.get('x-auth-token')
-    session_for_delete = client_session.get_session_by_token(token)
+    session_for_delete = client_session.get_session_id_by_token(token)
 
     if session_id != session_for_delete:
         abort(status.HTTP_404_NOT_FOUND)
