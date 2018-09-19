@@ -33,6 +33,11 @@ from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 # Globals vars:
 #   globals()['map_resources_ov']
 
+class CachedResource:
+    def __init__(self, ip_oneview, resource, function):
+        self.ip_oneview = ip_oneview
+        self.resource = resource
+        self.function = function
 
 def init_map_resources():
     globals()['map_resources_ov'] = OrderedDict()
@@ -50,10 +55,10 @@ def get_map_appliances():
     return globals()['map_appliances_ov']
 
 
-def set_map_resources_entry(resource_id, ip_oneview):
+def set_map_resources_entry(resource_id, ip_oneview, resource, function):
     lock = threading.Lock()
     with lock:
-        get_map_resources()[resource_id] = ip_oneview
+        get_map_resources()[resource_id] = CachedResource(ip_oneview, resource, function)
 
 
 def set_map_appliances_entry(ip_oneview, appliance_uuid):
@@ -88,9 +93,20 @@ def query_ov_client_by_resource(resource_id, resource, function,
 
 def get_ov_ip_by_resource(resource_id):
     """Get cached OneView's IP by resource ID"""
-    map_resources = get_map_resources()
+    cached = get_map_resources().get(resource_id)
 
-    return map_resources.get(resource_id)
+    if cached:
+        return cached.ip_oneview
+
+    return None
+
+def get_method_by_resource(resource_id):
+    cached = get_map_resources().get(resource_id)
+
+    if cached:
+       return [cached.resource, cached.function]
+
+    return None
 
 
 def search_resource_multiple_ov(resource, function, resource_id,
@@ -140,7 +156,7 @@ def search_resource_multiple_ov(resource, function, resource_id,
             if expected_resource:
                 # If it's looking for a especific resource and was found
                 if resource_id:
-                    set_map_resources_entry(resource_id, ov_ip)
+                    set_map_resources_entry(resource_id, ov_ip, resource, function)
                     return expected_resource
                 else:
                     # If it's looking for a resource list (get_all)

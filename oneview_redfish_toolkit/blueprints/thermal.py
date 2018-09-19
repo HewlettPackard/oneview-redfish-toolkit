@@ -28,6 +28,7 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.thermal import Thermal
+from oneview_redfish_toolkit import multiple_oneview
 
 
 thermal = Blueprint("thermal", __name__)
@@ -50,14 +51,20 @@ def get_thermal(uuid):
 
     """
     try:
-        index_obj = g.oneview_client.index_resources.get_all(
-            filter='uuid=' + uuid
-        )
+        category = ''
+        method_sdk = multiple_oneview.get_method_by_resource(uuid)
 
-        if index_obj:
-            category = index_obj[0]["category"]
+        if method_sdk:
+            category = method_sdk[0].replace('_','-')
         else:
-            raise OneViewRedfishError('Cannot find Index resource')
+            index_obj = g.oneview_client.index_resources.get_all(
+                filter='uuid=' + uuid
+            )
+
+            if index_obj:
+                category = index_obj[0]["category"]
+            else:
+                raise OneViewRedfishError('Cannot find Index resource')
 
         if category == 'server-hardware':
             server_hardware = g.oneview_client.server_hardware. \
