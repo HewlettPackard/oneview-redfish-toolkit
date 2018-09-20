@@ -152,6 +152,4 @@ class TestComputerSystemCollection(BaseFlaskTest):
             + "&category=logical-enclosures")
         self.oneview_client.logical_enclosures.get.assert_called_with(
             logical_encl["uri"])
-        self.oneview_client.drive_enclosures.get_all.assert_called_with(
-            filter="locationUri='/rest/enclosures/0000000000A66101'")
-        self.oneview_client.enclosures.get_all.assert_called_with()
+        self.oneview_client.drive_enclosures.get_all.assert_called_with()
