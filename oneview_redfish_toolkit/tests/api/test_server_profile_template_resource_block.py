@@ -41,8 +41,7 @@ class TestServerProfileTemplateResourceBlock(BaseTest):
 
         zone_ids = [
             "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101",
-            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66102",
-            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66103"
+            "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66102"
         ]
 
         resource_block = ServerProfileTemplateResourceBlock(

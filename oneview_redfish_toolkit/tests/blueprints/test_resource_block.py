@@ -169,9 +169,7 @@ class TestResourceBlock(BaseFlaskTest):
             server_profile_templates.get_all.assert_called_with()
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
-        self.oneview_client.drive_enclosures.get_all.assert_called_with(
-            filter="locationUri='/rest/enclosures/0000000000A66101'")
-        self.oneview_client.enclosures.get_all.assert_called_with()
+        self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
     def test_get_storage_resource_block_when_drive_is_composed(self):
         with open(
@@ -224,9 +222,7 @@ class TestResourceBlock(BaseFlaskTest):
             server_profile_templates.get_all.assert_called_with()
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
-        self.oneview_client.drive_enclosures.get_all.assert_called_with(
-            filter="locationUri='/rest/enclosures/0000000000A66101'")
-        self.oneview_client.enclosures.get_all.assert_called_with()
+        self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
     def test_get_server_hardware_resource_block(self):
         self.oneview_client.server_hardware.get.return_value = \
@@ -382,9 +378,7 @@ class TestResourceBlock(BaseFlaskTest):
                 )
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
-        self.oneview_client.drive_enclosures.get_all.assert_called_with(
-            filter="locationUri='/rest/enclosures/0000000000A66101'")
-        self.oneview_client.enclosures.get_all.assert_called_with()
+        self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
     def test_get_spt_resource_block(self):
         with open(
@@ -416,9 +410,7 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.oneview_client.logical_enclosures.get.assert_called_with(
             self.log_encl["uri"])
-        self.oneview_client.drive_enclosures.get_all.assert_called_with(
-            filter="locationUri='/rest/enclosures/0000000000A66101'")
-        self.oneview_client.enclosures.get_all.assert_called_with()
+        self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
     def test_get_spt_resource_when_template_has_not_valid_controller(self):
         with open(
