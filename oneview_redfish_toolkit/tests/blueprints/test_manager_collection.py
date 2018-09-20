@@ -15,13 +15,17 @@
 # under the License.
 
 # Python libs
+from collections import OrderedDict
 import json
+
 
 # 3rd party libs
 from flask_api import status
+from unittest import mock
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import manager_collection
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -63,14 +67,9 @@ class TestManagerCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, result)
 
-    def test_get_manager_collection(self):
+    @mock.patch.object(multiple_oneview, 'get_map_appliances')
+    def test_get_manager_collection(self, get_map_appliances):
         """Tests a valid ManagerCollection"""
-
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/'
-                'ApplianceNodeInfoList.json'
-        ) as f:
-            appliance_info_list = json.load(f)
 
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
@@ -78,9 +77,14 @@ class TestManagerCollection(BaseFlaskTest):
         ) as f:
             manager_collection_mockup = json.load(f)
 
+        appliance_info_list = OrderedDict()
+        appliance_info_list["10.0.0.1"] = \
+            "b08eb206-a904-46cf-9172-dcdff2fa9639"
+        appliance_info_list["10.0.0.2"] = \
+            "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50"
+
         # Create mock response
-            self.oneview_client.appliance_node_information.get_version.return_value = \
-                appliance_info_list
+        get_map_appliances.return_value = appliance_info_list
 
         # Get ManagerCollection
         response = self.client.get("/redfish/v1/Managers/")

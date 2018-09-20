@@ -133,7 +133,7 @@ def login(username, password):
             tokens.append(oneview_client.connection.get_session_id())
 
             clients_ov_by_ip[ip] = oneview_client
-            _set_manager_into_resource_map(ip, oneview_client)
+            _set_manager_into_appliances_map(ip, oneview_client)
 
         redfish_token = tokens[0]
 
@@ -153,7 +153,7 @@ def login_conf_mode():
             oneview_client = connection.new_oneview_client(ip)
             clients_ov_by_ip[ip] = oneview_client
 
-            _set_manager_into_resource_map(ip, oneview_client)
+            _set_manager_into_appliances_map(ip, oneview_client)
 
         _set_new_clients_by_ip(clients_ov_by_ip)
     except HPOneViewException as e:
@@ -194,6 +194,6 @@ def get_oneview_client(ip_oneview):
         return _get_oneview_client_by_ip(ip_oneview)
 
 
-def _set_manager_into_resource_map(ip, oneview_client):
+def _set_manager_into_appliances_map(ip, oneview_client):
     manager = oneview_client.appliance_node_information.get_version()
-    multiple_oneview.set_map_resources_entry(manager["uuid"], ip)
+    multiple_oneview.set_map_appliances_entry(ip, manager["uuid"])

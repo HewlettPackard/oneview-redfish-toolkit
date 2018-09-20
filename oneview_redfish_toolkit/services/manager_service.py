@@ -18,9 +18,20 @@
 from oneview_redfish_toolkit import multiple_oneview
 
 
-def get_oneview_ip_by_manager_uuid(uuid):
+def get_manager_uuid(resource_id):
     map_resources = multiple_oneview.get_map_resources()
-    manager_ip = map_resources[uuid]
+    ov_ip = map_resources[resource_id]
 
-    return manager_ip
+    map_appliances = multiple_oneview.get_map_appliances()
+    manager_uuid = map_appliances[ov_ip]
 
+    return manager_uuid
+
+
+def get_oneview_ip_by_manager_uuid(uuid):
+    map_appliances = multiple_oneview.get_map_appliances()
+    for ov_ip, appliance_uuid in map_appliances.items():
+        if appliance_uuid == uuid:
+            return ov_ip
+
+    return None

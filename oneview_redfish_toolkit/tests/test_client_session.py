@@ -34,6 +34,7 @@ class TestAuthentication(unittest.TestCase):
 
     def setUp(self):
         client_session.init_map_clients()
+        multiple_oneview.init_map_appliances()
 
     @mock.patch.object(client_session, 'uuid')
     @mock.patch('oneview_redfish_toolkit.connection.OneViewClient')
@@ -65,7 +66,6 @@ class TestAuthentication(unittest.TestCase):
         iter_conns_ov = iter(connection_list)
 
         client_session.init_map_clients()
-        multiple_oneview.init_map_resources()
 
         get_oneview_multiple_ips.return_value = list_ips
 
@@ -109,7 +109,6 @@ class TestAuthentication(unittest.TestCase):
         list_ips = list(tokens_ov.keys())
 
         client_session.init_map_clients()
-        multiple_oneview.init_map_resources()
 
         get_oneview_multiple_ips.return_value = list_ips
 

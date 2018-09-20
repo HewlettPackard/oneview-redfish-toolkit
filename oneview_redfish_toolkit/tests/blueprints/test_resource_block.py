@@ -463,29 +463,31 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(multiple_oneview, 'get_map_resources')
-    def test_get_computer_system(self, get_map_resources):
+    @mock.patch.object(multiple_oneview, 'get_map_appliances')
+    def test_get_computer_system(self, get_map_appliances, get_map_resources):
         with open(
             'oneview_redfish_toolkit/mockups/redfish'
             '/ResourceBlockComputerSystem.json'
         ) as f:
             expected_computer_system = json.load(f)
 
-        # Loading ApplianceNodeInfoList mockup result
+        # Loading ApplianceNodeInfo mockup result
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
-                'ApplianceNodeInfoList.json'
+                'ApplianceNodeInfo.json'
         ) as f:
-            self.appliance_info_list = json.load(f)
+            appliance_info = json.load(f)
 
-        appliance_ip = "10.0.0.1"
+        map_appliance = OrderedDict({
+            "10.0.0.1": appliance_info["uuid"]
+        })
 
         get_map_resources.return_value = OrderedDict({
-            self.appliance_info_list[0]["uuid"]: appliance_ip
+            "30303437-3034-4D32-3230-313133364752": "10.0.0.1",
         })
+        get_map_appliances.return_value = map_appliance
         self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
-        self.oneview_client.appliance_node_information.get_version.return_value = \
-            self.appliance_info_list
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"

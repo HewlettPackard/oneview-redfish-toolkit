@@ -36,6 +36,8 @@ from oneview_redfish_toolkit.api.storage_resource_block \
     import StorageResourceBlock
 from oneview_redfish_toolkit.blueprints.util.response_builder \
     import ResponseBuilder
+from oneview_redfish_toolkit.services.manager_service import \
+    get_manager_uuid
 from oneview_redfish_toolkit.services.zone_service import ZoneService
 
 resource_block = Blueprint("resource_block", __name__)
@@ -113,11 +115,10 @@ def get_resource_block_computer_system(uuid):
     """
 
     server_hardware = g.oneview_client.server_hardware.get(uuid)
-    managers = \
-        g.oneview_client.appliance_node_information.get_version()
+    manager_uuid = get_manager_uuid(uuid)
 
     computer_system = ResourceBlockComputerSystem(
-        server_hardware, managers)
+        server_hardware, manager_uuid)
 
     return ResponseBuilder.success(
         computer_system,

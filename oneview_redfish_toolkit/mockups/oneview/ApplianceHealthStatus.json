@@ -1,0 +1,39 @@
+{
+    "members": [
+        {
+            "capacity": "15951 MB ",
+            "resourceId": "VIRTUAL",
+            "severity": "INFO",
+            "statusMessage": "SUFFICIENT_MEMORY",
+            "resourceType": "MEMORY",
+            "available": "1459 MB"
+        },
+        {
+            "capacity": "4",
+            "resourceId": "VIRTUAL",
+            "severity": "INFO",
+            "statusMessage": "SUFFICIENT_VCPUS",
+            "resourceType": "CPU",
+            "available": "4"
+        },
+        {
+            "capacity": "160 GB",
+            "resourceId": "VIRTUAL",
+            "severity": "INFO",
+            "statusMessage": "SUFFICIENT_DISK_SPACE",
+            "resourceType": "DISK",
+            "available": "16.01 GB"
+        }
+    ],
+    "created": "",
+    "total": 3,
+    "start": 0,
+    "eTag": "",
+    "uri": "/rest/appliance/health-status?start=0&count=3",
+    "modified": "",
+    "type": "ApplianceHealthStatus",
+    "category": "appliance",
+    "prevPageUri": "",
+    "nextPageUri": "",
+    "count": 3
+}

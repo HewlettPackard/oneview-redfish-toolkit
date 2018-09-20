@@ -1,0 +1,20 @@
+{
+  "category": "appliance",
+  "compatibility": "4.10",
+  "type": "NodeVersionDto4",
+  "serialNumber": "VMware-421a107dd3ea1dc9-76d4400188dbcec2",
+  "uuid": "b08eb206-a904-46cf-9172-dcdff2fa9639",
+  "revision": "02",
+  "family": "HPE OneView VM",
+  "major": "4",
+  "eTag": "",
+  "modelNumber": "HPE OneView - Demo VM,",
+  "platformType": "hardware",
+  "uri": "/rest/appliance/nodeinfo/version",
+  "build": "0351081",
+  "minor": "10",
+  "date": "2018-06-20T19:34:46+0000",
+  "softwareVersion": "4.10.02-0351081",
+  "modified": "",
+  "created": ""
+}

@@ -26,26 +26,26 @@ class TestManager(BaseTest):
     def setUp(self):
         """Tests preparation"""
 
-        # Loading ApplianceNodeInfoList mockup result
+        # Loading ApplianceNodeInfo mockup result
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
-            'ApplianceNodeInfoList.json'
+            'ApplianceNodeInfo.json'
         ) as f:
-            self.appliance_node_info_list = json.load(f)
+            self.appliance_node_info = json.load(f)
 
-        # Loading ApplianceStateList mockup result
+        # Loading ApplianceState mockup result
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
-                'ApplianceStateList.json'
+                'ApplianceState.json'
         ) as f:
-            self.appliance_state_list = json.load(f)
+            self.appliance_state = json.load(f)
 
-        # Loading ApplianceHealthStatusList mockup result
+        # Loading ApplianceHealthStatus mockup result
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
-                'ApplianceHealthStatusList.json'
+                'ApplianceHealthStatus.json'
         ) as f:
-            self.appliance_health_status_list = json.load(f)
+            self.appliance_health_status = json.load(f)
 
         # Loading Manager mockup result
         with open(
@@ -58,9 +58,9 @@ class TestManager(BaseTest):
         # Tests the serialize function result against known result
 
         computer_system = Manager(
-            self.appliance_node_info_list[0],
-            self.appliance_state_list[0],
-            self.appliance_health_status_list[0]
+            self.appliance_node_info,
+            self.appliance_state,
+            self.appliance_health_status
         )
 
         result = json.loads(computer_system.serialize())

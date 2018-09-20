@@ -20,12 +20,12 @@ import logging
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
-from flask import g
 from flask import Response
 from flask_api import status
 
 # own libs
 from oneview_redfish_toolkit.api.manager_collection import ManagerCollection
+from oneview_redfish_toolkit import multiple_oneview
 
 manager_collection = Blueprint("manager_collection", __name__)
 
@@ -46,8 +46,7 @@ def get_manager_collection():
     """
 
     try:
-        oneview_appliances = \
-            g.oneview_client.appliance_node_information.get_version()
+        oneview_appliances = multiple_oneview.get_map_appliances()
         mc = ManagerCollection(oneview_appliances)
 
         # Build redfish json

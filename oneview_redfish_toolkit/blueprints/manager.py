@@ -25,10 +25,10 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Own libs
-from oneview_redfish_toolkit import client_session
-from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.manager import Manager
+from oneview_redfish_toolkit import client_session
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.services.manager_service import \
     get_oneview_ip_by_manager_uuid
 

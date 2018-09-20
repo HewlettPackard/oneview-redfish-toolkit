@@ -56,8 +56,8 @@ class ManagerCollection(RedfishJsonValidator):
     def _set_resource_links(self, oneview_appliances):
         """Populates self.redfish["Members"] with the links resources"""
 
-        for appliance in oneview_appliances:
+        for _, appliance_uuid in oneview_appliances.items():
             link_dict = collections.OrderedDict()
             link_dict["@odata.id"] = \
-                "/redfish/v1/Managers/" + appliance["uuid"]
+                "/redfish/v1/Managers/" + appliance_uuid
             self.redfish["Members"].append(link_dict)

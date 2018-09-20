@@ -18,6 +18,7 @@
     Tests for manager_collection.py
 """
 
+from collections import OrderedDict
 import json
 
 from oneview_redfish_toolkit.api.manager_collection \
@@ -31,19 +32,18 @@ class TestManagerCollection(BaseTest):
     def setUp(self):
         """Tests preparation"""
 
-        # Loading ApplianceNodeInfoList mockup result
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/'
-                'ApplianceNodeInfoList.json'
-        ) as f:
-            self.appliance_info_list = json.load(f)
-
         # Loading ManagerCollection result mockup
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
             'ManagerCollection.json'
         ) as f:
             self.manager_collection_mockup = json.load(f)
+
+        self.appliance_info_list = OrderedDict()
+        self.appliance_info_list["10.0.0.1"] = \
+            "b08eb206-a904-46cf-9172-dcdff2fa9639"
+        self.appliance_info_list["10.0.0.2"] = \
+            "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50"
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated

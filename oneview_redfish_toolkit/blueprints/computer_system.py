@@ -42,6 +42,8 @@ from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 from oneview_redfish_toolkit.services.computer_system_service import \
     ComputerSystemService
+from oneview_redfish_toolkit.services.manager_service import \
+    get_manager_uuid
 
 computer_system = Blueprint("computer_system", __name__)
 
@@ -76,8 +78,8 @@ def get_computer_system(uuid):
             drives = _get_drives_from_sp(resource)
             spt_uuid = computer_system_service.\
                 get_server_profile_template_from_sp(resource["uri"])
-            managers = \
-                g.oneview_client.appliance_node_information.get_version()
+
+            manager_uuid = get_manager_uuid(resource['serverHardwareTypeUri'])
 
             # Build Computer System object and validates it
             computer_system_resource = ComputerSystem(server_hardware,
@@ -85,7 +87,7 @@ def get_computer_system(uuid):
                                                       resource,
                                                       drives,
                                                       spt_uuid,
-                                                      managers)
+                                                      manager_uuid)
         else:
             raise OneViewRedfishError(
                 'Computer System UUID {} not found'.format(uuid))

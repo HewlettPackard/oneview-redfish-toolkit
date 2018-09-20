@@ -32,6 +32,7 @@ from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -161,6 +162,7 @@ class TestSession(BaseFlaskTest):
             expected_session_mockup = json.load(f)
 
         client_session.init_map_clients()
+        multiple_oneview.init_map_appliances()
         get_authentication_mode.return_value = 'session'
 
         # Create mock response
@@ -216,6 +218,7 @@ class TestSession(BaseFlaskTest):
             expected_session_collection = json.load(f)
 
         client_session.init_map_clients()
+        multiple_oneview.init_map_appliances()
 
         session_ids = self.session_ids
         uuid_mock.uuid4.side_effect = session_ids
@@ -269,6 +272,7 @@ class TestSession(BaseFlaskTest):
             expected_session_mockup = json.load(f)
 
         client_session.init_map_clients()
+        multiple_oneview.init_map_appliances()
         get_authentication_mode.return_value = 'session'
 
         # Create mock response
