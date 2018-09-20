@@ -56,12 +56,6 @@ class TestZoneCollection(BaseFlaskTest):
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview'
-                '/Enclosures.json'
-        ) as f:
-            self.enclosures = json.load(f)
-
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview'
                 '/DriveEnclosureList.json'
         ) as f:
             self.drive_enclosure_list = json.load(f)
@@ -100,7 +94,6 @@ class TestZoneCollection(BaseFlaskTest):
             self.server_profile_template_list
         ov_api.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
-        ov_api.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
@@ -197,7 +190,6 @@ class TestZoneCollection(BaseFlaskTest):
             self.server_profile_template_list
         ov_api.drive_enclosures.get_all.return_value = \
             drive_enclosure_list
-        ov_api.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
