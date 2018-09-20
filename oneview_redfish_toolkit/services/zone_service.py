@@ -120,23 +120,24 @@ class ZoneService(object):
         return zone_ids
 
     def _get_enclosures_uris_with_valid_drive_enclosures(self):
-        all_enclosures_uris = [enclosure["uri"] for enclosure in
-                               self.ov_client.enclosures.get_all()]
-
         valid_enclosures_uris = list()
+        drive_enclosures_list = self.ov_client.drive_enclosures.get_all()
 
-        for enclosure_uri in all_enclosures_uris:
-            drive_enclosures = self.ov_client.drive_enclosures.get_all(
-                filter="locationUri='{}'".format(enclosure_uri))
-
-            for drive_enclosure in drive_enclosures:
-                if drive_enclosure["driveBays"]:
-                    valid_enclosures_uris.append(enclosure_uri)
-
-        encl_count = len(all_enclosures_uris)
+        for drive_encl in drive_enclosures_list:
+            # Check if have valid driver enclosure
+            if drive_encl["driveBays"]:
+                # Get enclosure uri from driver enclosure
+                for location_entry in \
+                    drive_encl['driveEnclosureLocation']['locationEntries']:
+                    if location_entry['type'] == 'Enclosure':
+                        valid_enclosures_uris.append(location_entry['value'])
+                        break
+        
+        drive_encl_count = len(drive_enclosures_list)
         valid_encl_count = len(valid_enclosures_uris)
         logging_service.debug(COUNTER_LOGGER_NAME,
-                              "Enclosures retrieved: " + str(encl_count),
+                              "Drive Enclosures retrieved: " +
+                              str(drive_encl_count),
                               "Valid Enclosures: " + str(valid_encl_count))
 
         return valid_enclosures_uris
