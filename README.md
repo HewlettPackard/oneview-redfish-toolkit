@@ -1,4 +1,4 @@
-[![Waffle.io - Columns and their card count](https://badge.waffle.io/HewlettPackard/oneview-redfish-toolkit.svg?columns=Ready,In%20Progress,Under%20Review)](https://waffle.io/HewlettPackard/oneview-redfish-toolkit) [![Build Status](https://travis-ci.org/HewlettPackard/oneview-redfish-toolkit.svg?branch=master)](https://travis-ci.org/HewlettPackard/oneview-redfish-toolkit)
+[![Waffle.io - Columns and their card count](https://badge.waffle.io/HewlettPackard/oneview-redfish-toolkit.svg?columns=Ready,In%20Progress,Under%20Review)](https://waffle.io/HewlettPackard/oneview-redfish-toolkit) [![Build Status](https://travis-ci.org/HewlettPackard/oneview-redfish-toolkit.svg?branch=master)](https://travis-ci.org/HewlettPackard/oneview-redfish-toolkit) [![Coverage Status](https://coveralls.io/repos/github/HewlettPackard/oneview-redfish-toolkit/badge.svg?branch=master)](https://coveralls.io/github/HewlettPackard/oneview-redfish-toolkit?branch=master)
 
 # HPE OneView Redfish Toolkit
 

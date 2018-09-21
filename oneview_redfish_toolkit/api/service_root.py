@@ -71,7 +71,7 @@ class ServiceRoot(RedfishJsonValidator):
             "/redfish/v1/$metadata#ServiceRoot.ServiceRoot"
         self.redfish["@odata.id"] = "/redfish/v1/"
         self.redfish["@Redfish.Copyright"] = \
-            "Copyright (2017) Hewlett Packard Enterprise Development LP"
+            "Copyright (2017-2018) Hewlett Packard Enterprise Development LP"
 
         self._validate()
 

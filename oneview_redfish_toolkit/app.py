@@ -409,6 +409,8 @@ def start_cherrypy(app,
     if not is_dev_env:
         cherrypy.config.update({'environment': 'production'})
 
+    cherrypy.config.update(config.get_cherrypy_config())
+
     cherrypy.config.update({
         'log.screen': False,
         'server.socket_port': port,

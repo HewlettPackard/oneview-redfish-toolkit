@@ -1,7 +1,6 @@
-#!/bin/bash
 # -*- coding: utf-8 -*-
 
-# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+# Copyright (2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -14,6 +13,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-PYTHONPATH=${PYTHONPATH:+$PYTHONPATH:}.
-export PYTHONPATH=$PYTHONPATH
-python3 oneview_redfish_toolkit/app.py --config oneview_redfish_toolkit/conf/redfish.conf --log-config oneview_redfish_toolkit/conf/logging.conf --dev
+
+import logging
+import threading
+
+COUNTER_LOGGER_NAME = 'qtty'
+
+
+def debug(logger_name, *texts):
+    if logging.getLogger().isEnabledFor(logging.DEBUG):
+        msg = "Thread {}: ".format(threading.get_ident())
+        msg += ", ".join(texts)
+        logger = logging.getLogger(logger_name)
+        logger.debug(msg)

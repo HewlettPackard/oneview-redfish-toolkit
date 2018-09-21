@@ -172,15 +172,20 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
 
     if logging.getLogger().isEnabledFor(logging.DEBUG):
         start_time = time.time()
-        result = ov_function(*args, **kwargs)
-        elapsed_time = time.time() - start_time
 
-        g.elapsed_time_ov += elapsed_time
+        try:
+            result = ov_function(*args, **kwargs)
+            return result
+        except Exception as e:
+            raise e
+        finally:
+            elapsed_time = time.time() - start_time
 
-        logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-            "Thread {} OneView request: {}.{}: {}".
-            format(threading.get_ident(), resource,
-                   function, elapsed_time))
-        return result
+            g.elapsed_time_ov += elapsed_time
+
+            logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
+                "Thread {} OneView request: {}.{}: {}".
+                format(threading.get_ident(), resource,
+                       function, elapsed_time))
 
     return ov_function(*args, **kwargs)

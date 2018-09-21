@@ -3,8 +3,11 @@ python:
 - 3.5
 install:
 - pip3 install tox
+- pip3 install coveralls
 script:
 - tox
 notifications:
   slack:
     secure: of6RSkorlhoAXrB95cDq4bK/SbFsd3vdavHrrXZxE/00+anAYdVN5jMLJncxK8RE7XBApdpuRE4Ddys5YNl5U2qTggyrcxx3Fdlr/1B5BFzO4Rkelp08O+wEZR2ks/bZn1U3uq1p2zdlvdQ9ezv2GVVeeqvB6yXHMQz623IAYe4wrZs1V/4nTzzT1qiQh7Zwkw4UvcYhkp2kUcgye7KzRw+yCf1JBrtax8jLfP8eje7yXOHrX7sqDXBd2douqK0Dgs+yuMZ+e9uuQHLEYtDlvdIfAlmDrVn4+kohHa2kP6iJi7AbyrwHwxnaL4gWygsLIbYNYNznxp5Ll5sXfonyCULiJ/oCH5Kz4HxIIxxkFitI2LZxjfEwhukesClt6epy5OJxviLtdrucw/K5JnALhA+Kmvcrut/iZrb9rdYKkYSe1XFA0hhtg6rNO3V0UicRta9EWb/13e9ZD2DQ5e61iQKUNydgK2uud5K5PNGh/YI/XVTMNwtJwN+O2MFoZFPyzh6acopGiZXRdzLofbwg6KPGzAWyZbZ6YVUOAL0C7GoCTc9Z88/AaW6z9ziJ8gElW2FnxJKEf6ChFzcWh76kh14K4uz+Ze75/fTwDPWnQffBwmrefFrngqsy7rcNCLNy7hiH8jk7pUN8SbhC3e7edB+7Np2yF/er4Dj5+Fyqv3o=
+after_success:
+- coveralls
