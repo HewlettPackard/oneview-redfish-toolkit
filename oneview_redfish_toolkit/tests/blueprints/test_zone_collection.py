@@ -44,15 +44,9 @@ class TestZoneCollection(BaseFlaskTest):
             self.zone_collection_mockup = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'LogicalEnclByIndexAssociationWithEnclGroup.json'
+            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosures.json'
         ) as f:
-            self.logical_encl_assoc = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosure.json'
-        ) as f:
-            self.logical_encl = json.load(f)
+            self.logical_encl_list = json.load(f)
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview'
@@ -87,8 +81,8 @@ class TestZoneCollection(BaseFlaskTest):
 
         ov_api = self.oneview_client
 
-        ov_api.connection.get.return_value = self.logical_encl_assoc
-        ov_api.logical_enclosures.get.return_value = self.logical_encl
+        ov_api.logical_enclosures.get_all.return_value = \
+            self.logical_encl_list
 
         ov_api.server_profile_templates.get_all.return_value = \
             self.server_profile_template_list
@@ -105,18 +99,9 @@ class TestZoneCollection(BaseFlaskTest):
 
         self.assertEqualMockup(self.zone_collection_mockup, result)
 
-        spt_with_storage_ctrler = self.server_profile_template_list[0]
-        ov_api.connection.get.assert_called_with(
-            "/rest/index/associations/resources"
-            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
-            + "&category=logical-enclosures")
-        ov_api.connection.get.assert_called_with(
-            "/rest/index/associations/resources"
-            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
-            + "&category=logical-enclosures")
-        ov_api.logical_enclosures.get.assert_called_with(
-            self.logical_encl["uri"])
         ov_api.drive_enclosures.get_all.assert_called_with()
+        ov_api.logical_enclosures.get_all.assert_called_with()
+        ov_api.enclosures.get_all.assert_called_with()
 
     def test_get_zone_collection_empty(self):
         """Tests ZoneCollection with an empty list"""
@@ -140,8 +125,8 @@ class TestZoneCollection(BaseFlaskTest):
 
     def test_get_zone_collection_without_drive_enclosure_associated(self):
         ov_api = self.oneview_client
-        ov_api.connection.get.return_value = self.logical_encl_assoc
-        ov_api.logical_enclosures.get.return_value = self.logical_encl
+        ov_api.logical_enclosures.get_all.return_value = \
+            self.logical_encl_list
 
         zone_collection_mockup = copy.deepcopy(self.zone_collection_mockup)
         zone_collection_mockup["Members@odata.count"] = 1
@@ -160,24 +145,15 @@ class TestZoneCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(zone_collection_mockup, result)
 
-        spt_with_storage_ctrler = self.server_profile_template_list[0]
-        ov_api.connection.get.assert_called_with(
-            "/rest/index/associations/resources"
-            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
-            + "&category=logical-enclosures")
-        ov_api.connection.get.assert_called_with(
-            "/rest/index/associations/resources"
-            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
-            + "&category=logical-enclosures")
-        ov_api.logical_enclosures.get.assert_called_with(
-            self.logical_encl["uri"])
         ov_api.drive_enclosures.get_all.assert_called_with()
+        ov_api.logical_enclosures.get_all.assert_called_with()
+        ov_api.enclosures.get_all.assert_called_with()
 
     def test_get_zone_collection_with_drive_enclosure_without_drives(self):
         ov_api = self.oneview_client
 
-        ov_api.connection.get.return_value = self.logical_encl_assoc
-        ov_api.logical_enclosures.get.return_value = self.logical_encl
+        ov_api.logical_enclosures.get_all.return_value = \
+            self.logical_encl_list
 
         zone_collection_mockup = copy.deepcopy(self.zone_collection_mockup)
         zone_collection_mockup["Members@odata.count"] = 1
@@ -201,15 +177,6 @@ class TestZoneCollection(BaseFlaskTest):
 
         self.assertEqualMockup(zone_collection_mockup, result)
 
-        spt_with_storage_ctrler = self.server_profile_template_list[0]
-        ov_api.connection.get.assert_called_with(
-            "/rest/index/associations/resources"
-            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
-            + "&category=logical-enclosures")
-        ov_api.connection.get.assert_called_with(
-            "/rest/index/associations/resources"
-            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
-            + "&category=logical-enclosures")
-        ov_api.logical_enclosures.get.assert_called_with(
-            self.logical_encl["uri"])
         ov_api.drive_enclosures.get_all.assert_called_with()
+        ov_api.logical_enclosures.get_all.assert_called_with()
+        ov_api.enclosures.get_all.assert_called_with()

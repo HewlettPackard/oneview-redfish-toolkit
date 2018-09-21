@@ -90,15 +90,9 @@ class TestComputerSystemCollection(BaseFlaskTest):
             server_profile_template_list = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'LogicalEnclByIndexAssociationWithEnclGroup.json'
+            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosures.json'
         ) as f:
-            logical_encl_assoc = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosure.json'
-        ) as f:
-            logical_encl = json.load(f)
+            logical_encl_list = json.load(f)
 
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
@@ -117,10 +111,8 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.oneview_client.server_profile_templates.get_all.return_value = \
             server_profile_template_list
 
-        self.oneview_client.connection.get\
-            .return_value = logical_encl_assoc
-        self.oneview_client.logical_enclosures.get\
-            .return_value = logical_encl
+        self.oneview_client.logical_enclosures.get_all.return_value = \
+            logical_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             drive_enclosure
 
@@ -137,11 +129,6 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.oneview_client.\
             server_profile_templates.get_all.assert_called_with()
 
-        spt_with_storage_ctrler = server_profile_template_list[0]
-        self.oneview_client.connection.get.assert_called_with(
-            "/rest/index/associations/resources"
-            "?parenturi=" + spt_with_storage_ctrler["enclosureGroupUri"]
-            + "&category=logical-enclosures")
-        self.oneview_client.logical_enclosures.get.assert_called_with(
-            logical_encl["uri"])
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
+        self.oneview_client.logical_enclosures.get_all.assert_called_with()
+        self.oneview_client.enclosures.get_all.assert_called_with()

@@ -76,15 +76,9 @@ class TestResourceBlock(BaseFlaskTest):
             self.server_profile_templates = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'LogicalEnclByIndexAssociationWithEnclGroup.json'
+            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosures.json'
         ) as f:
-            self.log_encl_index_assoc = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosure.json'
-        ) as f:
-            self.log_encl = json.load(f)
+            self.log_encl_list = json.load(f)
 
         with open(
                 'oneview_redfish_toolkit/mockups/redfish'
@@ -131,12 +125,11 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.index_resources.get.return_value = self.drive
         self.oneview_client.connection.get.side_effect = [
             self.drive_index_tree,
-            self.log_encl_index_assoc
         ]
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
         self.oneview_client.\
-            logical_enclosures.get.return_value = self.log_encl
+            logical_enclosures.get_all.return_value = self.log_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
@@ -156,10 +149,6 @@ class TestResourceBlock(BaseFlaskTest):
             [
                 call("/rest/index/trees/rest/drives/"
                      "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e?parentDepth=3"),
-                call("/rest/index/associations/resources"
-                     "?parenturi=/rest/enclosure-groups/"
-                     "bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa"
-                     "&category=logical-enclosures"),
             ])
         self.oneview_client.\
             server_profile_templates.get_all.assert_called_with()
@@ -184,11 +173,11 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.index_resources.get.return_value = drive_composed
         self.oneview_client.connection.get.side_effect = [
             self.drive_composed_index_tree,
-            self.log_encl_index_assoc
         ]
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get_all.return_value = \
+            self.log_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
@@ -208,10 +197,6 @@ class TestResourceBlock(BaseFlaskTest):
             [
                 call("/rest/index/trees/rest/drives/"
                      "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e?parentDepth=3"),
-                call("/rest/index/associations/resources"
-                     "?parenturi=/rest/enclosure-groups/"
-                     "bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa"
-                     "&category=logical-enclosures"),
             ])
         self.oneview_client.\
             server_profile_templates.get_all.assert_called_with()
@@ -224,9 +209,8 @@ class TestResourceBlock(BaseFlaskTest):
             self.server_hardware
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        self.oneview_client.connection.get.return_value = \
-            self.log_encl_index_assoc
-        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get_all.return_value = \
+            self.log_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
@@ -245,9 +229,8 @@ class TestResourceBlock(BaseFlaskTest):
         expected_rb = copy.deepcopy(self.expected_sh_resource_block)
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        self.oneview_client.connection.get.return_value = \
-            self.log_encl_index_assoc
-        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get_all.return_value = \
+            self.log_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
@@ -286,9 +269,8 @@ class TestResourceBlock(BaseFlaskTest):
         expected_rb["Links"].pop("ComputerSystems")
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        self.oneview_client.connection.get.return_value = \
-            self.log_encl_index_assoc
-        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get_all.return_value = \
+            self.log_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
@@ -327,9 +309,8 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        self.oneview_client.connection.get.return_value = \
-            self.log_encl_index_assoc
-        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get_all.return_value = \
+            self.log_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
@@ -353,12 +334,6 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.oneview_client.server_hardware.get.assert_called_with(
             self.server_hardware["uuid"])
-        self.oneview_client.connection.get.assert_called_with(
-            "/rest/index/associations/resources"
-            "?parenturi=/rest/enclosure-groups/"
-            "bc41f38d-e8ce-4241-acd1-00b2d8c5d0fa"
-            "&category=logical-enclosures"
-        )
 
         encl_group_uri = self.server_hardware["serverGroupUri"]
         sh_type_uri = self.server_hardware["serverHardwareTypeUri"]
@@ -382,9 +357,8 @@ class TestResourceBlock(BaseFlaskTest):
             self.resource_not_found
         self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
-        self.oneview_client.connection.get.return_value = \
-            self.log_encl_index_assoc
-        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get_all.return_value = \
+            self.log_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
@@ -413,9 +387,8 @@ class TestResourceBlock(BaseFlaskTest):
             self.resource_not_found
         self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_templates[1]
-        self.oneview_client.connection.get.return_value = \
-            self.log_encl_index_assoc
-        self.oneview_client.logical_enclosures.get.return_value = self.log_encl
+        self.oneview_client.logical_enclosures.get_all.return_value = \
+            self.log_encl_list
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"

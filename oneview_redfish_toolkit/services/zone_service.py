@@ -72,10 +72,11 @@ class ZoneService(object):
         return template_id, enclosure_id
 
     def _get_enclosures_uris_by_template(self, server_profile_template,
-            logical_encl_list):
+                                         logical_encl_list):
         enclosure_uris = []
         for logical_encl in logical_encl_list:
-            if logical_encl['enclosureGroupUri'] == server_profile_template['enclosureGroupUri']:
+            if logical_encl['enclosureGroupUri'] == \
+                server_profile_template['enclosureGroupUri']:
                 enclosure_uris += logical_encl['enclosureUris']
 
         #  the set keeps the elements without repetition
