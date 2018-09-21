@@ -181,6 +181,12 @@ def main(config_file_path, logging_config_file_path,
         app.register_blueprint(session)
 
     @app.before_request
+    def init_performance_data():
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            g.start_time_req = time.time()
+            g.elapsed_time_ov = 0
+
+    @app.before_request
     def check_authentication():
         # If authenticating do not check for anything
         if request.url_rule and \
@@ -197,12 +203,6 @@ def main(config_file_path, logging_config_file_path,
 
         g.oneview_client = \
             handler_multiple_oneview.MultipleOneViewResource()
-
-    @app.before_request
-    def init_performance_data():
-        if logging.getLogger().isEnabledFor(logging.DEBUG):
-            g.start_time_req = time.time()
-            g.elapsed_time_ov = 0
 
     @app.before_request
     def has_odata_version_header():
