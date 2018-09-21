@@ -21,6 +21,9 @@ from oneview_redfish_toolkit.api.zone import Zone
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit.services import logging_service
+from oneview_redfish_toolkit.services.logging_service import \
+    COUNTER_LOGGER_NAME
 from oneview_redfish_toolkit.services.zone_service import ZoneService
 
 zone = Blueprint("zone", __name__)
@@ -67,6 +70,14 @@ def get_zone(zone_uuid):
 
     zone_data = Zone(zone_uuid, profile_template, server_hardware_list,
                      enclosure_name, drives)
+
+    sh_count = len(server_hardware_list)
+    blocks_count = len(zone_data.redfish["Links"]["ResourceBlocks"])
+    logging_service.debug(
+        COUNTER_LOGGER_NAME,
+        "Drives retrieved: " + str(len(drives)),
+        "ServerHardware retrieved: " + str(sh_count),
+        "ResourceBlocks listed on Zone: " + str(blocks_count))
 
     return ResponseBuilder.success(zone_data)
 
