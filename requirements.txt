@@ -2,15 +2,15 @@
 # of appearance. Changing the order has an impact on the overall integration
 # process, which may cause wedges in the gate later.
 
-appdirs
-cherrypy
-configparser
-flask
-flask-api
-hpOneView
-jsonschema
-paste
-pbr>=2.0 # Apache-2.0
-pika
-pyOpenSSL
-validators
+appdirs==1.4.3
+cherrypy==18.0.1
+configparser==3.5.0
+flask==1.0.2
+flask-api==1.0
+hpOneView==4.7.0
+jsonschema==2.6.0
+paste==2.0.3
+pbr==4.2.0 # Apache-2.0
+pika==0.12.0
+pyOpenSSL==18.0.0
+validators==0.12.2
