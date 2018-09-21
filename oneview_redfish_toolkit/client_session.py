@@ -100,9 +100,12 @@ def _set_new_client_by_token(redfish_token, client_ov_by_ip):
         }
 
 
-def _get_session_id_by_token(token):
-    check_authentication(token)
-    return globals()['map_clients'][token]['session_id']
+def get_session_id_by_token(token):
+    session_dict = _get_map_clients().get(token)
+    if session_dict:
+        return session_dict['session_id']
+
+    return None
 
 
 def _set_new_clients_by_ip(ov_clients_by_ip):
@@ -137,7 +140,7 @@ def login(username, password):
 
         _set_new_client_by_token(redfish_token, clients_ov_by_ip)
 
-        return redfish_token, _get_session_id_by_token(redfish_token)
+        return redfish_token, get_session_id_by_token(redfish_token)
     except HPOneViewException as e:
         logging.exception('Unauthorized error: {}'.format(e))
         raise e

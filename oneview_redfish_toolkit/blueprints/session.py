@@ -21,6 +21,7 @@ import logging
 from flask import abort
 from flask import Blueprint
 from flask import request
+from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
@@ -48,6 +49,21 @@ def get_session(session_id):
         abort(status.HTTP_404_NOT_FOUND)
 
     return ResponseBuilder.success(Session(session_id))
+
+
+@session.route(SessionCollection.BASE_URI + "/" + "<session_id>",
+               methods=["DELETE"])
+def delete_session(session_id):
+    token = request.headers.get('x-auth-token')
+    session_for_delete = client_session.get_session_id_by_token(token)
+
+    if session_id != session_for_delete:
+        abort(status.HTTP_404_NOT_FOUND)
+
+    client_session.clear_session_by_token(token)
+
+    return Response(status=status.HTTP_204_NO_CONTENT,
+                    mimetype="application/json")
 
 
 @session.route(SessionCollection.BASE_URI, methods=["POST"])
