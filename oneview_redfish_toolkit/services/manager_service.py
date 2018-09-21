@@ -22,6 +22,9 @@ def get_manager_uuid(resource_id):
     map_resources = multiple_oneview.get_map_resources()
     ov_ip = map_resources[resource_id]
 
+    if not ov_ip:
+        return None
+
     map_appliances = multiple_oneview.get_map_appliances()
     manager_uuid = map_appliances[ov_ip]
 

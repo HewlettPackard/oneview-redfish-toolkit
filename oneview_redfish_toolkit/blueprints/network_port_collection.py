@@ -24,7 +24,6 @@ from oneview_redfish_toolkit.api.network_port_collection \
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 
-import logging
 
 network_port_collection = Blueprint("network_port_collection", __name__)
 
@@ -38,18 +37,12 @@ def get_network_port_collection(server_hardware_uuid, device_id):
         Return NetworkPortCollection Redfish JSON.
     """
 
-    try:
-        if device_id < 1:
-            raise Exception("Invalid id for device")
+    if device_id < 1:
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        server_hardware = g.oneview_client. \
-            server_hardware.get(server_hardware_uuid)
+    server_hardware = g.oneview_client. \
+        server_hardware.get(server_hardware_uuid)
 
-        npc = NetworkPortCollection(server_hardware, device_id)
+    npc = NetworkPortCollection(server_hardware, device_id)
 
-        return ResponseBuilder.success(npc)
-
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return ResponseBuilder.success(npc)

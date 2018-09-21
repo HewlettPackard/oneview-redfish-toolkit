@@ -258,27 +258,36 @@ def main(config_file_path, logging_config_file_path,
     @app.errorhandler(status.HTTP_401_UNAUTHORIZED)
     def unauthorized_error(error):
         """Creates a Unauthorized Error response"""
+        logging.error(error.description)
+
         return ResponseBuilder.error_401(error)
 
     @app.errorhandler(status.HTTP_403_FORBIDDEN)
     def forbidden(error):
         """Creates a Forbidden Error response"""
         logging.error(error.description)
+
         return ResponseBuilder.error_403(error)
 
     @app.errorhandler(status.HTTP_404_NOT_FOUND)
     def not_found(error):
         """Creates a Not Found Error response"""
+        logging.error(error.description)
+
         return ResponseBuilder.error_404(error)
 
     @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
     def internal_server_error(error):
         """Creates an Internal Server Error response"""
+        logging.error(error.description)
+
         return ResponseBuilder.error_500(error)
 
     @app.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
     def not_implemented(error):
         """Creates a Not Implemented Error response"""
+        logging.error(error.description)
+
         redfish_error = RedfishError(
             "ActionNotSupported", error.description)
         redfish_error.add_extended_info(
