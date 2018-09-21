@@ -1,0 +1,8 @@
+{
+    "@odata.type": "#ChassisCollection.ChassisCollection",
+    "Members": [],
+    "@odata.context": "/redfish/v1/$metadata#ChassisCollection.ChassisCollection",
+    "Members@odata.count": 0,
+    "Name": "MultiBlade Enclosure Chassis Collection",
+    "@odata.id": "/redfish/v1/Chassis"
+}

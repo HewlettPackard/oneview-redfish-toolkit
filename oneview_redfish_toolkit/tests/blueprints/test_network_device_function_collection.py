@@ -20,8 +20,11 @@ import json
 # 3rd party libs
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
+from unittest import mock
 
 # Module libs
+from oneview_redfish_toolkit.api.redfish_json_validator import \
+    RedfishJsonValidator
 from oneview_redfish_toolkit.blueprints import \
     network_device_function_collection
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
@@ -38,14 +41,15 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             network_device_function_collection.
             network_device_function_collection)
 
-    def test_get_network_device_function_collection(self):
-        """Tests NetworkDeviceFunctionCollection"""
-
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerHardware.json'
         ) as f:
-            server_hardware = json.load(f)
+            self.server_hardware = json.load(f)
+
+    def test_get_network_device_function_collection(self):
+        """Tests NetworkDeviceFunctionCollection"""
 
         # Loading NetworkDeviceFunctionCollection mockup result
         with open(
@@ -55,7 +59,8 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             network_device_function_collection_mockup = json.load(f)
 
         # Create mock response
-        self.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
 
         # Get NetworkDeviceFunctionCollection
         response = self.client.get(
@@ -110,3 +115,34 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(RedfishJsonValidator, "get_resource_by_id")
+    def test_get_network_device_function_collection_empty(self,
+                                                          get_resource_by_id):
+        """Tests NetworkDeviceFunctionCollection with empty list"""
+
+        # Loading NetworkDeviceFunctionCollectionEmpty mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'NetworkDeviceFunctionCollectionEmpty.json'
+        ) as f:
+            network_device_function_collection_mockup = json.load(f)
+
+        # Create mock response
+        self.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
+
+        # Get NetworkDeviceFunctionCollection
+        response = self.client.get(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752/"
+            "NetworkAdapters/3/NetworkDeviceFunctions/"
+        )
+
+        # Gets json from response
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(network_device_function_collection_mockup,
+                               result)

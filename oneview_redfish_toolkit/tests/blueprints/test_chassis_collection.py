@@ -65,65 +65,26 @@ class TestChassisCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, result)
 
-    def test_get_server_hardware_list_empty(self):
-        """Tests ChassisCollection with an empty server hardware list"""
+    def test_get_chassis_collection_empty(self):
+        """Tests ChassisCollection with an empty sh, enclosure and rack list"""
 
-        self.oneview_client.enclosures.get_all.return_value = [{}]
-        self.oneview_client.racks.get_all.return_value = [{}]
+        self.oneview_client.enclosures.get_all.return_value = []
+        self.oneview_client.racks.get_all.return_value = []
         self.oneview_client.server_hardware.get_all.return_value = []
 
         with open(
-                'oneview_redfish_toolkit/mockups/errors/'
-                'ServerHardwareListNotFound.json'
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'ChassisCollectionEmpty.json'
         ) as f:
-            server_hardware_list_not_found = json.load(f)
+            chassis_collection_empty = json.load(f)
 
         response = self.client.get("/redfish/v1/Chassis/")
 
         result = json.loads(response.data.decode("utf-8"))
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(server_hardware_list_not_found, result)
-
-    def test_get_enclosures_empty(self):
-        """Tests ChassisCollection with an empty enclosure list"""
-
-        self.oneview_client.enclosures.get_all.return_value = []
-
-        with open(
-                'oneview_redfish_toolkit/mockups/errors/'
-                'EnclosuresNotFound.json'
-        ) as f:
-            enclosures_not_found = json.load(f)
-
-        response = self.client.get("/redfish/v1/Chassis/")
-
-        result = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(enclosures_not_found, result)
-
-    def test_get_racks_empty(self):
-        """Tests ChassisCollection with an empty rack list"""
-
-        self.oneview_client.enclosures.get_all.return_value = [{}]
-        self.oneview_client.racks.get_all.return_value = []
-
-        with open(
-                'oneview_redfish_toolkit/mockups/errors/'
-                'RacksNotFound.json'
-        ) as f:
-            racks_not_found = json.load(f)
-
-        response = self.client.get("/redfish/v1/Chassis/")
-
-        result = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(racks_not_found, result)
+        self.assertEqual(chassis_collection_empty, result)
 
     def test_get_chassis_collection(self):
         """Tests ChassisCollection with a known Results"""

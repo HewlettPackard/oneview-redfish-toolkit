@@ -14,16 +14,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
-
-
-from flask import abort
 from flask import Blueprint
-from flask import Response
-from flask_api import status
 
 from oneview_redfish_toolkit.api.subscription_collection \
     import SubscriptionCollection
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 from oneview_redfish_toolkit import util
 
 
@@ -40,19 +36,8 @@ def get_subscription_collection():
         Returns:
                 JSON: JSON with EventSubscriptions.
     """
-    try:
-        # Build Subscription Collection object and validates it
-        sc = SubscriptionCollection(util.get_all_subscriptions())
 
-        # Build redfish json
-        json_str = sc.serialize()
+    # Build Subscription Collection object and validates it
+    sc = SubscriptionCollection(util.get_all_subscriptions())
 
-        # Build response and returns
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception(e)
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return ResponseBuilder.success(sc)

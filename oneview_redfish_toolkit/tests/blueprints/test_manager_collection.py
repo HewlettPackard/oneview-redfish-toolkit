@@ -64,49 +64,24 @@ class TestManagerCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, result)
 
-    def test_get_enclosures_empty(self):
+    def test_get_manager_collection_empty(self):
         """Tests ManagerCollection with enclosures response empty"""
 
+        self.oneview_client.server_hardware.get_all.return_value = []
         self.oneview_client.enclosures.get_all.return_value = []
 
         with open(
-                'oneview_redfish_toolkit/mockups/errors/'
-                'EnclosuresNotFound.json'
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'ManagerCollectionEmpty.json'
         ) as f:
-            enclosures_list_not_found = json.load(f)
+            manager_collection_empty = json.load(f)
+
         response = self.client.get("/redfish/v1/Managers/")
         result = json.loads(response.data.decode("utf-8"))
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(enclosures_list_not_found, result)
-
-    def test_get_server_hardware_list_empty(self):
-        """Tests ManagerCollection with server hardware response empty"""
-
-        # Loading enclosures mockup value
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/'
-                'Enclosures.json'
-        ) as f:
-            enclosures = json.load(f)
-
-        with open(
-                'oneview_redfish_toolkit/mockups/errors/'
-                'ServerHardwareListNotFound.json'
-        ) as f:
-            server_hardware_list_not_found = json.load(f)
-
-        self.oneview_client.enclosures.get_all.return_value = enclosures
-        self.oneview_client.server_hardware.get_all.return_value = []
-
-        response = self.client.get("/redfish/v1/Managers/")
-
-        result = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(server_hardware_list_not_found, result)
+        self.assertEqual(manager_collection_empty, result)
 
     def test_get_manager_collection(self):
         """Tests a valid ManagerCollection"""

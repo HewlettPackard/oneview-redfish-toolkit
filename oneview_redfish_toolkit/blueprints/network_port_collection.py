@@ -17,12 +17,12 @@
 from flask import abort
 from flask import Blueprint
 from flask import g
-from flask import Response
 from flask_api import status
 
-from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.network_port_collection \
     import NetworkPortCollection
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
 import logging
 
@@ -47,26 +47,8 @@ def get_network_port_collection(server_hardware_uuid, device_id):
 
         npc = NetworkPortCollection(server_hardware, device_id)
 
-        json_str = npc.serialize()
+        return ResponseBuilder.success(npc)
 
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-
-    except HPOneViewException as e:
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            logging.warning('Server hardware UUID {} not found'
-                            .format(server_hardware_uuid))
-            abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
-        elif e.msg.find("server-hardware") >= 0:
-            logging.exception(
-                'OneView Exception while looking for '
-                'server hardware: {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            logging.exception('Unexpected OneView Exception: {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
     except Exception as e:
         # In case of error print exception and abort
         logging.exception('Unexpected error: {}'.format(e))
