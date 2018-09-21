@@ -132,7 +132,7 @@ class ZoneService(object):
                     if location_entry['type'] == 'Enclosure':
                         valid_enclosures_uris.append(location_entry['value'])
                         break
-        
+
         drive_encl_count = len(drive_enclosures_list)
         valid_encl_count = len(valid_enclosures_uris)
         logging_service.debug(COUNTER_LOGGER_NAME,
