@@ -101,7 +101,6 @@ class TestZoneCollection(BaseFlaskTest):
 
         ov_api.drive_enclosures.get_all.assert_called_with()
         ov_api.logical_enclosures.get_all.assert_called_with()
-        ov_api.enclosures.get_all.assert_called_with()
 
     def test_get_zone_collection_empty(self):
         """Tests ZoneCollection with an empty list"""
@@ -147,7 +146,6 @@ class TestZoneCollection(BaseFlaskTest):
 
         ov_api.drive_enclosures.get_all.assert_called_with()
         ov_api.logical_enclosures.get_all.assert_called_with()
-        ov_api.enclosures.get_all.assert_called_with()
 
     def test_get_zone_collection_with_drive_enclosure_without_drives(self):
         ov_api = self.oneview_client
@@ -179,4 +177,3 @@ class TestZoneCollection(BaseFlaskTest):
 
         ov_api.drive_enclosures.get_all.assert_called_with()
         ov_api.logical_enclosures.get_all.assert_called_with()
-        ov_api.enclosures.get_all.assert_called_with()

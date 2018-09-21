@@ -152,8 +152,7 @@ class TestResourceBlock(BaseFlaskTest):
             ])
         self.oneview_client.\
             server_profile_templates.get_all.assert_called_with()
-        self.oneview_client.logical_enclosures.get.assert_called_with(
-            self.log_encl["uri"])
+        self.oneview_client.logical_enclosures.get_all.assert_called_with()
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
     def test_get_storage_resource_block_when_drive_is_composed(self):
@@ -200,8 +199,7 @@ class TestResourceBlock(BaseFlaskTest):
             ])
         self.oneview_client.\
             server_profile_templates.get_all.assert_called_with()
-        self.oneview_client.logical_enclosures.get.assert_called_with(
-            self.log_encl["uri"])
+        self.oneview_client.logical_enclosures.get_all.assert_called_with()
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
     def test_get_server_hardware_resource_block(self):
@@ -342,8 +340,7 @@ class TestResourceBlock(BaseFlaskTest):
                 filter=["enclosureGroupUri='" + encl_group_uri + "'",
                         "serverHardwareTypeUri='" + sh_type_uri + "'"]
                 )
-        self.oneview_client.logical_enclosures.get.assert_called_with(
-            self.log_encl["uri"])
+        self.oneview_client.logical_enclosures.get_all.assert_called_with()
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
     def test_get_spt_resource_block(self):
@@ -372,8 +369,7 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_resource_block, result)
 
-        self.oneview_client.logical_enclosures.get.assert_called_with(
-            self.log_encl["uri"])
+        self.oneview_client.logical_enclosures.get_all.assert_called_with()
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
     def test_get_spt_resource_when_template_has_not_valid_controller(self):
