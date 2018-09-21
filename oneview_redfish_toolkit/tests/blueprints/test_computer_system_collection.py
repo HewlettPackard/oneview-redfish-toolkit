@@ -131,4 +131,3 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
         self.oneview_client.logical_enclosures.get_all.assert_called_with()
-        self.oneview_client.enclosures.get_all.assert_called_with()
