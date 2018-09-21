@@ -15,13 +15,17 @@
 # under the License.
 
 # Python libs
+from collections import OrderedDict
 import json
+
 
 # 3rd party libs
 from flask_api import status
+from unittest import mock
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import manager_collection
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -29,8 +33,6 @@ class TestManagerCollection(BaseFlaskTest):
     """Tests for ManagerCollection blueprint
 
         Tests:
-            - server hardware empty
-            - enclosures empty
             - oneview unexpected exception
             - know manager collection
     """
@@ -46,7 +48,8 @@ class TestManagerCollection(BaseFlaskTest):
             self):
         """Tests ManagerCollection with an error"""
 
-        self.oneview_client.server_hardware.get_all.side_effect = Exception()
+        self.oneview_client.appliance_node_information.get_version.side_effect = \
+            Exception()
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
@@ -64,66 +67,9 @@ class TestManagerCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_500, result)
 
-    def test_get_enclosures_empty(self):
-        """Tests ManagerCollection with enclosures response empty"""
-
-        self.oneview_client.enclosures.get_all.return_value = []
-
-        with open(
-                'oneview_redfish_toolkit/mockups/errors/'
-                'EnclosuresNotFound.json'
-        ) as f:
-            enclosures_list_not_found = json.load(f)
-        response = self.client.get("/redfish/v1/Managers/")
-        result = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(enclosures_list_not_found, result)
-
-    def test_get_server_hardware_list_empty(self):
-        """Tests ManagerCollection with server hardware response empty"""
-
-        # Loading enclosures mockup value
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview/'
-                'Enclosures.json'
-        ) as f:
-            enclosures = json.load(f)
-
-        with open(
-                'oneview_redfish_toolkit/mockups/errors/'
-                'ServerHardwareListNotFound.json'
-        ) as f:
-            server_hardware_list_not_found = json.load(f)
-
-        self.oneview_client.enclosures.get_all.return_value = enclosures
-        self.oneview_client.server_hardware.get_all.return_value = []
-
-        response = self.client.get("/redfish/v1/Managers/")
-
-        result = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(server_hardware_list_not_found, result)
-
-    def test_get_manager_collection(self):
+    @mock.patch.object(multiple_oneview, 'get_map_appliances')
+    def test_get_manager_collection(self, get_map_appliances):
         """Tests a valid ManagerCollection"""
-
-        # Loading server_hardware mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerHardwareList.json'
-        ) as f:
-            server_hardware_list = json.load(f)
-
-        # Loading enclosures mockup value
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'Enclosures.json'
-        ) as f:
-            enclosures = json.load(f)
 
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
@@ -131,10 +77,14 @@ class TestManagerCollection(BaseFlaskTest):
         ) as f:
             manager_collection_mockup = json.load(f)
 
+        appliance_info_list = OrderedDict()
+        appliance_info_list["10.0.0.1"] = \
+            "b08eb206-a904-46cf-9172-dcdff2fa9639"
+        appliance_info_list["10.0.0.2"] = \
+            "c9ba5ca4-c1f8-48c7-9798-1e8b8897ef50"
+
         # Create mock response
-        self.oneview_client.server_hardware.get_all.return_value = \
-            server_hardware_list
-        self.oneview_client.enclosures.get_all.return_value = enclosures
+        get_map_appliances.return_value = appliance_info_list
 
         # Get ManagerCollection
         response = self.client.get("/redfish/v1/Managers/")

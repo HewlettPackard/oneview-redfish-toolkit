@@ -38,8 +38,12 @@ class TestBladeChassis(BaseTest):
         ) as f:
             self.blade_chassis_mockup = json.load(f)
 
+        self.manager_uuid = "b08eb206-a904-46cf-9172-dcdff2fa9639"
+
     def test_serialize_when_blade_chassis_has_computer_system(self):
-        blade_chassis = BladeChassis(self.server_hardware)
+        blade_chassis = BladeChassis(
+            self.server_hardware, self.manager_uuid
+        )
 
         result = json.loads(blade_chassis.serialize())
 
@@ -49,7 +53,9 @@ class TestBladeChassis(BaseTest):
         server_hardware = copy.deepcopy(self.server_hardware)
         server_hardware["serverProfileUri"] = None
 
-        blade_chassis = BladeChassis(server_hardware)
+        blade_chassis = BladeChassis(
+            server_hardware, self.manager_uuid
+        )
         result = json.loads(blade_chassis.serialize())
 
         expected_blade_result = copy.deepcopy(self.blade_chassis_mockup)
@@ -59,7 +65,9 @@ class TestBladeChassis(BaseTest):
 
         server_hardware["serverProfileUri"] = ""
 
-        blade_chassis = BladeChassis(server_hardware)
+        blade_chassis = BladeChassis(
+            server_hardware, self.manager_uuid
+        )
         result = json.loads(blade_chassis.serialize())
 
         self.assertEqualMockup(expected_blade_result, result)

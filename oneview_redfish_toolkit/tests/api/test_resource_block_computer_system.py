@@ -40,10 +40,14 @@ class TestResourceBlockComputerSystem(BaseTest):
         ) as f:
             self.server_hardware = json.load(f)
 
+        self.manager_uuid = "b08eb206-a904-46cf-9172-dcdff2fa9639"
+
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
         try:
-            computer_system = ResourceBlockComputerSystem(self.server_hardware)
+            computer_system = ResourceBlockComputerSystem(
+                self.server_hardware, self.manager_uuid
+            )
         except Exception as e:
             self.fail(
                 "Failed to instantiate ResourceBlockComputerSystem class."
@@ -54,7 +58,9 @@ class TestResourceBlockComputerSystem(BaseTest):
     def test_serialize(self):
         # Tests the serialize function result against known result
         try:
-            computer_system = ResourceBlockComputerSystem(self.server_hardware)
+            computer_system = ResourceBlockComputerSystem(
+                self.server_hardware, self.manager_uuid
+            )
         except Exception as e:
             self.fail(
                 "Failed to instantiate ResourceBlockComputerSystem class."

@@ -169,6 +169,7 @@ def main(config_file_path, logging_config_file_path,
     client_session.init_map_clients()
     client_session.init_gc_for_expired_sessions()
     multiple_oneview.init_map_resources()
+    multiple_oneview.init_map_appliances()
 
     if auth_mode == "conf":
         app.register_blueprint(event_service)

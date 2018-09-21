@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+from collections import OrderedDict
 import logging
 import threading
 import time
@@ -34,17 +35,29 @@ from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 
 
 def init_map_resources():
-    globals()['map_resources_ov'] = dict()
+    globals()['map_resources_ov'] = OrderedDict()
+
+
+def init_map_appliances():
+    globals()['map_appliances_ov'] = OrderedDict()
 
 
 def get_map_resources():
     return globals()['map_resources_ov']
 
 
+def get_map_appliances():
+    return globals()['map_appliances_ov']
+
+
 def set_map_resources_entry(resource_id, ip_oneview):
     lock = threading.Lock()
     with lock:
         get_map_resources()[resource_id] = ip_oneview
+
+
+def set_map_appliances_entry(ip_oneview, appliance_uuid):
+    get_map_appliances()[ip_oneview] = appliance_uuid
 
 
 def query_ov_client_by_resource(resource_id, resource, function,

@@ -28,12 +28,6 @@ from oneview_redfish_toolkit.api.util.power_option import \
 from oneview_redfish_toolkit.services.computer_system_service import \
     ComputerSystemService
 
-CRITICALITY_STATUS_MAPPING = {
-    "OK": 1,
-    "Warning": 2,
-    "Critical": 3
-}
-
 
 class ComputerSystem(RedfishJsonValidator):
     """Creates a Computer System Redfish dict
@@ -45,7 +39,8 @@ class ComputerSystem(RedfishJsonValidator):
     BASE_URI = '/redfish/v1/Systems'
 
     def __init__(self, server_hardware, server_hardware_types,
-                 server_profile, drives, server_profile_template_uuid):
+                 server_profile, drives, server_profile_template_uuid,
+                 manager_uuid):
         """ComputerSystem constructor
 
             Populates self.redfish with the contents of ServerHardware and
@@ -57,6 +52,7 @@ class ComputerSystem(RedfishJsonValidator):
                 server_profile: ServerProfile dict from OneView.
                 drives: Drives list from OneView
                 server_profile_template_uuid: ServerProfileTemplate uuid
+                manager_uuid: Oneview's current manager uuid
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -71,8 +67,8 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["SerialNumber"] = server_hardware["serialNumber"]
         self.redfish["Status"] = collections.OrderedDict()
         health = self._get_highest_status_for_sp_and_sh(
-            status_mapping.HEALTH_STATE_MAPPING.get(base_resource["status"]),
-            status_mapping.HEALTH_STATE_MAPPING.get(server_hardware["status"])
+            status_mapping.HEALTH_STATE.get(base_resource["status"]),
+            status_mapping.HEALTH_STATE.get(server_hardware["status"])
         )
         state, _ = status_mapping.\
             get_redfish_server_profile_state(base_resource)
@@ -113,7 +109,7 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["ManagedBy"] = list()
         self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
         self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
-            "/redfish/v1/Managers/" + server_hardware['uuid']
+            "/redfish/v1/Managers/" + manager_uuid
         self.redfish["Links"]["ResourceBlocks"] = list()
         self._fill_resource_block_members(drives,
                                           server_hardware,
@@ -135,10 +131,13 @@ class ComputerSystem(RedfishJsonValidator):
 
         self._validate()
 
-    def _get_highest_status_for_sp_and_sh(self, sp_status, sh_status):
+    @staticmethod
+    def _get_highest_status_for_sp_and_sh(sp_status, sh_status):
         all_status = dict()
-        all_status[sp_status] = CRITICALITY_STATUS_MAPPING[sp_status]
-        all_status[sh_status] = CRITICALITY_STATUS_MAPPING[sh_status]
+        all_status[sp_status] = \
+            status_mapping.CRITICALITY_STATUS[sp_status]
+        all_status[sh_status] = \
+            status_mapping.CRITICALITY_STATUS[sh_status]
 
         highest_status = max(all_status, key=(lambda key: all_status[key]))
 
