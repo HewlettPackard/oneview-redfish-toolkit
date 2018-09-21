@@ -26,6 +26,7 @@ from unittest.mock import call
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
+from oneview_redfish_toolkit import multiple_oneview
 
 
 class TestAuthentication(unittest.TestCase):
@@ -33,6 +34,7 @@ class TestAuthentication(unittest.TestCase):
 
     def setUp(self):
         client_session.init_map_clients()
+        multiple_oneview.init_map_appliances()
 
     @mock.patch.object(client_session, 'uuid')
     @mock.patch('oneview_redfish_toolkit.connection.OneViewClient')

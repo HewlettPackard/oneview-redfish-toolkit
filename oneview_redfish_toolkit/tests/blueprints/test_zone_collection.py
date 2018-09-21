@@ -56,12 +56,6 @@ class TestZoneCollection(BaseFlaskTest):
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview'
-                '/Enclosures.json'
-        ) as f:
-            self.enclosures = json.load(f)
-
-        with open(
-                'oneview_redfish_toolkit/mockups/oneview'
                 '/DriveEnclosureList.json'
         ) as f:
             self.drive_enclosure_list = json.load(f)
@@ -100,7 +94,6 @@ class TestZoneCollection(BaseFlaskTest):
             self.server_profile_template_list
         ov_api.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
-        ov_api.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
@@ -123,9 +116,7 @@ class TestZoneCollection(BaseFlaskTest):
             + "&category=logical-enclosures")
         ov_api.logical_enclosures.get.assert_called_with(
             self.logical_encl["uri"])
-        ov_api.drive_enclosures.get_all.assert_called_with(
-            filter="locationUri='/rest/enclosures/0000000000A66101'")
-        ov_api.enclosures.get_all.assert_called_with()
+        ov_api.drive_enclosures.get_all.assert_called_with()
 
     def test_get_zone_collection_empty(self):
         """Tests ZoneCollection with an empty list"""
@@ -154,12 +145,11 @@ class TestZoneCollection(BaseFlaskTest):
 
         zone_collection_mockup = copy.deepcopy(self.zone_collection_mockup)
         zone_collection_mockup["Members@odata.count"] = 1
-        del zone_collection_mockup["Members"][:3]
+        del zone_collection_mockup["Members"][:2]
 
         ov_api.server_profile_templates.get_all.return_value = \
             self.server_profile_template_list
         ov_api.drive_enclosures.get_all.return_value = []
-        ov_api.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
@@ -181,9 +171,7 @@ class TestZoneCollection(BaseFlaskTest):
             + "&category=logical-enclosures")
         ov_api.logical_enclosures.get.assert_called_with(
             self.logical_encl["uri"])
-        ov_api.drive_enclosures.get_all.assert_called_with(
-            filter="locationUri='/rest/enclosures/0000000000A66101'")
-        ov_api.enclosures.get_all.assert_called_with()
+        ov_api.drive_enclosures.get_all.assert_called_with()
 
     def test_get_zone_collection_with_drive_enclosure_without_drives(self):
         ov_api = self.oneview_client
@@ -193,7 +181,7 @@ class TestZoneCollection(BaseFlaskTest):
 
         zone_collection_mockup = copy.deepcopy(self.zone_collection_mockup)
         zone_collection_mockup["Members@odata.count"] = 1
-        del zone_collection_mockup["Members"][:3]
+        del zone_collection_mockup["Members"][:2]
         drive_enclosure_list = copy.deepcopy(self.drive_enclosure_list)
         del drive_enclosure_list[:1]
         drive_enclosure_list[0]["driveBays"] = 0
@@ -202,7 +190,6 @@ class TestZoneCollection(BaseFlaskTest):
             self.server_profile_template_list
         ov_api.drive_enclosures.get_all.return_value = \
             drive_enclosure_list
-        ov_api.enclosures.get_all.return_value = self.enclosures
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
@@ -225,6 +212,4 @@ class TestZoneCollection(BaseFlaskTest):
             + "&category=logical-enclosures")
         ov_api.logical_enclosures.get.assert_called_with(
             self.logical_encl["uri"])
-        ov_api.drive_enclosures.get_all.assert_called_with(
-            filter="locationUri='/rest/enclosures/0000000000A66101'")
-        ov_api.enclosures.get_all.assert_called_with()
+        ov_api.drive_enclosures.get_all.assert_called_with()

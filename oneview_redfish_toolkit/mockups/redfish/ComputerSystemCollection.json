@@ -30,9 +30,6 @@
                         },
                         {
                             "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66102"
-                        },
-                        {
-                            "@odata.id": "/redfish/v1/CompositionService/ResourceZones/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66103"
                         }
                     ],
                     "TargetCollection": {

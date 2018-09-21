@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 from unittest import mock
 
@@ -32,6 +33,7 @@ from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -60,6 +62,20 @@ class TestSession(BaseFlaskTest):
             '709cf49b-f367-417e-af70-ede782e0fa3c',
             'cd825af3-05c5-44a1-85f7-84e6e2e9fcb3'
         ]
+
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'SessionCollection.json'
+        ) as f:
+            self.session_collection = json.load(f)
+
+    def _build_common_sessions(self, uuid_mock):
+        uuid_mock.uuid4.side_effect = self.session_ids
+
+        client_session.init_map_clients()
+        client_session._set_new_client_by_token('abc', '10.0.0.1')
+        client_session._set_new_client_by_token('def', '10.0.0.2')
+        client_session._set_new_client_by_token('ghi', '10.0.0.3')
 
     def test_get_session_collection(self, _, uuid_mock):
         """Tests get Session Collection"""
@@ -161,6 +177,7 @@ class TestSession(BaseFlaskTest):
             expected_session_mockup = json.load(f)
 
         client_session.init_map_clients()
+        multiple_oneview.init_map_appliances()
         get_authentication_mode.return_value = 'session'
 
         # Create mock response
@@ -216,6 +233,7 @@ class TestSession(BaseFlaskTest):
             expected_session_collection = json.load(f)
 
         client_session.init_map_clients()
+        multiple_oneview.init_map_appliances()
 
         session_ids = self.session_ids
         uuid_mock.uuid4.side_effect = session_ids
@@ -269,6 +287,7 @@ class TestSession(BaseFlaskTest):
             expected_session_mockup = json.load(f)
 
         client_session.init_map_clients()
+        multiple_oneview.init_map_appliances()
         get_authentication_mode.return_value = 'session'
 
         # Create mock response
@@ -397,14 +416,10 @@ class TestSession(BaseFlaskTest):
         })
 
         get_auth_mode.return_value = 'session'
-        uuid_mock.uuid4.side_effect = self.session_ids
 
         self.oneview_client.server_profile_templates.get_all.side_effect = err
 
-        client_session.init_map_clients()
-        client_session._set_new_client_by_token('abc', '10.0.0.1')
-        client_session._set_new_client_by_token('def', '10.0.0.2')
-        client_session._set_new_client_by_token('ghi', '10.0.0.3')
+        self._build_common_sessions(uuid_mock)
 
         # Raises the error
         response = self.client.get('/redfish/v1/CompositionService/'
@@ -436,3 +451,73 @@ class TestSession(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, resp_active_sess.status_code)
         self.assertEqual("application/json", resp_active_sess.mimetype)
         self.assertEqualMockup(expected_session_collection, result_active_sess)
+
+    def test_logout(self, _, uuid_mock):
+        """Tests logout successfully"""
+
+        self._build_common_sessions(uuid_mock)
+
+        response = self.client.delete('/redfish/v1/SessionService/Sessions/' +
+                                      self.session_ids[0],
+                                      headers={'X-Auth-Token': 'abc'},
+                                      content_type='application/json')
+
+        self.assertEqual(status.HTTP_204_NO_CONTENT, response.status_code)
+        self.assertEqual('application/json', response.mimetype)
+
+        # when gets the Active Session should have only 2 sessions
+        expected_session_collection = copy.deepcopy(self.session_collection)
+        del expected_session_collection["Members"][0]
+        expected_session_collection["Members@odata.count"] = 2
+
+        resp_active_sess = self.client.get(
+            "/redfish/v1/SessionService/Sessions",
+            content_type='application/json')
+
+        result_active_sess = json.loads(resp_active_sess.data.decode("utf-8"))
+
+        self.assertEqualMockup(expected_session_collection, result_active_sess)
+
+    def test_logout_when_session_belongs_to_other_client(self, _, uuid_mock):
+        """Tests logout when session belongs to other client, returns 404"""
+
+        self._build_common_sessions(uuid_mock)
+
+        response = self.client.delete('/redfish/v1/SessionService/Sessions/' +
+                                      self.session_ids[0],
+                                      headers={'X-Auth-Token': 'def'},
+                                      content_type='application/json')
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual('application/json', response.mimetype)
+
+        resp_active_sess = self.client.get(
+            "/redfish/v1/SessionService/Sessions",
+            content_type='application/json')
+
+        result_active_sess = json.loads(resp_active_sess.data.decode("utf-8"))
+
+        # when gets the Active Session should have all sessions
+        self.assertEqualMockup(self.session_collection, result_active_sess)
+
+    def test_logout_when_session_is_invalid(self, _, uuid_mock):
+        """Tests logout when session is invalid, returns 404"""
+
+        self._build_common_sessions(uuid_mock)
+
+        response = self.client.delete('/redfish/v1/SessionService/Sessions/' +
+                                      '12345678',
+                                      headers={'X-Auth-Token': 'abc'},
+                                      content_type='application/json')
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual('application/json', response.mimetype)
+
+        resp_active_sess = self.client.get(
+            "/redfish/v1/SessionService/Sessions",
+            content_type='application/json')
+
+        result_active_sess = json.loads(resp_active_sess.data.decode("utf-8"))
+
+        # when gets the Active Session should have all sessions
+        self.assertEqualMockup(self.session_collection, result_active_sess)

@@ -14,12 +14,21 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
+import logging
+
 # 3rd party libs
+from flask import abort
 from flask import Blueprint
 from flask import g
+from flask import Response
+from flask_api import status
 
 # own libs
+from oneview_redfish_toolkit.api.errors \
+    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.manager_collection import ManagerCollection
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 
@@ -36,24 +45,24 @@ def get_manager_collection():
 
         Returns:
             JSON: Redfish json with ManagerCollection.
-            When Server hardware or enclosures is not found
-            calls abort(404).
 
         Exceptions:
-            OneViewRedfishResourceNotFoundError: if have some oneview resource
-            with empty value (ServerHardware or Enclosures).
-            Logs the exception and call abort(404).
-
             Exception: Generic error, logs the exception and call abort(500).
     """
 
-    # Gets all enclosures
-    enclosures = g.oneview_client.enclosures.get_all()
+    try:
+        oneview_appliances = multiple_oneview.get_map_appliances()
+        mc = ManagerCollection(oneview_appliances)
 
-    # Gets all server hardware
-    server_hardware_list = g.oneview_client.server_hardware.get_all()
+        # Build redfish json
+        json_str = mc.serialize()
+        # Build response and returns
+        return Response(
+            response=json_str,
+            status=status.HTTP_200_OK,
+            mimetype="application/json")
 
-    # Build Manager Collection object and validates it
-    mc = ManagerCollection(server_hardware_list, enclosures)
-
-    return ResponseBuilder.success(mc)
+    except Exception as e:
+        # In case of error print exception and abort
+        logging.exception('Unexpected error: {}'.format(e))
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

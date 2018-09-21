@@ -32,6 +32,7 @@ from hpOneView import HPOneViewException
 # Modules own libs
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
+from oneview_redfish_toolkit import multiple_oneview
 
 
 # Globals vars:
@@ -100,9 +101,12 @@ def _set_new_client_by_token(redfish_token, client_ov_by_ip):
         }
 
 
-def _get_session_id_by_token(token):
-    check_authentication(token)
-    return globals()['map_clients'][token]['session_id']
+def get_session_id_by_token(token):
+    session_dict = _get_map_clients().get(token)
+    if session_dict:
+        return session_dict['session_id']
+
+    return None
 
 
 def _set_new_clients_by_ip(ov_clients_by_ip):
@@ -132,12 +136,13 @@ def login(username, password):
             tokens.append(oneview_client.connection.get_session_id())
 
             clients_ov_by_ip[ip] = oneview_client
+            _set_manager_into_appliances_map(ip, oneview_client)
 
         redfish_token = tokens[0]
 
         _set_new_client_by_token(redfish_token, clients_ov_by_ip)
 
-        return redfish_token, _get_session_id_by_token(redfish_token)
+        return redfish_token, get_session_id_by_token(redfish_token)
     except HPOneViewException as e:
         logging.exception('Unauthorized error: {}'.format(e))
         raise e
@@ -150,6 +155,8 @@ def login_conf_mode():
         for ip in config.get_oneview_multiple_ips():
             oneview_client = connection.new_oneview_client(ip)
             clients_ov_by_ip[ip] = oneview_client
+
+            _set_manager_into_appliances_map(ip, oneview_client)
 
         _set_new_clients_by_ip(clients_ov_by_ip)
     except HPOneViewException as e:
@@ -188,3 +195,8 @@ def get_oneview_client(ip_oneview):
 
     if config.auth_mode_is_conf():
         return _get_oneview_client_by_ip(ip_oneview)
+
+
+def _set_manager_into_appliances_map(ip, oneview_client):
+    manager = oneview_client.appliance_node_information.get_version()
+    multiple_oneview.set_map_appliances_entry(ip, manager["uuid"])

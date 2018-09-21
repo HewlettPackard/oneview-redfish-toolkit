@@ -80,9 +80,9 @@ class ServerHardwareResourceBlock(ResourceBlock):
         server_profile_uri = self.server_hardware["serverProfileUri"]
 
         if server_profile_uri:
-            return status_mapping.COMPOSITION_STATE_MAPPING["ProfileApplied"]
+            return status_mapping.COMPOSITION_STATE["ProfileApplied"]
         else:
-            return status_mapping.COMPOSITION_STATE_MAPPING["NoProfileApplied"]
+            return status_mapping.COMPOSITION_STATE["NoProfileApplied"]
 
     def _fill_computer_system(self):
         self.redfish["ComputerSystems"] = list()

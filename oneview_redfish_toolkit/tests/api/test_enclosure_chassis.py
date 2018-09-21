@@ -45,13 +45,16 @@ class TestEnclosureChassis(BaseTest):
         ) as f:
             self.enclosure_mockup = json.load(f)
 
+        self.manager_uuid = "b08eb206-a904-46cf-9172-dcdff2fa9639"
+
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
         try:
             enclosure_chassis = EnclosureChassis(
                 self.enclosure,
-                self.environment_config
+                self.environment_config,
+                self.manager_uuid
             )
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
@@ -64,7 +67,8 @@ class TestEnclosureChassis(BaseTest):
         try:
             enclosure_chassis = EnclosureChassis(
                 self.enclosure,
-                self.environment_config
+                self.environment_config,
+                self.manager_uuid
             )
         except Exception as e:
             self.fail("Failed to instantiate Chassis class."
