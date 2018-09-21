@@ -46,7 +46,10 @@ RESOURCE_STRATEGY = {
         "get": st.first_parameter_resource,
         "get_all": st.filter_uuid_parameter_resource,
         },
-    "logical_enclosures": {"get": st.first_parameter_resource},
+    "logical_enclosures": {
+        "get": st.first_parameter_resource,
+        "get_all": st.all_oneviews_resource,
+        },
     "network_sets": {"get": st.first_parameter_resource},
     "racks": {
         "get": st.first_parameter_resource,

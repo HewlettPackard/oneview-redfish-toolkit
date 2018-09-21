@@ -71,7 +71,8 @@ class ZoneService(object):
 
         return template_id, enclosure_id
 
-    def _get_enclosures_uris_by_template(self, server_profile_template):
+    def _get_enclosures_uris_by_template(self, server_profile_template,
+            logical_encl_list):
         log_encl_assoc_uri = "/rest/index/associations/resources" \
                              "?parenturi={}&category=logical-enclosures" \
             .format(server_profile_template["enclosureGroupUri"])
@@ -80,10 +81,11 @@ class ZoneService(object):
         members = logical_encl_assoc["members"]
         enclosure_uris = []
         for member in members:
-            log_encl_uri = member["childResource"]["uri"]
-            logical_encl = self.ov_client.logical_enclosures.get(
-                log_encl_uri)
-            enclosure_uris += logical_encl["enclosureUris"]
+            # Look for the logical enclosure on list of all logical enclosures
+            for logical_encl in logical_encl_list:
+                if logical_encl['uri'] == member['childResource']['uri']:
+                    enclosure_uris += logical_encl['enclosureUris']
+                    break
 
         #  the set keeps the elements without repetition
         enclosure_uris = list(set(enclosure_uris))
@@ -102,12 +104,13 @@ class ZoneService(object):
         zone_ids = []
         enclosure_uris_with_valid_drive_enclosures = \
             self._get_enclosures_uris_with_valid_drive_enclosures()
+        logical_encl_list = self.ov_client.logical_enclosures.get_all()
         for template in server_profile_templates:
             template_id = template["uri"].split("/")[-1]
             controller = ComputerSystemService.get_storage_controller(template)
             if controller:
                 enclosures_uris_by_spt = self._get_enclosures_uris_by_template(
-                    template)
+                    template, logical_encl_list)
                 enclosures_uris = set(enclosures_uris_by_spt)\
                     .intersection(enclosure_uris_with_valid_drive_enclosures)
 
