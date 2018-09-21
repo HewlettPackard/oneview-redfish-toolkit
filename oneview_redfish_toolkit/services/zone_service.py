@@ -73,19 +73,10 @@ class ZoneService(object):
 
     def _get_enclosures_uris_by_template(self, server_profile_template,
             logical_encl_list):
-        log_encl_assoc_uri = "/rest/index/associations/resources" \
-                             "?parenturi={}&category=logical-enclosures" \
-            .format(server_profile_template["enclosureGroupUri"])
-        logical_encl_assoc = self.ov_client.connection.get(
-            log_encl_assoc_uri)
-        members = logical_encl_assoc["members"]
         enclosure_uris = []
-        for member in members:
-            # Look for the logical enclosure on list of all logical enclosures
-            for logical_encl in logical_encl_list:
-                if logical_encl['uri'] == member['childResource']['uri']:
-                    enclosure_uris += logical_encl['enclosureUris']
-                    break
+        for logical_encl in logical_encl_list:
+            if logical_encl['enclosureGroupUri'] == server_profile_template['enclosureGroupUri']:
+                enclosure_uris += logical_encl['enclosureUris']
 
         #  the set keeps the elements without repetition
         enclosure_uris = list(set(enclosure_uris))
