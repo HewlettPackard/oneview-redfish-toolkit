@@ -50,6 +50,10 @@ def get_managers(uuid):
         ov_health_status_url = "/rest/appliance/health-status"
 
         ov_ip = get_oneview_ip_by_manager_uuid(uuid)
+        if not ov_ip:
+            abort(status.HTTP_404_NOT_FOUND,
+                  "Manager with id {} was not found".format(uuid))
+
         ov_client = client_session.get_oneview_client(ov_ip)
 
         ov_appliance_info = multiple_oneview.execute_query_ov_client(
@@ -83,8 +87,3 @@ def get_managers(uuid):
         # In case of error log exception and abort
         logging.exception('Unexpected error: {}'.format(e))
         abort(status.HTTP_404_NOT_FOUND, e.msg)
-
-    except Exception as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

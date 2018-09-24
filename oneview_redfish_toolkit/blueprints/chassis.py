@@ -53,6 +53,10 @@ def get_chassis(uuid):
     resource_index = g.oneview_client.index_resources.get_all(
         filter='uuid=' + uuid
     )
+    if not resource_index:
+        abort(status.HTTP_404_NOT_FOUND,
+              "Chassis {} not found".format(uuid))
+
     category = resource_index[0]["category"]
     manager_uuid = get_manager_uuid(uuid)
 
@@ -112,6 +116,9 @@ def change_server_hardware_power_state(uuid):
         resource_index = g.oneview_client.index_resources.get_all(
             filter='uuid=' + uuid
         )
+        if not resource_index:
+            abort(status.HTTP_404_NOT_FOUND,
+                  "Chassis {} not found".format(uuid))
 
         category = resource_index[0]["category"]
         if category == 'server-hardware':
