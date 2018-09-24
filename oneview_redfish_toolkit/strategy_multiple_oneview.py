@@ -15,15 +15,20 @@
 # under the License.
 
 # Modules own libs
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import multiple_oneview
 
 
 def first_parameter_resource(resource, function, *args, **kwargs):
     resource_id = args[0]
 
-    return multiple_oneview.query_ov_client_by_resource(resource_id, resource,
+    resp = multiple_oneview.query_ov_client_by_resource(resource_id, resource,
                                                         function, *args,
                                                         **kwargs)
+    category_resource.set_map_category_resources_entry(resource_id,
+                                                       resource,
+                                                       function)
+    return resp
 
 
 def filter_uuid_parameter_resource(resource, function, *args, **kwargs):

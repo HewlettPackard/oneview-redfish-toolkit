@@ -40,7 +40,7 @@ from oneview_redfish_toolkit.api.redfish_json_validator \
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
-from oneview_redfish_toolkit import multiple_oneview
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit.services.computer_system_service import \
     ComputerSystemService
 from oneview_redfish_toolkit.services.manager_service import \
@@ -292,11 +292,11 @@ def create_composed_system():
 
 def _get_oneview_resource(uuid):
     """Gets a Server hardware or Server profile templates"""
-    method_sdk = multiple_oneview.get_method_by_resource(uuid)
+    cached_category = category_resource.get_category_by_resource_id(uuid)
 
-    if method_sdk:
-        resource = getattr(g.oneview_client, method_sdk[0])
-        function = getattr(resource, method_sdk[1])
+    if cached_category:
+        resource = getattr(g.oneview_client, cached_category.resource)
+        function = getattr(resource, cached_category.function)
 
         return function(uuid)
 

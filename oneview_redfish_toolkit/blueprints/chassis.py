@@ -33,9 +33,9 @@ from oneview_redfish_toolkit.api.rack_chassis import RackChassis
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit.services.manager_service import \
     get_manager_uuid
-from oneview_redfish_toolkit import multiple_oneview
 
 chassis = Blueprint("chassis", __name__)
 
@@ -50,12 +50,11 @@ def get_chassis(uuid):
         Returns:
             JSON: JSON with Chassis.
     """
-    manager_uuid = get_manager_uuid(uuid)
     category = ''
-    method_sdk = multiple_oneview.get_method_by_resource(uuid)
+    cached_category = category_resource.get_category_by_resource_id(uuid)
 
-    if method_sdk:
-        category = method_sdk[0].replace('_', '-')
+    if cached_category:
+        category = cached_category.resource.replace('_', '-')
     else:
         resource_index = g.oneview_client.index_resources.get_all(
             filter='uuid=' + uuid
@@ -65,6 +64,8 @@ def get_chassis(uuid):
                   "Chassis {} not found".format(uuid))
 
         category = resource_index[0]["category"]
+
+    manager_uuid = get_manager_uuid(uuid)
 
     if category == 'server-hardware':
         server_hardware = g.oneview_client.server_hardware.get(uuid)
