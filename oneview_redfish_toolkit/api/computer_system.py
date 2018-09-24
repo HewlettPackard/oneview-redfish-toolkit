@@ -107,9 +107,11 @@ class ComputerSystem(RedfishJsonValidator):
         self.redfish["Links"]["Chassis"][0]["@odata.id"] = \
             "/redfish/v1/Chassis/" + server_hardware['uuid']
         self.redfish["Links"]["ManagedBy"] = list()
-        self.redfish["Links"]["ManagedBy"].append(collections.OrderedDict())
-        self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
-            "/redfish/v1/Managers/" + manager_uuid
+        if manager_uuid:
+            self.redfish["Links"]["ManagedBy"].append(
+                collections.OrderedDict())
+            self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
+                "/redfish/v1/Managers/" + manager_uuid
         self.redfish["Links"]["ResourceBlocks"] = list()
         self._fill_resource_block_members(drives,
                                           server_hardware,
