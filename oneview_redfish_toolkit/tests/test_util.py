@@ -66,13 +66,13 @@ class TestUtil(unittest.TestCase):
 
         config.load_config(self.config_file)
 
-        util.generate_certificate("oneview_redfish_toolkit/certs",
+        util.generate_certificate("oneview_redfish_toolkit/",
                                   "test", 2048)
 
         self.assertTrue(os.path.exists(os.path.join("oneview_redfish_toolkit",
-                        "certs", "test" + ".crt")))
+                        "test" + ".crt")))
         self.assertTrue(os.path.exists(os.path.join("oneview_redfish_toolkit",
-                        "certs", "test" + ".key")))
+                        "test" + ".key")))
 
     @mock.patch.object(connection, 'check_oneview_availability')
     def test_load_event_service_invalid_info(

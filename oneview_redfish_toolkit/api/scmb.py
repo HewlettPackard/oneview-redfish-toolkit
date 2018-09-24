@@ -30,9 +30,10 @@ from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import util
 
 
-ONEVIEW_CA = "oneview_redfish_toolkit/certs/oneview_ca.pem"
-SCMB_CERT = "oneview_redfish_toolkit/certs/oneview_scmb.pem"
-SCMB_KEY = "oneview_redfish_toolkit/certs/oneview_scmb.key"
+SCMB_DIR_NAME = "scmb"
+ONEVIEW_CA_NAME = "oneview_ca.pem"
+SCMB_CERT_NAME = "oneview_scmb.pem"
+SCMB_KEY_NAME = "oneview_scmb.key"
 SCMB_PORT = 5671
 SCMB_SOCKET_TIMEOUT = 5  # seconds
 SCMB_RESOURCE_LIST = [
@@ -43,9 +44,34 @@ SCMB_RESOURCE_LIST = [
 SCMB_EXCHANGE_NAME = 'scmb'
 
 
+def _scmb_base_dir():
+    certs_dir = os.path.dirname(config.get_config()['ssl']['SSLCertFile'])
+    return os.path.join(certs_dir, SCMB_DIR_NAME)
+
+
+def _oneview_ca_path():
+    return os.path.join(_scmb_base_dir(), ONEVIEW_CA_NAME)
+
+
+def _scmb_cert_path():
+    return os.path.join(_scmb_base_dir(), SCMB_CERT_NAME)
+
+
+def _scmb_key_path():
+    return os.path.join(_scmb_base_dir(), SCMB_KEY_NAME)
+
+
 def check_cert_exist():
-    return os.path.isfile(ONEVIEW_CA) & os.path.isfile(SCMB_CERT) & \
-        os.path.isfile(SCMB_KEY)
+    try:
+        _scmb_base_dir()
+    except KeyError as error:
+        logging.error("Invalid configuration for ssl cert. "
+                      "Verify the [ssl] section in config file")
+        raise error
+
+    return os.path.isfile(_oneview_ca_path()) and \
+        os.path.isfile(_scmb_cert_path()) and \
+        os.path.isfile(_scmb_key_path())
 
 
 def get_oneview_client():
@@ -70,7 +96,10 @@ def get_cert():
 
     cert = ov_client.certificate_authority.get()
 
-    with open(ONEVIEW_CA, 'w+') as f:
+    # Create the dir to save the scmb files
+    os.makedirs(name=_scmb_base_dir(), exist_ok=True)
+
+    with open(_oneview_ca_path(), 'w+') as f:
         f.write(cert)
     # Generate scmb Cert:
     try:
@@ -91,10 +120,10 @@ def get_cert():
     certs = ov_client.certificate_rabbitmq.get_key_pair(
         'default')
     # Save cert
-    with open(SCMB_CERT, 'w+') as f:
+    with open(_scmb_cert_path(), 'w+') as f:
         f.write(certs['base64SSLCertData'])
     # Save key
-    with open(SCMB_KEY, 'w+') as f:
+    with open(_scmb_key_path(), 'w+') as f:
         f.write(certs['base64SSLKeyData'])
 
 
@@ -104,9 +133,9 @@ def scmb_connect():
     scmb_server = config.get_oneview_multiple_ips()[0]
 
     # Setup our ssl options
-    ssl_options = ({'ca_certs': ONEVIEW_CA,
-                    'certfile': SCMB_CERT,
-                    'keyfile': SCMB_KEY,
+    ssl_options = ({'ca_certs': _oneview_ca_path(),
+                    'certfile': _scmb_cert_path(),
+                    'keyfile': _scmb_key_path(),
                     'cert_reqs': ssl.CERT_REQUIRED,
                     'server_side': False})
 
