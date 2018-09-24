@@ -36,10 +36,10 @@ from oneview_redfish_toolkit.api.storage_resource_block \
     import StorageResourceBlock
 from oneview_redfish_toolkit.blueprints.util.response_builder \
     import ResponseBuilder
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit.services.manager_service import \
     get_manager_uuid
 from oneview_redfish_toolkit.services.zone_service import ZoneService
-from oneview_redfish_toolkit import multiple_oneview
 
 resource_block = Blueprint("resource_block", __name__)
 
@@ -174,17 +174,17 @@ def get_resource_block_ethernet_interface(uuid, id):
 def _get_oneview_resource(uuid):
     drives_param = "/rest/drives/" + uuid
 
-    method_sdk = multiple_oneview.get_method_by_resource(uuid) or \
-                 multiple_oneview.get_method_by_resource(drives_param)
+    cached_categ = category_resource.get_category_by_resource_id(uuid) or \
+        category_resource.get_category_by_resource_id(drives_param)
 
-    if method_sdk:
+    if cached_categ:
         resource_uuid = uuid
 
-        if method_sdk[0] == 'index_resources':
+        if cached_categ.resource == 'index_resources':
             resource_uuid = drives_param
 
-        resource = getattr(g.oneview_client, method_sdk[0])
-        function = getattr(resource, method_sdk[1])
+        resource = getattr(g.oneview_client, cached_categ.resource)
+        function = getattr(resource, cached_categ.function)
 
         return function(resource_uuid)
 

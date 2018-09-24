@@ -97,6 +97,7 @@ from oneview_redfish_toolkit.blueprints.vlan_network_interface import \
     vlan_network_interface
 from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
@@ -170,6 +171,7 @@ def main(config_file_path, logging_config_file_path,
     client_session.init_gc_for_expired_sessions()
     multiple_oneview.init_map_resources()
     multiple_oneview.init_map_appliances()
+    category_resource.init_map_category_resources()
 
     if auth_mode == "conf":
         app.register_blueprint(event_service)

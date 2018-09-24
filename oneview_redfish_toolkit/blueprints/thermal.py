@@ -28,7 +28,7 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.thermal import Thermal
-from oneview_redfish_toolkit import multiple_oneview
+from oneview_redfish_toolkit import category_resource
 
 
 thermal = Blueprint("thermal", __name__)
@@ -52,10 +52,10 @@ def get_thermal(uuid):
     """
     try:
         category = ''
-        method_sdk = multiple_oneview.get_method_by_resource(uuid)
+        cached_category = category_resource.get_category_by_resource_id(uuid)
 
-        if method_sdk:
-            category = method_sdk[0].replace('_','-')
+        if cached_category:
+            category = cached_category.resource.replace('_', '-')
         else:
             index_obj = g.oneview_client.index_resources.get_all(
                 filter='uuid=' + uuid

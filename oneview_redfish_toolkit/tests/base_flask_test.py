@@ -27,6 +27,7 @@ from hpOneView import HPOneViewException
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import handler_multiple_oneview
@@ -141,6 +142,7 @@ class BaseFlaskTest(BaseTest):
         cls.oneview_client = mock.MagicMock()
         cls.mock_get_client_by_ip.return_value = cls.oneview_client
         cls.mock_get_client_by_token.return_value = cls.oneview_client
+        category_resource.init_map_category_resources()
 
     @classmethod
     def tearDownClass(cls):
