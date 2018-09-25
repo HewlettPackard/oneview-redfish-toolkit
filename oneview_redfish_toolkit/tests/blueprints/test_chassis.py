@@ -19,6 +19,7 @@ from collections import OrderedDict
 import copy
 import json
 from unittest import mock
+from unittest.mock import call
 
 # 3rd party libs
 from flask_api import status
@@ -26,6 +27,7 @@ from hpOneView.exceptions import HPOneViewException
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import chassis
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
@@ -230,6 +232,56 @@ class TestChassis(BaseFlaskTest):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
+    @mock.patch.object(multiple_oneview, 'get_map_resources')
+    @mock.patch.object(multiple_oneview, 'get_map_appliances')
+    def test_get_enclosure_chassis_cached(self, get_map_appliances,
+                                          get_map_resources):
+        """"Tests EnclosureChassis with a known Enclosure"""
+
+        get_map_resources.return_value = OrderedDict({
+            "0000000000A66101": "10.0.0.1",
+        })
+        get_map_appliances.return_value = self.map_appliance
+        self.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "enclosures"}]
+        self.oneview_client.enclosures.get.return_value = self.enclosure
+        self.oneview_client.enclosures.get_environmental_configuration.\
+            return_value = self.enclosure_environment_configuration_mockup
+        self.oneview_client.appliance_node_information.get_version.return_value = \
+            self.appliance_info
+
+        uri = "/redfish/v1/Chassis/0000000000A66101"
+        uuid = uri.split('/')[-1]
+
+        # Get EnclosureChassis
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        # Get cached EnclosureChassis
+        response = self.client.get(uri)
+
+        # Tests cached response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(self.enclosure_chassis_mockup, result)
+        self.assertEqual(
+            "{}{}".format("W/", self.enclosure["eTag"]),
+            response.headers["ETag"])
+
+        # Check for cached calls
+        self.oneview_client.index_resources.get_all.assert_called_once_with(
+            filter='uuid=' + uuid
+        )
+        assert self.oneview_client.enclosures.get.has_calls(
+            [call(uuid),
+             call(uuid)]
+        )
+        self.assertTrue(category_resource.get_category_by_resource_id(uuid))
+
     #############
     # Blade     #
     #############
@@ -359,6 +411,59 @@ class TestChassis(BaseFlaskTest):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
+    @mock.patch.object(multiple_oneview, 'get_map_resources')
+    @mock.patch.object(multiple_oneview, 'get_map_appliances')
+    def test_get_blade_chassis_with_computer_system_cached(self,
+                                                           get_map_appliances,
+                                                           get_map_resources):
+        """"Tests BladeChassis with a known Server Hardware"""
+
+        get_map_resources.return_value = OrderedDict({
+            "30303437-3034-4D32-3230-313133364752": "10.0.0.1",
+        })
+        get_map_appliances.return_value = self.map_appliance
+        self.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        self.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
+        self.oneview_client.appliance_node_information.get_version.return_value = \
+            self.appliance_info
+
+        uri = "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+        uuid = uri.split('/')[-1]
+
+        # Get BladeChassis
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+
+        # Get cached BladeChassis
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(self.blade_chassis_mockup, result)
+        self.assertEqual(
+            "{}{}".format("W/", self.server_hardware["eTag"]),
+            response.headers["ETag"])
+
+        # Check for cached calls
+        self.oneview_client.index_resources.get_all.assert_called_once_with(
+            filter='uuid=' + uuid
+        )
+        assert self.oneview_client.server_hardware.get.has_calls(
+            [call(uuid),
+             call(uuid)]
+        )
+        self.assertTrue(category_resource.get_category_by_resource_id(uuid))
+
     ########
     # Rack #
     ########
@@ -432,6 +537,55 @@ class TestChassis(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(multiple_oneview, 'get_map_resources')
+    @mock.patch.object(multiple_oneview, 'get_map_appliances')
+    def test_get_rack_chassis_cached(self, get_map_appliances,
+                                     get_map_resources):
+        """"Tests RackChassis with a known Rack"""
+
+        get_map_resources.return_value = OrderedDict({
+            "2AB100LMNB": "10.0.0.1",
+        })
+        get_map_appliances.return_value = self.map_appliance
+        self.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "racks"}]
+        self.oneview_client.racks.get.return_value = self.rack
+
+        uri = "/redfish/v1/Chassis/2AB100LMNB"
+        uuid = uri.split('/')[-1]
+
+        # Get RackChassis
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        # Get cached RackChassis
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(self.rack_chassis_mockup, result)
+        self.assertEqual(
+            "{}{}".format("W/", self.rack["eTag"]),
+            response.headers["ETag"])
+
+        # Check for cached calls
+        self.oneview_client.index_resources.get_all.assert_called_once_with(
+            filter='uuid=' + uuid
+        )
+        assert self.oneview_client.racks.get.has_calls(
+            [call(uuid),
+             call(uuid)]
+        )
+        self.assertTrue(category_resource.get_category_by_resource_id(uuid))
 
     def test_change_power_state(self):
         """Tests changes a SH chassi type with valid reset options
