@@ -16,6 +16,7 @@
 
 # Python libs
 import json
+from unittest.mock import call
 
 # 3rd party libs
 from flask_api import status
@@ -23,6 +24,7 @@ from hpOneView.exceptions import HPOneViewException
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import thermal
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -78,6 +80,62 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(blade_chassis_thermal_mockup, result)
+
+    def test_get_blade_thermal_cached(self):
+        """"Tests BladeThermal with a known SH"""
+
+        # Loading ServerHardwareUtilization mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerHardwareUtilization.json'
+        ) as f:
+            server_hardware_utilization = json.load(f)
+
+        # Loading BladeChassisThermal mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'BladeChassisThermal.json'
+        ) as f:
+            blade_chassis_thermal_mockup = json.load(f)
+
+        self.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        self.oneview_client.server_hardware.get_utilization.return_value = \
+            server_hardware_utilization
+
+        uri = "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/"\
+              "Thermal"
+        uuid = "36343537-3338-4448-3538-4E5030333434"
+
+        # Get BladeThermal
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(blade_chassis_thermal_mockup, result)
+
+        # Get cached BladeThermal
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(blade_chassis_thermal_mockup, result)
+
+        # Check for cached calls
+        self.oneview_client.index_resources.get_all.assert_called_once_with(
+            filter='uuid=' + uuid
+        )
+        assert self.oneview_client.server_hardware.get.has_calls(
+            [call(uuid),
+             call(uuid)]
+        )
+        self.assertTrue(category_resource.get_category_by_resource_id(uuid))
 
     def test_get_blade_not_found(self):
         """Tests BladeThermal with SH not found"""
@@ -155,6 +213,61 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(enclosure_chasssis_thermal_mockup, result)
 
+    def test_get_encl_thermal_cached(self):
+        """"Tests EnclosureThermal with a known Enclosure"""
+
+        # Loading EnclosureUtilization mockup value
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'EnclosureUtilization.json'
+        ) as f:
+            enclosure_utilization = json.load(f)
+
+        # Loading EnclosureChassisThermal mockup result
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'EnclosureChassisThermal.json'
+        ) as f:
+            enclosure_chasssis_thermal_mockup = json.load(f)
+
+        self.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "enclosures"}]
+        self.oneview_client.enclosures.get_utilization.return_value = \
+            enclosure_utilization
+
+        uri = "/redfish/v1/Chassis/0000000000A66101/Thermal"
+        uuid = "0000000000A66101"
+
+        # Get EnclosureThermal
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(enclosure_chasssis_thermal_mockup, result)
+
+        # Get cached EnclosureThermal
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(enclosure_chasssis_thermal_mockup, result)
+
+        # Check for cached calls
+        self.oneview_client.index_resources.get_all.assert_called_once_with(
+            filter='uuid=' + uuid
+        )
+        assert self.oneview_client.enclosures.get.has_calls(
+            [call(uuid),
+             call(uuid)]
+        )
+        self.assertTrue(category_resource.get_category_by_resource_id(uuid))
+
     ########
     # Rack #
     ########
@@ -191,3 +304,57 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(rack_chassis_thermal_mockup, result)
+
+    def test_get_rack_thermal_cached(self):
+        """"Tests RackThermal with a known Rack"""
+
+        # Loading RackDeviceTopology mockup value
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'RackDeviceTopology.json'
+        ) as f:
+            rack_topology = json.load(f)
+
+        # Loading RackChassisThermal mockup result
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/RackChassisThermal.json'
+        ) as f:
+            rack_chassis_thermal_mockup = json.load(f)
+
+        self.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "racks"}]
+        self.oneview_client.\
+            racks.get_device_topology.return_value = rack_topology
+
+        uri = "/redfish/v1/Chassis/2AB100LMNB/Thermal"
+        uuid = '2AB100LMNB'
+
+        # Get RackThermal
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(rack_chassis_thermal_mockup, result)
+
+        # Get cached RackThermal
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(rack_chassis_thermal_mockup, result)
+
+        # Check for cached calls
+        self.oneview_client.index_resources.get_all.assert_called_once_with(
+            filter='uuid=' + uuid
+        )
+        assert self.oneview_client.rackes.get.has_calls(
+            [call(uuid),
+             call(uuid)]
+        )
+        self.assertTrue(category_resource.get_category_by_resource_id(uuid))

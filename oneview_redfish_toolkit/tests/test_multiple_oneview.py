@@ -28,6 +28,7 @@ from unittest.mock import call
 
 from hpOneView.exceptions import HPOneViewException
 
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
@@ -70,6 +71,7 @@ class TestMultipleOneView(unittest.TestCase):
         # Initializing caches
         multiple_oneview.init_map_resources()
         client_session.init_map_clients()
+        category_resource.init_map_category_resources()
 
         self.config_obj = configparser.ConfigParser()
         self.config_obj.add_section('oneview_config')

@@ -29,6 +29,7 @@ from hpOneView.exceptions import HPOneViewException
 # Module libs
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.blueprints import resource_block
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
@@ -154,6 +155,60 @@ class TestResourceBlock(BaseFlaskTest):
             server_profile_templates.get_all.assert_called_with()
         self.oneview_client.logical_enclosures.get_all.assert_called_with()
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
+
+    def test_get_storage_resource_block_cached(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/StorageResourceBlock.json'
+        ) as f:
+            expected_resource_block = json.load(f)
+
+        self.oneview_client.server_hardware.get.side_effect = \
+            self.resource_not_found
+        self.oneview_client.server_profile_templates.get.side_effect = \
+            self.resource_not_found
+        self.oneview_client.index_resources.get.return_value = self.drive
+        self.oneview_client.connection.get.side_effect = [
+            self.drive_index_tree, self.drive_index_tree,
+        ]
+        self.oneview_client.server_profile_templates.get_all.return_value = \
+            self.server_profile_templates
+        self.oneview_client.\
+            logical_enclosures.get_all.return_value = self.log_encl_list
+        self.oneview_client.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
+
+        uri = "/redfish/v1/CompositionService/ResourceBlocks/"\
+              "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e"
+        uuid = uri.split('/')[-1]
+
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_resource_block, result)
+
+        # Get cached storage resource block
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_resource_block, result)
+
+        self.oneview_client.server_profile_templates.get_all.has_calls(
+            [call(uri),
+             call(uri)]
+        )
+        self.oneview_client.server_hardware.get.assert_called_once_with(uuid)
+        self.oneview_client.index_resources.get.assert_has_calls(
+            [call('/rest/drives/' + uuid),
+             call('/rest/drives/' + uuid)]
+        )
+        self.assertTrue(category_resource.get_category_by_resource_id(
+            ('/rest/drives/' + uuid)))
 
     def test_get_storage_resource_block_when_drive_is_composed(self):
         with open(
@@ -371,6 +426,50 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.oneview_client.logical_enclosures.get_all.assert_called_with()
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
+
+    def test_get_spt_resource_block_cached(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish'
+            '/ServerProfileTemplateResourceBlock.json'
+        ) as f:
+            expected_resource_block = json.load(f)
+
+        self.oneview_client.server_hardware.get.side_effect = \
+            self.resource_not_found
+        self.oneview_client.server_profile_templates.get.return_value = \
+            self.server_profile_template
+        self.oneview_client.logical_enclosures.get_all.return_value = \
+            self.log_encl_list
+        self.oneview_client.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
+
+        uri = "/redfish/v1/CompositionService/ResourceBlocks"\
+              "/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
+        uuid = uri.split('/')[-1]
+
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_resource_block, result)
+
+        # Get cached spt resource block
+        response = self.client.get(uri)
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_resource_block, result)
+
+        self.oneview_client.server_hardware.get.assert_called_once_with(uuid)
+        self.oneview_client.server_profile_templates.get.assert_has_calls(
+            [call(uuid),
+             call(uuid)]
+        )
+        self.assertTrue(category_resource.get_category_by_resource_id(uuid))
 
     def test_get_spt_resource_when_template_has_not_valid_controller(self):
         with open(

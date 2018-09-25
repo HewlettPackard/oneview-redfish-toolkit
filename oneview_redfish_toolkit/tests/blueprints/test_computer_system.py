@@ -29,6 +29,7 @@ from unittest.mock import call
 # Module libs
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.blueprints import computer_system
+from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.services import computer_system_service
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
@@ -364,6 +365,59 @@ class TestComputerSystem(BaseFlaskTest):
             .assert_called_with("1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
         self.oneview_client.server_profile_templates.get \
             .assert_called_with("1f0ca9ef-7f81-45e3-9d64-341b46cf87e0")
+
+    def test_get_computer_system_spt_cached(self):
+        """Tests ComputerSystem with a known Server Profile Templates"""
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'ServerProfileTemplate.json'
+        ) as f:
+            server_profile_template = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/CapabilitiesObject.json'
+        ) as f:
+            capabilities_obj_mockup = json.load(f)
+
+        # Create mock response
+        self.oneview_client.\
+            server_profiles.get.side_effect = self.not_found_error
+        self.oneview_client.server_profile_templates.get.return_value = \
+            server_profile_template
+
+        uri = "/redfish/v1/Systems/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
+        uuid = uri.split('/')[-1]
+
+        # Get ComputerSystem
+        response = self.client.get(uri)
+
+        # Gets json from response
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(capabilities_obj_mockup, result)
+
+        # Get cached ComputerSystem
+        response = self.client.get(uri)
+
+        # Gets json from response
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(capabilities_obj_mockup, result)
+        self.oneview_client.server_profiles.get \
+            .assert_called_once_with(uuid)
+        self.oneview_client.server_profile_templates.get \
+            .assert_has_calls(
+                [call(uuid),
+                 call(uuid)]
+                )
+        self.assertTrue(category_resource.get_category_by_resource_id(uuid))
 
     def test_change_power_state(self):
         """Tests change SH power state with valid power values
