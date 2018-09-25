@@ -315,10 +315,11 @@ def main(config_file_path, logging_config_file_path,
 
     if config.auth_mode_is_conf():
         # Loading scmb connection
-        if scmb.check_cert_exist():
-            logging.info('SCMB certs already exists testing connection...')
+        if scmb.has_valid_certificate():
+            logging.info('SCMB certs already exists and is valid...')
         else:
-            logging.info('SCMB certs not found. Generating/getting certs....')
+            logging.info('SCMB certs not found. '
+                         'Checking if it was already generated in Oneview...')
             scmb.get_cert()
             logging.info('Got certs. Testing connection...')
         if not scmb.is_cert_working_with_scmb():
@@ -381,7 +382,7 @@ def main(config_file_path, logging_config_file_path,
         # Generating cert files if they don't exists
         if ssl_type == "self-signed":
             if not os.path.exists(ssl_cert_file) and not \
-                os.path.exists(ssl_key_file):
+                    os.path.exists(ssl_key_file):
                 logging.warning("Generating self-signed certs")
                 # Generate certificates
                 util.generate_certificate(

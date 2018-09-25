@@ -24,6 +24,7 @@ from hpOneView.exceptions import HPOneViewException
 from hpOneView.oneview_client import OneViewClient
 from pika.credentials import ExternalCredentials
 
+from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
@@ -43,9 +44,14 @@ SCMB_RESOURCE_LIST = [
 SCMB_EXCHANGE_NAME = 'scmb'
 
 
-def check_cert_exist():
-    return os.path.isfile(ONEVIEW_CA) & os.path.isfile(SCMB_CERT) & \
-        os.path.isfile(SCMB_KEY)
+def has_valid_certificate():
+    return has_scmb_certificate() and is_cert_working_with_scmb()
+
+
+def has_scmb_certificate():
+    return os.path.isfile(ONEVIEW_CA) and \
+           os.path.isfile(SCMB_CERT) and \
+           os.path.isfile(SCMB_KEY)
 
 
 def get_oneview_client():
@@ -72,7 +78,30 @@ def get_cert():
 
     with open(ONEVIEW_CA, 'w+') as f:
         f.write(cert)
-    # Generate scmb Cert:
+
+    try:
+        # Checks if certificate exists
+        certs = ov_client.certificate_rabbitmq.get_key_pair(
+            'default')
+        logging.info('SCMB certs already generated in Oneview. '
+                     'Getting certs...')
+        # Save cert
+        with open(SCMB_CERT, 'w+') as f:
+            f.write(certs['base64SSLCertData'])
+        # Save key
+        with open(SCMB_KEY, 'w+') as f:
+            f.write(certs['base64SSLKeyData'])
+
+    except HPOneViewException as e:
+        if e.oneview_response["errorCode"] in NOT_FOUND_ONEVIEW_ERRORS:
+            logging.info('Generating new SCMB certs in Oneview...')
+            _generate_scmb_certificate(ov_client)
+        else:
+            logging.exception("Unexpected error")
+            raise
+
+
+def _generate_scmb_certificate(ov_client):
     try:
         cert_info = {
             "commonName": "default",
@@ -87,15 +116,6 @@ def get_cert():
             # Another error is not expected, we raise.
             logging.exception("Unexpected error")
             raise
-    # Get the scmb certs key pair
-    certs = ov_client.certificate_rabbitmq.get_key_pair(
-        'default')
-    # Save cert
-    with open(SCMB_CERT, 'w+') as f:
-        f.write(certs['base64SSLCertData'])
-    # Save key
-    with open(SCMB_KEY, 'w+') as f:
-        f.write(certs['base64SSLKeyData'])
 
 
 def scmb_connect():
