@@ -570,3 +570,16 @@ class TestChassis(BaseFlaskTest):
         )
         self.assertEqual("application/json", response.mimetype)
         self.assertEqual(error_msg, result["error"]["message"])
+
+    def test_get_sh_with_resource_index_not_found(self):
+        """"Tests ServerHardware with empty index resource"""
+
+        self.oneview_client.index_resources.get_all.return_value = \
+            []
+
+        response = self.client.get(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364123"
+        )
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
