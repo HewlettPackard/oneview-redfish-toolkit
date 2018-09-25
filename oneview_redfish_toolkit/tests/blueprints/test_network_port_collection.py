@@ -20,8 +20,11 @@ import json
 # 3rd party libs
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
+from unittest import mock
 
 # Module libs
+from oneview_redfish_toolkit.api.redfish_json_validator import \
+    RedfishJsonValidator
 from oneview_redfish_toolkit.blueprints import network_port_collection
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
@@ -36,14 +39,15 @@ class TestNetworkPortCollection(BaseFlaskTest):
         self.app.register_blueprint(
             network_port_collection.network_port_collection)
 
-    def test_get_network_port_collection(self):
-        """Tests NetworkInterfaceCollection"""
-
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerHardware.json'
         ) as f:
-            server_hardware = json.load(f)
+            self.server_hardware = json.load(f)
+
+    def test_get_network_port_collection(self):
+        """Tests NetworkInterfaceCollection"""
 
         # Loading NetworkPortCollection mockup result
         with open(
@@ -53,7 +57,8 @@ class TestNetworkPortCollection(BaseFlaskTest):
             network_port_collection_mockup = json.load(f)
 
         # Create mock response
-        self.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
 
         # Get NetworkPortCollection
         response = self.client.get(
@@ -69,14 +74,19 @@ class TestNetworkPortCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(network_port_collection_mockup, result)
 
-    def test_get_network_port_collection_sh_not_found(self):
-        """Tests NetworkPortCollection with sh not found"""
+    @mock.patch.object(RedfishJsonValidator, "get_resource_by_id")
+    def test_get_network_port_collection_empty(self, get_resource_by_id):
+        """Tests NetworkPortCollection empty server hardware"""
 
-        e = HPOneViewException({
-            'errorCode': 'RESOURCE_NOT_FOUND',
-            'message': 'server-hardware not found',
-        })
-        self.oneview_client.server_hardware.get.side_effect = e
+        # Loading NetworkPortCollectionEmpty mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'NetworkPortCollectionEmpty.json'
+        ) as f:
+            network_port_collection_empty = json.load(f)
+
+        self.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
 
         # Get NetworkPortCollection
         response = self.client.get(
@@ -84,8 +94,12 @@ class TestNetworkPortCollection(BaseFlaskTest):
             "NetworkAdapters/1/NetworkPorts/"
         )
 
-        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        # Gets json from response
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(network_port_collection_empty, result)
 
     def test_get_network_port_collection_sh_exception(self):
         """Tests NetworkPortCollection with exception"""

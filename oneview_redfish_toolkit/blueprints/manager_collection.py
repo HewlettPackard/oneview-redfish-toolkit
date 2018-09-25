@@ -14,17 +14,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# Python libs
-import logging
-
 # 3rd party libs
-from flask import abort
 from flask import Blueprint
-from flask import Response
-from flask_api import status
 
 # own libs
 from oneview_redfish_toolkit.api.manager_collection import ManagerCollection
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 from oneview_redfish_toolkit import multiple_oneview
 
 manager_collection = Blueprint("manager_collection", __name__)
@@ -45,19 +41,7 @@ def get_manager_collection():
             Exception: Generic error, logs the exception and call abort(500).
     """
 
-    try:
-        oneview_appliances = multiple_oneview.get_map_appliances()
-        mc = ManagerCollection(oneview_appliances)
+    oneview_appliances = multiple_oneview.get_map_appliances()
+    mc = ManagerCollection(oneview_appliances)
 
-        # Build redfish json
-        json_str = mc.serialize()
-        # Build response and returns
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return ResponseBuilder.success(mc)

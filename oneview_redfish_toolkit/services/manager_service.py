@@ -20,10 +20,10 @@ from oneview_redfish_toolkit import multiple_oneview
 
 def get_manager_uuid(resource_id):
     map_resources = multiple_oneview.get_map_resources()
-    ov_ip = map_resources[resource_id]
+    ov_ip = map_resources.get(resource_id)
 
     map_appliances = multiple_oneview.get_map_appliances()
-    manager_uuid = map_appliances[ov_ip]
+    manager_uuid = map_appliances.get(ov_ip)
 
     return manager_uuid
 

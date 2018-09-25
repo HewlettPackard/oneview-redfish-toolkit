@@ -18,7 +18,6 @@
 from collections import OrderedDict
 import json
 
-
 # 3rd party libs
 from flask_api import status
 from unittest import mock

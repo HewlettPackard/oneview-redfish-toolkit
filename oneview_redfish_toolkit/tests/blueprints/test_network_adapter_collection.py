@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 
 # 3rd party libs
@@ -36,14 +37,14 @@ class TestNetworkAdapterCollection(BaseFlaskTest):
         self.app.register_blueprint(
             network_adapter_collection.network_adapter_collection)
 
-    def test_get_network_adapter_collection(self):
-        """Tests NetworkAdapterCollection"""
-
         # Loading server_hardware mockup value
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
+                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
-            server_hardware = json.load(f)
+            self.server_hardware = json.load(f)
+
+    def test_get_network_adapter_collection(self):
+        """Tests NetworkAdapterCollection"""
 
         # Loading NetworkAdapterCollection mockup result
         with open(
@@ -53,7 +54,8 @@ class TestNetworkAdapterCollection(BaseFlaskTest):
             network_adapter_collection_mockup = json.load(f)
 
         # Create mock response
-        self.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
 
         # Get NetworkAdapterCollection
         response = self.client.get(
@@ -107,3 +109,34 @@ class TestNetworkAdapterCollection(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
+
+    def test_get_network_collection_empty(self):
+        """Tests NetworkAdapterCollection empty list"""
+
+        # Loading NetworkAdapterCollectionEmpty mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'NetworkAdapterCollectionEmpty.json'
+        ) as f:
+            network_adapter_collection_empty = json.load(f)
+
+        server_hardware = copy.deepcopy(self.server_hardware)
+        server_hardware["portMap"]["deviceSlots"] = []
+
+        # Create mock response
+        self.oneview_client.server_hardware.get.return_value = \
+            server_hardware
+
+        # Get NetworkAdapterCollection
+        response = self.client.get(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752/"
+            "NetworkAdapters/"
+        )
+
+        # Gets json from response
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(network_adapter_collection_empty, result)

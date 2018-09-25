@@ -17,14 +17,13 @@
 from flask import abort
 from flask import Blueprint
 from flask import g
-from flask import Response
 from flask_api import status
 
-from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.network_port_collection \
     import NetworkPortCollection
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
-import logging
 
 network_port_collection = Blueprint("network_port_collection", __name__)
 
@@ -38,36 +37,12 @@ def get_network_port_collection(server_hardware_uuid, device_id):
         Return NetworkPortCollection Redfish JSON.
     """
 
-    try:
-        if device_id < 1:
-            raise Exception("Invalid id for device")
+    if device_id < 1:
+        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        server_hardware = g.oneview_client. \
-            server_hardware.get(server_hardware_uuid)
+    server_hardware = g.oneview_client. \
+        server_hardware.get(server_hardware_uuid)
 
-        npc = NetworkPortCollection(server_hardware, device_id)
+    npc = NetworkPortCollection(server_hardware, device_id)
 
-        json_str = npc.serialize()
-
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-
-    except HPOneViewException as e:
-        if e.oneview_response['errorCode'] == "RESOURCE_NOT_FOUND":
-            logging.warning('Server hardware UUID {} not found'
-                            .format(server_hardware_uuid))
-            abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
-        elif e.msg.find("server-hardware") >= 0:
-            logging.exception(
-                'OneView Exception while looking for '
-                'server hardware: {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-        else:
-            logging.exception('Unexpected OneView Exception: {}'.format(e))
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return ResponseBuilder.success(npc)

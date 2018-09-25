@@ -14,20 +14,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# Python libs
-import logging
-
 # 3rd party libs
-from flask import abort
 from flask import Blueprint
 from flask import g
-from flask import Response
-from flask_api import status
 
 # own libs
 from oneview_redfish_toolkit.api.chassis_collection import ChassisCollection
-from oneview_redfish_toolkit.api.errors \
-    import OneViewRedfishResourceNotFoundError
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
 
 chassis_collection = Blueprint("chassis_collection", __name__)
@@ -54,45 +48,17 @@ def get_chassis_collection():
             Exception: Generic error, logs the exception and call abort(500).
     """
 
-    try:
-        # Gets all enclosures
-        enclosures = g.oneview_client.enclosures.get_all()
-        if not enclosures:
-            raise OneViewRedfishResourceNotFoundError(
-                "enclosures", "Resource")
+    # Gets all enclosures
+    enclosures = g.oneview_client.enclosures.get_all()
 
-        # Gets all racks
-        racks = g.oneview_client.racks.get_all()
-        if not racks:
-            raise OneViewRedfishResourceNotFoundError(
-                "racks", "Resource")
+    # Gets all racks
+    racks = g.oneview_client.racks.get_all()
 
-        # Gets all server hardware
-        server_hardware_list = g.oneview_client.server_hardware.get_all()
+    # Gets all server hardware
+    server_hardware_list = g.oneview_client.server_hardware.get_all()
 
-        if not server_hardware_list:
-            raise OneViewRedfishResourceNotFoundError(
-                "server-hardware-list", "Resource")
+    # Build Chassis Collection object and validates it
+    cc = ChassisCollection(server_hardware_list, enclosures,
+                           racks)
 
-        # Build Chassis Collection object and validates it
-        cc = ChassisCollection(server_hardware_list, enclosures,
-                               racks)
-
-        # Build redfish json
-        json_str = cc.serialize()
-
-        # Build response and returns
-        return Response(
-            response=json_str,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-
-    except OneViewRedfishResourceNotFoundError as e:
-        # In case of error print exception and abort
-        logging.exception(e)
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
-
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return ResponseBuilder.success(cc)
