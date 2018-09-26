@@ -55,7 +55,7 @@ class NetworkDeviceFunctionCollection(RedfishJsonValidator):
                 device_link = dict()
                 device_link["@odata.id"] = \
                     "/redfish/v1/Chassis/" + server_hardware["uuid"] + \
-                    "/NetworkAdapter/" + device_id + \
+                    "/NetworkAdapters/" + device_id + \
                     "/NetworkDeviceFunctions/" + virtual_port_id
                 self.redfish["Members"].append(device_link)
         self.redfish["Members@odata.count"] = members_count

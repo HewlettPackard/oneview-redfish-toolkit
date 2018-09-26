@@ -38,7 +38,6 @@ class TestManager(BaseFlaskTest):
             - manager
                 - know value
                 - not found error
-                - unexpected error
     """
 
     @classmethod
@@ -178,19 +177,26 @@ class TestManager(BaseFlaskTest):
             self.assertEqual("application/json", response.mimetype)
             self.assertEqualMockup(manager_mockup, result)
 
-    def test_manager_unexpected_error(self):
+    @mock.patch.object(client_session, 'get_oneview_client')
+    @mock.patch.object(multiple_oneview, 'execute_query_ov_client')
+    @mock.patch.object(multiple_oneview, 'get_map_appliances')
+    def test_manager_not_found(self, get_map_appliances,
+                               execute_query_ov_client,
+                               get_oneview_client):
         """Tests Manager with an unexpected error"""
 
-        self.oneview_client.appliance_node_information.get_version.side_effect = \
-            Exception()
-        self.oneview_client.connection.get.side_effect = \
-            [self.appliance_state, self.appliance_health_status]
+        get_map_appliances.return_value = self.map_appliance
+        get_oneview_client.return_value = self.oneview_client
+        execute_query_ov_client.side_effect = [
+            self.appliance_info, self.appliance_state,
+            self.appliance_health_status
+        ]
 
         response = self.client.get(
-            "/redfish/v1/Managers/b08eb206-a904-46cf-9172-dcdff2fa9639"
+            "/redfish/v1/Managers/b08eb206-a904-46cf-9172-dcdff2fa9657"
         )
 
         self.assertEqual(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            status.HTTP_404_NOT_FOUND,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
