@@ -72,13 +72,17 @@ def query_ov_client_by_resource(resource_id, resource, function,
         Returns:
             dict: OneView resource
     """
-    # Get cached OneView IP by resource ID
-    ip_oneview = get_ov_ip_by_resource(resource_id)
+    # Get OneView's IP in the single OneView context or cached by resource ID
+    ip_oneview = _get_single_oneview_ip() and \
+        get_ov_ip_by_resource(resource_id)
 
     # If resource is not cached yet search in all OneViews
     if not ip_oneview:
         return search_resource_multiple_ov(resource, function, resource_id,
                                            *args, **kwargs)
+
+    if _is_single_oneview_context():
+        _set_single_oneview_ip(ip_oneview)
 
     ov_client = client_session.get_oneview_client(ip_oneview)
 
@@ -189,3 +193,27 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
                        function, elapsed_time))
 
     return ov_function(*args, **kwargs)
+
+
+def set_single_oneview_context():
+    """Set to use the same OneView IP in the same request"""
+    g.single_oneview_context = True
+
+
+def _is_single_oneview_context():
+    """Check if it ot be used the same OneView IP on the request context"""
+    return g.single_oneview_context
+
+
+def _get_single_oneview_ip():
+    """Get the same OneView's IP in request context"""
+    if _is_single_oneview_context():
+        return g.single_oneview_ip
+
+    return None
+
+
+def _set_single_oneview_ip(oneview_ip):
+    """Set OneView's IP to be used in the same request context"""
+    if not g.single_oneview_ip:
+        g.single_oneview_ip = oneview_ip
