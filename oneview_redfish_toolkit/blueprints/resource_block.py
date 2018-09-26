@@ -37,6 +37,7 @@ from oneview_redfish_toolkit.api.storage_resource_block \
 from oneview_redfish_toolkit.blueprints.util.response_builder \
     import ResponseBuilder
 from oneview_redfish_toolkit import category_resource
+from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.services.manager_service import \
     get_manager_uuid
 from oneview_redfish_toolkit.services.zone_service import ZoneService
@@ -56,6 +57,8 @@ def get_resource_block(uuid):
             JSON: Redfish json with ResourceBlock.
     """
     try:
+        multiple_oneview.set_single_oneview_context()
+
         zone_service = ZoneService(g.oneview_client)
         resource = _get_oneview_resource(uuid)
         category = resource["category"]
@@ -114,6 +117,7 @@ def get_resource_block_computer_system(uuid):
         Returns:
             JSON: Redfish json with ResourceBlock Computer System.
     """
+    multiple_oneview.set_single_oneview_context()
 
     server_hardware = g.oneview_client.server_hardware.get(uuid)
     manager_uuid = get_manager_uuid(uuid)
@@ -139,6 +143,7 @@ def get_resource_block_ethernet_interface(uuid, id):
         Returns:
             JSON: Redfish json with ResourceBlock.
     """
+    multiple_oneview.set_single_oneview_context()
 
     try:
         server_profile_template = \
