@@ -315,7 +315,7 @@ def main(config_file_path, logging_config_file_path,
 
     if config.auth_mode_is_conf():
         # Loading scmb connection
-        if scmb.has_valid_certificate():
+        if scmb.has_valid_certificates():
             logging.info('SCMB certs already exists and is valid...')
         else:
             logging.info('SCMB certs not found. '
@@ -379,6 +379,14 @@ def main(config_file_path, logging_config_file_path,
         # We should use certs file provided by the user
         ssl_cert_file = app_config["ssl"]["SSLCertFile"]
         ssl_key_file = app_config["ssl"]["SSLKeyFile"]
+
+        # Checking if cert files exist
+        if ssl_cert_file == "" or ssl_key_file == "":
+            logging.error(
+                "SSL type: is 'cert' but one of the files are missing on"
+                "the config file. SSLCertFile: {}, SSLKeyFile: {}.".
+                format(ssl_cert_file, ssl_key_file))
+
         # Generating cert files if they don't exists
         if ssl_type == "self-signed":
             if not os.path.exists(ssl_cert_file) and not \
@@ -389,12 +397,6 @@ def main(config_file_path, logging_config_file_path,
                     os.path.dirname(ssl_cert_file), "self-signed", 2048)
             else:
                 logging.warning("Using existing self-signed certs")
-
-        if ssl_cert_file == "" or ssl_key_file == "":
-            logging.error(
-                "SSL type: is 'cert' but one of the files are missing on"
-                "the config file. SSLCertFile: {}, SSLKeyFile: {}.".
-                format(ssl_cert_file, ssl_key_file))
 
         if is_dev_env and is_debug_mode:
             ssl_context = (ssl_cert_file, ssl_key_file)

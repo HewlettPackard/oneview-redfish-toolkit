@@ -62,7 +62,7 @@ def _scmb_key_path():
     return os.path.join(_scmb_base_dir(), SCMB_KEY_NAME)
 
 
-def has_valid_certificate():
+def has_valid_certificates():
     try:
         _scmb_base_dir()
     except KeyError as error:
@@ -77,6 +77,7 @@ def _has_scmb_certificate():
     return os.path.isfile(_oneview_ca_path()) and \
         os.path.isfile(_scmb_cert_path()) and \
         os.path.isfile(_scmb_key_path())
+
 
 def get_oneview_client():
     # Workaround for #328
@@ -106,26 +107,31 @@ def get_cert():
     with open(_oneview_ca_path(), 'w+') as f:
         f.write(cert)
 
+    global certs
+
     try:
         # Checks if certificate exists
         certs = ov_client.certificate_rabbitmq.get_key_pair(
             'default')
-        logging.info('SCMB certs already generated in Oneview. '
-                     'Getting certs...')
-        # Save cert
-        with open(_scmb_cert_path(), 'w+') as f:
-            f.write(certs['base64SSLCertData'])
-        # Save key
-        with open(_scmb_key_path(), 'w+') as f:
-            f.write(certs['base64SSLKeyData'])
 
     except HPOneViewException as e:
         if e.oneview_response["errorCode"] in NOT_FOUND_ONEVIEW_ERRORS:
             logging.info('Generating new SCMB certs in Oneview...')
             _generate_scmb_certificate(ov_client)
+            certs = ov_client.certificate_rabbitmq.get_key_pair(
+                'default')
         else:
             logging.exception("Unexpected error")
             raise
+
+    logging.info('SCMB certs already generated in Oneview. '
+                 'Getting certs...')
+    # Save cert
+    with open(_scmb_cert_path(), 'w+') as f:
+        f.write(certs['base64SSLCertData'])
+    # Save key
+    with open(_scmb_key_path(), 'w+') as f:
+        f.write(certs['base64SSLKeyData'])
 
 
 def _generate_scmb_certificate(ov_client):

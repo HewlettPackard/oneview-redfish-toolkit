@@ -41,13 +41,13 @@ class TestSCMB(BaseTest):
         # Files exist
         isfile.return_value = True
         is_cert_working_with_scmb.return_value = True
-        self.assertTrue(scmb.has_valid_certificate())
+        self.assertTrue(scmb.has_valid_certificates())
 
         # Certs files don't exist
         isfile.return_value = False
         is_cert_working_with_scmb.return_value = False
-        self.assertFalse(scmb.has_valid_certificate())
-        self.assertFalse(scmb.has_valid_certificate())
+        self.assertFalse(scmb.has_valid_certificates())
+        self.assertFalse(scmb.has_valid_certificates())
 
     @mock.patch.object(scmb, 'config')
     def test_paths_generated_for_scmb_files(self, config_mock):
@@ -71,7 +71,7 @@ class TestSCMB(BaseTest):
         }
 
         with self.assertRaises(KeyError) as error:
-            scmb.has_valid_certificate()
+            scmb.has_valid_certificates()
 
         logging_mock.error.assert_called_with(
             'Invalid configuration for ssl cert. '
@@ -110,7 +110,7 @@ class TestSCMB(BaseTest):
         })
         oneview_client.certificate_rabbitmq.generate.side_effect = e
         scmb.get_cert()
-        self.assertTrue(scmb.has_valid_certificate())
+        self.assertTrue(scmb.has_valid_certificates())
 
     @mock.patch('pika.BlockingConnection')
     @mock.patch('pika.ConnectionParameters')
@@ -132,21 +132,22 @@ class TestSCMB(BaseTest):
 
         self.assertTrue(dispatch_mock.called)
 
-    @mock.patch.object(scmb, '_scmb_base_dir')
     @mock.patch.object(scmb, 'config')
     @mock.patch.object(scmb, 'is_cert_working_with_scmb')
     @mock.patch.object(scmb, 'get_oneview_client')
-    def test_generate_new_scmb_cert(self, get_oneview_client,
-                                    is_cert_working_with_scmb,
-                                    config_mock, _scmb_base_dir):
+    def test_generate_new_cert_for_oneview(self, get_oneview_client,
+                                           is_cert_working_with_scmb,
+                                           config_mock):
         config_mock.get_config.return_value = {
             'ssl': {
-                'SSLCertFile': ''
+                'SSLCertFile': 'cert_file.crt'
             }
         }
 
-        os.makedirs(name='scmb', exist_ok=True)
-        self.addCleanup(shutil.rmtree, 'scmb')
+        cert_key_pair = {
+            'base64SSLCertData': 'Client CERT',
+            'base64SSLKeyData': 'Client Key'
+        }
 
         # Certs Generated with success
         oneview_client = mock.MagicMock()
@@ -154,10 +155,12 @@ class TestSCMB(BaseTest):
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'Resource not found.',
         })
+
         oneview_client.certificate_authority.get.return_value = "CA CERT"
         oneview_client.certificate_rabbitmq.generate.return_value = True
-        oneview_client.certificate_rabbitmq.get_key_pair.side_effect = e
+        oneview_client.certificate_rabbitmq.get_key_pair.side_effect = \
+            [e, cert_key_pair]
         get_oneview_client.return_value = oneview_client
         is_cert_working_with_scmb.return_value = True
         scmb.get_cert()
-        self.assertTrue(scmb.has_valid_certificate())
+        self.assertTrue(scmb.has_valid_certificates())
