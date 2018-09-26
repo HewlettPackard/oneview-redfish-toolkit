@@ -448,7 +448,6 @@ class TestChassis(BaseFlaskTest):
         # Tests response
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(self.blade_chassis_mockup, result)
         self.assertEqual(
             "{}{}".format("W/", self.server_hardware["eTag"]),
