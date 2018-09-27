@@ -14,16 +14,21 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
 import json
 import logging
 import os
 import pika
 import ssl
+import threading
 
+# 3rd party libs
 from hpOneView.exceptions import HPOneViewException
 from hpOneView.oneview_client import OneViewClient
 from pika.credentials import ExternalCredentials
 
+# Own libs
+from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
@@ -61,14 +66,37 @@ def _scmb_key_path():
     return os.path.join(_scmb_base_dir(), SCMB_KEY_NAME)
 
 
-def check_cert_exist():
+def init_event_service():
+    if config.auth_mode_is_conf():
+        # Loading scmb connection
+        if _has_valid_certificates():
+            logging.info('SCMB certs already exist and are valid...')
+        else:
+            logging.info('SCMB certs not found. '
+                         'Checking if already generated in Oneview...')
+            get_cert()
+            logging.info('Got certs. Testing connection...')
+            if not _is_cert_working_with_scmb():
+                logging.error('Failed to connect to scmb. Aborting...')
+                exit(1)
+        scmb_thread = threading.Thread(target=_listen_scmb)
+        scmb_thread.daemon = True
+        scmb_thread.start()
+    else:
+        logging.warning("Authentication mode set to session. SCMB events will "
+                        "be disabled")
+
+
+def _has_valid_certificates():
     try:
-        _scmb_base_dir()
+        return _has_scmb_certificates_path() and _is_cert_working_with_scmb()
     except KeyError as error:
         logging.error("Invalid configuration for ssl cert. "
                       "Verify the [ssl] section in config file")
         raise error
 
+
+def _has_scmb_certificates_path():
     return os.path.isfile(_oneview_ca_path()) and \
         os.path.isfile(_scmb_cert_path()) and \
         os.path.isfile(_scmb_key_path())
@@ -101,7 +129,34 @@ def get_cert():
 
     with open(_oneview_ca_path(), 'w+') as f:
         f.write(cert)
-    # Generate scmb Cert:
+
+    certs = _get_scmb_certificate_from_ov(ov_client)
+
+    # Save cert
+    with open(_scmb_cert_path(), 'w+') as f:
+        f.write(certs['base64SSLCertData'])
+    # Save key
+    with open(_scmb_key_path(), 'w+') as f:
+        f.write(certs['base64SSLKeyData'])
+
+
+def _get_scmb_certificate_from_ov(ov_client):
+    cert = None
+    try:
+        cert = ov_client.certificate_rabbitmq.get_key_pair('default')
+        logging.info('SCMB certs retrieved from OneView.')
+    except HPOneViewException as e:
+        if e.oneview_response["errorCode"] in NOT_FOUND_ONEVIEW_ERRORS:
+            logging.info('Generating SCMB cert in Oneview...')
+            _generate_certificate_in_oneview(ov_client)
+            cert = ov_client.certificate_rabbitmq.get_key_pair('default')
+        else:
+            logging.exception("Unexpected error")
+            raise e
+    return cert
+
+
+def _generate_certificate_in_oneview(ov_client):
     try:
         cert_info = {
             "commonName": "default",
@@ -115,16 +170,7 @@ def get_cert():
         else:
             # Another error is not expected, we raise.
             logging.exception("Unexpected error")
-            raise
-    # Get the scmb certs key pair
-    certs = ov_client.certificate_rabbitmq.get_key_pair(
-        'default')
-    # Save cert
-    with open(_scmb_cert_path(), 'w+') as f:
-        f.write(certs['base64SSLCertData'])
-    # Save key
-    with open(_scmb_key_path(), 'w+') as f:
-        f.write(certs['base64SSLKeyData'])
+            raise e
 
 
 def scmb_connect():
@@ -151,7 +197,7 @@ def scmb_connect():
     return scmb_connection
 
 
-def is_cert_working_with_scmb():
+def _is_cert_working_with_scmb():
     # Create and bind to queue
     EXCHANGE_NAME = 'scmb'
     ROUTE = 'scmb.alerts.#'
@@ -188,7 +234,7 @@ def consume_message(ch, method, properties, body):
         logging.debug('SCMB message received for an unmanaged resource')
 
 
-def listen_scmb():
+def _listen_scmb():
     try:
         scmb_conn = scmb_connect()
         ch = scmb_conn.channel()

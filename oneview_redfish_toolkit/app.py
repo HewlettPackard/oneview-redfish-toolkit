@@ -313,23 +313,7 @@ def main(config_file_path, logging_config_file_path,
 
         return response
 
-    if config.auth_mode_is_conf():
-        # Loading scmb connection
-        if scmb.check_cert_exist():
-            logging.info('SCMB certs already exists testing connection...')
-        else:
-            logging.info('SCMB certs not found. Generating/getting certs....')
-            scmb.get_cert()
-            logging.info('Got certs. Testing connection...')
-        if not scmb.is_cert_working_with_scmb():
-            logging.error('Failed to connect to scmb. Aborting...')
-            exit(1)
-        scmb_thread = threading.Thread(target=scmb.listen_scmb)
-        scmb_thread.daemon = True
-        scmb_thread.start()
-    else:
-        logging.warning("Authentication mode set to session. SCMB events will "
-                        "be disabled")
+    scmb.init_event_service()
 
     app_config = config.get_config()
 
@@ -378,22 +362,22 @@ def main(config_file_path, logging_config_file_path,
         # We should use certs file provided by the user
         ssl_cert_file = app_config["ssl"]["SSLCertFile"]
         ssl_key_file = app_config["ssl"]["SSLKeyFile"]
+
         # Generating cert files if they don't exists
         if ssl_type == "self-signed":
             if not os.path.exists(ssl_cert_file) and not \
-                os.path.exists(ssl_key_file):
+                    os.path.exists(ssl_key_file):
                 logging.warning("Generating self-signed certs")
                 # Generate certificates
                 util.generate_certificate(
                     os.path.dirname(ssl_cert_file), "self-signed", 2048)
             else:
                 logging.warning("Using existing self-signed certs")
-
-        if ssl_cert_file == "" or ssl_key_file == "":
+        elif ssl_cert_file == "" or ssl_key_file == "":
             logging.error(
                 "SSL type: is 'cert' but one of the files are missing on"
-                "the config file. SSLCertFile: {}, SSLKeyFile: {}.".
-                format(ssl_cert_file, ssl_key_file))
+                "the config file. SSLCertFile: {}, SSLKeyFile: {}.".format(
+                    ssl_cert_file, ssl_key_file))
 
         if is_dev_env and is_debug_mode:
             ssl_context = (ssl_cert_file, ssl_key_file)
