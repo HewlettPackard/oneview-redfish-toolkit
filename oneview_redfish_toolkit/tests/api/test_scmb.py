@@ -13,13 +13,18 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
+# Python libs
 import os
 import shutil
 from unittest import mock
 
+# 3rd party libs
 from hpOneView.exceptions import HPOneViewException
 
+# Own libs
 from oneview_redfish_toolkit.api import scmb
+from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 from oneview_redfish_toolkit import util
 
@@ -163,4 +168,111 @@ class TestSCMB(BaseTest):
         get_oneview_client.return_value = oneview_client
         is_cert_working_with_scmb.return_value = True
         scmb.get_cert()
+        self.assertTrue(scmb.has_valid_certificates())
+
+    @mock.patch.object(scmb, 'config')
+    @mock.patch.object(scmb, 'get_oneview_client')
+    def test_get_oneview_cert_unexpected_error(self, get_oneview_client,
+                                               config_mock):
+        config_mock.get_config.return_value = {
+            'ssl': {
+                'SSLCertFile': 'cert_file.crt'
+            }
+        }
+
+        # Certs Generated with success
+        oneview_client = mock.MagicMock()
+        e = HPOneViewException({
+            'errorCode': 'UNEXPECTED ERROR',
+            'message': 'Unexpected error.',
+        })
+        hp_ov_exception_msg = "Unexpected error."
+
+        oneview_client.certificate_authority.get.return_value = "CA CERT"
+        oneview_client.certificate_rabbitmq.generate.return_value = True
+        oneview_client.certificate_rabbitmq.get_key_pair.side_effect = e
+        get_oneview_client.return_value = oneview_client
+
+        with self.assertRaises(HPOneViewException) as hp_exception:
+            scmb.get_cert()
+
+        test_exception = hp_exception.exception
+        self.assertEqual(hp_ov_exception_msg, test_exception.msg)
+        self.assertEqual(e.oneview_response, test_exception.oneview_response)
+
+    @mock.patch('pika.channel.Channel')
+    @mock.patch('pika.BlockingConnection')
+    @mock.patch('pika.ConnectionParameters')
+    @mock.patch.object(scmb, 'config')
+    @mock.patch.object(scmb, 'get_oneview_client')
+    def test_init_event_service_with_valid_certificate(self,
+                                                       get_oneview_client,
+                                                       config_mock, conn_param,
+                                                       block_conn, channel):
+        config_mock.get_config.return_value = {
+            'ssl': {
+                'SSLCertFile': 'cert_file.crt'
+            },
+        }
+
+        os.makedirs(name='scmb', exist_ok=True)
+        self.addCleanup(shutil.rmtree, 'scmb')
+
+        oneview_client = mock.MagicMock()
+        oneview_client.certificate_authority.get.return_value = "CA CERT"
+        oneview_client.certificate_rabbitmq.generate.return_value = True
+        get_oneview_client.return_value = oneview_client
+        oneview_client.certificate_rabbitmq.get_key_pair.return_value = {
+            'base64SSLCertData': 'Client CERT',
+            'base64SSLKeyData': 'Client Key'}
+
+        pika_mock = mock.MagicMock()
+        pika_mock.channel.Channel = {}
+        block_conn.return_value = pika_mock
+        conn_param.return_value = {}
+        channel.return_value = {}
+
+        scmb.init_event_service()
+
+        self.assertTrue(scmb.has_valid_certificates())
+        self.assertTrue(scmb.is_cert_working_with_scmb())
+
+    @mock.patch.object(config, 'config')
+    def test_init_event_service_on_session_mode(self, config_mock):
+        config_mock.get_authentication_mode.return_value = 'session'
+        scmb.init_event_service()
+
+        self.assertFalse(scmb.has_valid_certificates())
+        self.assertFalse(scmb.is_cert_working_with_scmb())
+
+    @mock.patch('pika.channel.Channel')
+    @mock.patch('pika.BlockingConnection')
+    @mock.patch('pika.ConnectionParameters')
+    @mock.patch.object(scmb, 'has_valid_certificates')
+    @mock.patch.object(scmb, 'get_oneview_client')
+    @mock.patch.object(scmb, 'config')
+    def test_init_event_service_with_certs_already_generated(self, config_mock,
+                                                             get_ov_client,
+                                                             has_valid_certs,
+                                                             conn_param,
+                                                             block_conn,
+                                                             channel):
+        config_mock.get_config.return_value = {
+            'ssl': {
+                'SSLCertFile': '/dir/cert_file.crt'
+            },
+        }
+
+        pika_mock = mock.MagicMock()
+        pika_mock.channel.Channel = {}
+        block_conn.return_value = pika_mock
+        conn_param.return_value = {}
+        channel.return_value = {}
+        oneview_client = mock.MagicMock()
+        get_ov_client.return_value = oneview_client
+
+        has_valid_certs.return_value = True
+
+        scmb.init_event_service()
+
         self.assertTrue(scmb.has_valid_certificates())

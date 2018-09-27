@@ -14,16 +14,20 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+# Python libs
 import json
 import logging
 import os
 import pika
 import ssl
+import threading
 
+# 3rd party libs
 from hpOneView.exceptions import HPOneViewException
 from hpOneView.oneview_client import OneViewClient
 from pika.credentials import ExternalCredentials
 
+# Own libs
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit import config
@@ -62,18 +66,37 @@ def _scmb_key_path():
     return os.path.join(_scmb_base_dir(), SCMB_KEY_NAME)
 
 
+def init_event_service():
+    if config.auth_mode_is_conf():
+        # Loading scmb connection
+        if has_valid_certificates():
+            logging.info('SCMB certs already exists and is valid...')
+        else:
+            logging.info('SCMB certs not found. '
+                         'Checking if it was already generated in Oneview...')
+            get_cert()
+            logging.info('Got certs. Testing connection...')
+            if not is_cert_working_with_scmb():
+                logging.error('Failed to connect to scmb. Aborting...')
+                exit(1)
+        scmb_thread = threading.Thread(target=listen_scmb)
+        scmb_thread.daemon = True
+        scmb_thread.start()
+    else:
+        logging.warning("Authentication mode set to session. SCMB events will "
+                        "be disabled")
+
+
 def has_valid_certificates():
     try:
-        _scmb_base_dir()
+        return _has_scmb_certificates_path() and is_cert_working_with_scmb()
     except KeyError as error:
         logging.error("Invalid configuration for ssl cert. "
                       "Verify the [ssl] section in config file")
         raise error
 
-    return _has_scmb_certificate() and is_cert_working_with_scmb()
 
-
-def _has_scmb_certificate():
+def _has_scmb_certificates_path():
     return os.path.isfile(_oneview_ca_path()) and \
         os.path.isfile(_scmb_cert_path()) and \
         os.path.isfile(_scmb_key_path())
@@ -107,25 +130,10 @@ def get_cert():
     with open(_oneview_ca_path(), 'w+') as f:
         f.write(cert)
 
-    global certs
-
-    try:
-        # Checks if certificate exists
-        certs = ov_client.certificate_rabbitmq.get_key_pair(
-            'default')
-
-    except HPOneViewException as e:
-        if e.oneview_response["errorCode"] in NOT_FOUND_ONEVIEW_ERRORS:
-            logging.info('Generating new SCMB certs in Oneview...')
-            _generate_scmb_certificate(ov_client)
-            certs = ov_client.certificate_rabbitmq.get_key_pair(
-                'default')
-        else:
-            logging.exception("Unexpected error")
-            raise
-
-    logging.info('SCMB certs already generated in Oneview. '
+    certs = get_scmb_certificate_from_ov(ov_client)
+    logging.info('SCMB certs already taken from Oneview.'
                  'Getting certs...')
+
     # Save cert
     with open(_scmb_cert_path(), 'w+') as f:
         f.write(certs['base64SSLCertData'])
@@ -134,7 +142,20 @@ def get_cert():
         f.write(certs['base64SSLKeyData'])
 
 
-def _generate_scmb_certificate(ov_client):
+def get_scmb_certificate_from_ov(ov_client):
+    try:
+        return ov_client.certificate_rabbitmq.get_key_pair('default')
+    except HPOneViewException as e:
+        if e.oneview_response["errorCode"] in NOT_FOUND_ONEVIEW_ERRORS:
+            logging.info('Generating SCMB cert in Oneview...')
+            generate_certificate_in_oneview(ov_client)
+            return ov_client.certificate_rabbitmq.get_key_pair('default')
+        else:
+            logging.exception("Unexpected error")
+            raise e
+
+
+def generate_certificate_in_oneview(ov_client):
     try:
         cert_info = {
             "commonName": "default",
@@ -148,7 +169,7 @@ def _generate_scmb_certificate(ov_client):
         else:
             # Another error is not expected, we raise.
             logging.exception("Unexpected error")
-            raise
+            raise e
 
 
 def scmb_connect():
