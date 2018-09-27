@@ -79,7 +79,7 @@ def query_ov_client_by_resource(resource_id, resource, function,
             dict: OneView resource
     """
     # Get OneView's IP in the single OneView context or cached by resource ID
-    ip_oneview = _get_single_oneview_ip() and \
+    ip_oneview = _get_single_oneview_ip() or \
         get_ov_ip_by_resource(resource_id)
 
     # If resource is not cached yet search in all OneViews
