@@ -69,17 +69,17 @@ def _scmb_key_path():
 def init_event_service():
     if config.auth_mode_is_conf():
         # Loading scmb connection
-        if has_valid_certificates():
-            logging.info('SCMB certs already exists and is valid...')
+        if _has_valid_certificates():
+            logging.info('SCMB certs already exist and are valid...')
         else:
             logging.info('SCMB certs not found. '
-                         'Checking if it was already generated in Oneview...')
+                         'Checking if already generated in Oneview...')
             get_cert()
             logging.info('Got certs. Testing connection...')
-            if not is_cert_working_with_scmb():
+            if not _is_cert_working_with_scmb():
                 logging.error('Failed to connect to scmb. Aborting...')
                 exit(1)
-        scmb_thread = threading.Thread(target=listen_scmb)
+        scmb_thread = threading.Thread(target=_listen_scmb)
         scmb_thread.daemon = True
         scmb_thread.start()
     else:
@@ -87,9 +87,9 @@ def init_event_service():
                         "be disabled")
 
 
-def has_valid_certificates():
+def _has_valid_certificates():
     try:
-        return _has_scmb_certificates_path() and is_cert_working_with_scmb()
+        return _has_scmb_certificates_path() and _is_cert_working_with_scmb()
     except KeyError as error:
         logging.error("Invalid configuration for ssl cert. "
                       "Verify the [ssl] section in config file")
@@ -130,9 +130,7 @@ def get_cert():
     with open(_oneview_ca_path(), 'w+') as f:
         f.write(cert)
 
-    certs = get_scmb_certificate_from_ov(ov_client)
-    logging.info('SCMB certs already taken from Oneview.'
-                 'Getting certs...')
+    certs = _get_scmb_certificate_from_ov(ov_client)
 
     # Save cert
     with open(_scmb_cert_path(), 'w+') as f:
@@ -142,20 +140,23 @@ def get_cert():
         f.write(certs['base64SSLKeyData'])
 
 
-def get_scmb_certificate_from_ov(ov_client):
+def _get_scmb_certificate_from_ov(ov_client):
+    cert = None
     try:
-        return ov_client.certificate_rabbitmq.get_key_pair('default')
+        cert = ov_client.certificate_rabbitmq.get_key_pair('default')
+        logging.info('SCMB certs retrieved from OneView.')
     except HPOneViewException as e:
         if e.oneview_response["errorCode"] in NOT_FOUND_ONEVIEW_ERRORS:
             logging.info('Generating SCMB cert in Oneview...')
-            generate_certificate_in_oneview(ov_client)
-            return ov_client.certificate_rabbitmq.get_key_pair('default')
+            _generate_certificate_in_oneview(ov_client)
+            cert = ov_client.certificate_rabbitmq.get_key_pair('default')
         else:
             logging.exception("Unexpected error")
             raise e
+    return cert
 
 
-def generate_certificate_in_oneview(ov_client):
+def _generate_certificate_in_oneview(ov_client):
     try:
         cert_info = {
             "commonName": "default",
@@ -196,7 +197,7 @@ def scmb_connect():
     return scmb_connection
 
 
-def is_cert_working_with_scmb():
+def _is_cert_working_with_scmb():
     # Create and bind to queue
     EXCHANGE_NAME = 'scmb'
     ROUTE = 'scmb.alerts.#'
@@ -233,7 +234,7 @@ def consume_message(ch, method, properties, body):
         logging.debug('SCMB message received for an unmanaged resource')
 
 
-def listen_scmb():
+def _listen_scmb():
     try:
         scmb_conn = scmb_connect()
         ch = scmb_conn.channel()

@@ -32,11 +32,11 @@ from oneview_redfish_toolkit import util
 class TestSCMB(BaseTest):
     """Tests for SCMB module"""
 
-    @mock.patch.object(scmb, 'is_cert_working_with_scmb')
+    @mock.patch.object(scmb, '_is_cert_working_with_scmb')
     @mock.patch.object(scmb, 'config')
     @mock.patch('os.path.isfile')
     def test_check_cert_exist(self, isfile, config_mock,
-                              is_cert_working_with_scmb):
+                              _is_cert_working_with_scmb):
         config_mock.get_config.return_value = {
             'ssl': {
                 'SSLCertFile': ''
@@ -45,14 +45,14 @@ class TestSCMB(BaseTest):
 
         # Files exist
         isfile.return_value = True
-        is_cert_working_with_scmb.return_value = True
-        self.assertTrue(scmb.has_valid_certificates())
+        _is_cert_working_with_scmb.return_value = True
+        self.assertTrue(scmb._has_valid_certificates())
 
         # Certs files don't exist
         isfile.return_value = False
-        is_cert_working_with_scmb.return_value = False
-        self.assertFalse(scmb.has_valid_certificates())
-        self.assertFalse(scmb.has_valid_certificates())
+        _is_cert_working_with_scmb.return_value = False
+        self.assertFalse(scmb._has_valid_certificates())
+        self.assertFalse(scmb._has_valid_certificates())
 
     @mock.patch.object(scmb, 'config')
     def test_paths_generated_for_scmb_files(self, config_mock):
@@ -76,7 +76,7 @@ class TestSCMB(BaseTest):
         }
 
         with self.assertRaises(KeyError) as error:
-            scmb.has_valid_certificates()
+            scmb._has_valid_certificates()
 
         logging_mock.error.assert_called_with(
             'Invalid configuration for ssl cert. '
@@ -84,11 +84,11 @@ class TestSCMB(BaseTest):
 
         self.assertEqual("'SSLCertFile'", str(error.exception))
 
-    @mock.patch.object(scmb, 'is_cert_working_with_scmb')
+    @mock.patch.object(scmb, '_is_cert_working_with_scmb')
     @mock.patch.object(scmb, 'config')
     @mock.patch.object(scmb, 'get_oneview_client')
     def test_get_cert_already_exists(self, get_oneview_client, config_mock,
-                                     is_cert_working_with_scmb):
+                                     _is_cert_working_with_scmb):
         config_mock.get_config.return_value = {
             'ssl': {
                 'SSLCertFile': 'cert_file.crt'
@@ -106,7 +106,7 @@ class TestSCMB(BaseTest):
             'base64SSLCertData': 'Client CERT',
             'base64SSLKeyData': 'Client Key'}
         get_oneview_client.return_value = oneview_client
-        is_cert_working_with_scmb.return_value = True
+        _is_cert_working_with_scmb.return_value = True
 
         # Certs already exist
         e = HPOneViewException({
@@ -115,7 +115,7 @@ class TestSCMB(BaseTest):
         })
         oneview_client.certificate_rabbitmq.generate.side_effect = e
         scmb.get_cert()
-        self.assertTrue(scmb.has_valid_certificates())
+        self.assertTrue(scmb._has_valid_certificates())
 
     @mock.patch('pika.BlockingConnection')
     @mock.patch('pika.ConnectionParameters')
@@ -138,10 +138,10 @@ class TestSCMB(BaseTest):
         self.assertTrue(dispatch_mock.called)
 
     @mock.patch.object(scmb, 'config')
-    @mock.patch.object(scmb, 'is_cert_working_with_scmb')
+    @mock.patch.object(scmb, '_is_cert_working_with_scmb')
     @mock.patch.object(scmb, 'get_oneview_client')
     def test_generate_new_cert_for_oneview(self, get_oneview_client,
-                                           is_cert_working_with_scmb,
+                                           _is_cert_working_with_scmb,
                                            config_mock):
         config_mock.get_config.return_value = {
             'ssl': {
@@ -166,9 +166,9 @@ class TestSCMB(BaseTest):
         oneview_client.certificate_rabbitmq.get_key_pair.side_effect = \
             [e, cert_key_pair]
         get_oneview_client.return_value = oneview_client
-        is_cert_working_with_scmb.return_value = True
+        _is_cert_working_with_scmb.return_value = True
         scmb.get_cert()
-        self.assertTrue(scmb.has_valid_certificates())
+        self.assertTrue(scmb._has_valid_certificates())
 
     @mock.patch.object(scmb, 'config')
     @mock.patch.object(scmb, 'get_oneview_client')
@@ -234,26 +234,26 @@ class TestSCMB(BaseTest):
 
         scmb.init_event_service()
 
-        self.assertTrue(scmb.has_valid_certificates())
-        self.assertTrue(scmb.is_cert_working_with_scmb())
+        self.assertTrue(scmb._has_valid_certificates())
+        self.assertTrue(scmb._is_cert_working_with_scmb())
 
     @mock.patch.object(config, 'config')
     def test_init_event_service_on_session_mode(self, config_mock):
         config_mock.get_authentication_mode.return_value = 'session'
         scmb.init_event_service()
 
-        self.assertFalse(scmb.has_valid_certificates())
-        self.assertFalse(scmb.is_cert_working_with_scmb())
+        self.assertFalse(scmb._has_valid_certificates())
+        self.assertFalse(scmb._is_cert_working_with_scmb())
 
     @mock.patch('pika.channel.Channel')
     @mock.patch('pika.BlockingConnection')
     @mock.patch('pika.ConnectionParameters')
-    @mock.patch.object(scmb, 'has_valid_certificates')
+    @mock.patch.object(scmb, '_has_scmb_certificates_path')
     @mock.patch.object(scmb, 'get_oneview_client')
     @mock.patch.object(scmb, 'config')
     def test_init_event_service_with_certs_already_generated(self, config_mock,
                                                              get_ov_client,
-                                                             has_valid_certs,
+                                                             _has_certs_path,
                                                              conn_param,
                                                              block_conn,
                                                              channel):
@@ -270,9 +270,8 @@ class TestSCMB(BaseTest):
         channel.return_value = {}
         oneview_client = mock.MagicMock()
         get_ov_client.return_value = oneview_client
-
-        has_valid_certs.return_value = True
+        _has_certs_path.return_value = True
 
         scmb.init_event_service()
 
-        self.assertTrue(scmb.has_valid_certificates())
+        self.assertTrue(scmb._has_valid_certificates())
