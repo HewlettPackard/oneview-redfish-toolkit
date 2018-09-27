@@ -40,6 +40,7 @@ from oneview_redfish_toolkit import multiple_oneview
 @mock.patch.object(client_session, 'request')
 @mock.patch.object(connection, 'OneViewClient')
 @mock.patch.object(client_session, 'get_oneview_client')
+@mock.patch.object(multiple_oneview, 'g')
 class TestMultipleOneView(unittest.TestCase):
     """Test class for multiple_oneview"""
 
@@ -77,7 +78,8 @@ class TestMultipleOneView(unittest.TestCase):
         self.config_obj.add_section('oneview_config')
         self.config_obj.add_section('redfish')
 
-    def test_search_in_all_ov_found_on_second(self, get_oneview_client,
+    def test_search_in_all_ov_found_on_second(self, req_context,
+                                              get_oneview_client,
                                               oneview_client_mockup,
                                               request,
                                               get_config):
@@ -126,6 +128,7 @@ class TestMultipleOneView(unittest.TestCase):
         )
 
     def test_search_in_all_ov_when_auth_mode_is_conf(self,
+                                                     req_context,
                                                      get_oneview_client,
                                                      oneview_client_mockup,
                                                      request,
@@ -169,7 +172,8 @@ class TestMultipleOneView(unittest.TestCase):
              call("oneview.com")]
         )
 
-    def test_search_mapped_after_search_in_all(self, get_oneview_client,
+    def test_search_mapped_after_search_in_all(self, req_context,
+                                               get_oneview_client,
                                                oneview_client_mockup,
                                                request,
                                                get_config):
