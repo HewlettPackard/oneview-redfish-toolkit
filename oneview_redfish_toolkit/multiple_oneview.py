@@ -35,28 +35,34 @@ from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 
 
 def init_map_resources():
+    """Initialize cached resources map"""
     globals()['map_resources_ov'] = OrderedDict()
 
 
 def init_map_appliances():
+    """Initialize cached appliances map"""
     globals()['map_appliances_ov'] = OrderedDict()
 
 
 def get_map_resources():
+    """Get cached resources map"""
     return globals()['map_resources_ov']
 
 
 def get_map_appliances():
+    """Get cached appliances map"""
     return globals()['map_appliances_ov']
 
 
 def set_map_resources_entry(resource_id, ip_oneview):
+    """Set new cached resource"""
     lock = threading.Lock()
     with lock:
         get_map_resources()[resource_id] = ip_oneview
 
 
 def set_map_appliances_entry(ip_oneview, appliance_uuid):
+    """Set new cached appliance"""
     get_map_appliances()[ip_oneview] = appliance_uuid
 
 
@@ -129,9 +135,15 @@ def search_resource_multiple_ov(resource, function, resource_id,
     """
     result = []
     error_not_found = []
+    list_ov_ips = []
+
+    if _is_single_oneview_context():
+        list_ov_ips.append(_get_single_oneview_ip())
+    else:
+        list_ov_ips = config.get_oneview_multiple_ips()
 
     # Loop in all OneView's IP
-    for ov_ip in config.get_oneview_multiple_ips():
+    for ov_ip in list_ov_ips:
 
         ov_client = client_session.get_oneview_client(ov_ip)
 
@@ -152,15 +164,16 @@ def search_resource_multiple_ov(resource, function, resource_id,
                         result.extend(expected_resource)
                     else:
                         result.append(expected_resource)
-        except HPOneViewException as e:
+        except HPOneViewException as exception:
             # If get any error that is not a notFoundError
-            if e.oneview_response["errorCode"] not in NOT_FOUND_ONEVIEW_ERRORS:
+            if exception.oneview_response["errorCode"] not in \
+                    NOT_FOUND_ONEVIEW_ERRORS:
                 logging.exception("Error while searching on multiple "
                                   "OneViews for Oneview {}: {}".
-                                  format(ov_ip, e))
-                raise e
+                                  format(ov_ip, exception))
+                raise exception
 
-            error_not_found.append(e)
+            error_not_found.append(exception)
 
     # If it's looking for a specific resource returns a NotFound exception
     if resource_id and error_not_found:
@@ -180,8 +193,8 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
         try:
             result = ov_function(*args, **kwargs)
             return result
-        except Exception as e:
-            raise e
+        except Exception as exception:
+            raise exception
         finally:
             elapsed_time = time.time() - start_time
 
@@ -202,7 +215,7 @@ def set_single_oneview_context():
 
 def _is_single_oneview_context():
     """Check if it ot be used the same OneView IP on the request context"""
-    return g.single_oneview_context
+    return 'single_oneview_context' in g
 
 
 def _get_single_oneview_ip():
