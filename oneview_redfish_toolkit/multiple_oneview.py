@@ -78,22 +78,35 @@ def query_ov_client_by_resource(resource_id, resource, function,
         Returns:
             dict: OneView resource
     """
+    # Get OneView's IP in the single OneView context
+    single_oneview_ip = _is_single_oneview_context() and \
+        _get_single_oneview_ip()
+    # Get OneView's IP for cached resource ID
+    cached_oneview_ip = get_ov_ip_by_resource(resource_id)
+
     # Get OneView's IP in the single OneView context or cached by resource ID
-    ip_oneview = _get_single_oneview_ip() or \
-        get_ov_ip_by_resource(resource_id)
+    ip_oneview = single_oneview_ip or cached_oneview_ip
 
     # If resource is not cached yet search in all OneViews
     if not ip_oneview:
         return search_resource_multiple_ov(resource, function, resource_id,
                                            *args, **kwargs)
 
-    if _is_single_oneview_context():
+    # If it's Single Oneview context and no IP is saved on context yet
+    if _is_single_oneview_context() and not single_oneview_ip:
         _set_single_oneview_ip(ip_oneview)
 
     ov_client = client_session.get_oneview_client(ip_oneview)
 
-    return execute_query_ov_client(ov_client, resource, function,
+    resp = execute_query_ov_client(ov_client, resource, function,
                                    *args, **kwargs)
+
+    # If retrieve resource using SingleOneViewIp and the resource is not
+    # mapped yet, then map the resource for the OneView IP
+    if single_oneview_ip and not cached_oneview_ip:
+        set_map_resources_entry(resource_id, single_oneview_ip)
+
+    return resp
 
 
 def get_ov_ip_by_resource(resource_id):
@@ -136,9 +149,13 @@ def search_resource_multiple_ov(resource, function, resource_id,
     result = []
     error_not_found = []
     list_ov_ips = []
+    single_oneview_ip = _is_single_oneview_context() and \
+        _get_single_oneview_ip()
 
-    if _is_single_oneview_context():
-        list_ov_ips.append(_get_single_oneview_ip())
+    # If it's on Single Oneview Context and there is already an OneView IP
+    # on the context, then uses it. If not search on All OneViews
+    if single_oneview_ip:
+        list_ov_ips.append(single_oneview_ip)
     else:
         list_ov_ips = config.get_oneview_multiple_ips()
 
@@ -157,6 +174,12 @@ def search_resource_multiple_ov(resource, function, resource_id,
                 # If it's looking for a especific resource and was found
                 if resource_id:
                     set_map_resources_entry(resource_id, ov_ip)
+
+                    # If it's SingleOneviewContext and there is no OneView IP
+                    # on the context, then set OneView's IP on the context
+                    if _is_single_oneview_context() and not single_oneview_ip:
+                        _set_single_oneview_ip(ov_ip)
+
                     return expected_resource
                 else:
                     # If it's looking for a resource list (get_all)
@@ -220,8 +243,7 @@ def _is_single_oneview_context():
 
 def _get_single_oneview_ip():
     """Get the same OneView's IP in request context"""
-    if _is_single_oneview_context():
-        return g.single_oneview_ip
+    return g.single_oneview_ip
 
     return None
 
