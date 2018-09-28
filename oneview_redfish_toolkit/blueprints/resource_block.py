@@ -148,10 +148,10 @@ def get_resource_block_ethernet_interface(uuid, id):
         server_profile_template = \
             g.oneview_client.server_profile_templates.get(uuid)
 
-        connSettings = server_profile_template["connectionSettings"]
+        conn_settings = server_profile_template["connectionSettings"]
         connection = None
 
-        for conn in connSettings["connections"]:
+        for conn in conn_settings["connections"]:
             if str(conn["id"]) == id:
                 connection = conn
                 break
