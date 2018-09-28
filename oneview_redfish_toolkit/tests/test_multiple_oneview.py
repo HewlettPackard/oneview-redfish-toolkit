@@ -34,13 +34,14 @@ from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import handler_multiple_oneview
 from oneview_redfish_toolkit import multiple_oneview
+from oneview_redfish_toolkit import single_oneview_context
 
 
 @mock.patch.object(config, 'get_config')
 @mock.patch.object(client_session, 'request')
 @mock.patch.object(connection, 'OneViewClient')
 @mock.patch.object(client_session, 'get_oneview_client')
-@mock.patch.object(multiple_oneview, 'g')
+@mock.patch.object(single_oneview_context, 'g')
 class TestMultipleOneView(unittest.TestCase):
     """Test class for multiple_oneview"""
 
