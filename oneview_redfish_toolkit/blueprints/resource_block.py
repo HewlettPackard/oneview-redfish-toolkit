@@ -40,11 +40,13 @@ from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit.services.manager_service import \
     get_manager_uuid
 from oneview_redfish_toolkit.services.zone_service import ZoneService
+from oneview_redfish_toolkit.single_oneview_context import single_oneview
 
 resource_block = Blueprint("resource_block", __name__)
 
 
 @resource_block.route(ResourceBlock.BASE_URI + "/<uuid>", methods=["GET"])
+@single_oneview
 def get_resource_block(uuid):
     """Get the Redfish ResourceBlock for a given UUID.
 
@@ -104,6 +106,7 @@ def get_resource_block(uuid):
 
 @resource_block.route(
     ResourceBlock.BASE_URI + "/<uuid>/Systems/1", methods=["GET"])
+@single_oneview
 def get_resource_block_computer_system(uuid):
     """Get Computer System of a Resource Block
 
@@ -129,6 +132,7 @@ def get_resource_block_computer_system(uuid):
 @resource_block.route(
     ResourceBlock.BASE_URI + "/<uuid>/EthernetInterfaces/<id>",
     methods=["GET"])
+@single_oneview
 def get_resource_block_ethernet_interface(uuid, id):
     """Get the Redfish ResourceBlock of type Network for the given UUID and ID.
 
