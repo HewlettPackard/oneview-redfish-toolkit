@@ -29,6 +29,7 @@ from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
+from oneview_redfish_toolkit import single_oneview_context as single
 
 # Globals vars:
 #   globals()['map_resources_ov']
@@ -79,8 +80,8 @@ def query_ov_client_by_resource(resource_id, resource, function,
             dict: OneView resource
     """
     # Get OneView's IP in the single OneView context
-    single_oneview_ip = _is_single_oneview_context() and \
-        _get_single_oneview_ip()
+    single_oneview_ip = single.is_single_oneview_context() and \
+        single.get_single_oneview_ip()
     # Get OneView's IP for cached resource ID
     cached_oneview_ip = get_ov_ip_by_resource(resource_id)
 
@@ -93,8 +94,8 @@ def query_ov_client_by_resource(resource_id, resource, function,
                                            *args, **kwargs)
 
     # If it's Single Oneview context and no IP is saved on context yet
-    if _is_single_oneview_context() and not single_oneview_ip:
-        _set_single_oneview_ip(ip_oneview)
+    if single.is_single_oneview_context() and not single_oneview_ip:
+        single.set_single_oneview_ip(ip_oneview)
 
     ov_client = client_session.get_oneview_client(ip_oneview)
 
@@ -149,8 +150,8 @@ def search_resource_multiple_ov(resource, function, resource_id,
     result = []
     error_not_found = []
     list_ov_ips = []
-    single_oneview_ip = _is_single_oneview_context() and \
-        _get_single_oneview_ip()
+    single_oneview_ip = single.is_single_oneview_context() and \
+        single.get_single_oneview_ip()
 
     # If it's on Single Oneview Context and there is already an OneView IP
     # on the context, then uses it. If not search on All OneViews
@@ -177,8 +178,9 @@ def search_resource_multiple_ov(resource, function, resource_id,
 
                     # If it's SingleOneviewContext and there is no OneView IP
                     # on the context, then set OneView's IP on the context
-                    if _is_single_oneview_context() and not single_oneview_ip:
-                        _set_single_oneview_ip(ov_ip)
+                    if single.is_single_oneview_context() and \
+                            not single_oneview_ip:
+                        single.set_single_oneview_ip(ov_ip)
 
                     return expected_resource
                 else:
@@ -229,26 +231,3 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
                        function, elapsed_time))
 
     return ov_function(*args, **kwargs)
-
-
-def set_single_oneview_context():
-    """Set to use the same OneView IP in the same request"""
-    g.single_oneview_context = True
-
-
-def _is_single_oneview_context():
-    """Check if it ot be used the same OneView IP on the request context"""
-    return 'single_oneview_context' in g
-
-
-def _get_single_oneview_ip():
-    """Get the same OneView's IP in request context"""
-    return g.single_oneview_ip
-
-    return None
-
-
-def _set_single_oneview_ip(oneview_ip):
-    """Set OneView's IP to be used in the same request context"""
-    if not g.single_oneview_ip:
-        g.single_oneview_ip = oneview_ip
