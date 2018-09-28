@@ -18,10 +18,9 @@
 import threading
 
 
-# Globals vars:
-#   globals()['map_category_resources_ov']
-
 lock = threading.Lock()
+
+map_category_resources_ov = None
 
 
 class CategoryResource(object):
@@ -32,11 +31,12 @@ class CategoryResource(object):
 
 
 def init_map_category_resources():
-    globals()['map_category_resources_ov'] = dict()
+    global map_category_resources_ov
+    map_category_resources_ov = dict()
 
 
 def _get_map_category_resources():
-    return globals()['map_category_resources_ov']
+    return map_category_resources_ov
 
 
 def set_map_category_resources_entry(resource_id, resource, function):
@@ -45,7 +45,8 @@ def set_map_category_resources_entry(resource_id, resource, function):
         return
 
     with lock:
-        _get_map_category_resources()[resource_id] = \
+        global map_category_resources_ov
+        map_category_resources_ov[resource_id] = \
             CategoryResource(resource_id, resource, function)
 
 
