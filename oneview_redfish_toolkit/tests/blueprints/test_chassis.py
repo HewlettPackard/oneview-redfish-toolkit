@@ -142,11 +142,16 @@ class TestChassis(BaseFlaskTest):
             "{}{}".format("W/", self.enclosure["eTag"]),
             response.headers["ETag"])
 
+    @mock.patch.object(multiple_oneview, 'config')
     @mock.patch.object(multiple_oneview, 'get_map_resources')
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
-    def test_get_enclosure_not_found(self, get_map_appliances,
-                                     get_map_resources):
+    def test_get_enclosure_not_found(self,
+                                     get_map_appliances,
+                                     get_map_resources,
+                                     config_mock):
         """Tests EnclosureChassis with Enclosure not found"""
+
+        config_mock.get_oneview_multiple_ips.return_value = ['10.0.0.1']
 
         get_map_resources.return_value = OrderedDict({
             "0000000000A66101": "10.0.0.1",
@@ -168,11 +173,15 @@ class TestChassis(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
+    @mock.patch.object(multiple_oneview, 'config')
     @mock.patch.object(multiple_oneview, 'get_map_resources')
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
     def test_get_enclosure_env_config_not_found(self, get_map_appliances,
-                                                get_map_resources):
+                                                get_map_resources,
+                                                config_mock):
         """Tests EnclosureChassis with Enclosure env_config not found"""
+
+        config_mock.get_oneview_multiple_ips.return_value = ['10.0.0.1']
 
         get_map_resources.return_value = OrderedDict({
             "0000000000A66101": "10.0.0.1",
@@ -366,11 +375,15 @@ class TestChassis(BaseFlaskTest):
             "{}{}".format("W/", self.server_hardware["eTag"]),
             response.headers["ETag"])
 
+    @mock.patch.object(multiple_oneview, 'config')
     @mock.patch.object(multiple_oneview, 'get_map_resources')
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
     def test_get_server_hardware_not_found(self, get_map_appliances,
-                                           get_map_resources):
+                                           get_map_resources,
+                                           config_mock):
         """Tests BladeChassis with Server Hardware not found"""
+
+        config_mock.get_oneview_multiple_ips.return_value = ['10.0.0.1']
 
         self.oneview_client.index_resources.get_all.return_value = [
             {"category": "server-hardware"}]
@@ -495,10 +508,14 @@ class TestChassis(BaseFlaskTest):
             "{}{}".format("W/", self.rack["eTag"]),
             response.headers["ETag"])
 
+    @mock.patch.object(multiple_oneview, 'config')
     @mock.patch.object(multiple_oneview, 'get_map_resources')
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
-    def test_get_rack_not_found(self, get_map_appliances, get_map_resources):
+    def test_get_rack_not_found(self, get_map_appliances, get_map_resources,
+                                config_mock):
         """Tests RackChassis with Racks not found"""
+
+        config_mock.get_oneview_multiple_ips.return_value = ['10.0.0.1']
 
         get_map_resources.return_value = OrderedDict({
             "2AB100LMNB": "10.0.0.1",

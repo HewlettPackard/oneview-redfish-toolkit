@@ -62,6 +62,11 @@ class TestMultipleOneView(unittest.TestCase):
             'message': 'The requested profile cannot be retrieved',
         })
 
+        self.not_found_error = HPOneViewException({
+            'errorCode': 'RESOURCE_NOT_FOUND',
+            'message': 'The requested resource cannot be retrieved',
+        })
+
         # Creating mocked redfish->Oneview tokens
         self.redfish_token = "redfish_tk1"
         self.ov_tokens = collections.OrderedDict()
@@ -252,3 +257,106 @@ class TestMultipleOneView(unittest.TestCase):
 
         # Check OneView IP matchs the mapped one
         self.assertEqual(mapped_ov_ip, "10.0.0.3")
+
+    def test_searching_again_in_other_ov_when_resource_cached_is_not_found(
+            self,
+            _,
+            get_oneview_client,
+            oneview_client_mockup,
+            request,
+            get_config):
+        self.config_obj.set('oneview_config', 'ip',
+                            '10.0.0.1, 10.0.0.2, 10.0.0.3')
+        self.config_obj.set('redfish', 'authentication_mode', 'session')
+
+        get_config.return_value = self.config_obj
+
+        client_session._set_new_client_by_token(self.redfish_token,
+                                                self.ov_tokens)
+
+        # Mocking redfish token on request property
+        request.headers.get.return_value = self.redfish_token
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/Enclosure.json'
+        ) as f:
+            enclosure = json.load(f)
+
+        oneview_client_mockup.enclosures.get.side_effect = [
+            self.not_found_error,  # 10.0.0.1
+            enclosure,  # 10.0.0.2 found the resource here
+            self.not_found_error,  # 10.0.0.2
+            self.not_found_error,  # 10.0.0.1
+            enclosure,  # 10.0.0.3 found the resource here (2th time)
+            self.not_found_error,  # 10.0.0.3
+            self.not_found_error,  # 10.0.0.1
+            self.not_found_error  # 10.0.0.2
+        ]
+
+        get_oneview_client.return_value = oneview_client_mockup
+        handler_multiple_ov = \
+            handler_multiple_oneview.MultipleOneViewResource()
+
+        handler_multiple_ov.enclosures.get('UUID_1')
+        mapped_ov_ip = multiple_oneview.get_ov_ip_by_resource('UUID_1')
+
+        # Check OneView IP matchs the mapped one
+        self.assertEqual(mapped_ov_ip, '10.0.0.2')
+        get_oneview_client.assert_has_calls(
+            [call("10.0.0.1"),
+             call("10.0.0.2")]
+        )
+
+        handler_multiple_ov.enclosures.get('UUID_1')
+        mapped_ov_ip = multiple_oneview.get_ov_ip_by_resource('UUID_1')
+
+        self.assertEqual(mapped_ov_ip, '10.0.0.3')
+        get_oneview_client.assert_has_calls(
+            [call("10.0.0.2"),
+             call("10.0.0.1"),
+             call("10.0.0.3")]
+        )
+
+        with self.assertRaises(HPOneViewException):
+            handler_multiple_ov.enclosures.get('UUID_1')
+
+        get_oneview_client.assert_has_calls(
+            [call("10.0.0.3"),
+             call("10.0.0.1"),
+             call("10.0.0.2")]
+        )
+
+    def test_search_resource_not_found(self, _, get_oneview_client,
+                                       oneview_client_mockup,
+                                       request,
+                                       get_config):
+        self.config_obj.set('oneview_config', 'ip',
+                            '10.0.0.1, 10.0.0.2, 10.0.0.3')
+        self.config_obj.set('redfish', 'authentication_mode', 'session')
+
+        get_config.return_value = self.config_obj
+
+        client_session._set_new_client_by_token(self.redfish_token,
+                                                self.ov_tokens)
+
+        # Mocking redfish token on request property
+        request.headers.get.return_value = self.redfish_token
+
+        oneview_client_mockup.enclosures.get.side_effect = [
+            self.not_found_error,  # 10.0.0.1
+            self.not_found_error,  # 10.0.0.2
+            self.not_found_error,  # 10.0.0.3
+        ]
+
+        get_oneview_client.return_value = oneview_client_mockup
+        handler_multiple_ov = \
+            handler_multiple_oneview.MultipleOneViewResource()
+
+        with self.assertRaises(HPOneViewException):
+            handler_multiple_ov.enclosures.get('UUID_1')
+
+        get_oneview_client.assert_has_calls(
+            [call("10.0.0.1"),
+             call("10.0.0.2"),
+             call("10.0.0.3")]
+        )
