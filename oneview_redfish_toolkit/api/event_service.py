@@ -65,7 +65,7 @@ class EventService(RedfishJsonValidator):
         self.redfish["DeliveryRetryAttempts"] = delivery_retry_attempts
         self.redfish["DeliveryRetryIntervalSeconds"] = delivery_retry_interval
 
-        # All information bellow is hard-coded
+        # TODO(someone) All information below is commented
         # until we decide where to find it
         # self.redfish["Status"] = dict()
         # self.redfish["Status"]["Health"] = "OK"
