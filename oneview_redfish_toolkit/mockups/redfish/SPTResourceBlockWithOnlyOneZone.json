@@ -4,6 +4,7 @@
     "Name": "CI_Template",
     "CompositionStatus": {
       "SharingCapable": true,
+      "SharingEnabled": true,
       "CompositionState": "Unused"
     },
     "@odata.context": "/redfish/v1/$metadata#ResourceBlock.ResourceBlock",

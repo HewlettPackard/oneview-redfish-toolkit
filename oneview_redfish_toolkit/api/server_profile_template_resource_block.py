@@ -42,6 +42,7 @@ class ServerProfileTemplateResourceBlock(ResourceBlock):
 
         self.redfish["ResourceBlockType"] = ["Network"]
         self.redfish["CompositionStatus"]["SharingCapable"] = True
+        self.redfish["CompositionStatus"]["SharingEnabled"] = True
         self.redfish["CompositionStatus"]["CompositionState"] = "Unused"
 
         self._fill_ethernet_networks()
