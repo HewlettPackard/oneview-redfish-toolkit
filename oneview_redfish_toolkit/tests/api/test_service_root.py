@@ -29,21 +29,9 @@ from oneview_redfish_toolkit.tests.base_test import BaseTest
 class TestServiceRoot(BaseTest):
     """Tests for ServiceRoot class"""
 
-    def test_class_instantiation(self):
-        """Tests class instantiation and validation"""
-
-        try:
-            service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
-        except Exception as e:
-            self.fail("Failed to instantiate service root. "
-                      "Error: {}".format(e))
-        self.assertIsInstance(service_root, ServiceRoot)
-
     @mock.patch.object(config, 'get_authentication_mode')
-    def test_serialize(self, config_mock):
-        """Tests the serialize function result against known result"""
-
-        config_mock.return_value = "conf"
+    def test_when_auth_mode_is_session(self, config_mock):
+        config_mock.return_value = "session"
 
         service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
         result = json.loads(service_root.serialize())
@@ -52,5 +40,20 @@ class TestServiceRoot(BaseTest):
             'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
         ) as f:
             service_root_mockup = json.load(f)
+
+        self.assertEqualMockup(service_root_mockup, result)
+
+    @mock.patch.object(config, 'get_authentication_mode')
+    def test_when_auth_mode_is_conf(self, config_mock):
+        config_mock.return_value = "conf"
+
+        service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
+        result = json.loads(service_root.serialize())
+
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
+        ) as f:
+            service_root_mockup = json.load(f)
+            service_root_mockup['Links']['Sessions'] = {}
 
         self.assertEqualMockup(service_root_mockup, result)

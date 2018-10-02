@@ -45,7 +45,7 @@ class TestSubscription(BaseFlaskTest):
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
-                EventTypes=["Alert", "StatusChange"])),
+                EventTypes=["Alert", "ResourceUpdated"])),
             content_type='application/json')
 
         result = json.loads(response.data.decode("utf-8"))
@@ -70,7 +70,7 @@ class TestSubscription(BaseFlaskTest):
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
-                EventTypes=["Alert", "Alert", "StatusChange"])),
+                EventTypes=["Alert", "Alert", "ResourceUpdated"])),
             content_type='application/json')
 
         result = json.loads(response.data.decode("utf-8"))
@@ -95,7 +95,7 @@ class TestSubscription(BaseFlaskTest):
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 INVALID="http://www.dnsname.com/Destination1",
-                EventTypes=["Alert", "StatusChange"])),
+                EventTypes=["Alert", "ResourceUpdated"])),
             content_type='application/json')
 
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -111,7 +111,7 @@ class TestSubscription(BaseFlaskTest):
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
-                INVALID=["Alert", "StatusChange"])),
+                INVALID=["Alert", "ResourceUpdated"])),
             content_type='application/json')
 
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
@@ -192,7 +192,7 @@ class TestSubscription(BaseFlaskTest):
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
-                EventTypes=["Alert", "StatusChange"])),
+                EventTypes=["Alert", "ResourceUpdated"])),
             content_type='application/json')
 
         delete_response = self.client.delete(
@@ -229,7 +229,7 @@ class TestSubscription(BaseFlaskTest):
             "/redfish/v1/EventService/EventSubscriptions/",
             data=json.dumps(dict(
                 Destination="http://www.dnsname.com/Destination1",
-                EventTypes=["Alert", "StatusChange"])),
+                EventTypes=["Alert", "ResourceUpdated"])),
             content_type='application/json')
 
         with open(
