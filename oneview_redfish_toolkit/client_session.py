@@ -44,6 +44,42 @@ GC_FREQUENCY_IN_SEC = 12 * 60 * 60
 lock = Lock()
 
 
+class MapClientsDict(object):
+
+    def set_ov_client_session(self, client_ov_by_ip):
+        client_session_dict = {
+            'client_ov_by_ip': client_ov_by_ip,
+            'session_id': str(uuid.uuid4())
+        }
+
+        return client_session_dict
+
+    def get_ov_client_by_token(self, token):
+        ov_client_by_token = \
+            _get_map_clients()[token]['client_ov_by_ip']
+
+        return ov_client_by_token
+
+    def get_session_id_by_token(self, token):
+        session_dict = _get_map_clients().get(token)
+        if session_dict:
+            return session_dict['session_id']
+
+        return session_dict
+
+    def get_sessions_ids_from_map_clients(self):
+        sessions_ids_list = list()
+
+        for _, sess_dict in _get_map_clients().items():
+            sessions_ids_list.append(sess_dict['session_id'])
+
+        return sessions_ids_list
+
+    def get_oneview_clients(self, dict_by_token):
+        ov_clients = iter(dict_by_token['client_ov_by_ip'].values())
+        return ov_clients
+
+
 def _get_map_clients():
     return globals()['map_clients']
 
@@ -64,8 +100,9 @@ def _gc_for_expired_sessions():
 
         tokens_to_remove = []
         map_items = _get_map_clients().items()
+        map_clients_dict = MapClientsDict()
         for token, dict_by_token in map_items:
-            ov_clients = iter(dict_by_token['client_ov_by_ip'].values())
+            ov_clients = map_clients_dict.get_oneview_clients(dict_by_token)
             ov_client = next(ov_clients)  # ov_clients can be in any order
             ov_session_id = ov_client.connection.get_session_id()
             try:
@@ -94,19 +131,18 @@ def _gc_for_expired_sessions():
 
 
 def _set_new_client_by_token(redfish_token, client_ov_by_ip):
+    map_clients_dict = MapClientsDict()
+
     with lock:
-        globals()['map_clients'][redfish_token] = {
-            'client_ov_by_ip': client_ov_by_ip,
-            'session_id': str(uuid.uuid4())
-        }
+        globals()['map_clients'][redfish_token] = \
+            map_clients_dict.set_ov_client_session(client_ov_by_ip)
 
 
 def get_session_id_by_token(token):
-    session_dict = _get_map_clients().get(token)
-    if session_dict:
-        return session_dict['session_id']
+    map_clients_dict = MapClientsDict()
+    session_id = map_clients_dict.get_session_id_by_token(token)
 
-    return None
+    return session_id
 
 
 def _set_new_clients_by_ip(ov_clients_by_ip):
@@ -115,8 +151,9 @@ def _set_new_clients_by_ip(ov_clients_by_ip):
 
 
 def get_session_ids():
-    session_map_items = _get_map_clients().items()
-    return [sess_dict['session_id'] for _, sess_dict in session_map_items]
+    map_clients_dict = MapClientsDict()
+
+    return map_clients_dict.get_sessions_ids_from_map_clients()
 
 
 def clear_session_by_token(token):
@@ -173,8 +210,10 @@ def check_authentication(rf_token):
 
 def _get_oneview_client_by_token(ip_oneview):
     try:
+        map_clients_dict = MapClientsDict()
         rf_token = request.headers.get('x-auth-token')
-        client_ov_by_ip = _get_map_clients()[rf_token]['client_ov_by_ip']
+        client_ov_by_ip = \
+            map_clients_dict.get_ov_client_by_token(rf_token)
         oneview_client = client_ov_by_ip[ip_oneview]
         return oneview_client
     except KeyError:
