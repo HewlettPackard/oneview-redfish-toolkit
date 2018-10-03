@@ -10,7 +10,8 @@
     "Health": "OK"
   },
   "CompositionStatus": {
-    "CompositionState": "Composed"
+    "CompositionState": "Composed",
+    "SharingCapable": false
   },
   "Storage": [
     {

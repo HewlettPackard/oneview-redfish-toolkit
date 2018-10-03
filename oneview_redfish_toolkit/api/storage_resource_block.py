@@ -51,6 +51,7 @@ class StorageResourceBlock(ResourceBlock):
             composit_state = "Composed"
 
         self.redfish["CompositionStatus"]["CompositionState"] = composit_state
+        self.redfish["CompositionStatus"]["SharingCapable"] = False
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["ComputerSystems"] = list()
         self.redfish["Links"]["Zones"] = list()
