@@ -284,7 +284,7 @@ def main(config_file_path, logging_config_file_path,
     @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
     def internal_server_error(error):
         """Creates an Internal Server Error response"""
-        logging.error(error.description)
+        logging.error(error)
 
         return ResponseBuilder.error_500(error)
 

@@ -77,10 +77,12 @@ class ResponseBuilder(object):
 
     @staticmethod
     def error_500(error):
-        redfish_error = RedfishError(
-            "InternalError",
-            "The request failed due to an internal service error.  "
-            "The service is still operational.")
+        if hasattr(error, "description"):
+            msg = error.description
+        else:
+            msg = str(error)
+
+        redfish_error = RedfishError("InternalError", msg)
         redfish_error.add_extended_info("InternalError")
         return ResponseBuilder.response(redfish_error,
                                         status.HTTP_500_INTERNAL_SERVER_ERROR)
