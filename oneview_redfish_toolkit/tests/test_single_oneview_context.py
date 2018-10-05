@@ -43,17 +43,6 @@ class TestResourceBlock(BaseFlaskTest):
         self.app.register_blueprint(resource_block.resource_block)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
-        ) as f:
-            self.server_hardware = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview'
-            '/ServerProfileTemplate.json'
-        ) as f:
-            self.server_profile_template = json.load(f)
-
-        with open(
             'oneview_redfish_toolkit/mockups/oneview/Drive.json'
         ) as f:
             self.drive = json.load(f)
@@ -62,12 +51,6 @@ class TestResourceBlock(BaseFlaskTest):
             'oneview_redfish_toolkit/mockups/oneview/DriveIndexTrees.json'
         ) as f:
             self.drive_index_tree = json.load(f)
-
-        with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'DriveComposedIndexTrees.json'
-        ) as f:
-            self.drive_composed_index_tree = json.load(f)
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview'
@@ -81,16 +64,15 @@ class TestResourceBlock(BaseFlaskTest):
             self.log_encl_list = json.load(f)
 
         with open(
-                'oneview_redfish_toolkit/mockups/redfish'
-                '/ServerHardwareResourceBlock.json'
-        ) as f:
-            self.expected_sh_resource_block = json.load(f)
-
-        with open(
                 'oneview_redfish_toolkit/mockups/oneview'
                 '/DriveEnclosureList.json'
         ) as f:
             self.drive_enclosure_list = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/StorageResourceBlock.json'
+        ) as f:
+            self.expected_resource_block = json.load(f)
 
         self.resource_not_found = HPOneViewException({
             "errorCode": "RESOURCE_NOT_FOUND",
@@ -100,11 +82,6 @@ class TestResourceBlock(BaseFlaskTest):
     @mock.patch.object(config, 'get_oneview_multiple_ips')
     def test_get_storage_resource_block_single_ov(self,
                                                   get_oneview_multiple_ips):
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/StorageResourceBlock.json'
-        ) as f:
-            expected_resource_block = json.load(f)
-
         multiple_oneview.init_map_resources()
         category_resource.init_map_category_resources()
 
@@ -143,7 +120,7 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(expected_resource_block, result)
+        self.assertEqualMockup(self.expected_resource_block, result)
 
         self.oneview_client.server_hardware.get.assert_has_calls([
             call(uuid),
@@ -172,16 +149,19 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.drive_enclosures.get_all.\
             assert_called_once_with()
 
+        ov_ip_cached_drive = multiple_oneview.get_ov_ip_by_resource(
+            self.drive['uri'])
+        self.assertEqual(ov_ip_cached_drive, list_ips[2])
+
+        ov_ip_cached_conn_drive = multiple_oneview.get_ov_ip_by_resource(
+            conn_uri)
+        self.assertTrue(ov_ip_cached_conn_drive, list_ips[2])
+
     @mock.patch.object(config, 'get_oneview_multiple_ips')
     @mock.patch.object(single_oneview_context, 'is_single_oneview_context')
     def test_get_storage_resource_block_without_single_ov(self,
                                                           is_single_ov_context,
                                                           get_ov_multiple_ips):
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/StorageResourceBlock.json'
-        ) as f:
-            expected_resource_block = json.load(f)
-
         multiple_oneview.init_map_resources()
         category_resource.init_map_category_resources()
 
@@ -235,7 +215,7 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(expected_resource_block, result)
+        self.assertEqualMockup(self.expected_resource_block, result)
 
         self.oneview_client.server_hardware.get.assert_has_calls([
             call(uuid),
@@ -263,3 +243,11 @@ class TestResourceBlock(BaseFlaskTest):
             [call(), call(), call()])
         self.oneview_client.drive_enclosures.get_all.has_calls(
             [call(), call(), call()])
+
+        ov_ip_cached_drive = multiple_oneview.get_ov_ip_by_resource(
+            self.drive['uri'])
+        self.assertEqual(ov_ip_cached_drive, list_ips[2])
+
+        ov_ip_cached_conn_drive = multiple_oneview.get_ov_ip_by_resource(
+            conn_uri)
+        self.assertTrue(ov_ip_cached_conn_drive, list_ips[2])
