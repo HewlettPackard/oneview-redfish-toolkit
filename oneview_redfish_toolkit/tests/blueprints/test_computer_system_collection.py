@@ -14,7 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import copy
 import json
 
 from flask_api import status
@@ -58,16 +57,13 @@ class TestComputerSystemCollection(BaseFlaskTest):
         """Tests ComputerSystemCollection with an error"""
 
         self.oneview_client.server_hardware.get_all.side_effect = \
-            Exception("An exception was occurred")
+            Exception("An exception has occurred")
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
                 'Error500.json'
         ) as f:
             error_500 = json.load(f)
-
-        error_500_excep = copy.deepcopy(error_500)
-        error_500_excep["error"]["message"] = "An exception was occurred"
 
         response = self.client.get("/redfish/v1/Systems/")
 
@@ -78,7 +74,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(error_500_excep, result)
+        self.assertEqual(error_500, result)
 
     def test_get_computer_system_collection(self):
         """Tests ComputerSystemCollection with a known Server Hardware list"""
