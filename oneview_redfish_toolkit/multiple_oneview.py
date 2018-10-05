@@ -219,8 +219,6 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
         try:
             result = ov_function(*args, **kwargs)
             return result
-        except Exception as exception:
-            raise exception
         finally:
             elapsed_time = time.time() - start_time
 
