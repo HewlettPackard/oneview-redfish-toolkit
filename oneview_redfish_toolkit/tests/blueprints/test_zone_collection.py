@@ -58,12 +58,15 @@ class TestZoneCollection(BaseFlaskTest):
         """Tests ZoneCollection when server profile templates raises error"""
 
         self.oneview_client.server_profile_templates.get_all.side_effect = \
-            Exception()
+            Exception("An exception was occurred")
 
         with open(
             'oneview_redfish_toolkit/mockups/errors/Error500.json'
         ) as f:
             error_500 = json.load(f)
+
+        error_500_excep = copy.deepcopy(error_500)
+        error_500_excep["error"]["message"] = "An exception was occurred"
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/")
@@ -74,7 +77,7 @@ class TestZoneCollection(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(error_500, result)
+        self.assertEqual(error_500_excep, result)
 
     def test_get_zone_collection(self):
         """Tests ZoneCollection"""

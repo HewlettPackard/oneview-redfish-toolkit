@@ -16,6 +16,7 @@
 
 # Python libs
 from collections import OrderedDict
+import copy
 import json
 
 # 3rd party libs
@@ -43,18 +44,22 @@ class TestManagerCollection(BaseFlaskTest):
         self.app.register_blueprint(
             manager_collection.manager_collection)
 
+    @mock.patch.object(multiple_oneview, 'get_map_appliances')
     def test_get_manager_collection_unexpected_error(
-            self):
+            self, get_map_appliances):
         """Tests ManagerCollection with an error"""
 
-        self.oneview_client.appliance_node_information.get_version.side_effect = \
-            Exception()
+        get_map_appliances.side_effect = \
+            Exception("An exception was occurred")
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
                 'Error500.json'
         ) as f:
             error_500 = json.load(f)
+
+        error_500_excep = copy.deepcopy(error_500)
+        error_500_excep["error"]["message"] = "An exception was occurred"
 
         response = self.client.get("/redfish/v1/Managers/")
 
@@ -64,7 +69,7 @@ class TestManagerCollection(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(error_500, result)
+        self.assertEqual(error_500_excep, result)
 
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
     def test_get_manager_collection(self, get_map_appliances):

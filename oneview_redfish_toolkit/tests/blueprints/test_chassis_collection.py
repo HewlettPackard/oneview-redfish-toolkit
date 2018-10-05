@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 
 # 3rd party libs
@@ -47,13 +48,17 @@ class TestChassisCollection(BaseFlaskTest):
 
         self.oneview_client.enclosures.get_all.return_value = [object]
         self.oneview_client.racks.get_all.return_value = [object]
-        self.oneview_client.server_hardware.get_all.side_effect = Exception()
+        self.oneview_client.server_hardware.get_all.side_effect = \
+            Exception("An exception was occurred")
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
                 'Error500.json'
         ) as f:
             error_500 = json.load(f)
+
+        error_500_excep = copy.deepcopy(error_500)
+        error_500_excep["error"]["message"] = "An exception was occurred"
 
         response = self.client.get("/redfish/v1/Chassis/")
 
@@ -63,7 +68,7 @@ class TestChassisCollection(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(error_500, result)
+        self.assertEqual(error_500_excep, result)
 
     def test_get_chassis_collection_empty(self):
         """Tests ChassisCollection with an empty sh, enclosure and rack list"""
