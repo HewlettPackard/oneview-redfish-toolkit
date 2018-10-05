@@ -33,12 +33,12 @@ from oneview_redfish_toolkit import single_oneview_context
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
-class TestResourceBlock(BaseFlaskTest):
+class TestSingleOneViewContext(BaseFlaskTest):
     """Tests for ResourceBlock blueprint"""
 
     @classmethod
     def setUpClass(self):
-        super(TestResourceBlock, self).setUpClass()
+        super(TestSingleOneViewContext, self).setUpClass()
 
         self.app.register_blueprint(resource_block.resource_block)
 
