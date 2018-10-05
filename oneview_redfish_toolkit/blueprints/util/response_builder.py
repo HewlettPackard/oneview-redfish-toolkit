@@ -18,6 +18,7 @@ from collections import namedtuple
 
 from flask import Response
 from flask_api import status
+from hpOneView import HPOneViewException
 
 from oneview_redfish_toolkit.api.errors import AUTH_ONEVIEW_ERRORS
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS

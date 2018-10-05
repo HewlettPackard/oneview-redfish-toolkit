@@ -14,18 +14,15 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# Python libs
-import logging
 
 # 3rd party libs
-from flask import abort
 from flask import Blueprint
-from flask import Response
-from flask_api import status
 
 # own libs
 from oneview_redfish_toolkit.api.composition_service \
     import CompositionService
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
 
 composition_service = Blueprint("composition_service", __name__)
@@ -41,18 +38,7 @@ def get_composition_service():
         Returns:
             JSON: Redfish JSON with CompositionService.
     """
-    try:
-        # Build Composition Service object and validates it
-        cs = CompositionService()
+    # Build Composition Service object and validates it
+    cs = CompositionService()
 
-        # Build redfish json
-        json = cs.serialize()
-
-        return Response(
-            response=json,
-            status=status.HTTP_200_OK,
-            mimetype="application/json")
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception(e)
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    ResponseBuilder.success(cs)

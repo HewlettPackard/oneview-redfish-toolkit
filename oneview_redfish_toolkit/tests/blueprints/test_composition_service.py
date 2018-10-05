@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 from unittest import mock
 
@@ -39,28 +40,6 @@ class TestCompositionService(BaseFlaskTest):
         super(TestCompositionService, self).setUpClass()
 
         self.app.register_blueprint(composition_service.composition_service)
-
-    @mock.patch.object(composition_service.CompositionService, 'serialize')
-    def test_get_composition_service_unexpected_error(self, mock):
-        """Tests CompositionService with an error"""
-
-        mock.side_effect = Exception()
-
-        with open(
-                'oneview_redfish_toolkit/mockups/errors/'
-                'Error500.json'
-        ) as f:
-            error_500 = json.load(f)
-
-        response = self.client.get("/redfish/v1/CompositionService/")
-
-        result = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-            response.status_code)
-        self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(error_500, result)
 
     def test_get_composition_service(self):
         """Tests CompositionService"""

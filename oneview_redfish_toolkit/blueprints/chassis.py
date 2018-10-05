@@ -37,6 +37,8 @@ from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit.services.manager_service import \
     get_manager_uuid
 
+from hpOneView import HPOneViewException
+
 chassis = Blueprint("chassis", __name__)
 
 
