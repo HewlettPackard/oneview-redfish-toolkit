@@ -103,7 +103,7 @@ def query_ov_client_by_resource(resource_id, resource, function,
                                    *args, **kwargs)
 
     # If it's on Single OneView Context and the resource is not
-    # mapped to an OneView IP, then we update cache in advance for 
+    # mapped to an OneView IP, then we update cache in advance for
     # future requests for this resource
     if single_oneview_ip and not cached_oneview_ip:
         set_map_resources_entry(resource_id, single_oneview_ip)
