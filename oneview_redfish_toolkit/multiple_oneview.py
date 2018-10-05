@@ -35,6 +35,9 @@ from oneview_redfish_toolkit import single_oneview_context as single
 #   globals()['map_resources_ov']
 
 
+lock = threading.Lock()
+
+
 def init_map_resources():
     """Initialize cached resources map"""
     globals()['map_resources_ov'] = OrderedDict()
@@ -57,7 +60,6 @@ def get_map_appliances():
 
 def set_map_resources_entry(resource_id, ip_oneview):
     """Set new cached resource"""
-    lock = threading.Lock()
     with lock:
         get_map_resources()[resource_id] = ip_oneview
 
