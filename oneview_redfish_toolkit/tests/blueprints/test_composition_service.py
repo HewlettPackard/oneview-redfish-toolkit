@@ -63,6 +63,7 @@ class TestCompositionService(BaseFlaskTest):
         response = self.client.get("/redfish/v1/CompositionService/")
 
         result = json.loads(response.data.decode("utf-8"))
+
         self.assertEqual(
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
