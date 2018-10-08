@@ -34,7 +34,6 @@ from jsonschema import ValidationError
 
 from oneview_redfish_toolkit.api.capabilities_object import CapabilitiesObject
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
@@ -55,7 +54,6 @@ def get_computer_system(uuid):
 
         Return ComputerSystem redfish JSON for a given
         server profile or server profile template UUID.
-        Logs exception of OneViewRedfishError and abort(404).
 
         Returns:
             JSON: Redfish json with ComputerSystem
@@ -63,43 +61,38 @@ def get_computer_system(uuid):
             is not found calls abort(404)
     """
 
-    try:
-        resource = _get_oneview_resource(uuid)
-        category = resource["category"]
+    resource = _get_oneview_resource(uuid)
+    category = resource["category"]
 
-        if category == 'server-profile-templates':
-            computer_system_resource = CapabilitiesObject(resource)
-        elif category == 'server-profiles':
-            server_hardware = g.oneview_client.server_hardware\
-                .get(resource["serverHardwareUri"])
-            server_hardware_type = g.oneview_client.server_hardware_types\
-                .get(resource['serverHardwareTypeUri'])
+    if category == 'server-profile-templates':
+        computer_system_resource = CapabilitiesObject(resource)
+    elif category == 'server-profiles':
+        server_hardware = g.oneview_client.server_hardware\
+            .get(resource["serverHardwareUri"])
+        server_hardware_type = g.oneview_client.server_hardware_types\
+            .get(resource['serverHardwareTypeUri'])
 
-            computer_system_service = ComputerSystemService(g.oneview_client)
-            drives = _get_drives_from_sp(resource)
-            spt_uuid = computer_system_service.\
-                get_server_profile_template_from_sp(resource["uri"])
+        computer_system_service = ComputerSystemService(g.oneview_client)
+        drives = _get_drives_from_sp(resource)
+        spt_uuid = computer_system_service.\
+            get_server_profile_template_from_sp(resource["uri"])
 
-            manager_uuid = get_manager_uuid(resource['serverHardwareTypeUri'])
+        manager_uuid = get_manager_uuid(resource['serverHardwareTypeUri'])
 
-            # Build Computer System object and validates it
-            computer_system_resource = ComputerSystem(server_hardware,
-                                                      server_hardware_type,
-                                                      resource,
-                                                      drives,
-                                                      spt_uuid,
-                                                      manager_uuid)
-        else:
-            raise OneViewRedfishError(
-                'Computer System UUID {} not found'.format(uuid))
+        # Build Computer System object and validates it
+        computer_system_resource = ComputerSystem(server_hardware,
+                                                  server_hardware_type,
+                                                  resource,
+                                                  drives,
+                                                  spt_uuid,
+                                                  manager_uuid)
+    else:
+        abort(status.HTTP_404_NOT_FOUND,
+              'Computer System UUID {} not found'.format(uuid))
 
-        return ResponseBuilder.success(
-            computer_system_resource,
-            {"ETag": "W/" + resource["eTag"]})
-    except OneViewRedfishError as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
+    return ResponseBuilder.success(
+        computer_system_resource,
+        {"ETag": "W/" + resource["eTag"]})
 
 
 @computer_system.route("/redfish/v1/Systems/<uuid>/"
@@ -113,52 +106,31 @@ def change_power_state(uuid):
 
         Returns:
             JSON: Redfish JSON with ComputerSystem ResetType.
-
-        Exceptions:
-            HPOneViewException: When some OneView resource was not found.
-            return abort(404)
-
-            OneViewRedfishError: When occur a power state mapping error.
-            return abort(400)
-
-            Exception: Unexpected error.
-            return abort(500)
     """
 
     try:
-        try:
-            reset_type = request.get_json()["ResetType"]
-        except KeyError:
-            invalid_key = list(request.get_json())[0]  # gets invalid key name
-            raise OneViewRedfishError(
-                {"errorCode": "INVALID_INFORMATION",
-                 "message": "Invalid JSON key: {}".format(invalid_key)})
+        reset_type = request.get_json()["ResetType"]
+    except KeyError:
+        invalid_key = list(request.get_json())[0]  # gets invalid key name
+        abort(status.HTTP_400_BAD_REQUEST,
+              "Invalid JSON key: {}".format(invalid_key))
 
-        # Gets ServerHardware for given UUID
-        profile = g.oneview_client.server_profiles.get(uuid)
-        sh = g.oneview_client.server_hardware.get(profile["serverHardwareUri"])
+    # Gets ServerHardware for given UUID
+    profile = g.oneview_client.server_profiles.get(uuid)
+    sh = g.oneview_client.server_hardware.get(profile["serverHardwareUri"])
 
-        oneview_power_configuration = \
-            OneViewPowerOption.get_oneview_power_configuration(
-                sh, reset_type)
+    oneview_power_configuration = \
+        OneViewPowerOption.get_oneview_power_configuration(
+            sh, reset_type)
 
-        # Changes the ServerHardware power state
-        g.oneview_client.server_hardware.update_power_state(
-            oneview_power_configuration, sh["uuid"])
+    # Changes the ServerHardware power state
+    g.oneview_client.server_hardware.update_power_state(
+        oneview_power_configuration, sh["uuid"])
 
-        return Response(
-            response='{"ResetType": "%s"}' % reset_type,
-            status=status.HTTP_200_OK,
-            mimetype='application/json')
-
-    except OneViewRedfishError as e:
-        # In case of error log exception and abort
-        logging.exception('Mapping error: {}'.format(e))
-
-        if e.msg["errorCode"] == "NOT_IMPLEMENTED":
-            abort(status.HTTP_501_NOT_IMPLEMENTED, e.msg['message'])
-        else:
-            abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
+    return Response(
+        response='{"ResetType": "%s"}' % reset_type,
+        status=status.HTTP_200_OK,
+        mimetype='application/json')
 
 
 @computer_system.route(
@@ -174,10 +146,7 @@ def remove_computer_system(uuid):
     sh_uuid = profile['serverHardwareUri']
     if sh_uuid:
         service = ComputerSystemService(g.oneview_client)
-        try:
-            service.power_off_server_hardware(sh_uuid)
-        except OneViewRedfishError as e:
-            abort(status.HTTP_403_FORBIDDEN, e.msg)
+        service.power_off_server_hardware(sh_uuid)
 
     # Deletes server profile for given UUID
     response = None
@@ -211,7 +180,7 @@ def remove_computer_system(uuid):
 def create_composed_system():
     if not request.is_json:
         abort(status.HTTP_400_BAD_REQUEST,
-              "The request content should be a valida JSON")
+              "The request content should be a valid JSON")
 
     body = request.get_json()
     result_location_uri = None
@@ -270,14 +239,14 @@ def create_composed_system():
                 lambda result, msg: result + msg["message"] + "\n",
                 task["taskErrors"],
                 "")
-            raise OneViewRedfishError(err_msg)
+            abort(status.HTTP_403_FORBIDDEN, err_msg)
 
     except ValidationError as e:
         abort(status.HTTP_400_BAD_REQUEST, e.message)
     except KeyError as e:
         abort(status.HTTP_400_BAD_REQUEST,
               "Trying access an invalid key {}".format(e.args))
-    except (HPOneViewTaskError, OneViewRedfishError) as e:
+    except HPOneViewTaskError as e:
         abort(status.HTTP_403_FORBIDDEN, e.msg)
 
     if not result_location_uri:
@@ -317,7 +286,8 @@ def _get_oneview_resource(uuid):
             else:
                 raise  # Raise any unexpected errors
 
-    raise OneViewRedfishError("Could not find computer system with id " + uuid)
+    abort(status.HTTP_404_NOT_FOUND,
+          "Could not find computer system with id " + uuid)
 
 
 def _get_system_resource_blocks(ids):

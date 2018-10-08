@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -26,7 +26,6 @@ from flask_api import status
 
 # own libs
 from hpOneView.exceptions import HPOneViewException
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.thermal import Thermal
 from oneview_redfish_toolkit import category_resource
 
@@ -64,7 +63,7 @@ def get_thermal(uuid):
             if index_obj:
                 category = index_obj[0]["category"]
             else:
-                raise OneViewRedfishError('Cannot find Index resource')
+                abort(status.HTTP_404_NOT_FOUND, 'Cannot find Index resource')
 
         if category == 'server-hardware':
             server_hardware = g.oneview_client.server_hardware. \
@@ -79,7 +78,7 @@ def get_thermal(uuid):
                 get_device_topology(uuid)
             thrml = Thermal(rack, uuid, 'Rack')
         else:
-            raise OneViewRedfishError('OneView resource not found')
+            abort(status.HTTP_404_NOT_FOUND, 'OneView resource not found')
 
         json_str = thrml.serialize()
 
@@ -95,14 +94,3 @@ def get_thermal(uuid):
             abort(status.HTTP_404_NOT_FOUND, "Resource not found")
         else:
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    except OneViewRedfishError as e:
-        # In case of error print exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, "Resource not found")
-
-    except Exception as e:
-        # In case of error print exception and abort
-        logging.exception(e)
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

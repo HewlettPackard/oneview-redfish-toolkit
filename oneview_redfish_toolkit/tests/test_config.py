@@ -20,9 +20,8 @@
 
 import collections
 import configparser
+from werkzeug.exceptions import NotFound
 
-from oneview_redfish_toolkit.api.errors \
-    import OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api import schemas
 from oneview_redfish_toolkit import config
 import unittest
@@ -62,7 +61,7 @@ class TestUtil(unittest.TestCase):
         except Exception as e:
             self.assertIsInstance(
                 e,
-                OneViewRedfishResourceNotFoundError
+                NotFound
             )
 
     def test_load_conf_valid_config_file(self):
@@ -117,8 +116,8 @@ class TestUtil(unittest.TestCase):
         except Exception as e:
             self.assertIsInstance(
                 e,
-                OneViewRedfishResourceNotFoundError,
-                msg="Unexpected exception: {}".format(e.msg)
+                NotFound,
+                msg="Directory non-exist-registry-dir not found."
             )
 
     # load_registry() tests
@@ -132,8 +131,8 @@ class TestUtil(unittest.TestCase):
         except Exception as e:
             self.assertIsInstance(
                 e,
-                OneViewRedfishResourceNotFoundError,
-                msg="Unexpected exception: {}".format(e.msg)
+                NotFound,
+                msg="Directory non-exist-registry-dir not found."
             )
 
     def test_load_registries_valid_registry_dir_invalid_dict(self):
@@ -148,8 +147,8 @@ class TestUtil(unittest.TestCase):
         except Exception as e:
             self.assertIsInstance(
                 e,
-                OneViewRedfishResourceNotFoundError,
-                msg="Unexpected exception: {}".format(e.msg)
+                NotFound,
+                msg="File fail.json not found"
             )
 
     def test_load_registries_valid_registry_dir_valid_dict(self):

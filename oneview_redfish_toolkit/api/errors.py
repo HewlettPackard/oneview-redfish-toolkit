@@ -22,21 +22,3 @@ AUTH_ONEVIEW_ERRORS = ['AUTHN_AUTH_FAIL',
                        'AUTHN_AUTH_FAIL_LOGINDOMAINNOTFOUND',
                        'AUTHORIZATION',
                        'Session.INVALID']
-
-
-class OneViewRedfishError(Exception):
-
-    def __init__(self, msg):
-        self.msg = msg
-
-
-class OneViewRedfishResourceNotFoundError(OneViewRedfishError):
-
-    def __init__(self, resource_name, resource_type):
-        self.msg = "{} {} not found".format(resource_type, resource_name)
-
-
-class OneViewRedfishResourceNotAccessibleError(OneViewRedfishError):
-
-    def __init__(self, resource_name, resource_type):
-        self.msg = "Can't access {} {}".format(resource_type, resource_name)

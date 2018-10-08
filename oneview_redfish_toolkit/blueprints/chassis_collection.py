@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -39,13 +39,6 @@ def get_chassis_collection():
             JSON: Redfish json with ChassisCollection.
             When Server hardware, enclosures or racks is not found
             calls abort(404).
-
-        Exceptions:
-            OneViewRedfishResourceNotFoundError: if have some oneview resource
-            with empty value (ServerHardware, Enclosures or Racks).
-            Logs the exception and call abort(404).
-
-            Exception: Generic error, logs the exception and call abort(500).
     """
 
     # Gets all enclosures

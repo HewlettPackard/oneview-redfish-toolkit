@@ -144,9 +144,6 @@ def search_resource_multiple_ov(resource, function, resource_id,
             OneView resource(s)
 
         Exceptions:
-            OneViewRedfishResourceNotFoundError: When resource was not found
-            in any OneViews.
-
             HPOneViewException: When occur an error on any OneViews which is
             not an not found error.
     """

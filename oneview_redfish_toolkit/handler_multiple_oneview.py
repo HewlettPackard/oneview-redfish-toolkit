@@ -17,8 +17,11 @@
 # Python libs
 import logging
 
+# 3rd party libs
+from flask import abort
+from flask_api import status
+
 # Modules own libs
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit import strategy_multiple_oneview as st
 
 
@@ -121,7 +124,8 @@ class MultipleOneViewResourceRetriever(object):
                   'support for method {}.{} : {}'. \
                   format(resource, function, e)
             logging.exception(msg)
-            raise OneViewRedfishError(msg)
+            abort(status.HTTP_400_BAD_REQUEST, msg)
+
         result = get_ov_client_strategy(resource, function, *args, **kwargs)
 
         return result

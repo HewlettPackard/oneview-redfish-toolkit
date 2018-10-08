@@ -15,8 +15,9 @@
 # under the License.
 
 import json
+from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import NotImplemented
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
@@ -76,7 +77,7 @@ class TestPowerOption(BaseTest):
 
         for reset_type in reset_types:
             self.assertRaises(
-                OneViewRedfishError,
+                NotImplemented,
                 OneViewPowerOption.get_oneview_power_configuration,
                 self.server_hardware, reset_type)
 
@@ -84,6 +85,6 @@ class TestPowerOption(BaseTest):
         """Tests raises OneviewRedFishError exception for unmapped keys"""
 
         self.assertRaises(
-            OneViewRedfishError,
+            BadRequest,
             OneViewPowerOption.get_oneview_power_configuration,
             self.server_hardware, "INVALID_KEY")

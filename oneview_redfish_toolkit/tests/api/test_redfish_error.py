@@ -15,6 +15,8 @@
 # under the License.
 
 import json
+from werkzeug.exceptions import InternalServerError
+from werkzeug.exceptions import NotFound
 
 from oneview_redfish_toolkit.api import errors
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
@@ -55,10 +57,10 @@ class TestRedfishError(BaseTest):
             redfish_error.add_extended_info(
                 "InvalidCode",
                 "General Message")
-        except errors.OneViewRedfishResourceNotFoundError as e:
+        except NotFound as e:
             self.assertEqual(
-                e.msg,
-                "message_id InvalidCode not found")
+                e.description,
+                "Message id InvalidCode not found.")
 
     def test_add_extended_info_invalid_message_args(self):
         """Tests the add_extended_info invalid message_args"""
@@ -69,9 +71,9 @@ class TestRedfishError(BaseTest):
             redfish_error.add_extended_info(
                 message_id="PropertyValueNotInList",
                 message_args=["Only 1, need 2"])
-        except errors.OneViewRedfishError as e:
+        except InternalServerError as e:
             self.assertEqual(
-                e.msg,
+                e.description,
                 'Message has 2 replacements to be made but 1 args where sent')
 
     def test_redfish_error_with_extended_info(self):

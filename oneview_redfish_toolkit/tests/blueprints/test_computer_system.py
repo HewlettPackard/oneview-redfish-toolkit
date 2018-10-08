@@ -645,7 +645,7 @@ class TestComputerSystem(BaseFlaskTest):
 
         result = json.loads(response.data.decode("utf-8"))
 
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
+        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertIn('There is no mapping for ForceOffff on the OneView',
                       str(result))
 

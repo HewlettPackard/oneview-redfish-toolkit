@@ -14,9 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# Python libs
-import logging
-
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
@@ -24,7 +21,6 @@ from flask import g
 from flask_api import status
 
 # Own libs
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.processor import Processor
 from oneview_redfish_toolkit.api.resource_block_collection \
     import ResourceBlockCollection
@@ -47,23 +43,19 @@ def get_processor(uuid, id):
     """
 
     try:
-        try:
-            processor_id = int(id)
-        except Exception as e:
-            raise OneViewRedfishError("Invalid processor identifier")
+        processor_id = int(id)
+    except ValueError:
+        abort(status.HTTP_400_BAD_REQUEST,
+              "Cannot convert processor_id {} to integer".format(id))
 
-        server_hardware = g.oneview_client.server_hardware.get(uuid)
-        processor_count = server_hardware["processorCount"]
+    server_hardware = g.oneview_client.server_hardware.get(uuid)
+    processor_count = server_hardware["processorCount"]
 
-        if processor_id < 1 or processor_id > processor_count:
-            raise OneViewRedfishError("Invalid processor identifier")
+    if processor_id < 1 or processor_id > processor_count:
+        abort(status.HTTP_404_NOT_FOUND,
+              "Invalid processor identifier {}".format(processor_id))
 
-        processor = Processor(server_hardware, str(processor_id))
+    processor = Processor(server_hardware, str(processor_id))
 
-        return ResponseBuilder.success(
-            processor, {"ETag": "W/" + server_hardware["eTag"]})
-
-    except OneViewRedfishError as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
+    return ResponseBuilder.success(
+        processor, {"ETag": "W/" + server_hardware["eTag"]})

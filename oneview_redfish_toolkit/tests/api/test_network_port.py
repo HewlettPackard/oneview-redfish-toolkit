@@ -15,8 +15,8 @@
 # under the License.
 
 import json
+from werkzeug.exceptions import BadRequest
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.network_port import \
     NetworkPort
 from oneview_redfish_toolkit.tests.base_test import BaseTest
@@ -85,15 +85,7 @@ class TestNetworkPort(BaseTest):
         # Tests if class with an invalid port_id
 
         try:
-            network_port = NetworkPort(
-                self.device_id,
-                "invalid_port_id",
-                self.server_hardware)
-        except OneViewRedfishError as e:
-            self.assertIsInstance(e, OneViewRedfishError)
-        except Exception as e:
-            self.fail("Failed to instantiate NetworkPort class."
-                      " Error: {}".format(e))
-        else:
-            self.fail("Class instantiated with invalid parameters."
-                      " Error: {}".format(network_port))
+            NetworkPort(self.device_id, "invalid_port_id",
+                        self.server_hardware)
+        except BadRequest as e:
+            self.assertEqual(e.description, "Invalid NetworkPort ID")

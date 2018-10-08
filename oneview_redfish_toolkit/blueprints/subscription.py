@@ -25,7 +25,6 @@ from flask_api import status
 from jsonschema.exceptions import ValidationError
 import validators
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.subscription import Subscription
 from oneview_redfish_toolkit import util
 
@@ -52,79 +51,66 @@ def add_subscription():
             JSON: JSON with Subscription information.
 
         Exception:
-            OneViewRedfishError: When occur a key mapping error.
+            KeyError: When occur a key mapping error.
             return abort(400)
 
-            Exception: Unexpected error.
-            return abort(500)
     """
+
+    # get Destination, EventTypes and Context from post
+    # generate subscription uuid
+    # add subscription in subscriptions_by_type
+    # add subscription in all_subscriptions
+
     try:
-        # get Destination, EventTypes and Context from post
-        # generate subscription uuid
-        # add subscription in subscriptions_by_type
-        # add subscription in all_subscriptions
+        body = request.get_json()
+        destination = body["Destination"]
 
-        try:
-            body = request.get_json()
-            destination = body["Destination"]
+        if not validators.url(destination):
+            abort(status.HTTP_400_BAD_REQUEST,
+                  "Destination must be an URI.")
 
-            if not validators.url(destination):
-                raise OneViewRedfishError(
-                    {"errorCode": "INVALID_INFORMATION",
-                     "message": "Destination must be an URI."})
+        event_types = body["EventTypes"]
 
-            event_types = body["EventTypes"]
+        if not event_types:
+            abort(status.HTTP_400_BAD_REQUEST,
+                  "EventTypes cannot be empty.")
 
-            if not event_types:
-                raise OneViewRedfishError(
-                    {"errorCode": "INVALID_INFORMATION",
-                     "message": "EventTypes cannot be empty."})
+        context = body.get("Context")
+    except KeyError:
+        error_message = "Invalid JSON key. The JSON request body " \
+                        "must have the keys Destination and EventTypes. " \
+                        "The Context is optional."
+        abort(status.HTTP_400_BAD_REQUEST, error_message)
 
-            context = body.get("Context")
-        except KeyError:
-            raise OneViewRedfishError(
-                {"errorCode": "INVALID_INFORMATION",
-                 "message": "Invalid JSON key. The JSON request body"
-                            " must have the keys Destination and EventTypes."
-                            " The Context is optional."})
+    subscription_id = str(uuid.uuid1())
 
-        subscription_id = str(uuid.uuid1())
+    try:
+        # Build Subscription object and validates it
+        sc = Subscription(subscription_id, destination,
+                          event_types, context)
+    except ValidationError:
+        error_message = "Invalid EventType. The EventTypes are " \
+                        "StatusChange, ResourceUpdated, ResourceAdded, " \
+                        "ResourceRemoved and Alert."
+        abort(status.HTTP_400_BAD_REQUEST, error_message)
 
-        try:
-            # Build Subscription object and validates it
-            sc = Subscription(subscription_id, destination,
-                              event_types, context)
-        except ValidationError:
-            raise OneViewRedfishError(
-                {"errorCode": "INVALID_INFORMATION",
-                 "message": "Invalid EventType. The EventTypes are "
-                            "StatusChange, ResourceUpdated, ResourceAdded,"
-                            " ResourceRemoved and Alert."})
+    for event_type in sc.get_event_types():
+        util.get_subscriptions_by_type()[event_type][subscription_id] = sc
 
-        for event_type in sc.get_event_types():
-            util.get_subscriptions_by_type()[event_type][subscription_id] = sc
+    util.get_all_subscriptions()[subscription_id] = sc
 
-        util.get_all_subscriptions()[subscription_id] = sc
+    # Build redfish json
+    json_str = sc.serialize()
 
-        # Build redfish json
-        json_str = sc.serialize()
-
-        # Build response and returns
-        response = Response(
-            response=json_str,
-            status=status.HTTP_201_CREATED,
-            mimetype="application/json")
-        response.headers.add(
-            "Location", "/redfish/v1/EventService/EventSubscriptions/"
-                        "{}".format(subscription_id))
-        return response
-
-    except OneViewRedfishError as e:
-        logging.exception(e)
-        abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
-    except Exception as e:
-        logging.exception(e)
-        return abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
+    # Build response and returns
+    response = Response(
+        response=json_str,
+        status=status.HTTP_201_CREATED,
+        mimetype="application/json")
+    response.headers.add(
+        "Location", "/redfish/v1/EventService/EventSubscriptions/"
+                    "{}".format(subscription_id))
+    return response
 
 
 @subscription.route(
