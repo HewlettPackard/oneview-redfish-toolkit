@@ -16,10 +16,9 @@
 # under the License.
 
 import collections
+from flask_api import status
+from werkzeug.exceptions import abort
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-from oneview_redfish_toolkit.api.errors import \
-    OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
 from oneview_redfish_toolkit import config
@@ -45,7 +44,9 @@ class RedfishError(RedfishJsonValidator):
         self.redfish["error"] = collections.OrderedDict()
         # Check if Code is a valid Code Error in the registry
         if code not in config.get_registry_dict()["Base"]["Messages"]:
-            raise OneViewRedfishResourceNotFoundError(code, "registry")
+            abort(status.HTTP_404_NOT_FOUND,
+                  "Registry {} not found.".format(code))
+
         self.redfish["error"]["code"] = "Base.1.1." + code
         self.redfish["error"]["message"] = message
         self.redfish["error"]["@Message.ExtendedInfo"] = list()
@@ -76,20 +77,19 @@ class RedfishError(RedfishJsonValidator):
         try:
             severity = messages[message_id]["Severity"]
         except Exception:
-            raise OneViewRedfishResourceNotFoundError(
-                message_id,
-                "message_id")
+            abort(status.HTTP_404_NOT_FOUND,
+                  "Message id {} not found.".format(message_id))
 
         message = messages[message_id]["Message"]
 
-        # Check if numbers of replacemets and message_args length match
+        # Check if numbers of replacements and message_args length match
         replaces = message.count('%')
         replacements = len(message_args)
         if replaces != replacements:
-            raise OneViewRedfishError(
-                'Message has {} replacements to be made but {} args '
-                'where sent'.
-                format(replaces, replacements))
+            abort(status.HTTP_500_INTERNAL_SERVER_ERROR,
+                  'Message has {} replacements to be made but {} args '
+                  'where sent'.format(replaces, replacements))
+
         # Replacing the marks in the message. A better way to do this
         # is welcome.
         for i in range(replaces):

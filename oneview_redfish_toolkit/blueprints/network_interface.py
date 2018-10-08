@@ -23,10 +23,8 @@ from flask import Blueprint
 from flask import g
 from flask_api import status
 
-# own libs
+# Own libs
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
-from oneview_redfish_toolkit.api.errors import \
-    OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.network_interface import NetworkInterface
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
@@ -65,8 +63,8 @@ def get_network_interface(server_profile_uuid, device_id):
 
         if (device_id_validation - 1) < 0 or (device_id_validation - 1) >= \
                 len(server_hardware["portMap"]["deviceSlots"]):
-            raise OneViewRedfishResourceNotFoundError(
-                device_id, "Network interface")
+            abort(status.HTTP_404_NOT_FOUND,
+                  "Network interface id {} not found.".format(device_id))
 
         ni = NetworkInterface(device_id, profile, server_hardware)
 
@@ -77,6 +75,3 @@ def get_network_interface(server_profile_uuid, device_id):
         logging.exception(
             "Failed to convert device id {} to integer.".format(device_id))
         abort(status.HTTP_404_NOT_FOUND, "Network interface not found")
-    except OneViewRedfishResourceNotFoundError as e:
-        logging.exception(e.msg)
-        abort(status.HTTP_404_NOT_FOUND, e.msg)

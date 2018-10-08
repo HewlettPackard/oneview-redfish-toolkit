@@ -25,7 +25,6 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Own libs
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.manager import Manager
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import multiple_oneview
@@ -82,8 +81,3 @@ def get_managers(uuid):
         # In case of error log exception and abort
         logging.exception(e)
         abort(status.HTTP_404_NOT_FOUND, "Manager not found")
-
-    except OneViewRedfishError as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, e.msg)

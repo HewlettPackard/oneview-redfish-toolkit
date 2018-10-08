@@ -22,7 +22,6 @@ from flask import g
 from flask_api import status
 
 from hpOneView.exceptions import HPOneViewException
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 from oneview_redfish_toolkit.api.resource_block_computer_system \
     import ResourceBlockComputerSystem
@@ -57,51 +56,45 @@ def get_resource_block(uuid):
         Returns:
             JSON: Redfish json with ResourceBlock.
     """
-    try:
-        zone_service = ZoneService(g.oneview_client)
-        resource = _get_oneview_resource(uuid)
-        category = resource["category"]
+    zone_service = ZoneService(g.oneview_client)
+    resource = _get_oneview_resource(uuid)
+    category = resource["category"]
 
-        if category == "server-hardware":
-            result_resource_block = _build_computer_system_resource_block(
-                uuid, resource)
+    if category == "server-hardware":
+        result_resource_block = _build_computer_system_resource_block(
+            uuid, resource)
 
-        elif category == "server-profile-templates":
-            zone_ids = zone_service.get_zone_ids_by_templates([resource])
-            if not zone_ids:
-                raise OneViewRedfishError("Zone not found "
-                                          "to ResourceBlock {}".format(uuid))
+    elif category == "server-profile-templates":
+        zone_ids = zone_service.get_zone_ids_by_templates([resource])
+        if not zone_ids:
+            abort(status.HTTP_404_NOT_FOUND,
+                  "Zone not found to ResourceBlock {}".format(uuid))
 
-            result_resource_block = \
-                ServerProfileTemplateResourceBlock(uuid, resource, zone_ids)
+        result_resource_block = \
+            ServerProfileTemplateResourceBlock(uuid, resource, zone_ids)
 
-        elif category == "drives":
-            drive_uuid = resource["uri"].split("/")[-1]
-            drive_index_trees_uri = \
-                "/rest/index/trees/rest/drives/{}?parentDepth=3"
-            drive_index_trees = g.oneview_client.connection.get(
-                drive_index_trees_uri.format(drive_uuid))
+    elif category == "drives":
+        drive_uuid = resource["uri"].split("/")[-1]
+        drive_index_trees_uri = \
+            "/rest/index/trees/rest/drives/{}?parentDepth=3"
+        drive_index_trees = g.oneview_client.connection.get(
+            drive_index_trees_uri.format(drive_uuid))
 
-            server_profile_templs = \
-                g.oneview_client.server_profile_templates.get_all()
+        server_profile_templs = \
+            g.oneview_client.server_profile_templates.get_all()
 
-            zone_ids = zone_service.get_zone_ids_by_templates(
-                server_profile_templs)
+        zone_ids = zone_service.get_zone_ids_by_templates(
+            server_profile_templs)
 
-            result_resource_block = StorageResourceBlock(
-                resource, drive_index_trees, zone_ids)
+        result_resource_block = StorageResourceBlock(
+            resource, drive_index_trees, zone_ids)
 
-        else:
-            raise OneViewRedfishError('Resource block not found')
+    else:
+        abort(status.HTTP_404_NOT_FOUND, 'Resource block not found')
 
-        return ResponseBuilder.success(
-            result_resource_block,
-            {"ETag": "W/" + resource["eTag"]})
-
-    except OneViewRedfishError as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
+    return ResponseBuilder.success(
+        result_resource_block,
+        {"ETag": "W/" + resource["eTag"]})
 
 
 @resource_block.route(
@@ -144,20 +137,19 @@ def get_resource_block_ethernet_interface(uuid, id):
             JSON: Redfish json with ResourceBlock.
     """
 
-    try:
-        server_profile_template = \
-            g.oneview_client.server_profile_templates.get(uuid)
+    server_profile_template = \
+        g.oneview_client.server_profile_templates.get(uuid)
 
-        conn_settings = server_profile_template["connectionSettings"]
-        connection = None
+    conn_settings = server_profile_template["connectionSettings"]
+    connection = None
 
-        for conn in conn_settings["connections"]:
-            if str(conn["id"]) == id:
-                connection = conn
-                break
+    for conn in conn_settings["connections"]:
+        if str(conn["id"]) == id:
+            connection = conn
+            break
 
-        if not connection:
-            raise OneViewRedfishError("Ethernet interface not found")
+    if not connection:
+        abort(status.HTTP_404_NOT_FOUND, "Ethernet interface not found")
 
         network = \
             g.oneview_client.index_resources.get(connection["networkUri"])
@@ -165,14 +157,9 @@ def get_resource_block_ethernet_interface(uuid, id):
         ethernet_interface = ResourceBlockEthernetInterface(
             server_profile_template, connection, network)
 
-        return ResponseBuilder.success(
-            ethernet_interface,
-            {"ETag": "W/" + server_profile_template["eTag"]})
-
-    except OneViewRedfishError as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
+    return ResponseBuilder.success(
+        ethernet_interface,
+        {"ETag": "W/" + server_profile_template["eTag"]})
 
 
 def _get_oneview_resource(uuid):
@@ -209,7 +196,8 @@ def _get_oneview_resource(uuid):
             else:
                 raise  # Raise any unexpected errors
 
-    raise OneViewRedfishError("Could not find resource block with id " + uuid)
+    abort(status.HTTP_404_NOT_FOUND,
+          "Could not find resource block with id " + uuid)
 
 
 def _build_computer_system_resource_block(uuid, server_hardware):

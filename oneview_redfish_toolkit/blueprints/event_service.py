@@ -69,8 +69,6 @@ def get_event_service():
         Returns:
             JSON: JSON with EventService.
 
-        Exceptions:
-            OneViewRedfishError: General error.
     """
     evs = EventService(util.get_delivery_retry_attempts(),
                        util.get_delivery_retry_interval())
@@ -91,11 +89,8 @@ def execute_test_event_action():
             JSON: JSON containing the EventType.
 
         Exceptions:
-            OneViewRedfishError: When an invalid JSON is received.
-            return abort(400)
-
-            Exception: Unexpected error.
-            return abort(500)
+            Exception: Missing EventType property.
+            Return Bad Request status(400)
     """
 
     if not config.auth_mode_is_conf():

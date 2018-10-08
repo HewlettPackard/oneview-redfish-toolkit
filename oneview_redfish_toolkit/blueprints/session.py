@@ -26,7 +26,6 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # own libs
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.session import Session
 from oneview_redfish_toolkit.api.session_collection import SessionCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
@@ -83,8 +82,6 @@ def post_session():
             HPOneViewException: Invalid username or password.
             return abort(401)
 
-            OneViewRedfishError: When occur a credential key mapping error.
-            return abort(400)
     """
 
     try:
@@ -93,10 +90,9 @@ def post_session():
             username = body["UserName"]
             password = body["Password"]
         except Exception:
-            raise OneViewRedfishError(
-                {"errorCode": "INVALID_INFORMATION",
-                 "message": "Invalid JSON key. The JSON request body"
-                            " must have the keys UserName and Password"})
+            error_message = "Invalid JSON key. The JSON request body " \
+                            "must have the keys UserName and Password"
+            abort(status.HTTP_400_BAD_REQUEST, error_message)
 
         token, session_id = client_session.login(username, password)
 
@@ -110,6 +106,3 @@ def post_session():
     except HPOneViewException as e:
         logging.exception('Unauthorized error: {}'.format(e))
         abort(status.HTTP_401_UNAUTHORIZED)
-    except OneViewRedfishError as e:
-        logging.exception('Mapping error: {}'.format(e))
-        abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
