@@ -58,7 +58,7 @@ class TestZoneCollection(BaseFlaskTest):
         """Tests ZoneCollection when server profile templates raises error"""
 
         self.oneview_client.server_profile_templates.get_all.side_effect = \
-            Exception()
+            Exception("An exception has occurred")
 
         with open(
             'oneview_redfish_toolkit/mockups/errors/Error500.json'

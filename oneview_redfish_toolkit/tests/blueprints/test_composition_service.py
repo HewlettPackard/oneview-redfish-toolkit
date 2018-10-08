@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 from unittest import mock
 
@@ -52,6 +53,13 @@ class TestCompositionService(BaseFlaskTest):
         ) as f:
             error_500 = json.load(f)
 
+        error_500_excep = copy.deepcopy(error_500)
+        error_500_excep["error"]["message"] = \
+            "The server encountered an internal error and " \
+            "was unable to complete your request.  " \
+            "Either the server is overloaded or there is " \
+            "an error in the application."
+
         response = self.client.get("/redfish/v1/CompositionService/")
 
         result = json.loads(response.data.decode("utf-8"))
@@ -60,7 +68,7 @@ class TestCompositionService(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqual(error_500, result)
+        self.assertEqual(error_500_excep, result)
 
     def test_get_composition_service(self):
         """Tests CompositionService"""

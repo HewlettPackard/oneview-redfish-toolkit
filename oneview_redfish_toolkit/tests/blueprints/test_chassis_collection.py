@@ -47,7 +47,8 @@ class TestChassisCollection(BaseFlaskTest):
 
         self.oneview_client.enclosures.get_all.return_value = [object]
         self.oneview_client.racks.get_all.return_value = [object]
-        self.oneview_client.server_hardware.get_all.side_effect = Exception()
+        self.oneview_client.server_hardware.get_all.side_effect = \
+            Exception("An exception has occurred")
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'

@@ -736,3 +736,18 @@ class TestChassis(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+    def test_get_chassis_throwing_exception(self):
+        self.oneview_client.index_resources.get_all.return_value = [
+            {"category": "server-hardware"}]
+        self.oneview_client.server_hardware.get.side_effect = \
+            Exception("connection error")
+
+        response = self.client.get(
+            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+        )
+
+        self.assertEqual(
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+            response.status_code)
+        self.assertEqual("application/json", response.mimetype)

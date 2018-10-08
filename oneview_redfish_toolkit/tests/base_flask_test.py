@@ -66,16 +66,9 @@ class BaseFlaskTest(BaseTest):
         def internal_server_error(error):
             """General InternalServerError handler for the app"""
 
-            redfish_error = RedfishError(
-                "InternalError",
-                "The request failed due to an internal service error.  "
-                "The service is still operational.")
-            redfish_error.add_extended_info("InternalError")
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                mimetype="application/json")
+            logging.error(error)
+
+            return ResponseBuilder.error_500(error)
 
         @cls.app.errorhandler(status.HTTP_403_FORBIDDEN)
         def forbidden(error):

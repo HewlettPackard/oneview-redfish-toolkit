@@ -13,6 +13,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
 import json
 
 from flask_api import status
@@ -55,7 +56,8 @@ class TestComputerSystemCollection(BaseFlaskTest):
     def test_get_computer_system_collection_fail(self):
         """Tests ComputerSystemCollection with an error"""
 
-        self.oneview_client.server_hardware.get_all.side_effect = Exception()
+        self.oneview_client.server_hardware.get_all.side_effect = \
+            Exception("An exception has occurred")
 
         with open(
                 'oneview_redfish_toolkit/mockups/errors/'
