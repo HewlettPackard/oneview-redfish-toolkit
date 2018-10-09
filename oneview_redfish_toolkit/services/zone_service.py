@@ -13,11 +13,11 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+from oneview_redfish_toolkit.config import \
+    COUNTER_LOGGER_NAME
 from oneview_redfish_toolkit.services.computer_system_service import \
     ComputerSystemService
 from oneview_redfish_toolkit.services import logging_service
-from oneview_redfish_toolkit.services.logging_service import \
-    COUNTER_LOGGER_NAME
 
 
 class ZoneService(object):
