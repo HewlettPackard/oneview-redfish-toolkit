@@ -36,7 +36,15 @@ Run the application:
 $ oneview-redfish-toolkit
 ```
 
- At first time, it will create all the needed configuration files under user directory, and will prompt for the OneView IP(s).
+At first time, it will create all the needed configuration files under user directory, and will prompt for the OneView IP(s) to customize 'redfish.conf' file with the entered IP. The following files will be created:
+
+* $HOME/.config/oneview-redfish-toolkit/
+  * redfish.conf
+  * logging.conf
+  * redfish.log
+  * certs/
+
+The `certs` directory will be created to place all OneView certificates needed that application will retrieve at connect to OneView.
 
 You can update the configuration files created under the user directory, or if you want to use custom configuration files you can pass them as arguments:
 
@@ -44,41 +52,7 @@ You can update the configuration files created under the user directory, or if y
 $ oneview-redfish-toolkit --config redfish.conf --log-config logging.conf
 ```
 
-### Development Environment
-
-We recommend to run inside a virtual environment. You can create one running:
-
-```bash
-$ virtualenv env_name_you_choose -p python3.5 # to create a Python3.5 environment, for example
-$ source env_name_you_choose/bin/activate # load the environment
-```
-
-Once the environment is loaded, download and uncompress the latest version from [releases page](https://github.com/HewlettPackard/oneview-redfish-toolkit/releases), or clone current development version running:
-
-```bash
-$ git clone https://github.com/HewlettPackard/oneview-redfish-toolkit.git
-```
-
-Then, proceed with:
-
-```bash
-$ cd oneview-redfish-toolkit # enter the service folder
-# edit redfish.conf
-$ pip install -r requirements.txt # to install all requirements into the virtual environment
-$ ./run.sh    # to launch the service
-```
-
-## SDK Documentation
-
-The latest version of the SDK documentation can be found in the [SDK Documentation section](https://hewlettpackard.github.io/oneview-redfish-toolkit/index.html).
-
-> Note: This documentation has been manually updated following the steps found [here](https://github.com/HewlettPackard/python-hpOneView/blob/master/deploy.sh).
-
-## Logging
-
-Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output (which will generate a `redfish.log` file).
-
-## Configuration
+## Redfish Configuration
 
 In order to start up oneview-redfish-toolkit service, there is some mandatory configuration at `redfish.conf` file to provide as explained below:
 
@@ -142,6 +116,66 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
   * **commonName**: FQDN of the server or it's IP address. If not provided will detect de default route IP and use it. **Optional.**
  
   * **emailAddress**: Email address to contact the responsible for this server/certificate. This is an optional information. Will not be added to certificate if not informed. **Optional.**
+
+## Logging
+
+Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output, which will generate a `redfish.log` file on `$HOME/.config/oneview-redfish-toolkit/`.
+
+The application has two extended logs:
+
+#### Performance logger
+
+The performance logger for each Redfish Toolkit API request will log the elapsed time for each OneView SDK request triggered, the amount elapsed time for all OneView SDK requests, the overhead toolkit process elapsed time and the total elapsed time for the Redfish Toolkit API request. So we can monitoring the OneView performance and the toolkit performance as well.
+
+#### OneView data logger
+
+The OneView data logger will log the result for each OneView SDK request triggered. So we can check the data retrievered for each Redfish API request.
+
+You can enable the performance log and the OneView data log by setting root logger and the specific logger handler to DEBUG level:
+
+```
+[logger_root]
+level=DEBUG
+
+[performance_handler]
+class=FileHandler
+level=DEBUG
+...
+
+[oneview_data_handler]
+class=FileHandler
+level=DEBUG
+```
+
+### Development Environment
+
+We recommend to run inside a virtual environment. You can create one running:
+
+```bash
+$ virtualenv env_name_you_choose -p python3.5 # to create a Python3.5 environment, for example
+$ source env_name_you_choose/bin/activate # load the environment
+```
+
+Once the environment is loaded, download and uncompress the latest version from [releases page](https://github.com/HewlettPackard/oneview-redfish-toolkit/releases), or clone current development version running:
+
+```bash
+$ git clone https://github.com/HewlettPackard/oneview-redfish-toolkit.git
+```
+
+Then, proceed with:
+
+```bash
+$ cd oneview-redfish-toolkit # enter the service folder
+# edit redfish.conf
+$ pip install -r requirements.txt # to install all requirements into the virtual environment
+$ ./run.sh    # to launch the service
+```
+
+## SDK Documentation
+
+The latest version of the SDK documentation can be found in the [SDK Documentation section](https://hewlettpackard.github.io/oneview-redfish-toolkit/index.html).
+
+> Note: This documentation has been manually updated following the steps found [here](https://github.com/HewlettPackard/python-hpOneView/blob/master/deploy.sh).
 
 ## Session Management
 
