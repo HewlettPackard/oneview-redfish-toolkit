@@ -44,7 +44,9 @@ def filter_uuid_parameter_resource(resource, function, *args, **kwargs):
 
 def all_oneviews_resource(resource, function, *args, **kwargs):
     all_results = multiple_oneview.search_resource_multiple_ov(resource,
-                                                               function, None,
+                                                               function,
+                                                               None,
+                                                               None,
                                                                *args,
                                                                **kwargs)
 

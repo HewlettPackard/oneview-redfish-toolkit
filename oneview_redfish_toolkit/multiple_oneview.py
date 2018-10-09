@@ -64,6 +64,12 @@ def set_map_resources_entry(resource_id, ip_oneview):
         get_map_resources()[resource_id] = ip_oneview
 
 
+def cleanup_map_resources_entry(resource_id):
+    with lock:
+        if resource_id in get_map_resources().keys():
+            del get_map_resources()[resource_id]
+
+
 def set_map_appliances_entry(ip_oneview, appliance_uuid):
     """Set new cached appliance"""
     get_map_appliances()[ip_oneview] = appliance_uuid
@@ -76,7 +82,7 @@ def query_ov_client_by_resource(resource_id, resource, function,
         Query specific resource ID on multiple OneViews.
         Look resource ID on cached map ResourceID->OneViewIP for query
         on specific cached OneView IP.
-        If the resource ID is not cached yet it searchs on all OneViews.
+        If the resource ID is not cached yet it searches on all OneViews.
 
         Returns:
             dict: OneView resource
@@ -93,16 +99,31 @@ def query_ov_client_by_resource(resource_id, resource, function,
     # If resource is not cached yet search in all OneViews
     if not ip_oneview:
         return search_resource_multiple_ov(resource, function, resource_id,
-                                           *args, **kwargs)
+                                           None, *args, **kwargs)
 
     # If it's Single Oneview context and no IP is saved on context yet
     if single.is_single_oneview_context() and not single_oneview_ip:
         single.set_single_oneview_ip(ip_oneview)
 
     ov_client = client_session.get_oneview_client(ip_oneview)
+    try:
+        resp = execute_query_ov_client(ov_client, resource, function,
+                                       *args, **kwargs)
+    except HPOneViewException as e:
+        if e.oneview_response["errorCode"] not in NOT_FOUND_ONEVIEW_ERRORS:
+            raise
 
-    resp = execute_query_ov_client(ov_client, resource, function,
-                                   *args, **kwargs)
+        cleanup_map_resources_entry(resource_id)
+        ov_ips = config.get_oneview_multiple_ips()
+        ov_ips.remove(ip_oneview)  # just search in the other ips
+
+        if not ov_ips:
+            raise
+
+        return search_resource_multiple_ov(resource, function,
+                                           resource_id,
+                                           ov_ips, *args,
+                                           **kwargs)
 
     # If it's on Single OneView Context and the resource is not
     # mapped to an OneView IP, then we update cache in advance for
@@ -120,7 +141,7 @@ def get_ov_ip_by_resource(resource_id):
     return map_resources.get(resource_id)
 
 
-def search_resource_multiple_ov(resource, function, resource_id,
+def search_resource_multiple_ov(resource, function, resource_id, ov_ips,
                                 *args, **kwargs):
     """Search resource on multiple OneViews
 
@@ -137,6 +158,9 @@ def search_resource_multiple_ov(resource, function, resource_id,
             resource: resource type (server_hardware)
             function: resource function name (get_all)
             resource_id: set only if it should look for a specific resource ID
+            ov_ips: List of Oneview IPs to search for the resource.
+                If None is passed, it will search in all IPs based on the
+                toolkit configuration.
             *args: original arguments for the OneView client query
             **kwargs: original keyword arguments for the OneView client query
 
@@ -152,16 +176,15 @@ def search_resource_multiple_ov(resource, function, resource_id,
     """
     result = []
     error_not_found = []
-    list_ov_ips = []
     single_oneview_ip = single.is_single_oneview_context() and \
         single.get_single_oneview_ip()
 
     # If it's on Single Oneview Context and there is already an OneView IP
     # on the context, then uses it. If not search on All OneViews
-    if single_oneview_ip:
-        list_ov_ips.append(single_oneview_ip)
+    if not ov_ips and single_oneview_ip:
+        list_ov_ips = [single_oneview_ip]
     else:
-        list_ov_ips = config.get_oneview_multiple_ips()
+        list_ov_ips = ov_ips or config.get_oneview_multiple_ips()
 
     # Loop in all OneView's IP
     for ov_ip in list_ov_ips:
