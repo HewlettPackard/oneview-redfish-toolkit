@@ -221,7 +221,13 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
 
         try:
             result = ov_function(*args, **kwargs)
-            logging.getLogger(ONEVIEW_SDK_LOGGER_NAME).debug(result)
+            host = ov_client.connection.get_host()
+            msg = "Request to Oneview '%s', calling '%s.%s' with args %s " \
+                  "and kwargs %s. Result: %s"
+            logging.getLogger(ONEVIEW_SDK_LOGGER_NAME).debug(msg, host,
+                                                             resource,
+                                                             function, args,
+                                                             kwargs, result)
             return result
         finally:
             elapsed_time = time.time() - start_time
