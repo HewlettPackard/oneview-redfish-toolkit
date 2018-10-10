@@ -109,7 +109,7 @@ class NetworkAdapter(RedfishJsonValidator):
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#NetworkAdapter.NetworkAdapter"
-        self.redfish["@odata.id"] = "/redfish/v1/Systems/" + \
+        self.redfish["@odata.id"] = "/redfish/v1/Chassis/" + \
             server_hardware["uuid"] + "/NetworkAdapters/" + device_id
 
         self._validate()
