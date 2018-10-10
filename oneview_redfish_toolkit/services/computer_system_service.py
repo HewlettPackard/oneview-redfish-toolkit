@@ -48,7 +48,11 @@ class ComputerSystemService(object):
                 server_profile_tmpl: the Server Profile Template
         """
         for controller in server_profile_tmpl["localStorage"]["controllers"]:
-            if controller["deviceSlot"] != "Embedded":
+            has_valid_controller_mode = \
+                controller["mode"] == "HBA" or controller["mode"] == "Mixed"
+
+            if controller["deviceSlot"] != "Embedded" and \
+                    has_valid_controller_mode:
                 return controller
 
         return None
