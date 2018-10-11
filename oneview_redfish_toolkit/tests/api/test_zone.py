@@ -43,10 +43,6 @@ class TestZone(BaseTest):
               'ZoneWithoutDrives.json') as f:
         zone_without_drives_mockup = json.load(f)
 
-    with open('oneview_redfish_toolkit/mockups/redfish/'
-              'ZoneWithoutNetwork.json') as f:
-        zone_without_network_mockup = json.load(f)
-
         enclosure_name = "0000A66101"
         enclosure_name_none = None
 
@@ -111,10 +107,10 @@ class TestZone(BaseTest):
         self.assertEqualMockup(self.zone_without_drives_mockup, result)
 
     def test_spt_when_connections_are_not_configured(self):
-        """Tests Zone with no resource block for network
+        """Tests Zone when connections are not set to Server Profile Template
 
-            Tests Zone with no resource block for network when handling
-            a Server profile template with no connections configured
+            The Zone must have a NetworkResourceBlock even when connections
+            are not set in SPT
         """
 
         profile_template = copy.deepcopy(self.server_profile_template)
@@ -127,4 +123,4 @@ class TestZone(BaseTest):
                     self.enclosure_name,
                     self.drives)
         result = json.loads(zone.serialize())
-        self.assertEqualMockup(self.zone_without_network_mockup, result)
+        self.assertEqualMockup(self.zone_mockup, result)

@@ -54,7 +54,7 @@ class NetworkAdapterCollection(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#NetworkAdapterCollection" \
             ".NetworkAdapterCollection"
-        self.redfish["@odata.id"] = "/redfish/v1/Systems/" + \
+        self.redfish["@odata.id"] = "/redfish/v1/Chassis/" + \
             server_hardware["uuid"] + "/NetworkAdapters/"
 
         self._validate()

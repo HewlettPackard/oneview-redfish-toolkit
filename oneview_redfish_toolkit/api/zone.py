@@ -106,19 +106,13 @@ class Zone(RedfishJsonValidator):
         for item in drives:
             self.add_resource_block_item_to_links(item, "uri")
 
-        self._fill_network_resource_block(profile_template)
+        self.add_resource_block_item_to_links(profile_template, "uri")
 
     def add_resource_block_item_to_links(self, original_dict, uri_key):
         uuid = original_dict[uri_key].split("/")[-1]
         dict_item = dict()
         dict_item["@odata.id"] = ResourceBlockCollection.BASE_URI + "/" + uuid
         self.redfish["Links"]["ResourceBlocks"].append(dict_item)
-
-    def _fill_network_resource_block(self, profile_template):
-        conn_settings = profile_template["connectionSettings"]
-
-        if conn_settings["connections"]:
-            self.add_resource_block_item_to_links(profile_template, "uri")
 
     def fill_capabilities_collection(self, profile_template):
         spt_id = profile_template["uri"].split("/")[-1]
