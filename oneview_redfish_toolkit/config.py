@@ -36,7 +36,10 @@ from oneview_redfish_toolkit import util
 
 API_VERSION = 600
 
+COUNTER_LOGGER_NAME = 'qtty'
 PERFORMANCE_LOGGER_NAME = 'perf'
+ONEVIEW_SDK_LOGGER_NAME = 'ovData'
+
 
 # Globals vars:
 #   globals()['config']

@@ -28,6 +28,7 @@ from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
+from oneview_redfish_toolkit.config import ONEVIEW_SDK_LOGGER_NAME
 from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 from oneview_redfish_toolkit import single_oneview_context as single
 
@@ -240,9 +241,16 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
 
     if logging.getLogger().isEnabledFor(logging.DEBUG):
         start_time = time.time()
+        host = ov_client.connection.get_host()
 
         try:
             result = ov_function(*args, **kwargs)
+            msg = "Request to Oneview '%s' calling '%s.%s' with args %s " \
+                  "and kwargs %s. Result: %s"
+            logging.getLogger(ONEVIEW_SDK_LOGGER_NAME).debug(msg, host,
+                                                             resource,
+                                                             function, args,
+                                                             kwargs, result)
             return result
         finally:
             elapsed_time = time.time() - start_time
@@ -250,8 +258,7 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
             g.elapsed_time_ov += elapsed_time
 
             logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "Thread {} OneView request: {}.{}: {}".
-                format(threading.get_ident(), resource,
-                       function, elapsed_time))
+                "Request to Oneview '%s' calling '%s.%s': %s",
+                host, resource, function, elapsed_time)
 
     return ov_function(*args, **kwargs)

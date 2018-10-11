@@ -20,9 +20,9 @@ from flask import g
 from oneview_redfish_toolkit.api.zone_collection import ZoneCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
-from oneview_redfish_toolkit.services import logging_service
-from oneview_redfish_toolkit.services.logging_service import \
+from oneview_redfish_toolkit.config import \
     COUNTER_LOGGER_NAME
+from oneview_redfish_toolkit.services import logging_service
 from oneview_redfish_toolkit.services.zone_service import ZoneService
 
 zone_collection = Blueprint("zone_collection", __name__)

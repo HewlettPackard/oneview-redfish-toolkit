@@ -19,7 +19,6 @@ import argparse
 import ipaddress
 import logging
 import os
-import threading
 import time
 
 # 3rd party libs
@@ -231,16 +230,12 @@ def main(config_file_path, logging_config_file_path,
         if logging.getLogger().isEnabledFor(logging.DEBUG):
             end_time = time.time()
             req_time = end_time - g.start_time_req
-            thread_id = threading.get_ident()
             logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "Thread {} OneView process: {}".
-                format(thread_id, g.elapsed_time_ov))
+                "OneView process: " + str(g.elapsed_time_ov))
             logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "Thread {} Redfish process: {}".
-                format(thread_id, req_time - g.elapsed_time_ov))
+                "Redfish process: " + str(req_time - g.elapsed_time_ov))
             logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "Thread {} Total process: {}".
-                format(thread_id, req_time))
+                "Total process: " + str(req_time))
         return response
 
     @app.errorhandler(status.HTTP_400_BAD_REQUEST)

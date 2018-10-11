@@ -15,14 +15,10 @@
 # under the License.
 
 import logging
-import threading
-
-COUNTER_LOGGER_NAME = 'qtty'
 
 
 def debug(logger_name, *texts):
     if logging.getLogger().isEnabledFor(logging.DEBUG):
-        msg = "Thread {}: ".format(threading.get_ident())
-        msg += ", ".join(texts)
+        msg = ", ".join(texts)
         logger = logging.getLogger(logger_name)
         logger.debug(msg)

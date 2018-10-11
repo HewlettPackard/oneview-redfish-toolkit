@@ -16,7 +16,6 @@
 
 # Python libs
 import logging
-import threading
 
 # 3rd party libs
 from flask import g
@@ -30,8 +29,7 @@ def single_oneview(original_func):
     def new_function(*args, **kwargs):
         """Function to set single OneView context"""
         logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-            "Thread {} in Single OneView Context".
-            format(threading.get_ident()))
+            "in Single OneView Context")
         set_single_oneview_context()
         return original_func(*args, **kwargs)
 
