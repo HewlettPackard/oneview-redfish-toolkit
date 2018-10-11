@@ -218,11 +218,11 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
 
     if logging.getLogger().isEnabledFor(logging.DEBUG):
         start_time = time.time()
+        host = ov_client.connection.get_host()
 
         try:
             result = ov_function(*args, **kwargs)
-            host = ov_client.connection.get_host()
-            msg = "Request to Oneview '%s', calling '%s.%s' with args %s " \
+            msg = "Request to Oneview '%s' calling '%s.%s' with args %s " \
                   "and kwargs %s. Result: %s"
             logging.getLogger(ONEVIEW_SDK_LOGGER_NAME).debug(msg, host,
                                                              resource,
@@ -235,7 +235,7 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
             g.elapsed_time_ov += elapsed_time
 
             logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "OneView request: {}.{}: {}".
-                format(resource, function, elapsed_time))
+                "Request to Oneview '%s' calling '%s.%s': %s",
+                host, resource, function, elapsed_time)
 
     return ov_function(*args, **kwargs)
