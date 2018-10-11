@@ -36,7 +36,7 @@ Run the application:
 $ oneview-redfish-toolkit
 ```
 
-At first time, it will create all the needed configuration files under user directory, and will prompt for the OneView IP(s) to customize 'redfish.conf' file with the entered IP. The following files will be created:
+At first time, it will create all the needed configuration files under user directory, and will prompt for the OneView IP(s) to customize `redfish.conf` file with the entered IP. The following files will be created:
 
 * $HOME/.config/oneview-redfish-toolkit/
   * redfish.conf
@@ -44,9 +44,9 @@ At first time, it will create all the needed configuration files under user dire
   * redfish.log
   * certs/
 
-The `certs` directory will be created to place all OneView certificates needed that application will retrieve at connect to OneView.
+The `redfish.conf` and `logging.conf` is used for application configuration and `certs` directory is used to place all OneView certificates needed that application will retrieve when connect to OneView.
 
-You can update the configuration files created under the user directory, or if you want to use custom configuration files you can pass them as arguments:
+You can customize the configuration files created under the user directory, or if you want to use your own custom configuration files you can pass them as arguments. If no arguments are passed the application will use the ones on user directory:
 
 ```bash
 $ oneview-redfish-toolkit --config redfish.conf --log-config logging.conf
@@ -119,19 +119,33 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 
 ## Logging
 
-Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output, which will generate a `redfish.log` file on `$HOME/.config/oneview-redfish-toolkit/`.
+Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output, which will generate a `redfish.log` file at `$HOME/.config/oneview-redfish-toolkit/`.
 
-The application has two extended logs:
+The application has two extended logs, where all logs will be created on the same directory `$HOME/.config/oneview-redfish-toolkit/`:
 
 #### Performance logger
 
-The performance logger for each Redfish Toolkit API request will log the elapsed time for each OneView SDK request triggered, the amount elapsed time for all OneView SDK requests, the overhead toolkit process elapsed time and the total elapsed time for the Redfish Toolkit API request. So we can monitoring the OneView performance and the toolkit performance as well.
+For each Redfish Toolkit API request the performance logger will log the elapsed time for each OneView SDK request triggered, the amount elapsed time for all OneView SDK requests, the overhead toolkit process elapsed time and the total elapsed time for the Redfish Toolkit API request. So we can monitoring the OneView performance and the redfish toolkit performance as well. It will be log on `redfish_performance.log` file once enabled on `logging.conf` by changing its level and the root log level as DEBUG. Log example:
+```
+2018-10-10 15:42:41,112 - perf - DEBUG   - Thread 139974930331392 - OneView request: server_profile_templates.get: 0.02929878234
+2018-10-10 15:42:42,304 - perf - DEBUG   - Thread 139974930331392 - OneView request: server_hardware.get_all: 0.03278422355
+2018-10-10 15:42:43,231 - perf - DEBUG   - Thread 139974930331392 - OneView request: server_hardware.get_all:  0.03367638587
+2018-10-10 15:42:43,291 - perf - DEBUG   - Thread 139974930331392 - OneView process: 0.09575939176
+2018-10-10 15:42:43,291 - perf - DEBUG   - Thread 139974930331392 - Redfish process: 0.01273488998413086
+2018-10-10 15:42:43,294 - perf - DEBUG   - Thread 139974930331392 - Total process: 0.10849428174
+```
 
-#### OneView data logger
+#### OneView Data logger
 
-The OneView data logger will log the result for each OneView SDK request triggered. So we can check the data retrievered for each Redfish API request.
+The OneView data logger will log the result for each OneView SDK request triggered. So we can check the data retrievered for each Redfish API request. It will be log on `redfish_ov_data.log` file once enabled on `logging.conf` by changing its level and the root log level to DEBUG. Log example:
+```
+2018-10-10 15:42:43,230 - ovData - DEBUG - Thread 139974930331392 - Request to Oneview 'oneview.net', calling 'server_hardware.get_all' with args () and kwargs {}. Result: []
+```
 
-You can enable the performance log and the OneView data log by setting root logger and the specific logger handler to DEBUG level:
+
+#### Enabling loggers
+
+You can enable the `Performance` logger and the `OneView Data` logger by setting its level and root logger level as DEBUG on the `logging.conf` file:
 
 ```
 [logger_root]
@@ -145,6 +159,13 @@ level=DEBUG
 [oneview_data_handler]
 class=FileHandler
 level=DEBUG
+...
+```
+You can customize extended logs to have default entry logs as well. To do this add the extended loggers handlers to the root logger:
+```
+[logger_root]
+level=DEBUG
+handlers=consoleHandler,defaultFileHandler,performanceFileHandler,oneviewDataFileHandler
 ```
 
 ### Development Environment
