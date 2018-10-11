@@ -15,8 +15,8 @@
 # under the License.
 
 import json
-from werkzeug.exceptions import BadRequest
 
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api.network_port import \
     NetworkPort
 from oneview_redfish_toolkit.tests.base_test import BaseTest
@@ -87,5 +87,5 @@ class TestNetworkPort(BaseTest):
         try:
             NetworkPort(self.device_id, "invalid_port_id",
                         self.server_hardware)
-        except BadRequest as e:
-            self.assertEqual(e.description, "Invalid NetworkPort ID")
+        except OneViewRedfishException as e:
+            self.assertEqual(e.msg, "Invalid NetworkPort ID")

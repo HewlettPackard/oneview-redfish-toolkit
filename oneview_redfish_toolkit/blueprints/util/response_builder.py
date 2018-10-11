@@ -58,6 +58,14 @@ class ResponseBuilder(object):
         return handler_method_to_call(error_desc)
 
     @staticmethod
+    def oneview_redfish_exception(exception):
+        method_name = 'error_' + str(exception.status_code_error)
+        handler_method_to_call = getattr(ResponseBuilder, method_name)
+
+        error_desc = ErrorDescription(description=exception.msg)
+        return handler_method_to_call(error_desc)
+
+    @staticmethod
     def error_401(error):
         redfish_error = RedfishError("GeneralError", error.description)
         return ResponseBuilder.response(redfish_error,
@@ -86,3 +94,14 @@ class ResponseBuilder(object):
         redfish_error.add_extended_info("InternalError")
         return ResponseBuilder.response(redfish_error,
                                         status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @staticmethod
+    def error_501(error):
+        redfish_error = RedfishError(
+            "ActionNotSupported", error.description)
+        redfish_error.add_extended_info(
+            message_id="ActionNotSupported",
+            message_args=["action"])
+
+        return ResponseBuilder.response(redfish_error,
+                                        status.HTTP_501_NOT_IMPLEMENTED)

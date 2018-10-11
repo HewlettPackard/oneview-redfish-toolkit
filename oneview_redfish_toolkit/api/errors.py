@@ -22,3 +22,10 @@ AUTH_ONEVIEW_ERRORS = ['AUTHN_AUTH_FAIL',
                        'AUTHN_AUTH_FAIL_LOGINDOMAINNOTFOUND',
                        'AUTHORIZATION',
                        'Session.INVALID']
+
+
+class OneViewRedfishException(Exception):
+
+    def __init__(self, msg, status_code_error):
+        self.msg = msg
+        self.status_code_error = status_code_error

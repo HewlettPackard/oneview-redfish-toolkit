@@ -26,6 +26,7 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.blueprints import chassis
 from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import multiple_oneview
@@ -628,14 +629,32 @@ class TestChassis(BaseFlaskTest):
         self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
 
-        response = self.client.post(
-            "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
-            "/Actions/Chassis.Reset",
-            data=json.dumps(dict(ResetType="INVALID_TYPE")),
-            content_type='application/json')
+        try:
+            response = self.client.post(
+                "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+                "/Actions/Chassis.Reset",
+                data=json.dumps(dict(ResetType="INVALID_TYPE")),
+                content_type='application/json')
+        except OneViewRedfishException:
+            self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
 
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
+    def test_change_power_state_not_implemented_value(self):
+        """Tests changes a SH chassi type with a not implemented value"""
+
+        self.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "server-hardware"}]
+        self.oneview_client.server_hardware.get.return_value = \
+            self.server_hardware
+
+        try:
+            response = self.client.post(
+                "/redfish/v1/Chassis/30303437-3034-4D32-3230-313133364752"
+                "/Actions/Chassis.Reset",
+                data=json.dumps(dict(ResetType="ForceOn")),
+                content_type='application/json')
+        except OneViewRedfishException:
+            self.assertEqual(status.HTTP_501_NOT_IMPLEMENTED,
+                             response.status_code)
 
     def test_change_power_state_unexpected_error(self):
         """Tests changes a SH chassi type with OneView unexpected error"""

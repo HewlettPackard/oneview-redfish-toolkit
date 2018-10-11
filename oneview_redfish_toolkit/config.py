@@ -23,9 +23,9 @@ import json
 import logging
 import logging.config
 import os
-from werkzeug.exceptions import abort
 
 # Modules own libs
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api import schemas
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import util
@@ -174,8 +174,10 @@ def load_config(conf_file):
 
         load_schemas(get_schemas_path())
     except Exception as e:
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR,
-              'Failed to connect to OneView: {}'.format(e))
+        raise OneViewRedfishException(
+            'Failed to connect to OneView: {}'.format(e),
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
 def load_conf_file(conf_file):
@@ -191,8 +193,10 @@ def load_conf_file(conf_file):
     """
 
     if not os.path.isfile(conf_file):
-        abort(status.HTTP_404_NOT_FOUND,
-              "File {} not found.".format(conf_file))
+        raise OneViewRedfishException(
+            "File {} not found.".format(conf_file),
+            status.HTTP_404_NOT_FOUND
+        )
 
     config = configparser.ConfigParser()
     config.optionxform = str
@@ -223,11 +227,16 @@ def load_registry(registry_dir, registries):
     """
 
     if os.path.isdir(registry_dir) is False:
-        abort(status.HTTP_404_NOT_FOUND,
-              "Directory {} not found.".format(registry_dir))
+        raise OneViewRedfishException(
+            "Directory {} not found.".format(registry_dir),
+            status.HTTP_404_NOT_FOUND
+        )
+
     if os.access(registry_dir, os.R_OK) is False:
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR,
-              "Directory {} not found.".format(registry_dir))
+        raise OneViewRedfishException(
+            "Directory {} not found.".format(registry_dir),
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
     registries_dict = collections.OrderedDict()
     for key in registries:
@@ -235,7 +244,10 @@ def load_registry(registry_dir, registries):
             with open(registry_dir + '/' + registries[key]) as f:
                 registries_dict[key] = json.load(f)
         except Exception:
-            abort(status.HTTP_404_NOT_FOUND, "File {} not found.")
+            raise OneViewRedfishException(
+                "File {} not found.",
+                status.HTTP_404_NOT_FOUND
+            )
 
     return registries_dict
 
@@ -255,8 +267,10 @@ def load_schemas(schema_dir):
     schema_paths = glob.glob(schema_dir + '/*.json')
 
     if not schema_paths:
-        abort(status.HTTP_404_NOT_FOUND,
-              "JSON Schemas file not found.")
+        raise OneViewRedfishException(
+            "JSON Schemas file not found.",
+            status.HTTP_404_NOT_FOUND
+        )
 
     stored_schemas = dict()
 

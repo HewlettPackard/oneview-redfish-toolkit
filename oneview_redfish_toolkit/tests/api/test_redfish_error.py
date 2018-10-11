@@ -14,13 +14,14 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from flask_api import status
 import json
-from werkzeug.exceptions import InternalServerError
-from werkzeug.exceptions import NotFound
 
 from oneview_redfish_toolkit.api import errors
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.tests.base_test import BaseTest
+
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 
 
 class TestRedfishError(BaseTest):
@@ -57,10 +58,11 @@ class TestRedfishError(BaseTest):
             redfish_error.add_extended_info(
                 "InvalidCode",
                 "General Message")
-        except NotFound as e:
+        except OneViewRedfishException as e:
             self.assertEqual(
-                e.description,
+                e.msg,
                 "Message id InvalidCode not found.")
+            self.assertEqual(e.status_code_error, status.HTTP_404_NOT_FOUND)
 
     def test_add_extended_info_invalid_message_args(self):
         """Tests the add_extended_info invalid message_args"""
@@ -71,10 +73,12 @@ class TestRedfishError(BaseTest):
             redfish_error.add_extended_info(
                 message_id="PropertyValueNotInList",
                 message_args=["Only 1, need 2"])
-        except InternalServerError as e:
+        except OneViewRedfishException as e:
             self.assertEqual(
-                e.description,
+                e.msg,
                 'Message has 2 replacements to be made but 1 args where sent')
+            self.assertEqual(e.status_code_error,
+                             status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def test_redfish_error_with_extended_info(self):
         """Tests the add_extended_info with two additional info"""
@@ -98,7 +102,7 @@ class TestRedfishError(BaseTest):
                 message_id="PropertyNotWritable",
                 message_args=["SKU"],
                 related_properties=["#/SKU"])
-        except errors.OneViewRedfishError as e:
+        except errors.OneViewRedfishException as e:
             self.fail("Failled to add Extened info".format(e))
 
         result = json.loads(redfish_error.serialize())

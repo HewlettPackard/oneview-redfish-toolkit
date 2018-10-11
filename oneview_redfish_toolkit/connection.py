@@ -20,7 +20,6 @@ import logging
 import logging.config
 import ssl
 import time
-from werkzeug.exceptions import abort
 
 # 3rd party libs
 from flask import request
@@ -29,6 +28,7 @@ from hpOneView.oneview_client import OneViewClient
 from http.client import HTTPSConnection
 
 # Modules own libs
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit import config
 
 
@@ -78,7 +78,10 @@ def check_oneview_availability(oneview_ip):
             if status_ov['state'] != 'OK':
                 message = "OneView state is not OK at {}".format(
                     oneview_ip)
-                abort(status.HTTP_500_INTERNAL_SERVER_ERROR, message)
+                raise OneViewRedfishException(
+                    message,
+                    status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
 
             return
         except Exception as e:
@@ -91,7 +94,9 @@ def check_oneview_availability(oneview_ip):
 
     message = "After {} attempts OneView is unreachable at {}".format(
         attempts, oneview_ip)
-    abort(status.HTTP_500_INTERNAL_SERVER_ERROR, message)
+    raise \
+        OneViewRedfishException(message,
+                                status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 def request_oneview(oneview_ip, rest_url):
@@ -110,7 +115,9 @@ def request_oneview(oneview_ip, rest_url):
         if response.status != status.HTTP_200_OK:
             message = "OneView is unreachable at {}".format(
                 oneview_ip)
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR, message)
+            raise \
+                OneViewRedfishException(message,
+                                        status.HTTP_500_INTERNAL_SERVER_ERROR)
 
         text_response = response.read().decode('UTF-8')
         json_response = json.loads(text_response)

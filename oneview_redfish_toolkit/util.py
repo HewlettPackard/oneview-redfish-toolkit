@@ -22,9 +22,9 @@ import OpenSSL
 import os
 import pkg_resources
 import socket
-from werkzeug.exceptions import abort
 
 # Modules own libs
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit.event_dispatcher import EventDispatcher
 
@@ -83,14 +83,17 @@ def load_event_service_info():
             int(event_service["DeliveryRetryIntervalSeconds"])
 
         if delivery_retry_attempts <= 0 or delivery_retry_interval <= 0:
-            abort(status.HTTP_400_BAD_REQUEST,
-                  "DeliveryRetryAttempts and DeliveryRetryIntervalSeconds "
-                  "must be an integer greater than zero.")
+            raise OneViewRedfishException(
+                "DeliveryRetryAttempts and DeliveryRetryIntervalSeconds "
+                "must be an integer greater than zero.",
+                status.HTTP_400_BAD_REQUEST
+            )
     except ValueError:
-        abort(status.HTTP_400_BAD_REQUEST,
-              "DeliveryRetryAttempts and DeliveryRetryIntervalSeconds "
-              "must be valid integers."
-              )
+        raise OneViewRedfishException(
+            "DeliveryRetryAttempts and DeliveryRetryIntervalSeconds "
+            "must be valid integers.",
+            status.HTTP_400_BAD_REQUEST
+        )
 
     globals()['delivery_retry_attempts'] = delivery_retry_attempts
     globals()['delivery_retry_interval'] = delivery_retry_interval
@@ -120,7 +123,7 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
     else:
         message = "Invalid key_type"
         logging.error(message)
-        abort(status.HTTP_400_BAD_REQUEST, message)
+        raise OneViewRedfishException(message, status.HTTP_400_BAD_REQUEST)
 
     if not app_config.has_option("ssl-cert-defaults", "commonName"):
         app_config["ssl-cert-defaults"]["commonName"] = get_ip()

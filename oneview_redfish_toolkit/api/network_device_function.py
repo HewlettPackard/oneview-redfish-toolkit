@@ -15,8 +15,8 @@
 # under the License.
 
 from flask_api import status
-from werkzeug.exceptions import abort
 
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 
@@ -59,9 +59,11 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             virtual_port = self.get_resource_by_id(
                 port["virtualPorts"], "portNumber", virtual_port_number)
         except Exception:
-            abort(status.HTTP_404_NOT_FOUND,
-                  "NetworkDeviceFunction id {} not found.".format(
-                      device_function_id))
+            raise OneViewRedfishException(
+                "NetworkDeviceFunction id {} not found.".format(
+                    device_function_id),
+                status.HTTP_404_NOT_FOUND
+            )
 
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = device_function_id
@@ -74,10 +76,14 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             self.redfish["Ethernet"]["MACAddress"] = virtual_port["mac"]
             self.redfish["NetDevFuncType"] = "Ethernet"
         elif port["type"] == "FibreChannel":
-            abort(status.HTTP_501_NOT_IMPLEMENTED,
-                  "FibreChannel not implemented")
+            raise OneViewRedfishException(
+                "FibreChannel not implemented",
+                status.HTTP_501_NOT_IMPLEMENTED
+            )
         else:
-            abort(status.HTTP_400_BAD_REQUEST, "Type not supported")
+            raise OneViewRedfishException(
+                "Type not supported", status.HTTP_400_BAD_REQUEST
+            )
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#NetworkDeviceFunction.NetworkDeviceFunction"

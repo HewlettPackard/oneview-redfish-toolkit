@@ -17,8 +17,8 @@
 
 import collections
 from flask_api import status
-from werkzeug.exceptions import abort
 
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
 from oneview_redfish_toolkit import config
@@ -44,8 +44,10 @@ class RedfishError(RedfishJsonValidator):
         self.redfish["error"] = collections.OrderedDict()
         # Check if Code is a valid Code Error in the registry
         if code not in config.get_registry_dict()["Base"]["Messages"]:
-            abort(status.HTTP_404_NOT_FOUND,
-                  "Registry {} not found.".format(code))
+            raise OneViewRedfishException(
+                "Registry {} not found.".format(code),
+                status.HTTP_404_NOT_FOUND
+            )
 
         self.redfish["error"]["code"] = "Base.1.1." + code
         self.redfish["error"]["message"] = message
@@ -77,8 +79,10 @@ class RedfishError(RedfishJsonValidator):
         try:
             severity = messages[message_id]["Severity"]
         except Exception:
-            abort(status.HTTP_404_NOT_FOUND,
-                  "Message id {} not found.".format(message_id))
+            raise OneViewRedfishException(
+                "Message id {} not found.".format(message_id),
+                status.HTTP_404_NOT_FOUND
+            )
 
         message = messages[message_id]["Message"]
 
@@ -86,9 +90,12 @@ class RedfishError(RedfishJsonValidator):
         replaces = message.count('%')
         replacements = len(message_args)
         if replaces != replacements:
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR,
-                  'Message has {} replacements to be made but {} args '
-                  'where sent'.format(replaces, replacements))
+            raise OneViewRedfishException(
+                'Message has {} replacements to be made but {} args '
+                'where sent'.format(replaces, replacements),
+                status.HTTP_500_INTERNAL_SERVER_ERROR
+
+            )
 
         # Replacing the marks in the message. A better way to do this
         # is welcome.

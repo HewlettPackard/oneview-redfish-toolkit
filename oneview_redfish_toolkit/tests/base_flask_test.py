@@ -24,6 +24,7 @@ from unittest import mock
 
 from hpOneView import HPOneViewException
 
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
@@ -114,6 +115,19 @@ class BaseFlaskTest(BaseTest):
                 client_session.clear_session_by_token(token)
 
             return response
+
+        @cls.app.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
+        def not_implemented(error):
+            """Creates a Not Implemented Error response"""
+            logging.error(error.description)
+
+            return ResponseBuilder.error_501(error)
+
+        @cls.app.errorhandler(OneViewRedfishException)
+        def oneview_redfish_exception(exception):
+            logging.exception(exception)
+
+            return ResponseBuilder.oneview_redfish_exception(exception)
 
         @cls.app.before_request
         def check_authentication():

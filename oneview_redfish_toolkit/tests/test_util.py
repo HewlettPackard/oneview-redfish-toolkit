@@ -21,8 +21,8 @@
 import json
 import os
 import socket
-from werkzeug.exceptions import InternalServerError
 
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit.api.subscription import Subscription
 from oneview_redfish_toolkit import config
@@ -78,7 +78,7 @@ class TestUtil(unittest.TestCase):
     def test_load_event_service_invalid_info(
         self, check_ov_availability):
         self.assertRaises(
-            InternalServerError, config.load_config(self.config_file))
+            OneViewRedfishException, config.load_config(self.config_file))
 
     @mock.patch.object(connection, 'check_oneview_availability')
     @mock.patch.object(util, 'subscriptions_by_type')

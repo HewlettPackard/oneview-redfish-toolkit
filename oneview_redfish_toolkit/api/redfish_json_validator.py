@@ -18,8 +18,8 @@ import collections
 from flask_api import status
 import json
 import jsonschema
-from werkzeug.exceptions import abort
 
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api import schemas
 from oneview_redfish_toolkit import config
 
@@ -122,15 +122,19 @@ class RedfishJsonValidator(object):
         try:
             resource_id = int(resource_id)
         except ValueError:
-            abort(status.HTTP_400_BAD_REQUEST,
-                  "Invalid {} ID".format(self.__class__.__name__))
+            raise OneViewRedfishException(
+                "Invalid {} ID".format(self.__class__.__name__),
+                status.HTTP_400_BAD_REQUEST
+            )
 
         for resource in resource_list:
             if resource[resource_number_key] == resource_id:
                 return resource
 
-        abort(status.HTTP_404_NOT_FOUND,
-              "Object {} was not found.".format(self.__class__.__name__))
+        raise OneViewRedfishException(
+            "Object {} was not found.".format(self.__class__.__name__),
+            status.HTTP_404_NOT_FOUND
+        )
 
     def get_odata_type(self):
         """Retrieves odata.type from schema file
@@ -160,7 +164,7 @@ class RedfishJsonValidator(object):
         """Retrieves schemas object for the schema name
 
             Retrieves the schema file content loaded
-            as a dict for the schema name receveid
+            as a dict for the schema name received
             as parameter.
 
             Returns:
@@ -173,7 +177,9 @@ class RedfishJsonValidator(object):
             schema_obj = stored_schemas[
                 "http://redfish.dmtf.org/schemas/v1/" + schema_file]
         except KeyError:
-            abort(status.HTTP_404_NOT_FOUND,
-                  "{} not found".format(schema_file))
+            raise OneViewRedfishException(
+                "{} not found".format(schema_file),
+                status.HTTP_404_NOT_FOUND
+            )
 
         return schema_obj

@@ -16,7 +16,8 @@
 
 import copy
 from flask_api import status
-from werkzeug.exceptions import abort
+
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 
 
 RESET_ALLOWABLE_VALUES_LIST = ["On", "ForceOff", "GracefulShutdown",
@@ -56,9 +57,10 @@ class OneViewPowerOption(object):
         try:
             return copy.copy(POWER_STATE_MAP[reset_type])
         except KeyError:
-            abort(status.HTTP_400_BAD_REQUEST,
-                  "There is no mapping for {} on the OneView".format(
-                      reset_type))
+            raise OneViewRedfishException(
+                "There is no mapping for {} on the OneView".format(reset_type),
+                status.HTTP_404_NOT_FOUND
+            )
 
     @staticmethod
     def get_oneview_power_configuration(server_hardware, reset_type):
@@ -76,12 +78,14 @@ class OneViewPowerOption(object):
                 dict: Dict with OneView power configuration.
 
             Exception:
-                NotImplementedException: raises an exception if
+                OneViewRedfishException: raises an exception if
                 reset_type is an unmapped value.
         """
         if reset_type in RESET_INVALID_VALUES_LIST:
-            abort(status.HTTP_501_NOT_IMPLEMENTED,
-                  "{} not mapped to OneView".format(reset_type))
+            raise OneViewRedfishException(
+                "{} not mapped to OneView".format(reset_type),
+                status.HTTP_501_NOT_IMPLEMENTED
+            )
 
         power_state_map = OneViewPowerOption.\
             get_power_state_by_reset_type(reset_type)
