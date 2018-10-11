@@ -44,7 +44,7 @@ def get_processor(uuid, id):
 
     try:
         processor_id = int(id)
-    except ValueError as e:
+    except ValueError:
         abort(status.HTTP_400_BAD_REQUEST,
               "Cannot convert processor_id {} to integer".format(id))
 
@@ -52,7 +52,7 @@ def get_processor(uuid, id):
     processor_count = server_hardware["processorCount"]
 
     if processor_id < 1 or processor_id > processor_count:
-        abort(status.HTTP_400_BAD_REQUEST,
+        abort(status.HTTP_404_NOT_FOUND,
               "Invalid processor identifier {}".format(processor_id))
 
     processor = Processor(server_hardware, str(processor_id))

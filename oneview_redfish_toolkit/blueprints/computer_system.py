@@ -239,7 +239,7 @@ def create_composed_system():
                 lambda result, msg: result + msg["message"] + "\n",
                 task["taskErrors"],
                 "")
-            abort(status.HTTP_400_BAD_REQUEST, err_msg)
+            abort(status.HTTP_403_FORBIDDEN, err_msg)
 
     except ValidationError as e:
         abort(status.HTTP_400_BAD_REQUEST, e.message)

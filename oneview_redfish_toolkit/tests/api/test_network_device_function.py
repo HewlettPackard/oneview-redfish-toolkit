@@ -15,9 +15,8 @@
 # under the License.
 
 import json
+from werkzeug.exceptions import NotFound
 
-from oneview_redfish_toolkit.api.errors import \
-    OneViewRedfishResourceNotFoundError
 from oneview_redfish_toolkit.api.network_device_function import \
     NetworkDeviceFunction
 from oneview_redfish_toolkit.tests.base_test import BaseTest
@@ -90,8 +89,8 @@ class TestNetworkDeviceFunction(BaseTest):
                 self.device_id,
                 "invalid_device_id",
                 self.server_hardware)
-        except OneViewRedfishResourceNotFoundError as e:
-            self.assertIsInstance(e, OneViewRedfishResourceNotFoundError)
+        except NotFound as e:
+            self.assertIsInstance(e, NotFound)
         except Exception as e:
             self.fail("Failed to instantiate NetworkDeviceFunction class."
                       " Error: {}".format(e))

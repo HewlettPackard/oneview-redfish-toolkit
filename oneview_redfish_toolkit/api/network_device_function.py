@@ -74,7 +74,8 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             self.redfish["Ethernet"]["MACAddress"] = virtual_port["mac"]
             self.redfish["NetDevFuncType"] = "Ethernet"
         elif port["type"] == "FibreChannel":
-            abort(status.HTTP_501_NOT_IMPLEMENTED, "FibreChannel not implemented")
+            abort(status.HTTP_501_NOT_IMPLEMENTED,
+                  "FibreChannel not implemented")
         else:
             abort(status.HTTP_400_BAD_REQUEST, "Type not supported")
 

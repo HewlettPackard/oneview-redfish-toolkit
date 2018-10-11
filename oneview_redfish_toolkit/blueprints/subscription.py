@@ -89,8 +89,9 @@ def add_subscription():
         sc = Subscription(subscription_id, destination,
                           event_types, context)
     except ValidationError:
-        error_message = "Invalid EventType. The EventTypes are StatusChange, " \
-                        "ResourceUpdated, ResourceAdded, ResourceRemoved and Alert."
+        error_message = "Invalid EventType. The EventTypes are " \
+                        "StatusChange, ResourceUpdated, ResourceAdded, " \
+                        "ResourceRemoved and Alert."
         abort(status.HTTP_400_BAD_REQUEST, error_message)
 
     for event_type in sc.get_event_types():

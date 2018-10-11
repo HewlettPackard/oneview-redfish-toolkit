@@ -84,8 +84,8 @@ def load_event_service_info():
 
         if delivery_retry_attempts <= 0 or delivery_retry_interval <= 0:
             abort(status.HTTP_400_BAD_REQUEST,
-                  "DeliveryRetryAttempts and DeliveryRetryIntervalSeconds must "
-                  "be an integer greater than zero.")
+                  "DeliveryRetryAttempts and DeliveryRetryIntervalSeconds "
+                  "must be an integer greater than zero.")
     except ValueError:
         abort(status.HTTP_400_BAD_REQUEST,
               "DeliveryRetryAttempts and DeliveryRetryIntervalSeconds "

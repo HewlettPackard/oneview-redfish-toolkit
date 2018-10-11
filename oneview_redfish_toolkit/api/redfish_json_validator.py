@@ -122,7 +122,7 @@ class RedfishJsonValidator(object):
         try:
             resource_id = int(resource_id)
         except ValueError:
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR,
+            abort(status.HTTP_400_BAD_REQUEST,
                   "Invalid {} ID".format(self.__class__.__name__))
 
         for resource in resource_list:

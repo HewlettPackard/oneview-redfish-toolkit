@@ -14,8 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import logging
-
 from flask import abort
 from flask import Blueprint
 from flask import g
@@ -151,11 +149,11 @@ def get_resource_block_ethernet_interface(uuid, id):
     if not connection:
         abort(status.HTTP_404_NOT_FOUND, "Ethernet interface not found")
 
-        network = \
-            g.oneview_client.index_resources.get(connection["networkUri"])
+    network = \
+        g.oneview_client.index_resources.get(connection["networkUri"])
 
-        ethernet_interface = ResourceBlockEthernetInterface(
-            server_profile_template, connection, network)
+    ethernet_interface = ResourceBlockEthernetInterface(
+        server_profile_template, connection, network)
 
     return ResponseBuilder.success(
         ethernet_interface,

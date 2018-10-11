@@ -219,9 +219,9 @@ class ComputerSystem(RedfishJsonValidator):
             server_profile_template)
 
         if storage_blocks and not controller:
-            abort(status.HTTP_500_INTERNAL_SERVER_ERROR,
-                  "The Server Profile Template should have a valid "
-                  "storage controller to use the Storage Resource Blocks passed")
+            abort(status.HTTP_403_FORBIDDEN,
+                  "The Server Profile Template should have a valid storage "
+                  "controller to use the Storage Resource Blocks passed")
 
         for index, storage_block in enumerate(storage_blocks):
             storage_id = index + 1
