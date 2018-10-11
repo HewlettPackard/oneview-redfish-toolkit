@@ -51,9 +51,7 @@ class TestEthernetInterface(BaseTest):
         conn_id_1 = self.server_profile["connectionSettings"]["connections"][0]
 
         ethernet_interface = \
-            EthernetInterface(self.server_profile,
-                              conn_id_1,
-                              network)
+            EthernetInterface.build(self.server_profile, conn_id_1, network)
 
         result = json.loads(ethernet_interface.serialize())
 
@@ -78,9 +76,9 @@ class TestEthernetInterface(BaseTest):
         conn_id_2 = self.server_profile["connectionSettings"]["connections"][1]
 
         ethernet_interface = \
-            EthernetInterface(self.server_profile,
-                              conn_id_2,
-                              network_set)
+            EthernetInterface.build(self.server_profile,
+                                    conn_id_2,
+                                    network_set)
 
         result = json.loads(ethernet_interface.serialize())
 

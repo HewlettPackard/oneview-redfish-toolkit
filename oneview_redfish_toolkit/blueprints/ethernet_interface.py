@@ -53,6 +53,6 @@ def get_ethernet_interface(server_profile_uuid, eth_id):
     network_attrs = g.oneview_client.index_resources\
         .get(connection["networkUri"])
 
-    ethernet = EthernetInterface(profile, connection, network_attrs)
+    ethernet = EthernetInterface.build(profile, connection, network_attrs)
 
     return ResponseBuilder.success(ethernet)
