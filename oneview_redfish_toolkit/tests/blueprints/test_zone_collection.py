@@ -177,3 +177,30 @@ class TestZoneCollection(BaseFlaskTest):
 
         ov_api.drive_enclosures.get_all.assert_called_with()
         ov_api.logical_enclosures.get_all.assert_called_with()
+
+    def test_get_zone_collection_mixed_mode(self):
+        ov_api = self.oneview_client
+
+        spt_list = \
+            copy.deepcopy(self.server_profile_template_list)
+        spt_list[1]["localStorage"]["controllers"][0]["mode"] = "Mixed"
+
+        ov_api.logical_enclosures.get_all.return_value = \
+            self.logical_encl_list
+
+        ov_api.server_profile_templates.get_all.return_value = \
+            spt_list
+        ov_api.drive_enclosures.get_all.return_value = \
+            self.drive_enclosure_list
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceZones/")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(self.zone_collection_mockup, result)
+
+        ov_api.drive_enclosures.get_all.assert_called_with()
+        ov_api.logical_enclosures.get_all.assert_called_with()
