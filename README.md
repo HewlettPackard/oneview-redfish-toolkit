@@ -121,7 +121,7 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
 
 ## Logging
 
-Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output, which will generate a `redfish.log`, `redfish_performance.log` and `redfish_ov_data.log` file at `$HOME/.config/oneview-redfish-toolkit/`.
+Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output, which will generate a `redfish.log`, `redfish_performance.log` and `redfish_ov_data.log` files at `$HOME/.config/oneview-redfish-toolkit/`.
 
 The application has two extended logs, where all logs will be created on the same directory `$HOME/.config/oneview-redfish-toolkit/`:
 
