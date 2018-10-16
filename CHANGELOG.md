@@ -1,4 +1,4 @@
-# 0.3.0 (unreleased)
+# 0.3.0
 
 # Bug fixes & Enhancements
  - #216 Implement GET EventService
