@@ -36,7 +36,9 @@ Run the application:
 $ oneview-redfish-toolkit
 ```
 
-At first time, it will create all the needed configuration files under user directory, and will prompt for the OneView IP(s) to customize `redfish.conf` file with the entered IP. The following files will be created:
+The first time the application is run, it will create all the needed configuration files under user's home directory. It will also prompt for the OneView IP that you wish to connect to the redfish toolkit. This can either be a single IP address, or a comma seperated list of IP addresses. This modify the `redfish.conf` file with the entered IP addresses.
+
+The following files will be created:
 
 * $HOME/.config/oneview-redfish-toolkit/
   * redfish.conf
@@ -46,7 +48,7 @@ At first time, it will create all the needed configuration files under user dire
   * redfish_ov_data.log
   * certs/
 
-The `redfish.conf` and `logging.conf` are used for toolkit customization and certs directory is used to place SCMB certificates retrieved from OneView instances when Event Service is enabled.
+The `redfish.conf` and `logging.conf` are used for toolkit customization, but generally, don't need to be modified. The `certs` directory is used to place the retrieved OneView certificates when the Event Service is enabled.
 
 You can customize the configuration files created under the user directory, or if you want to use your own custom configuration files you can pass them as arguments. If no arguments are passed the application will use the ones on user directory:
 
