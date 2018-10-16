@@ -12,28 +12,35 @@ HPE OneView 4.0 version or above is required.
 
 > In order to integrate properly with OneView, the OneView API 600 is required to be supported by OneView instance.
 
-## Installation
+# Getting started
 
-### Requirements
+## Requirements
 
-HPE OneView Redfish Toolkit service relies on Python 3.5 or newer (as long as python3 executable is available) to run and [pip3](https://pip.pypa.io/en/stable/installing/) for dependencies management. A full list of dependencies is available at [requirements.txt](requirements.txt) file. For pyOpenSSL module please make sure to have OpenSSL lib installed in your system.
+* Ubuntu 16.04
+* Python >=3.5
+* pip >=8.1.2
 
-> There should be not problem in using Python 3.4 if your system does not have Python 3.5 available, but we do not guarantee complete compatibility as the test environment is set up on version 3.5.
+## Dependencies
+
+All dependecies will be installed with the application. A full list of dependencies is available at [requirements.txt](requirements.txt) file. For pyOpenSSL module please make sure to have OpenSSL lib installed in your system.
 
 In order to run tests and documentation generation `tox` is also needed. General instructions on how to install are available [here](https://tox.readthedocs.io/en/latest/install.html).
 
-### Production Environment
-
-Install the application:
+## Installing the application
 
 ```bash
 $ pip install git+https://github.com/HewlettPackard/oneview-redfish-toolkit.git
 ```
 
-Run the application:
+## Running the application
 
 ```bash
 $ oneview-redfish-toolkit
+Welcome to oneview-redfish-toolkit. Please enter a comma separated list of OneView IPs you want to connect to.
+Oneview IP(s): <ENTER_ONEVIEW_IP>
+Using configuration file: /root/.config/oneview-redfish-toolkit/redfish.conf
+Using logging configuration file: /root/.config/oneview-redfish-toolkit/logging.conf
+oneview-redfish-toolkit service is now available at 0.0.0.0:5000
 ```
 
 The first time the application is run, it will create all the needed configuration files under user's home directory. It will also prompt for the OneView IP that you wish to connect to the redfish toolkit. This can either be a single IP address, or a comma seperated list of IP addresses. This modify the `redfish.conf` file with the entered IP addresses.
@@ -56,9 +63,13 @@ You can customize the configuration files created under the user directory, or i
 $ oneview-redfish-toolkit --config redfish.conf --log-config logging.conf
 ```
 
+# Additional information about the toolkit
+
 ## Toolkit Configuration
 
-In order to start up oneview-redfish-toolkit service, there is some mandatory configuration at `redfish.conf` file to provide as explained below:
+The toolkit configuration resides on `redfish.conf` file. All required properties have default values that will work just fine. The only empty required property, OneView IP, will be prompted for user at the first execution and will update this file with inputed value. If OneView IP change or if you want add more OneViews you can manually update the property. In the same way you can edit the `redfish.conf` file to tuning other available properties.
+
+You can check all properties listed below:
 
 * `redfish` section
 
