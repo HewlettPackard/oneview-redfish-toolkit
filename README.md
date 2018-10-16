@@ -2,48 +2,50 @@
 
 # HPE OneView Redfish Toolkit
 
-This toolkit provides a REST service to answer DMTF's Redfish compliant requests by querying HPE OneView.
+This toolkit provides a REST service to answer [DMTF's Redfish](https://www.dmtf.org/standards/redfish) compliant requests by querying HPE OneView.
 
 HPE OneView is a fresh approach to converged infrastructure management, inspired by the way you expect to work, with a single integrated view of your IT infrastructure.
 
 DMTF's Redfish is an open industry standard specification and schema that specifies a RESTful interface and utilizes JSON and OData to help customers integrate solutions within their existing tool chains.
 
-HPE OneView 4.0 version or above is required.
 
-> In order to integrate properly with OneView, the OneView API 600 is required to be supported by OneView instance.
 
 # Getting started
 
 ## Requirements
 
-* Ubuntu 16.04
-* Python >=3.5
-* pip >=8.1.2
+* **To install the application:**
+  * Ubuntu 16.04 (standard server install works fine)
+  * Python >=3.5
+  * pip >=8.1.2
+  * OpenSSL >= 1.0.2g
+  * Internet connectivity
+ * **To run the application (and make it useful):**
+   * HPE OneView 4.0 or later
 
 ## Dependencies
-
-All dependecies will be installed with the application. A full list of dependencies is available at [requirements.txt](requirements.txt) file. For pyOpenSSL module please make sure to have OpenSSL lib installed in your system.
-
-In order to run tests and documentation generation `tox` is also needed. General instructions on how to install are available [here](https://tox.readthedocs.io/en/latest/install.html).
+All service dependencies (besides the ones listed under requirements above) will be automatically downloaded and installed as part of installing the service.
+A full list of dependencies is available at [requirements.txt](requirements.txt) file
 
 ## Installing the application
 
 ```bash
-$ pip install git+https://github.com/HewlettPackard/oneview-redfish-toolkit.git
+$ pip install oneview-redfish-toolkit
 ```
 
 ## Running the application
 
-```bash
+The first time the application is run, it will create all the needed configuration files under user's home directory. It will also prompt for the OneView IP that you wish to connect to the redfish toolkit. This can either be a single IP address, or a comma seperated list of IP addresses.  The configuration is persisted in the  `redfish.conf`.
+
+Below is an example run that will add two different OneView instances to the Redfish service:
+```
 $ oneview-redfish-toolkit
 Welcome to oneview-redfish-toolkit. Please enter a comma separated list of OneView IPs you want to connect to.
-Oneview IP(s): <ENTER_ONEVIEW_IP>
+Oneview IP(s): 192.168.3.100, 192.168.3.101
 Using configuration file: /root/.config/oneview-redfish-toolkit/redfish.conf
 Using logging configuration file: /root/.config/oneview-redfish-toolkit/logging.conf
 oneview-redfish-toolkit service is now available at 0.0.0.0:5000
 ```
-
-The first time the application is run, it will create all the needed configuration files under user's home directory. It will also prompt for the OneView IP that you wish to connect to the redfish toolkit. This can either be a single IP address, or a comma seperated list of IP addresses. This modify the `redfish.conf` file with the entered IP addresses.
 
 The following files will be created:
 
@@ -51,17 +53,20 @@ The following files will be created:
   * redfish.conf
   * logging.conf
   * redfish.log
-  * redfish_performance.log
-  * redfish_ov_data.log
   * certs/
 
-The `redfish.conf` and `logging.conf` are used for toolkit customization, but generally, don't need to be modified. The `certs` directory is used to place the retrieved OneView certificates when the Event Service is enabled.
+The `redfish.conf` and `logging.conf` are used  to customize the service, but generally, don't need to be modified. The `certs` directory is used to place the retrieved OneView certificates when the Event Service is enabled.
 
-You can customize the configuration files created under the user directory, or if you want to use your own custom configuration files you can pass them as arguments. If no arguments are passed the application will use the ones on user directory:
+
+
+
+You can customize the configuration files created under the user directory, or if you want to use your own custom configuration files you can pass them as arguments. If no arguments are passed, the application will use the ones on user directory:
 
 ```bash
 $ oneview-redfish-toolkit --config redfish.conf --log-config logging.conf
 ```
+
+
 
 # Additional information about the toolkit
 
@@ -92,7 +97,7 @@ You can check all properties listed below:
 * `credentials` section
 
   * **username**: HPE OneView's username
-  
+  
   * **password**: HPE OneView's password
 
   * **authLoginDomain**: HPE OneView's authentication login domain. If not set, defaults to "Local".
@@ -102,7 +107,7 @@ You can check all properties listed below:
 * `event_service` section
 
   * **DeliveryRetryAttempts**: The value of this property shall be the number of retrys attempted for any given event to the subscription destination before the subscription is terminated.
-  
+  
   * **DeliveryRetryIntervalSeconds**: The value of this property shall be the interval in seconds between the retry attempts for any given event to the subscription destination.
 
 * `ssl` section
@@ -111,7 +116,7 @@ You can check all properties listed below:
     * **disabled**: no SSL. Flask will be used as the web server.
     * **adhoc**: SSL is enabled with self-signed keys generated by the server every time you start the server. Flask will be used as the web server.
     * **self-signed**: SSL is enabled with a self-signed cert generated in the certs directory if no files named self-signed.crt and self-signed.key exists in that directory. This will create the certificates on the first run and every time you delete the files and restart the server. The directory **certs must** exist in the system root directory) certs (SSL is enabled with keys provided by user in the fields below). Cherrypy will be used as the web server unless the toolkit is initialized in development and debug mode (arguments set "--dev" and "--debug"). In this case, Flask will be used as the web server.
-  
+  
   * **SSLCertFile**: The user SSL cert file.
 
   * **SSLKeyFile**: The user SSL key file. Should not have a password.
@@ -119,17 +124,17 @@ You can check all properties listed below:
 * `ssl-cert-defaults` section: Defines the values used in the self-signed generated certificate
 
   * **countryName**: The name of the country. **Required!**
-  
+  
   * **stateOrProvinceName**: The name of the state or province. **Required!**
 
   * **localityName**: Name of the locality (city for example). **Required!**
 
   * **organizationName**: Name of the organization (company name for example). **Required!**
-  
+  
   * **organizationalUnitName**: Name of the organizational unit (department for example). **Required!**
 
   * **commonName**: FQDN of the server or it's IP address. If not provided will detect de default route IP and use it. **Optional.**
- 
+ 
   * **emailAddress**: Email address to contact the responsible for this server/certificate. This is an optional information. Will not be added to certificate if not informed. **Optional.**
 
 ## Logging
@@ -184,6 +189,8 @@ handlers=consoleHandler,defaultFileHandler,performanceFileHandler,oneviewDataFil
 ```
 
 ### Development Environment
+
+In order to run tests and documentation generation `tox` is also needed. General instructions on how to install are available [here](https://tox.readthedocs.io/en/latest/install.html).
 
 We recommend to run inside a virtual environment. You can create one running:
 
