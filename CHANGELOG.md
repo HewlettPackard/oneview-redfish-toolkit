@@ -86,18 +86,37 @@
  - #421 Add support for authLoginDomain in the Redfish.conf
  - #370 Use a label to save template_UUID instead of Description attribute in the server profile
  - #422 Save OneView Python SDK client for multiple requests
+ - #387 Add support for Description in Composed system and Capabilities Object
+ - #432 Log elapsed time for request in debug mode
+ - #439 Fix unit tests for conf mode and client session tests
+ - #407 create session id and when authorization fail, remove session (session id)
+ - #408 Session collection and specific Session: list all session ids and a specific session
+ - #441 Remove abandoned and expired sessions
+ - #423 Power off the server on decompose request
+ - #434 Power off the server on compose request
+ - #445 Including cherrypy configs on redfish.conf
+ - #448 Fix threading lock
+ - #447 Log: add info about how many OV and Redfish resources
+ - #433 Check performance for Storage Resource Block and Network Resource Block
+ - #321 Review build dependencies
+ - #409 Support for Delete Session
+ - #297 Update Managers collection and Manager
+ - #280 Empty collections should not return error message
+ - #436 Certificates directory on production installation for conf mode
+ - #458 Not found error should not return 500 on requests
+ - #401 Change order of scmb certs generation
+ - #428 Performance analysis
  - #438 Session Service and Event Service should be enabled according authentication mode
- - #471 Add SharingEnable attribute for Network Resource Block
  - #472 Add SharingCapable attribute for Storage Resource Block
+ - #471 Add SharingEnable attribute for Network Resource Block
  - #468 Improve error message for errors 500
  - #464 Improvement performance for multiple OneViews
  - #465 Update cache entry when resource moved to another OneView
- - #484 Fix odata_id links for NetworkAdapterCollection and NetworkAdapter (api)
  - #483 Missing Network Resource Block in a Zone when SPT has no connections
+ - #484 Fix odata_id links for NetworkAdapterCollection and NetworkAdapter (api)
  - #480 Improve debug log
  - #478 Extend additional check for storage controller settings
  - #325 Package installation requirements
-
 
 # New Redfish resources
  - Event Service
