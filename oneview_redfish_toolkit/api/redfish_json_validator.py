@@ -14,12 +14,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
+
 import collections
-from flask_api import status
 import json
 import jsonschema
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidAttributeValueException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 from oneview_redfish_toolkit.api import schemas
 from oneview_redfish_toolkit import config
 
@@ -122,18 +126,16 @@ class RedfishJsonValidator(object):
         try:
             resource_id = int(resource_id)
         except ValueError:
-            raise OneViewRedfishException(
-                "Invalid {} ID".format(self.__class__.__name__),
-                status.HTTP_400_BAD_REQUEST
+            raise OneViewRedfishInvalidAttributeValueException(
+                "Invalid {} ID".format(self.__class__.__name__)
             )
 
         for resource in resource_list:
             if resource[resource_number_key] == resource_id:
                 return resource
 
-        raise OneViewRedfishException(
-            "Object {} was not found.".format(self.__class__.__name__),
-            status.HTTP_404_NOT_FOUND
+        raise OneViewRedfishResourceNotFoundException(
+            "Object {} was not found.".format(self.__class__.__name__)
         )
 
     def get_odata_type(self):
@@ -177,9 +179,8 @@ class RedfishJsonValidator(object):
             schema_obj = stored_schemas[
                 "http://redfish.dmtf.org/schemas/v1/" + schema_file]
         except KeyError:
-            raise OneViewRedfishException(
-                "{} not found".format(schema_file),
-                status.HTTP_404_NOT_FOUND
+            raise OneViewRedfishResourceNotFoundException(
+                "{} not found".format(schema_file)
             )
 
         return schema_obj

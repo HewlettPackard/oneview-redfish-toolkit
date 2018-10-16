@@ -15,10 +15,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import collections
-from flask_api import status
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
+import collections
+
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
 from oneview_redfish_toolkit import config
@@ -44,9 +47,8 @@ class RedfishError(RedfishJsonValidator):
         self.redfish["error"] = collections.OrderedDict()
         # Check if Code is a valid Code Error in the registry
         if code not in config.get_registry_dict()["Base"]["Messages"]:
-            raise OneViewRedfishException(
-                "Registry {} not found.".format(code),
-                status.HTTP_404_NOT_FOUND
+            raise OneViewRedfishResourceNotFoundException(
+                "Registry {} not found.".format(code)
             )
 
         self.redfish["error"]["code"] = "Base.1.1." + code
@@ -79,9 +81,8 @@ class RedfishError(RedfishJsonValidator):
         try:
             severity = messages[message_id]["Severity"]
         except Exception:
-            raise OneViewRedfishException(
-                "Message id {} not found.".format(message_id),
-                status.HTTP_404_NOT_FOUND
+            raise OneViewRedfishResourceNotFoundException(
+                "Message id {} not found.".format(message_id)
             )
 
         message = messages[message_id]["Message"]
@@ -92,9 +93,7 @@ class RedfishError(RedfishJsonValidator):
         if replaces != replacements:
             raise OneViewRedfishException(
                 'Message has {} replacements to be made but {} args '
-                'where sent'.format(replaces, replacements),
-                status.HTTP_500_INTERNAL_SERVER_ERROR
-
+                'where sent'.format(replaces, replacements)
             )
 
         # Replacing the marks in the message. A better way to do this

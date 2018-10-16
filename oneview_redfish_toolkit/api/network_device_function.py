@@ -14,11 +14,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from flask_api import status
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
-from oneview_redfish_toolkit.api.redfish_json_validator \
-    import RedfishJsonValidator
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidAttributeValueException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
+from oneview_redfish_toolkit.api.redfish_json_validator import \
+    RedfishJsonValidator
 
 
 class NetworkDeviceFunction(RedfishJsonValidator):
@@ -59,10 +61,9 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             virtual_port = self.get_resource_by_id(
                 port["virtualPorts"], "portNumber", virtual_port_number)
         except Exception:
-            raise OneViewRedfishException(
+            raise OneViewRedfishResourceNotFoundException(
                 "NetworkDeviceFunction id {} not found.".format(
-                    device_function_id),
-                status.HTTP_404_NOT_FOUND
+                    device_function_id)
             )
 
         self.redfish["@odata.type"] = self.get_odata_type()
@@ -76,13 +77,12 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             self.redfish["Ethernet"]["MACAddress"] = virtual_port["mac"]
             self.redfish["NetDevFuncType"] = "Ethernet"
         elif port["type"] == "FibreChannel":
-            raise OneViewRedfishException(
-                "FibreChannel not implemented",
-                status.HTTP_501_NOT_IMPLEMENTED
+            raise OneViewRedfishInvalidAttributeValueException(
+                "FibreChannel not implemented"
             )
         else:
-            raise OneViewRedfishException(
-                "Type not supported", status.HTTP_400_BAD_REQUEST
+            raise OneViewRedfishInvalidAttributeValueException(
+                "Type not supported"
             )
 
         self.redfish["@odata.context"] = \

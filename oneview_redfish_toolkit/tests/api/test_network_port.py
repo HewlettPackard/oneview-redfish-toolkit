@@ -14,9 +14,12 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+
+from copy import deepcopy
 import json
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidAttributeValueException
 from oneview_redfish_toolkit.api.network_port import \
     NetworkPort
 from oneview_redfish_toolkit.tests.base_test import BaseTest
@@ -87,5 +90,45 @@ class TestNetworkPort(BaseTest):
         try:
             NetworkPort(self.device_id, "invalid_port_id",
                         self.server_hardware)
-        except OneViewRedfishException as e:
+        except OneViewRedfishInvalidAttributeValueException as e:
             self.assertEqual(e.msg, "Invalid NetworkPort ID")
+
+    def test_fibre_channel_type(self):
+        # Tests the fibre channel port type
+
+        # Loading server_hardware_fibre_channel mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerHardwareFibreChannel.json'
+        ) as f:
+            server_hardware_fibre_channel = json.load(f)
+
+        # Loading NetworkPort mockup result
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'NetworkPort1-FibreChannel.json'
+        ) as f:
+            network_port_fb_mockup = json.load(f)
+
+        network_port = \
+            NetworkPort(
+                "2",
+                self.port_id,
+                server_hardware_fibre_channel)
+
+        result = json.loads(network_port.serialize())
+
+        self.assertEqualMockup(network_port_fb_mockup, result)
+
+    def test_invalid_port_type_exception(self):
+        # Tests an invalid port type exception
+
+        server_hardware = deepcopy(self.server_hardware)
+        server_hardware["portMap"]["deviceSlots"][2]["physicalPorts"][0]["type"] \
+            = "InvalidPort"
+
+        try:
+            NetworkPort(self.device_id, self.port_id,
+                        server_hardware)
+        except OneViewRedfishInvalidAttributeValueException as e:
+            self.assertEqual(e.msg, "Type not supported")

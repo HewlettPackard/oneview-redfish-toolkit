@@ -14,11 +14,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+
 import copy
-from flask_api import status
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
-
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidAttributeValueException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 
 RESET_ALLOWABLE_VALUES_LIST = ["On", "ForceOff", "GracefulShutdown",
                                "GracefulRestart", "ForceRestart",
@@ -57,9 +59,8 @@ class OneViewPowerOption(object):
         try:
             return copy.copy(POWER_STATE_MAP[reset_type])
         except KeyError:
-            raise OneViewRedfishException(
-                "There is no mapping for {} on the OneView".format(reset_type),
-                status.HTTP_404_NOT_FOUND
+            raise OneViewRedfishResourceNotFoundException(
+                "There is no mapping for {} on the OneView".format(reset_type)
             )
 
     @staticmethod
@@ -82,9 +83,8 @@ class OneViewPowerOption(object):
                 reset_type is an unmapped value.
         """
         if reset_type in RESET_INVALID_VALUES_LIST:
-            raise OneViewRedfishException(
-                "{} not mapped to OneView".format(reset_type),
-                status.HTTP_501_NOT_IMPLEMENTED
+            raise OneViewRedfishInvalidAttributeValueException(
+                "{} not mapped to OneView".format(reset_type)
             )
 
         power_state_map = OneViewPowerOption.\

@@ -18,10 +18,12 @@ from flask_api import status
 import json
 
 from oneview_redfish_toolkit.api import errors
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.tests.base_test import BaseTest
-
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 
 
 class TestRedfishError(BaseTest):
@@ -58,7 +60,7 @@ class TestRedfishError(BaseTest):
             redfish_error.add_extended_info(
                 "InvalidCode",
                 "General Message")
-        except OneViewRedfishException as e:
+        except OneViewRedfishResourceNotFoundException as e:
             self.assertEqual(
                 e.msg,
                 "Message id InvalidCode not found.")
@@ -77,8 +79,6 @@ class TestRedfishError(BaseTest):
             self.assertEqual(
                 e.msg,
                 'Message has 2 replacements to be made but 1 args where sent')
-            self.assertEqual(e.status_code_error,
-                             status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def test_redfish_error_with_extended_info(self):
         """Tests the add_extended_info with two additional info"""

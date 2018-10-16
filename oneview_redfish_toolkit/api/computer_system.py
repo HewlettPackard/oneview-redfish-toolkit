@@ -16,9 +16,9 @@
 
 import collections
 from copy import deepcopy
-from flask_api import status
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidConditionException
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 from oneview_redfish_toolkit.api.resource_block_collection import \
@@ -219,10 +219,9 @@ class ComputerSystem(RedfishJsonValidator):
             server_profile_template)
 
         if storage_blocks and not controller:
-            raise OneViewRedfishException(
+            raise OneViewRedfishInvalidConditionException(
                 "The Server Profile Template should have a valid storage "
-                "controller to use the Storage Resource Blocks passed",
-                status.HTTP_403_FORBIDDEN
+                "controller to use the Storage Resource Blocks passed"
             )
 
         for index, storage_block in enumerate(storage_blocks):

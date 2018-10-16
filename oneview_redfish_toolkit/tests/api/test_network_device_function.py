@@ -14,13 +14,17 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+
+from copy import deepcopy
 import json
 
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidAttributeValueException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 from oneview_redfish_toolkit.api.network_device_function import \
     NetworkDeviceFunction
 from oneview_redfish_toolkit.tests.base_test import BaseTest
-
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 
 
 class TestNetworkDeviceFunction(BaseTest):
@@ -90,11 +94,40 @@ class TestNetworkDeviceFunction(BaseTest):
                 self.device_id,
                 "invalid_device_id",
                 self.server_hardware)
-        except OneViewRedfishException as e:
-            self.assertIsInstance(e, OneViewRedfishException)
+        except OneViewRedfishResourceNotFoundException as e:
+            self.assertIsInstance(e,
+                                  OneViewRedfishResourceNotFoundException)
         except Exception as e:
             self.fail("Failed to instantiate NetworkDeviceFunction class."
                       " Error: {}".format(e))
         else:
             self.fail("Class instantiated with invalid parameters."
                       " Error: {}".format(network_device_function))
+
+    def test_port_type_fibre_channel_exception(self):
+        # Tests if class with an invalid device_function_id
+
+        try:
+            server_hardware = deepcopy(self.server_hardware)
+            server_hardware["portMap"]["deviceSlots"][2]["physicalPorts"][0]["type"]\
+                = "FibreChannel"
+            NetworkDeviceFunction(self.device_id, self.device_function_id,
+                                  server_hardware)
+        except OneViewRedfishInvalidAttributeValueException as e:
+            self.assertIsInstance(e,
+                                  OneViewRedfishInvalidAttributeValueException)
+            self.assertEqual(e.msg, "FibreChannel not implemented")
+
+    def test_invalid_port_exception(self):
+        # Tests if class with an invalid device_function_id
+
+        try:
+            server_hardware = deepcopy(self.server_hardware)
+            server_hardware["portMap"]["deviceSlots"][2]["physicalPorts"][0]["type"]\
+                = "InvalidPort"
+            NetworkDeviceFunction(self.device_id, self.device_function_id,
+                                  server_hardware)
+        except OneViewRedfishInvalidAttributeValueException as e:
+            self.assertIsInstance(e,
+                                  OneViewRedfishInvalidAttributeValueException)
+            self.assertEqual(e.msg, "Type not supported")

@@ -17,7 +17,6 @@
 # Python libs
 import collections
 import configparser
-from flask_api import status
 import glob
 import json
 import logging
@@ -25,7 +24,10 @@ import logging.config
 import os
 
 # Modules own libs
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 from oneview_redfish_toolkit.api import schemas
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import util
@@ -175,8 +177,7 @@ def load_config(conf_file):
         load_schemas(get_schemas_path())
     except Exception as e:
         raise OneViewRedfishException(
-            'Failed to connect to OneView: {}'.format(e),
-            status.HTTP_500_INTERNAL_SERVER_ERROR
+            'Failed to connect to OneView: {}'.format(e)
         )
 
 
@@ -193,9 +194,8 @@ def load_conf_file(conf_file):
     """
 
     if not os.path.isfile(conf_file):
-        raise OneViewRedfishException(
-            "File {} not found.".format(conf_file),
-            status.HTTP_404_NOT_FOUND
+        raise OneViewRedfishResourceNotFoundException(
+            "File {} not found.".format(conf_file)
         )
 
     config = configparser.ConfigParser()
@@ -227,15 +227,13 @@ def load_registry(registry_dir, registries):
     """
 
     if os.path.isdir(registry_dir) is False:
-        raise OneViewRedfishException(
-            "Directory {} not found.".format(registry_dir),
-            status.HTTP_404_NOT_FOUND
+        raise OneViewRedfishResourceNotFoundException(
+            "Directory {} not found.".format(registry_dir)
         )
 
     if os.access(registry_dir, os.R_OK) is False:
-        raise OneViewRedfishException(
-            "Directory {} not found.".format(registry_dir),
-            status.HTTP_500_INTERNAL_SERVER_ERROR
+        raise OneViewRedfishResourceNotFoundException(
+            "Directory {} not found.".format(registry_dir)
         )
 
     registries_dict = collections.OrderedDict()
@@ -244,9 +242,8 @@ def load_registry(registry_dir, registries):
             with open(registry_dir + '/' + registries[key]) as f:
                 registries_dict[key] = json.load(f)
         except Exception:
-            raise OneViewRedfishException(
-                "File {} not found.",
-                status.HTTP_404_NOT_FOUND
+            raise OneViewRedfishResourceNotFoundException(
+                "File {} not found.".format(registries[key])
             )
 
     return registries_dict
@@ -267,9 +264,8 @@ def load_schemas(schema_dir):
     schema_paths = glob.glob(schema_dir + '/*.json')
 
     if not schema_paths:
-        raise OneViewRedfishException(
-            "JSON Schemas file not found.",
-            status.HTTP_404_NOT_FOUND
+        raise OneViewRedfishResourceNotFoundException(
+            "JSON Schemas file not found."
         )
 
     stored_schemas = dict()

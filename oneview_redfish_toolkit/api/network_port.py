@@ -14,9 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from flask_api import status
-
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidAttributeValueException
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
 
@@ -49,12 +48,6 @@ class NetworkPort(RedfishJsonValidator):
 
         port = self.get_resource_by_id(physical_ports, "portNumber", port_id)
 
-        if port["type"] not in ["Ethernet", "FibreChannel", "InfiniBand"]:
-            raise OneViewRedfishException(
-                "Port ID refers to an invalid port type.",
-                status.HTTP_400_BAD_REQUEST
-            )
-
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = port_id
         self.redfish["Name"] = "Physical port {}".format(port_id)
@@ -66,9 +59,8 @@ class NetworkPort(RedfishJsonValidator):
         elif port["type"] == "FibreChannel":
             self.redfish["AssociatedNetworkAddresses"].append(port["wwn"])
         else:
-            raise OneViewRedfishException(
-                "Type not supported",
-                status.HTTP_400_BAD_REQUEST
+            raise OneViewRedfishInvalidAttributeValueException(
+                "Type not supported"
             )
 
         self.redfish["@odata.context"] = \

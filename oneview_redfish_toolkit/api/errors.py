@@ -15,6 +15,8 @@
 # under the License.
 
 
+from flask_api import status
+
 NOT_FOUND_ONEVIEW_ERRORS = ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException',
                             'DFRM_SAS_LOGICAL_JBOD_NOT_FOUND']
 
@@ -26,6 +28,26 @@ AUTH_ONEVIEW_ERRORS = ['AUTHN_AUTH_FAIL',
 
 class OneViewRedfishException(Exception):
 
-    def __init__(self, msg, status_code_error):
+    def __init__(self, msg):
         self.msg = msg
-        self.status_code_error = status_code_error
+
+
+class OneViewRedfishInvalidAttributeValueException(OneViewRedfishException):
+
+    def __init__(self, msg):
+        self.msg = msg
+        self.status_code_error = status.HTTP_400_BAD_REQUEST
+
+
+class OneViewRedfishInvalidConditionException(OneViewRedfishException):
+
+    def __init__(self, msg):
+        self.msg = msg
+        self.status_code_error = status.HTTP_403_FORBIDDEN
+
+
+class OneViewRedfishResourceNotFoundException(OneViewRedfishException):
+
+    def __init__(self, msg):
+        self.msg = msg
+        self.status_code_error = status.HTTP_404_NOT_FOUND

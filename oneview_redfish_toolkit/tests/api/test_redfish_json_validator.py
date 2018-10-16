@@ -22,11 +22,14 @@ import collections
 import json
 from unittest import mock
 
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidAttributeValueException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 
 service_root_version = 'v1_2_0'
 zone_version = 'v1_1_0'
@@ -79,13 +82,13 @@ class TestRedfishJsonValidator(BaseTest):
     def test_get_resource_empty_list(self):
         redfish_json_validator = RedfishJsonValidator('ServiceRoot')
 
-        with self.assertRaises(OneViewRedfishException):
+        with self.assertRaises(OneViewRedfishResourceNotFoundException):
             redfish_json_validator.get_resource_by_id([], "deviceNumber", 1)
 
     def test_get_resource_invalid_id(self):
         redfish_json_validator = RedfishJsonValidator('ServiceRoot')
 
-        with self.assertRaises(OneViewRedfishException):
+        with self.assertRaises(OneViewRedfishInvalidAttributeValueException):
             redfish_json_validator.get_resource_by_id(
                 [], "deviceNumber", "INVALID_ID")
 
