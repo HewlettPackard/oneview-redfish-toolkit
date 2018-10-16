@@ -104,7 +104,9 @@ def get_path_redfish_conf():
     save_file = not (ov_ip and certs_dir)
 
     if not ov_ip:
-        ov_ip = str(input('Set Oneview IP: '))
+        print('Welcome to oneview-redfish-toolkit. Please enter a comma '
+              'separated list of OneView IPs you want to connect to.')
+        ov_ip = str(input('Oneview IP(s): '))
         config['oneview_config']['ip'] = ov_ip
 
     if not certs_dir:
@@ -117,7 +119,6 @@ def get_path_redfish_conf():
     if save_file:
         with open(config_path, 'w') as configfile:
             config.write(configfile)
-            print('Configuration file saved: ' + config_path)
 
     return config_path
 
@@ -166,8 +167,6 @@ def get_path_logging_conf():
         with open(logging_path, 'w') as configfile:
             logging.write(configfile)
 
-        print('Logging file saved: ' + logging_path)
-
     return logging_path
 
 
@@ -209,9 +208,15 @@ if __name__ == '__main__':
     if args.stop:
         stop_application()
 
-    config_logging_path = args.log_config or get_path_logging_conf()
-
     config_path = args.config or get_path_redfish_conf()
     print('Using configuration file: ' + config_path)
+
+    config_logging_path = args.log_config or get_path_logging_conf()
+    print('Using logging configuration file: ' + config_logging_path)
+
+    config = get_config_file(config_path)
+    print('oneview-redfish-toolkit service is now available at ' +
+          config['redfish']['redfish_host'] + ':' +
+          config['redfish']['redfish_port'])
 
     oneview_redfish_toolkit.app.main(config_path, config_logging_path)
