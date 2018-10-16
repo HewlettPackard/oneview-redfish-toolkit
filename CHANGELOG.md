@@ -86,6 +86,17 @@
  - #421 Add support for authLoginDomain in the Redfish.conf
  - #370 Use a label to save template_UUID instead of Description attribute in the server profile
  - #422 Save OneView Python SDK client for multiple requests
+ - #438 Session Service and Event Service should be enabled according authentication mode
+ - #471 Add SharingEnable attribute for Network Resource Block
+ - #472 Add SharingCapable attribute for Storage Resource Block
+ - #468 Improve error message for errors 500
+ - #464 Improvement performance for multiple OneViews
+ - #465 Update cache entry when resource moved to another OneView
+ - #484 Fix odata_id links for NetworkAdapterCollection and NetworkAdapter (api)
+ - #483 Missing Network Resource Block in a Zone when SPT has no connections
+ - #480 Improve debug log
+ - #478 Extend additional check for storage controller settings
+ - #325 Package installation requirements
 
 
 # New Redfish resources
