@@ -29,7 +29,8 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     scripts=['scripts/oneview-redfish-toolkit'],
     setup_requires=["pbr"],
-    download_url="https://github.com/HewlettPackard/oneview-redfish-toolkit/tarball/0.3.0",
+    download_url="https://github.com/HewlettPackard/oneview-redfish-toolkit/"
+    "tarball/0.3.0",
     python_requires='>=3.5',
     pbr=True
     )
