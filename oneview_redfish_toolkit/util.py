@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import appdirs
 import logging
 import logging.config
 import OpenSSL
@@ -44,6 +45,8 @@ globals()['subscriptions_by_type'] = {
 globals()['all_subscriptions'] = {}
 
 API_VERSION = 600
+
+CFG_DIR_NAME = 'oneview-redfish-toolkit'
 
 
 def get_subscriptions_by_type():
@@ -195,3 +198,7 @@ def get_app_path():
         return source
     except Exception:
         return ""
+
+
+def get_user_directory():
+    return appdirs.user_config_dir(CFG_DIR_NAME)
