@@ -85,7 +85,7 @@ You can check all properties listed below:
   * **redfish_port**: the TCP port where redfish service will listen to
 
   * **authentication_mode**: can be `conf` or `session`.
-    * **`conf`**: credentials from the conf file will be used for the requests. The toolkit will handle authentication with OneView internally. This configuration is recommended for demo purposes only.
+    * **`conf`**: credentials from the conf file will be used for the requests. The toolkit will handle authentication with OneView internally. This configuration is the only mode that supports [Event Service](#event-service-notes) and it's recommended for demo purposes only.
     * **`session`**: the Redfish client must create a session and use the generated `x-auth-token` for the requests. For more details please check Session Management section.
 
 * `oneview` section
@@ -244,7 +244,7 @@ When handling multiple OneView instances, make sure all instances have this user
 
 ## Event Service notes
 
-Current implementation follows Redfish specification [DSP0266 version 1.5.0](https://www.dmtf.org/sites/default/files/standards/documents/DSP0266_1.5.0.pdf). Event Service works only when authentication_mode is set to `conf`. As it connects directly to HPE OneView SCMB, the toolkit will request OneView to generate SCMB certs and download the certs to the correct location. The certs file are: **oneview\_ca**: OneView's CA cert file located at: `certs/oneview_ca.pem`. **scmb\_cert**: OneView's SCMB Client cert file located at: `certs/oneview_scmb.pem`. **scmb\_key**: OneView's SCMB Client key file located at: `certs/oneview_scmb.key`
+Current implementation follows Redfish specification [DSP0266 version 1.5.0](https://www.dmtf.org/sites/default/files/standards/documents/DSP0266_1.5.0.pdf). Event Service works only when authentication_mode is set to `conf` and does not support multiple OneView instances, hence it's not production ready. As it connects directly to HPE OneView SCMB, the toolkit will request OneView to generate SCMB certs and download the certs to the correct location. The certs file are: **oneview\_ca**: OneView's CA cert file located at: `certs/oneview_ca.pem`. **scmb\_cert**: OneView's SCMB Client cert file located at: `certs/oneview_scmb.pem`. **scmb\_key**: OneView's SCMB Client key file located at: `certs/oneview_scmb.key`
 
 > In order to integrate properly with OneView, the OneView API 300 is required to be supported by OneView instance.
 
