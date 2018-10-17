@@ -19,7 +19,7 @@
 import sys
 
 # Checking Python version
-if not sys.version_info >= (3,5):
+if not sys.version_info >= (3, 5):
     sys.exit("oneview-redfish-toolkit requires Python '>=3.5'")
 
 
@@ -29,6 +29,7 @@ import appdirs
 import pkg_resources
 import configparser
 import shutil
+import signal
 import oneview_redfish_toolkit.app
 
 ENCODING = 'utf-8'
@@ -168,15 +169,43 @@ def get_path_logging_conf():
     return logging_path
 
 
+def stop_application():
+    cfg_dir = appdirs.user_config_dir(CFG_DIR_NAME)
+    pid_file_path = os.path.join(cfg_dir, 'application.pid')
+
+    if not os.path.isfile(pid_file_path):
+        print('Application is already stopped')
+        sys.exit(1)
+
+    pid_file = open(pid_file_path, 'r')
+    pid = pid_file.read()
+
+    try:
+        os.kill(int(pid), signal.SIGTERM)
+        os.remove(pid_file_path)
+        print('Application stopped')
+        sys.exit(0)
+    except ProcessLookupError:
+        print('Application is already stopped')
+        sys.exit(1)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='This toolkit provides a REST service to answer \
         DMTF\'s Redfish compliant requests by querying HPE OneView.')
+
+    parser.add_argument('--stop', type=bool, nargs='?',
+                        default=False, const=True,
+                        help='Stops Redfish Toolkit')
     parser.add_argument('--config', type=str,
                         help='A path to config file')
     parser.add_argument('--log-config', type=str,
                         help='A path to logging config file')
     args = parser.parse_args()
+
+    if args.stop:
+        stop_application()
 
     config_logging_path = args.log_config or get_path_logging_conf()
 

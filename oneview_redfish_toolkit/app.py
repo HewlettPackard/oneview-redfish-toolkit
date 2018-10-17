@@ -24,6 +24,7 @@ import time
 # 3rd party libs
 import cherrypy
 from cherrypy.process.plugins import Daemonizer
+from cherrypy.process.plugins import PIDFile
 from flask import abort
 from flask import Flask
 from flask import g
@@ -417,6 +418,8 @@ def start_cherrypy(app,
 
     if not is_dev_env:
         Daemonizer(cherrypy.engine).subscribe()
+        PIDFile(cherrypy.engine, os.path.join(util.get_user_directory(),
+                                              'application.pid')).subscribe()
 
     cherrypy.engine.start()
     cherrypy.engine.block()
