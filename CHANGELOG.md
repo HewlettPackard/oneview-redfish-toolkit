@@ -1,3 +1,9 @@
+# 0.3.1
+
+# Bug fixes & Enhancements
+ - #494 Stop service on production environment
+ - #470 Create installation guide document for production environment
+
 # 0.3.0
 
 # Bug fixes & Enhancements
