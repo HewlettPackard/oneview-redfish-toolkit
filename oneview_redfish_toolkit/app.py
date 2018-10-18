@@ -108,6 +108,9 @@ from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit import util
 
 
+PID_FILE_NAME = 'toolkit.pid'
+
+
 def main(config_file_path, logging_config_file_path,
          is_dev_env=False, is_debug_mode=False):
     # Load config file, schemas and creates a OV connection
@@ -419,7 +422,7 @@ def start_cherrypy(app,
     if not is_dev_env:
         Daemonizer(cherrypy.engine).subscribe()
         PIDFile(cherrypy.engine, os.path.join(util.get_user_directory(),
-                                              'application.pid')).subscribe()
+                                              PID_FILE_NAME)).subscribe()
 
     cherrypy.engine.start()
     cherrypy.engine.block()
