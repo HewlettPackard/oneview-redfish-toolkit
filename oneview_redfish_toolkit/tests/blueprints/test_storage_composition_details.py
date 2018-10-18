@@ -77,7 +77,7 @@ class TestStorageCompositionDetails(BaseFlaskTest):
     def test_get_storage_drive_details(self):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
-            'StorageDriveCompositionDetails.json'
+            'DriveForResourceBlock.json'
         ) as f:
             expected_drive_details = json.load(f)
 
