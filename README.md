@@ -12,75 +12,64 @@ HPE OneView 4.0 version or above is required.
 
 > In order to integrate properly with OneView, the OneView API 600 is required to be supported by OneView instance.
 
-## Installation
+# Getting started
 
-### Requirements
+## Requirements
 
-HPE OneView Redfish Toolkit service relies on Python 3.5 or newer (as long as python3 executable is available) to run and [pip3](https://pip.pypa.io/en/stable/installing/) for dependencies management. A full list of dependencies is available at [requirements.txt](requirements.txt) file. For pyOpenSSL module please make sure to have OpenSSL lib installed in your system.
+* Ubuntu 16.04
+* Python >=3.5
+* pip >=8.1.2
 
-> There should be not problem in using Python 3.4 if your system does not have Python 3.5 available, but we do not guarantee complete compatibility as the test environment is set up on version 3.5.
+## Dependencies
+
+All dependecies will be installed with the application. A full list of dependencies is available at [requirements.txt](requirements.txt) file. For pyOpenSSL module please make sure to have OpenSSL lib installed in your system.
 
 In order to run tests and documentation generation `tox` is also needed. General instructions on how to install are available [here](https://tox.readthedocs.io/en/latest/install.html).
 
-### Production Environment
-
-Install the application:
+## Installing the application
 
 ```bash
 $ pip install git+https://github.com/HewlettPackard/oneview-redfish-toolkit.git
 ```
 
-Run the application:
+## Running the application
 
 ```bash
 $ oneview-redfish-toolkit
+Welcome to oneview-redfish-toolkit. Please enter a comma separated list of OneView IPs you want to connect to.
+Oneview IP(s): <ENTER_ONEVIEW_IP>
+Using configuration file: /root/.config/oneview-redfish-toolkit/redfish.conf
+Using logging configuration file: /root/.config/oneview-redfish-toolkit/logging.conf
+oneview-redfish-toolkit service is now available at 0.0.0.0:5000
 ```
 
- At first time, it will create all the needed configuration files under user directory, and will prompt for the OneView IP(s).
+The first time the application is run, it will create all the needed configuration files under user's home directory. It will also prompt for the OneView IP that you wish to connect to the redfish toolkit. This can either be a single IP address, or a comma seperated list of IP addresses. This modify the `redfish.conf` file with the entered IP addresses.
 
-You can update the configuration files created under the user directory, or if you want to use custom configuration files you can pass them as arguments:
+The following files will be created:
+
+* $HOME/.config/oneview-redfish-toolkit/
+  * redfish.conf
+  * logging.conf
+  * redfish.log
+  * redfish_performance.log
+  * redfish_ov_data.log
+  * certs/
+
+The `redfish.conf` and `logging.conf` are used for toolkit customization, but generally, don't need to be modified. The `certs` directory is used to place the retrieved OneView certificates when the Event Service is enabled.
+
+You can customize the configuration files created under the user directory, or if you want to use your own custom configuration files you can pass them as arguments. If no arguments are passed the application will use the ones on user directory:
 
 ```bash
 $ oneview-redfish-toolkit --config redfish.conf --log-config logging.conf
 ```
 
-### Development Environment
+# Additional information about the toolkit
 
-We recommend to run inside a virtual environment. You can create one running:
+## Toolkit Configuration
 
-```bash
-$ virtualenv env_name_you_choose -p python3.5 # to create a Python3.5 environment, for example
-$ source env_name_you_choose/bin/activate # load the environment
-```
+The toolkit configuration resides on `redfish.conf` file. All required properties have default values that will work just fine. The only empty required property, OneView IP, will be prompted for user at the first execution and will update this file with inputed value. If OneView IP change or if you want add more OneViews you can manually update the property. In the same way you can edit the `redfish.conf` file to tuning other available properties.
 
-Once the environment is loaded, download and uncompress the latest version from [releases page](https://github.com/HewlettPackard/oneview-redfish-toolkit/releases), or clone current development version running:
-
-```bash
-$ git clone https://github.com/HewlettPackard/oneview-redfish-toolkit.git
-```
-
-Then, proceed with:
-
-```bash
-$ cd oneview-redfish-toolkit # enter the service folder
-# edit redfish.conf
-$ pip install -r requirements.txt # to install all requirements into the virtual environment
-$ ./run.sh    # to launch the service
-```
-
-## SDK Documentation
-
-The latest version of the SDK documentation can be found in the [SDK Documentation section](https://hewlettpackard.github.io/oneview-redfish-toolkit/index.html).
-
-> Note: This documentation has been manually updated following the steps found [here](https://github.com/HewlettPackard/python-hpOneView/blob/master/deploy.sh).
-
-## Logging
-
-Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output (which will generate a `redfish.log` file).
-
-## Configuration
-
-In order to start up oneview-redfish-toolkit service, there is some mandatory configuration at `redfish.conf` file to provide as explained below:
+You can check all properties listed below:
 
 * `redfish` section
 
@@ -143,6 +132,87 @@ In order to start up oneview-redfish-toolkit service, there is some mandatory co
  
   * **emailAddress**: Email address to contact the responsible for this server/certificate. This is an optional information. Will not be added to certificate if not informed. **Optional.**
 
+## Logging
+
+Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output, which will generate a `redfish.log`, `redfish_performance.log` and `redfish_ov_data.log` files at `$HOME/.config/oneview-redfish-toolkit/`.
+
+The application has two extended logs, where all logs will be created on the same directory `$HOME/.config/oneview-redfish-toolkit/`:
+
+#### Performance logger
+
+For each Redfish Toolkit API request the performance logger will log the elapsed time for each OneView SDK request triggered, the amount elapsed time for all OneView SDK requests, the overhead toolkit process elapsed time and the total elapsed time for the Redfish Toolkit API request. So we can monitoring the OneView performance and the redfish toolkit performance as well. It will be log on `redfish_performance.log` file once enabled on `logging.conf` by changing its level and the root log level as DEBUG. Log example:
+```
+2018-10-10 15:42:41,112 - perf - DEBUG   - Thread 139974930331392 - OneView request: server_profile_templates.get: 0.02929878234
+2018-10-10 15:42:42,304 - perf - DEBUG   - Thread 139974930331392 - OneView request: server_hardware.get_all: 0.03278422355
+2018-10-10 15:42:43,231 - perf - DEBUG   - Thread 139974930331392 - OneView request: server_hardware.get_all:  0.03367638587
+2018-10-10 15:42:43,291 - perf - DEBUG   - Thread 139974930331392 - OneView process: 0.09575939176
+2018-10-10 15:42:43,291 - perf - DEBUG   - Thread 139974930331392 - Redfish process: 0.01273488998413086
+2018-10-10 15:42:43,294 - perf - DEBUG   - Thread 139974930331392 - Total process: 0.10849428174
+```
+
+#### OneView Data logger
+
+The OneView data logger will log the result for each OneView SDK request triggered. So we can check OneView data retrieved for each OneView SDK request. It will be log on `redfish_ov_data.log` file once enabled on `logging.conf` by changing its level and the root log level to DEBUG. Log example:
+```
+2018-10-10 15:42:43,230 - ovData - DEBUG - Thread 139974930331392 - Request to Oneview 'oneview.net', calling 'server_hardware.get_all' with args () and kwargs {}. Result: []
+```
+
+
+#### Enabling loggers
+
+You can enable the `Performance` logger and the `OneView Data` logger by setting its level and root logger level as DEBUG on the `logging.conf` file:
+
+```
+[logger_root]
+level=DEBUG
+
+[performance_handler]
+class=FileHandler
+level=DEBUG
+...
+
+[oneview_data_handler]
+class=FileHandler
+level=DEBUG
+...
+```
+You can customize extended logs to have default entry logs as well. To do this add the extended loggers handlers to the root logger:
+```
+[logger_root]
+level=DEBUG
+handlers=consoleHandler,defaultFileHandler,performanceFileHandler,oneviewDataFileHandler
+```
+
+### Development Environment
+
+We recommend to run inside a virtual environment. You can create one running:
+
+```bash
+$ virtualenv env_name_you_choose -p python3.5 # to create a Python3.5 environment, for example
+$ source env_name_you_choose/bin/activate # load the environment
+```
+
+Once the environment is loaded, download and uncompress the latest version from [releases page](https://github.com/HewlettPackard/oneview-redfish-toolkit/releases), or clone current development version running:
+
+```bash
+$ git clone https://github.com/HewlettPackard/oneview-redfish-toolkit.git
+```
+
+Then, proceed with:
+
+```bash
+$ cd oneview-redfish-toolkit # enter the service folder
+# edit redfish.conf
+$ pip install -r requirements.txt # to install all requirements into the virtual environment
+$ ./run.sh    # to launch the service
+```
+
+## SDK Documentation
+
+The latest version of the SDK documentation can be found in the [SDK Documentation section](https://hewlettpackard.github.io/oneview-redfish-toolkit/index.html).
+
+> Note: This documentation has been manually updated following the steps found [here](https://github.com/HewlettPackard/python-hpOneView/blob/master/deploy.sh).
+
 ## Session Management
 
 As specified in the Redfish spec, the endpoints `/redfish` and `/redfish/v1` can be accessed unauthenticated, also POST to Sessions Collection (that's how a Redfish session can be established).
@@ -155,7 +225,7 @@ curl -i -X POST \
   https://<ip>:5000/redfish/v1/SessionService/Sessions \
   -d '{"UserName": "administrator", "Password": "password"}'
 ```
-One of the headers in the response is `X-Auth-Token` (generated by OneView during authentication) that should be send for all subsequent requests:
+One of the headers in the response is `X-Auth-Token` that should be send for all subsequent requests:
 
 ```bash
 curl -X GET \
@@ -164,7 +234,6 @@ curl -X GET \
 ```
 When handling multiple OneView instances, make sure all instances have this username/password enabled.
 
-**Note**: In the current implementation, each user can have only 1 active session (always mapped to “/redfish/v1/SessionService/Sessions/1” ), GET and DELETE features not implemented. Thus, if the Redfish client creates another session (another POST), the toolkit will just create another session in OneView. The client decides which session token to use. If it is still valid, the request will be processed, otherwise an error will be returned to the client.
 
 ## Event Service notes
 
