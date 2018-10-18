@@ -13,7 +13,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import copy
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.redfish_json_validator \
@@ -46,7 +45,11 @@ class EthernetInterface(RedfishJsonValidator):
         """
         super().__init__(self.SCHEMA_NAME)
 
-        self.redfish = copy.deepcopy(data)
+        self.redfish["@odata.type"] = self.get_odata_type()
+
+        self.redfish.update(data)
+
+        self.redfish["@odata.context"] = self.__class__.METADATA_INFO
 
         self._validate()
 
@@ -67,7 +70,6 @@ class EthernetInterface(RedfishJsonValidator):
 
         EthernetInterface._fill_vlan_info(attrs, network_attr, odata_uri)
 
-        attrs["@odata.context"] = EthernetInterface.METADATA_INFO
         attrs["@odata.id"] = odata_uri
 
         return EthernetInterface(attrs)
@@ -88,8 +90,6 @@ class EthernetInterface(RedfishJsonValidator):
         }
 
         EthernetInterface._fill_vlan_info(attrs, network, odata_id)
-
-        attrs["@odata.context"] = EthernetInterface.METADATA_INFO
 
         attrs["@odata.id"] = odata_id
 
