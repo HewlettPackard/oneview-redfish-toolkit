@@ -45,6 +45,8 @@ DEFAULT_LOG_PATH = 'redfish.log'
 PERF_LOG_PATH = 'redfish_performance.log'
 OV_LOG_PATH = 'redfish_ov_data.log'
 
+PID_FILE_NAME = 'toolkit.pid'
+
 
 def get_config_file_path(file_name):
     """Read redfish configuration file and return its contents
@@ -171,7 +173,7 @@ def get_path_logging_conf():
 
 def stop_application():
     cfg_dir = appdirs.user_config_dir(CFG_DIR_NAME)
-    pid_file_path = os.path.join(cfg_dir, 'application.pid')
+    pid_file_path = os.path.join(cfg_dir, PID_FILE_NAME)
 
     if not os.path.isfile(pid_file_path):
         print('Application is already stopped')
