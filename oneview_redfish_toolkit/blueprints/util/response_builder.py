@@ -105,3 +105,10 @@ class ResponseBuilder(object):
 
         return ResponseBuilder.response(redfish_error,
                                         status.HTTP_501_NOT_IMPLEMENTED)
+
+    @staticmethod
+    def error_400(error):
+        redfish_error = RedfishError(
+            "PropertyValueNotInList", error.description)
+        return ResponseBuilder.response(redfish_error,
+                                        status.HTTP_400_BAD_REQUEST)
