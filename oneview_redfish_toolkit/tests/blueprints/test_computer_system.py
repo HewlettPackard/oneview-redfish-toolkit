@@ -27,6 +27,7 @@ from hpOneView.exceptions import HPOneViewException
 from unittest.mock import call
 
 # Module libs
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 from oneview_redfish_toolkit.blueprints import computer_system
 from oneview_redfish_toolkit import category_resource
@@ -477,15 +478,17 @@ class TestComputerSystem(BaseFlaskTest):
             server_profiles.get.return_value = self.server_profile
         self.oneview_client.server_hardware.get.return_value = \
             self.server_hardware
+        try:
+            self.client.post(
+                "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
+                "/Actions/ComputerSystem.Reset",
+                data=json.dumps(dict(ResetType="INVALID_TYPE")),
+                content_type='application/json')
+        except OneViewRedfishException as e:
+            self.assertEqual(status.HTTP_404_NOT_FOUND, e.status_code_error)
+            self.assertIn('There is no mapping for ForceOffff on the OneView',
+                          str(e.msg))
 
-        response = self.client.post(
-            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
-            "/Actions/ComputerSystem.Reset",
-            data=json.dumps(dict(ResetType="INVALID_TYPE")),
-            content_type='application/json')
-
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-        self.assertEqual("application/json", response.mimetype)
         self.oneview_client.server_profiles.get.assert_called_with(
             "b425802b-a6a5-4941-8885-aab68dfa2ee2"
         )
@@ -639,15 +642,14 @@ class TestComputerSystem(BaseFlaskTest):
             'PowerOffServerOnDecompose': 'ForceOffff'
         }
 
-        response = self.client.delete(
-            "/redfish/v1/Systems/"
-            "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
+        try:
+            self.client.delete("/redfish/v1/Systems/"
+                               "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
 
-        result = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertIn('There is no mapping for ForceOffff on the OneView',
-                      str(result))
+        except OneViewRedfishException as e:
+            self.assertEqual(status.HTTP_404_NOT_FOUND, e.status_code_error)
+            self.assertIn('There is no mapping for ForceOffff on the OneView',
+                          str(e.msg))
 
         self.oneview_client.server_hardware.update_power_state\
             .assert_not_called()

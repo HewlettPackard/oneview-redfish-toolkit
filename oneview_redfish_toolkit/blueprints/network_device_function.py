@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copyright (2017) Hewlett Packard Enterprise Development LP
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -25,12 +25,7 @@ from flask import Response
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
-# own libs
-
-from oneview_redfish_toolkit.api.errors import \
-    OneViewRedfishError
-from oneview_redfish_toolkit.api.errors import \
-    OneViewRedfishResourceNotFoundError
+# Own libs
 from oneview_redfish_toolkit.api.network_device_function import \
     NetworkDeviceFunction
 
@@ -70,8 +65,8 @@ def get_network_device_function(uuid, device_id, device_function_id):
         # Final validation of device_id
         if device_id_validation - 1 < 0 or (device_id_validation - 1) >= \
             len(server_hardware["portMap"]["deviceSlots"]):
-            raise OneViewRedfishResourceNotFoundError(
-                device_id, "Network interface")
+            abort(status.HTTP_404_NOT_FOUND,
+                  "Network interface id {} not found.".format(device_id))
 
         ndf = NetworkDeviceFunction(
             device_id, device_function_id, server_hardware)
@@ -87,12 +82,6 @@ def get_network_device_function(uuid, device_id, device_function_id):
         logging.exception(
             "Failed to convert device id {} to integer.".format(device_id))
         abort(status.HTTP_404_NOT_FOUND, "Network interface not found")
-    except OneViewRedfishResourceNotFoundError as e:
-        logging.exception(e.msg)
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
-    except OneViewRedfishError as e:
-        logging.exception(e.msg)
-        abort(status.HTTP_404_NOT_FOUND, e.msg)
     except HPOneViewException as e:
         # In case of error log exception and abort
         logging.exception(e)
@@ -100,7 +89,3 @@ def get_network_device_function(uuid, device_id, device_function_id):
             abort(status.HTTP_404_NOT_FOUND, "Server hardware not found")
         else:
             abort(status.HTTP_500_INTERNAL_SERVER_ERROR)
-    except Exception as e:
-        # In case of error log exception and abort
-        logging.exception('Unexpected error: {}'.format(e))
-        abort(status.HTTP_500_INTERNAL_SERVER_ERROR)

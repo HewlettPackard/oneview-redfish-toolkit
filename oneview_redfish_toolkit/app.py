@@ -36,6 +36,7 @@ from flask_api import status
 from hpOneView import HPOneViewException
 from paste.translogger import TransLogger
 
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.api.session_collection import SessionCollection
@@ -292,17 +293,7 @@ def main(config_file_path, logging_config_file_path,
         """Creates a Not Implemented Error response"""
         logging.error(error.description)
 
-        redfish_error = RedfishError(
-            "ActionNotSupported", error.description)
-        redfish_error.add_extended_info(
-            message_id="ActionNotSupported",
-            message_args=["action"])
-
-        error_str = redfish_error.serialize()
-        return Response(
-            response=error_str,
-            status=status.HTTP_501_NOT_IMPLEMENTED,
-            mimetype='application/json')
+        return ResponseBuilder.error_501(error)
 
     @app.errorhandler(HPOneViewException)
     def hp_oneview_client_exception(exception):
@@ -316,6 +307,12 @@ def main(config_file_path, logging_config_file_path,
             client_session.clear_session_by_token(token)
 
         return response
+
+    @app.errorhandler(OneViewRedfishException)
+    def oneview_redfish_exception(exception):
+        logging.exception(exception)
+
+        return ResponseBuilder.oneview_redfish_exception(exception)
 
     scmb.init_event_service()
 

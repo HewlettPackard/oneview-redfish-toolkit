@@ -14,13 +14,16 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+
+
 import collections
 import json
 import jsonschema
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-from oneview_redfish_toolkit.api.errors \
-    import OneViewRedfishResourceNotFoundError
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidAttributeValueException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 from oneview_redfish_toolkit.api import schemas
 from oneview_redfish_toolkit import config
 
@@ -63,9 +66,6 @@ class RedfishJsonValidator(object):
 
             Exception:
                 ValidationError: Raises this exception on validation failure.
-
-                OneViewRedfishError: Raises this exception if
-                schema is not found.
         """
         self.validate(self.redfish, self.schema_name)
 
@@ -78,9 +78,6 @@ class RedfishJsonValidator(object):
 
             Exception:
                 ValidationError: Raises this exception on validation failure.
-
-                OneViewRedfishError: Raises this exception if
-                schema is not found.
         """
         stored_schemas = config.get_stored_schemas()
         schema_obj = RedfishJsonValidator.get_schema_obj(schema_name)
@@ -125,24 +122,21 @@ class RedfishJsonValidator(object):
 
             Returns:
                 Resource in the list.
-
-            Exception:
-                OneViewRedfishError: If the ID is not an integer.
-                OneViewRedfishResourceNotFoundError: If the resource
-                    was not found.
         """
         try:
             resource_id = int(resource_id)
         except ValueError:
-            raise OneViewRedfishError("Invalid {} ID".format(
-                self.__class__.__name__))
+            raise OneViewRedfishInvalidAttributeValueException(
+                "Invalid {} ID".format(self.__class__.__name__)
+            )
 
         for resource in resource_list:
             if resource[resource_number_key] == resource_id:
                 return resource
 
-        raise OneViewRedfishResourceNotFoundError(
-            "Object", self.__class__.__name__)
+        raise OneViewRedfishResourceNotFoundException(
+            "Object {} was not found.".format(self.__class__.__name__)
+        )
 
     def get_odata_type(self):
         """Retrieves odata.type from schema file
@@ -172,7 +166,7 @@ class RedfishJsonValidator(object):
         """Retrieves schemas object for the schema name
 
             Retrieves the schema file content loaded
-            as a dict for the schema name receveid
+            as a dict for the schema name received
             as parameter.
 
             Returns:
@@ -185,6 +179,8 @@ class RedfishJsonValidator(object):
             schema_obj = stored_schemas[
                 "http://redfish.dmtf.org/schemas/v1/" + schema_file]
         except KeyError:
-            raise OneViewRedfishError("{} not found".format(schema_file))
+            raise OneViewRedfishResourceNotFoundException(
+                "{} not found".format(schema_file)
+            )
 
         return schema_obj

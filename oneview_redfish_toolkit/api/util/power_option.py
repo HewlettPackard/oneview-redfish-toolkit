@@ -14,10 +14,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+
 import copy
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidAttributeValueException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 
 RESET_ALLOWABLE_VALUES_LIST = ["On", "ForceOff", "GracefulShutdown",
                                "GracefulRestart", "ForceRestart",
@@ -55,12 +58,10 @@ class OneViewPowerOption(object):
     def get_power_state_by_reset_type(reset_type):
         try:
             return copy.copy(POWER_STATE_MAP[reset_type])
-        except Exception:
-            raise OneViewRedfishError({
-                "errorCode": "INVALID_INFORMATION",
-                "message": "There is no mapping for {} on the OneView".format(
-                    reset_type
-                )})
+        except KeyError:
+            raise OneViewRedfishResourceNotFoundException(
+                "There is no mapping for {} on the OneView".format(reset_type)
+            )
 
     @staticmethod
     def get_oneview_power_configuration(server_hardware, reset_type):
@@ -78,13 +79,13 @@ class OneViewPowerOption(object):
                 dict: Dict with OneView power configuration.
 
             Exception:
-                OneViewRedfishError: raises an exception if
+                OneViewRedfishException: raises an exception if
                 reset_type is an unmapped value.
         """
         if reset_type in RESET_INVALID_VALUES_LIST:
-            raise OneViewRedfishError({
-                "errorCode": "NOT_IMPLEMENTED",
-                "message": "{} not mapped to OneView".format(reset_type)})
+            raise OneViewRedfishInvalidAttributeValueException(
+                "{} not mapped to OneView".format(reset_type)
+            )
 
         power_state_map = OneViewPowerOption.\
             get_power_state_by_reset_type(reset_type)

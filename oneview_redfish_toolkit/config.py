@@ -24,11 +24,10 @@ import logging.config
 import os
 
 # Modules own libs
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
-from oneview_redfish_toolkit.api.errors \
-    import OneViewRedfishResourceNotAccessibleError
-from oneview_redfish_toolkit.api.errors \
-    import OneViewRedfishResourceNotFoundError
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 from oneview_redfish_toolkit.api import schemas
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import util
@@ -152,12 +151,6 @@ def load_config(conf_file):
             None
 
         Exception:
-            OneViewRedfishResourceNotFoundError:
-                - if conf file not found
-                - if any of the schemas files are not found
-                - if the schema directory is not found
-            OneViewRedFishResourceNotAccessibleError:
-                - if can't access schema's directory
             HPOneViewException:
                 - if fails to connect to oneview
     """
@@ -185,12 +178,8 @@ def load_config(conf_file):
         globals()['registry_dict'] = registry_dict
 
         load_schemas(get_schemas_path())
-    except OneViewRedfishResourceNotFoundError as e:
-        raise OneViewRedfishError(
-            'Failed to load schemas or registries: {}'.format(e)
-        )
     except Exception as e:
-        raise OneViewRedfishError(
+        raise OneViewRedfishException(
             'Failed to connect to OneView: {}'.format(e)
         )
 
@@ -205,14 +194,12 @@ def load_conf_file(conf_file):
 
         Returns:
             ConfigParser object with conf_file configs
-
-        Exception:
-            OneViewRedfishResourceNotFoundError:
-                - if conf file not found
     """
 
     if not os.path.isfile(conf_file):
-        raise OneViewRedfishResourceNotFoundError(conf_file, 'File')
+        raise OneViewRedfishResourceNotFoundException(
+            "File {} not found.".format(conf_file)
+        )
 
     config = configparser.ConfigParser()
     config.optionxform = str
@@ -238,19 +225,19 @@ def load_registry(registry_dir, registries):
             OrderedDict: A dict containing 'RegistryName': registry_obj
 
         Exceptions:
-            OneviewRedfishResourceNotFoundError:
-                - if registry_dir is not found
-                - any of json files is not found
             OneviewRedfishResourceNotAccessible:
                 - if registry_dir is can't be accessed
     """
 
     if os.path.isdir(registry_dir) is False:
-        raise OneViewRedfishResourceNotFoundError(
-            registry_dir, 'Directory')
+        raise OneViewRedfishResourceNotFoundException(
+            "Directory {} not found.".format(registry_dir)
+        )
+
     if os.access(registry_dir, os.R_OK) is False:
-        raise OneViewRedfishResourceNotAccessibleError(
-            registry_dir, 'directory')
+        raise OneViewRedfishResourceNotFoundException(
+            "Directory {} not found.".format(registry_dir)
+        )
 
     registries_dict = collections.OrderedDict()
     for key in registries:
@@ -258,8 +245,9 @@ def load_registry(registry_dir, registries):
             with open(registry_dir + '/' + registries[key]) as f:
                 registries_dict[key] = json.load(f)
         except Exception:
-            raise OneViewRedfishResourceNotFoundError(
-                registries[key], 'File')
+            raise OneViewRedfishResourceNotFoundException(
+                "File {} not found.".format(registries[key])
+            )
 
     return registries_dict
 
@@ -279,8 +267,9 @@ def load_schemas(schema_dir):
     schema_paths = glob.glob(schema_dir + '/*.json')
 
     if not schema_paths:
-        raise OneViewRedfishResourceNotFoundError(
-            "JSON Schemas", "File")
+        raise OneViewRedfishResourceNotFoundException(
+            "JSON Schemas file not found."
+        )
 
     stored_schemas = dict()
 

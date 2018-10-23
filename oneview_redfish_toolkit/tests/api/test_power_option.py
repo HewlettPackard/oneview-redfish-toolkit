@@ -16,7 +16,10 @@
 
 import json
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishInvalidAttributeValueException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
@@ -76,7 +79,7 @@ class TestPowerOption(BaseTest):
 
         for reset_type in reset_types:
             self.assertRaises(
-                OneViewRedfishError,
+                OneViewRedfishInvalidAttributeValueException,
                 OneViewPowerOption.get_oneview_power_configuration,
                 self.server_hardware, reset_type)
 
@@ -84,6 +87,6 @@ class TestPowerOption(BaseTest):
         """Tests raises OneviewRedFishError exception for unmapped keys"""
 
         self.assertRaises(
-            OneViewRedfishError,
+            OneViewRedfishResourceNotFoundException,
             OneViewPowerOption.get_oneview_power_configuration,
             self.server_hardware, "INVALID_KEY")

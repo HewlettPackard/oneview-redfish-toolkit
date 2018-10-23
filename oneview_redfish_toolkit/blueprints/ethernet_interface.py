@@ -14,10 +14,10 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from flask import abort
 from flask import Blueprint
 from flask import g
 from flask_api import status
-from werkzeug.exceptions import abort
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.ethernet_interface import EthernetInterface

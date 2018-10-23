@@ -14,11 +14,13 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
+
 from oneview_redfish_toolkit.api.errors import \
-    OneViewRedfishResourceNotFoundError
-from oneview_redfish_toolkit.api.redfish_json_validator \
-    import RedfishJsonValidator
+    OneViewRedfishInvalidAttributeValueException
+from oneview_redfish_toolkit.api.errors import \
+    OneViewRedfishResourceNotFoundException
+from oneview_redfish_toolkit.api.redfish_json_validator import \
+    RedfishJsonValidator
 
 
 class NetworkDeviceFunction(RedfishJsonValidator):
@@ -59,8 +61,10 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             virtual_port = self.get_resource_by_id(
                 port["virtualPorts"], "portNumber", virtual_port_number)
         except Exception:
-            raise OneViewRedfishResourceNotFoundError(
-                device_function_id, "NetworkDeviceFunction")
+            raise OneViewRedfishResourceNotFoundException(
+                "NetworkDeviceFunction id {} not found.".format(
+                    device_function_id)
+            )
 
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = device_function_id
@@ -73,9 +77,13 @@ class NetworkDeviceFunction(RedfishJsonValidator):
             self.redfish["Ethernet"]["MACAddress"] = virtual_port["mac"]
             self.redfish["NetDevFuncType"] = "Ethernet"
         elif port["type"] == "FibreChannel":
-            raise OneViewRedfishError("FibreChannel not implemented")
+            raise OneViewRedfishInvalidAttributeValueException(
+                "FibreChannel not implemented"
+            )
         else:
-            raise OneViewRedfishError("Type not supported")
+            raise OneViewRedfishInvalidAttributeValueException(
+                "Type not supported"
+            )
 
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#NetworkDeviceFunction.NetworkDeviceFunction"

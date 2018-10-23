@@ -14,9 +14,6 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-# Python libs
-import logging
-
 # 3rd party libs
 from flask import abort
 from flask import Blueprint
@@ -28,7 +25,6 @@ from flask_api import status
 # Own libs
 from oneview_redfish_toolkit.api.blade_chassis import BladeChassis
 from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
-from oneview_redfish_toolkit.api.errors import OneViewRedfishError
 from oneview_redfish_toolkit.api.rack_chassis import RackChassis
 from oneview_redfish_toolkit.api.util.power_option import OneViewPowerOption
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
@@ -105,53 +101,40 @@ def change_server_hardware_power_state(uuid):
             q: When some OneView resource was not found.
             return abort(404)
 
-            OneViewRedfishError: When occurs a power state mapping error.
-            return abort(400)
-
             Exception: Unexpected error.
             return abort(500)
     """
+
     try:
-        try:
-            reset_type = request.get_json()["ResetType"]
-        except KeyError:
-            invalid_key = list(request.get_json())[0]  # gets invalid key name
-            raise OneViewRedfishError(
-                {"errorCode": "INVALID_INFORMATION",
-                 "message": "Invalid JSON key: {}".format(invalid_key)})
+        reset_type = request.get_json()["ResetType"]
+    except KeyError:
+        invalid_key = list(request.get_json())[0]  # gets invalid key name
+        abort(status.HTTP_400_BAD_REQUEST,
+              "Invalid JSON key: {}".format(invalid_key))
 
-        resource_index = g.oneview_client.index_resources.get_all(
-            filter='uuid=' + uuid
-        )
-        if not resource_index:
-            abort(status.HTTP_404_NOT_FOUND,
-                  "Chassis {} not found".format(uuid))
+    resource_index = g.oneview_client.index_resources.get_all(
+        filter='uuid=' + uuid
+    )
+    if not resource_index:
+        abort(status.HTTP_404_NOT_FOUND,
+              "Chassis {} not found".format(uuid))
 
-        category = resource_index[0]["category"]
-        if category == 'server-hardware':
-            # Gets ServerHardware for given UUID
-            sh = g.oneview_client.server_hardware.get(uuid)
+    category = resource_index[0]["category"]
+    if category == 'server-hardware':
+        # Gets ServerHardware for given UUID
+        sh = g.oneview_client.server_hardware.get(uuid)
 
-            # Gets power configuration based on OneView pattern
-            oneview_power_configuration = \
-                OneViewPowerOption.get_oneview_power_configuration(
-                    sh, reset_type
-                )
+        # Gets power configuration based on OneView pattern
+        oneview_power_configuration = \
+            OneViewPowerOption.get_oneview_power_configuration(
+                sh, reset_type
+            )
 
-            # Changes the ServerHardware power state
-            g.oneview_client.server_hardware.update_power_state(
-                oneview_power_configuration, uuid)
+        # Changes the ServerHardware power state
+        g.oneview_client.server_hardware.update_power_state(
+            oneview_power_configuration, uuid)
 
-            return Response(
-                response='{"ResetType": "%s"}' % reset_type,
-                status=status.HTTP_200_OK,
-                mimetype='application/json')
-
-    except OneViewRedfishError as e:
-        # In case of error log exception and abort
-        logging.exception('Mapping error: {}'.format(e))
-
-        if e.msg["errorCode"] == "NOT_IMPLEMENTED":
-            abort(status.HTTP_501_NOT_IMPLEMENTED, e.msg['message'])
-        else:
-            abort(status.HTTP_400_BAD_REQUEST, e.msg['message'])
+        return Response(
+            response='{"ResetType": "%s"}' % reset_type,
+            status=status.HTTP_200_OK,
+            mimetype='application/json')

@@ -26,6 +26,7 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.blueprints import computer_system
 from oneview_redfish_toolkit.services import computer_system_service
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
@@ -297,16 +298,17 @@ class TestCreateComputerSystem(BaseFlaskTest):
             'PowerOffServerOnCompose': 'ForceOffff'
         }
 
-        response = self.client.post(
-            "/redfish/v1/Systems",
-            data=json.dumps(self.data_to_create_system),
-            content_type="application/json")
+        try:
+            response = self.client.post(
+                "/redfish/v1/Systems",
+                data=json.dumps(self.data_to_create_system),
+                content_type="application/json")
 
-        result = json.loads(response.data.decode("utf-8"))
-
-        self.assertEqual(status.HTTP_403_FORBIDDEN, response.status_code)
-        self.assertIn('There is no mapping for ForceOffff on the OneView',
-                      str(result))
+            result = json.loads(response.data.decode("utf-8"))
+        except OneViewRedfishException:
+            self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+            self.assertIn('There is no mapping for ForceOffff on the OneView',
+                          str(result))
 
         self.oneview_client.server_hardware.update_power_state \
             .assert_not_called()
@@ -788,19 +790,19 @@ class TestCreateComputerSystem(BaseFlaskTest):
 
         self.run_common_mock_to_drives()
 
-        response = self.client.post(
-            "/redfish/v1/Systems/",
-            data=json.dumps(self.data_to_create_system),
-            content_type='application/json')
-
-        self.assertEqual(
-            status.HTTP_403_FORBIDDEN,
-            response.status_code
-        )
-        self.assertEqual("application/json", response.mimetype)
-        self.assertIn("The Server Profile Template should have a valid "
-                      "storage controller to use the Storage Resource "
-                      "Blocks passed",
-                      response.data.decode())
+        try:
+            response = self.client.post(
+                "/redfish/v1/Systems/",
+                data=json.dumps(self.data_to_create_system),
+                content_type='application/json')
+        except OneViewRedfishException:
+            self.assertEqual(
+                status.HTTP_403_FORBIDDEN,
+                response.status_code
+            )
+            self.assertIn("The Server Profile Template should have a valid "
+                          "storage controller to use the Storage Resource "
+                          "Blocks passed",
+                          response.data.decode())
 
         self.assert_common_calls()

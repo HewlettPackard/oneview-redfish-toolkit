@@ -32,8 +32,5 @@ def get_session_service():
 
         Returns:
             JSON: JSON with SessionService.
-
-        Exceptions:
-            OneViewRedfishError: General error.
     """
     return ResponseBuilder.success(SessionService())

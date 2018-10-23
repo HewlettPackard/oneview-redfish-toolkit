@@ -15,12 +15,12 @@
 # under the License.
 
 # 3rd party libs
+from flask import abort
 from flask import Blueprint
 from flask import g
 
 # own libs
 from flask_api import status
-from werkzeug.exceptions import abort
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.storage import Storage
