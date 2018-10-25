@@ -23,37 +23,50 @@ from oneview_redfish_toolkit.tests.base_test import BaseTest
 class TestStorage(BaseTest):
     """Tests for Storage class"""
 
-    def setUp(self):
-        """Tests preparation"""
-
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/Storage.json'
-        ) as f:
-            self.storage_mockup = json.load(f)
-
+    def test_build_for_composed_system(self):
         with open(
             'oneview_redfish_toolkit/mockups/oneview/ServerProfile.json'
         ) as f:
-            self.server_profile = json.load(f)
+            server_profile = json.load(f)
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/ServerHardwareTypes.json'
         ) as f:
-            self.server_hardware_types = json.load(f)
+            server_hardware_types = json.load(f)
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
             'SASLogicalJBODListForStorage.json'
         ) as f:
-            self.sas_logical_jbods = json.load(f)
+            sas_logical_jbods = json.load(f)
 
-    def test_serialize(self):
-        # Tests the serialize function result against known result
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/Storage.json'
+        ) as f:
+            storage_mockup = json.load(f)
 
-        storage = Storage(self.server_profile,
-                          self.server_hardware_types,
-                          self.sas_logical_jbods)
+        storage = Storage.build_for_composed_system(server_profile,
+                                                    server_hardware_types,
+                                                    sas_logical_jbods)
 
         result = json.loads(storage.serialize())
 
-        self.assertEqualMockup(self.storage_mockup, result)
+        self.assertEqualMockup(storage_mockup, result)
+
+    def test_build_for_resource_block(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/Drive.json'
+        ) as f:
+            drive = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'StorageForResourceBlock.json'
+        ) as f:
+            expected_result = json.load(f)
+
+        storage = Storage.build_for_resource_blcok(drive)
+
+        result = json.loads(storage.serialize())
+
+        self.assertEqualMockup(expected_result, result)

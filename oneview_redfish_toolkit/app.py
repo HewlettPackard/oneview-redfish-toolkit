@@ -86,8 +86,8 @@ from oneview_redfish_toolkit.blueprints.session_service import session_service
 from oneview_redfish_toolkit.blueprints.storage import storage
 from oneview_redfish_toolkit.blueprints.storage_collection \
     import storage_collection
-from oneview_redfish_toolkit.blueprints.storage_composition_details import \
-    storage_composition_details
+from oneview_redfish_toolkit.blueprints.storage_for_resource_block import \
+    storage_for_resource_block
 from oneview_redfish_toolkit.blueprints.subscription\
     import subscription
 from oneview_redfish_toolkit.blueprints.subscription_collection \
@@ -165,7 +165,7 @@ def main(config_file_path, logging_config_file_path,
     app.register_blueprint(network_port)
     app.register_blueprint(processor)
     app.register_blueprint(processor_collection)
-    app.register_blueprint(storage_composition_details)
+    app.register_blueprint(storage_for_resource_block)
     app.register_blueprint(resource_block_collection)
     app.register_blueprint(resource_block)
     app.register_blueprint(vlan_network_interface)
