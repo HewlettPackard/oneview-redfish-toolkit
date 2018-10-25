@@ -19,11 +19,10 @@ from flask import Blueprint
 from flask import g
 from flask_api import status
 
+from oneview_redfish_toolkit.api.drive import Drive
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 from oneview_redfish_toolkit.api.storage_composition_details import \
     StorageCompositionDetails
-from oneview_redfish_toolkit.api.storage_drive_composition_details import \
-    StorageDriveCompositionDetails
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 
@@ -89,6 +88,6 @@ def get_storage_drive_details(resource_block_uuid, storage_id, drive_id):
 
     drive_encl_uri = drive["attributes"]["driveEnclosureUri"].split('/')[-1]
     drive_enclosure = g.oneview_client.drive_enclosures.get(drive_encl_uri)
-    result = StorageDriveCompositionDetails(drive, drive_enclosure)
+    result = Drive.build_for_resource_block(drive, drive_enclosure)
 
     return ResponseBuilder.success(result)

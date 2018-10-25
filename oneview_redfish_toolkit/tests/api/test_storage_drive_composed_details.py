@@ -16,13 +16,12 @@
 
 import json
 
-from oneview_redfish_toolkit.api.storage_drive_composed_details import \
-    StorageDriveComposedDetails
+from oneview_redfish_toolkit.api.drive import Drive
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-class TestStorageComposedDetails(BaseTest):
-    """Tests for TestStorageComposedDetails class"""
+class TestDrive(BaseTest):
+    """Tests for api/Drive class"""
 
     def setUp(self):
         """Tests preparation"""
@@ -43,16 +42,34 @@ class TestStorageComposedDetails(BaseTest):
         ) as f:
             self.sas_logical_jbods = json.load(f)
 
-    def test_serialize(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/DriveEnclosure.json'
+        ) as f:
+            self.drive_enclosure = json.load(f)
+
+    def test_build_for_computer_system(self):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Drive.json'
         ) as f:
             expected_result = json.load(f)
 
-        target = StorageDriveComposedDetails(4,
-                                             self.server_profile,
-                                             self.sas_logical_jbods[1])
+        target = Drive.build_for_computer_system(4,
+                                                 self.server_profile,
+                                                 self.sas_logical_jbods[1])
 
+        result = json.loads(target.serialize())
+
+        self.assertEqualMockup(expected_result, result)
+
+    def test_build_for_resource_block(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish'
+            '/DriveForResourceBlock.json'
+        ) as f:
+            expected_result = json.load(f)
+
+        target = Drive.build_for_resource_block(self.drive,
+                                                self.drive_enclosure)
         result = json.loads(target.serialize())
 
         self.assertEqualMockup(expected_result, result)

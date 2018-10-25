@@ -23,9 +23,8 @@ from flask import g
 from flask_api import status
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
+from oneview_redfish_toolkit.api.drive import Drive
 from oneview_redfish_toolkit.api.storage import Storage
-from oneview_redfish_toolkit.api.storage_drive_composed_details import \
-    StorageDriveComposedDetails
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 
@@ -96,9 +95,9 @@ def get_drive(profile_id, drive_id):
         abort(status.HTTP_404_NOT_FOUND, "Drive {} not found"
               .format(drive_id))
 
-    drive_details = StorageDriveComposedDetails(drive_id_int,
-                                                server_profile,
-                                                logical_jbod)
+    drive_details = Drive.build_for_computer_system(drive_id_int,
+                                                    server_profile,
+                                                    logical_jbod)
 
     return ResponseBuilder.success(drive_details)
 
