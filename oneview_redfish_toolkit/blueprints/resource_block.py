@@ -20,11 +20,10 @@ from flask import g
 from flask_api import status
 
 from hpOneView.exceptions import HPOneViewException
+from oneview_redfish_toolkit.api.ethernet_interface import EthernetInterface
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 from oneview_redfish_toolkit.api.resource_block_computer_system \
     import ResourceBlockComputerSystem
-from oneview_redfish_toolkit.api.resource_block_ethernet_interface \
-    import ResourceBlockEthernetInterface
 from oneview_redfish_toolkit.api.server_hardware_resource_block \
     import ServerHardwareResourceBlock
 from oneview_redfish_toolkit.api.server_profile_template_resource_block \
@@ -149,10 +148,9 @@ def get_resource_block_ethernet_interface(uuid, id):
     if not connection:
         abort(status.HTTP_404_NOT_FOUND, "Ethernet interface not found")
 
-    network = \
-        g.oneview_client.index_resources.get(connection["networkUri"])
+    network = g.oneview_client.index_resources.get(connection["networkUri"])
 
-    ethernet_interface = ResourceBlockEthernetInterface(
+    ethernet_interface = EthernetInterface.build_resource_block(
         server_profile_template, connection, network)
 
     return ResponseBuilder.success(

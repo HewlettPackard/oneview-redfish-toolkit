@@ -16,8 +16,7 @@
 
 import json
 
-from oneview_redfish_toolkit.api.resource_block_ethernet_interface \
-    import ResourceBlockEthernetInterface
+from oneview_redfish_toolkit.api.ethernet_interface import EthernetInterface
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
@@ -52,20 +51,9 @@ class TestResourceBlockEthernetInterface(BaseTest):
 
         self.connection_mockup = connection_settings["connections"][0]
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
-
-        ethernet_interface = ResourceBlockEthernetInterface(
-            self.spt_mockup,
-            self.connection_mockup,
-            self.ethernet_network_mockup)
-
-        self.assertIsInstance(
-            ethernet_interface, ResourceBlockEthernetInterface)
-
     def test_serialize(self):
         # Tests the serialize function result against known result
-        ethernet_interface = ResourceBlockEthernetInterface(
+        ethernet_interface = EthernetInterface.build_resource_block(
             self.spt_mockup,
             self.connection_mockup,
             self.ethernet_network_mockup)
