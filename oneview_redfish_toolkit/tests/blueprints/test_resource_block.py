@@ -514,7 +514,7 @@ class TestResourceBlock(BaseFlaskTest):
     def test_get_computer_system(self, get_map_appliances, get_map_resources):
         with open(
             'oneview_redfish_toolkit/mockups/redfish'
-            '/ResourceBlockComputerSystem.json'
+            '/ComputerSystemPhysicalType.json'
         ) as f:
             expected_computer_system = json.load(f)
 

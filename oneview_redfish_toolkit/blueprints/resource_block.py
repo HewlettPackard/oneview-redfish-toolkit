@@ -20,10 +20,10 @@ from flask import g
 from flask_api import status
 
 from hpOneView.exceptions import HPOneViewException
+
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.ethernet_interface import EthernetInterface
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
-from oneview_redfish_toolkit.api.resource_block_computer_system \
-    import ResourceBlockComputerSystem
 from oneview_redfish_toolkit.api.server_hardware_resource_block \
     import ServerHardwareResourceBlock
 from oneview_redfish_toolkit.api.server_profile_template_resource_block \
@@ -111,7 +111,7 @@ def get_resource_block_computer_system(uuid):
     server_hardware = g.oneview_client.server_hardware.get(uuid)
     manager_uuid = get_manager_uuid(uuid)
 
-    computer_system = ResourceBlockComputerSystem(
+    computer_system = ComputerSystem.build_physical_system(
         server_hardware, manager_uuid)
 
     return ResponseBuilder.success(

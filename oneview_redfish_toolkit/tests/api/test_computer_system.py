@@ -65,10 +65,9 @@ class TestComputerSystem(BaseTest):
 
         self.manager_uuid = "b08eb206-a904-46cf-9172-dcdff2fa9639"
 
-    def test_serialize(self):
-        # Tests the serialize function result against known result
+    def test_build_composed_system(self):
         spt_uuid = "61c3a463-1355-4c68-a4e3-4f08c322af1b"
-        computer_system = ComputerSystem(
+        computer_system = ComputerSystem.build_composed_system(
             self.server_hardware,
             self.server_hardware_types,
             self.server_profile,
@@ -80,3 +79,17 @@ class TestComputerSystem(BaseTest):
         result = json.loads(computer_system.serialize())
 
         self.assertEqualMockup(self.computer_system_mockup, result)
+
+    def test_build_physical_system(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish'
+            '/ComputerSystemPhysicalType.json'
+        ) as f:
+            computer_system_mockup = json.load(f)
+
+        computer_system = ComputerSystem.build_physical_system(
+            self.server_hardware, self.manager_uuid
+        )
+        result = json.loads(computer_system.serialize())
+
+        self.assertEqualMockup(computer_system_mockup, result)

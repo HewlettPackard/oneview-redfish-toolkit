@@ -33,104 +33,28 @@ from oneview_redfish_toolkit.services.computer_system_service import \
 class ComputerSystem(RedfishJsonValidator):
     """Creates a Computer System Redfish dict
 
-        Populates self.redfish with ComputerSystem data retrieved from oneview
+        Populates self.redfish with some predefined Computer System
+        contents and with data retrieved from OneView
     """
 
     SCHEMA_NAME = 'ComputerSystem'
     BASE_URI = '/redfish/v1/Systems'
+    METADATA_INFO = "/redfish/v1/$metadata#ComputerSystem.ComputerSystem"
 
-    def __init__(self, server_hardware, server_hardware_types,
-                 server_profile, drives, server_profile_template_uuid,
-                 manager_uuid):
+    def __init__(self, data):
         """ComputerSystem constructor
 
-            Populates self.redfish with the contents of ServerHardware and
-            ServerHardwareTypes dicts.
+            Populates self.redfish and validates it
 
             Args:
-                server_hardware: ServerHardware dict from OneView
-                server_hardware_types: ServerHardwareTypes dict from OneView
-                server_profile: ServerProfile dict from OneView.
-                drives: Drives list from OneView
-                server_profile_template_uuid: ServerProfileTemplate uuid
-                manager_uuid: Oneview's current manager uuid
+                data: a dict with Redfish's Computer System data
         """
         super().__init__(self.SCHEMA_NAME)
 
-        base_resource = server_profile
+        self.redfish.update(data)
+
         self.redfish["@odata.type"] = self.get_odata_type()
-        self.redfish["Id"] = base_resource["uuid"]
-        self.redfish["Description"] = base_resource["description"]
-        self.redfish["Name"] = base_resource["name"]
-        self.redfish["SystemType"] = "Composed"
-        self.redfish["Manufacturer"] = "HPE"
-        self.redfish["Model"] = server_hardware["model"]
-        self.redfish["SerialNumber"] = server_hardware["serialNumber"]
-        self.redfish["Status"] = collections.OrderedDict()
-        health = self._get_highest_status_for_sp_and_sh(
-            status_mapping.HEALTH_STATE.get(base_resource["status"]),
-            status_mapping.HEALTH_STATE.get(server_hardware["status"])
-        )
-        state, _ = status_mapping.\
-            get_redfish_server_profile_state(base_resource)
-        self.redfish["Status"]["State"] = state
-        self.redfish["Status"]["Health"] = health
-        self.redfish["PowerState"] = server_hardware["powerState"]
-        self.redfish["Boot"] = collections.OrderedDict()
-        self.redfish["Boot"]["BootSourceOverrideTarget@Redfish."
-                             "AllowableValues"] = \
-            self.map_boot(server_hardware_types['bootCapabilities'])
-        self.redfish["BiosVersion"] = server_hardware["romVersion"]
-        self.redfish["ProcessorSummary"] = collections.OrderedDict()
-        self.redfish["ProcessorSummary"]['Count'] = \
-            server_hardware["processorCount"]
-        self.redfish["ProcessorSummary"]["Model"] = \
-            server_hardware["processorType"]
-        self.redfish["MemorySummary"] = collections.OrderedDict()
-        self.redfish["MemorySummary"]["TotalSystemMemoryGiB"] = \
-            server_hardware["memoryMb"] / 1024
-        self.redfish["Storage"] = collections.OrderedDict()
-        self.redfish["Storage"]["@odata.id"] = \
-            self.BASE_URI + "/" + base_resource['uuid'] + "/Storage"
-        self.redfish["EthernetInterfaces"] = collections.OrderedDict()
-        self.redfish["EthernetInterfaces"]["@odata.id"] = \
-            self.BASE_URI + "/" + \
-            base_resource['uuid'] + \
-            "/EthernetInterfaces"
-        self.redfish["NetworkInterfaces"] = collections.OrderedDict()
-        self.redfish["NetworkInterfaces"]["@odata.id"] = \
-            self.BASE_URI + "/" + \
-            base_resource['uuid'] + \
-            "/NetworkInterfaces"
-        self.redfish["Links"] = collections.OrderedDict()
-        self.redfish["Links"]["Chassis"] = list()
-        self.redfish["Links"]["Chassis"].append(collections.OrderedDict())
-        self.redfish["Links"]["Chassis"][0]["@odata.id"] = \
-            "/redfish/v1/Chassis/" + server_hardware['uuid']
-        self.redfish["Links"]["ManagedBy"] = list()
-        if manager_uuid:
-            self.redfish["Links"]["ManagedBy"].append(
-                collections.OrderedDict())
-            self.redfish["Links"]["ManagedBy"][0]["@odata.id"] = \
-                "/redfish/v1/Managers/" + manager_uuid
-        self.redfish["Links"]["ResourceBlocks"] = list()
-        self._fill_resource_block_members(drives,
-                                          server_hardware,
-                                          server_profile_template_uuid)
-        self.redfish["Actions"] = collections.OrderedDict()
-        self.redfish["Actions"]["#ComputerSystem.Reset"] = \
-            collections.OrderedDict()
-        self.redfish["Actions"]["#ComputerSystem.Reset"]["target"] = \
-            self.BASE_URI + "/" + \
-            base_resource["uuid"] + \
-            "/Actions/ComputerSystem.Reset"
-        self.redfish["Actions"]["#ComputerSystem.Reset"][
-            "ResetType@Redfish.AllowableValues"] = \
-            RESET_ALLOWABLE_VALUES_LIST
-        self.redfish["@odata.context"] = \
-            "/redfish/v1/$metadata#ComputerSystem.ComputerSystem"
-        self.redfish["@odata.id"] = self.BASE_URI + "/" \
-            + base_resource["uuid"]
+        self.redfish["@odata.context"] = self.__class__.METADATA_INFO
 
         self._validate()
 
@@ -146,7 +70,8 @@ class ComputerSystem(RedfishJsonValidator):
 
         return highest_status
 
-    def map_boot(self, boot_list):
+    @staticmethod
+    def _map_boot(boot_list):
         """Maps Oneview's boot options to Redfish's boot option
 
             Maps the known OneView boot options to Redfish boot option.
@@ -176,6 +101,157 @@ class ComputerSystem(RedfishJsonValidator):
             redfish_boot_list.append('None')
 
         return redfish_boot_list
+
+    @staticmethod
+    def build_composed_system(server_hardware, server_hardware_types,
+                              server_profile, drives,
+                              server_profile_template_uuid, manager_uuid):
+        """Builds and returns a Composed ComputerSystem
+
+            Args:
+                server_hardware: ServerHardware dict from OneView
+                server_hardware_types: ServerHardwareTypes dict from OneView
+                server_profile: ServerProfile dict from OneView.
+                drives: Drives list from OneView
+                server_profile_template_uuid: ServerProfileTemplate uuid
+                manager_uuid: Oneview's current manager uuid
+        """
+        attrs = {}
+
+        base_resource = server_profile
+        attrs["Id"] = base_resource["uuid"]
+        attrs["Description"] = base_resource["description"]
+        attrs["Name"] = base_resource["name"]
+        attrs["SystemType"] = "Composed"
+        attrs["Manufacturer"] = "HPE"
+        attrs["Model"] = server_hardware["model"]
+        attrs["SerialNumber"] = server_hardware["serialNumber"]
+        attrs["Status"] = collections.OrderedDict()
+        health = ComputerSystem._get_highest_status_for_sp_and_sh(
+            status_mapping.HEALTH_STATE.get(base_resource["status"]),
+            status_mapping.HEALTH_STATE.get(server_hardware["status"])
+        )
+        state, _ = status_mapping. \
+            get_redfish_server_profile_state(base_resource)
+        attrs["Status"]["State"] = state
+        attrs["Status"]["Health"] = health
+        attrs["PowerState"] = server_hardware["powerState"]
+        attrs["Boot"] = collections.OrderedDict()
+        attrs["Boot"]["BootSourceOverrideTarget@Redfish.AllowableValues"] = \
+            ComputerSystem._map_boot(server_hardware_types['bootCapabilities'])
+        attrs["BiosVersion"] = server_hardware["romVersion"]
+        attrs["ProcessorSummary"] = collections.OrderedDict()
+        attrs["ProcessorSummary"]['Count'] = \
+            server_hardware["processorCount"]
+        attrs["ProcessorSummary"]["Model"] = \
+            server_hardware["processorType"]
+        attrs["MemorySummary"] = collections.OrderedDict()
+        attrs["MemorySummary"]["TotalSystemMemoryGiB"] = \
+            server_hardware["memoryMb"] / 1024
+        attrs["Storage"] = collections.OrderedDict()
+        attrs["Storage"]["@odata.id"] = \
+            ComputerSystem.BASE_URI + "/" + base_resource['uuid'] + "/Storage"
+        attrs["EthernetInterfaces"] = collections.OrderedDict()
+        attrs["EthernetInterfaces"]["@odata.id"] = \
+            ComputerSystem.BASE_URI + "/" + \
+            base_resource['uuid'] + \
+            "/EthernetInterfaces"
+        attrs["NetworkInterfaces"] = collections.OrderedDict()
+        attrs["NetworkInterfaces"]["@odata.id"] = \
+            ComputerSystem.BASE_URI + "/" + \
+            base_resource['uuid'] + \
+            "/NetworkInterfaces"
+        attrs["Links"] = collections.OrderedDict()
+        attrs["Links"]["Chassis"] = list()
+        attrs["Links"]["Chassis"].append(collections.OrderedDict())
+        attrs["Links"]["Chassis"][0]["@odata.id"] = \
+            "/redfish/v1/Chassis/" + server_hardware['uuid']
+        attrs["Links"]["ManagedBy"] = list()
+
+        if manager_uuid:
+            attrs["Links"]["ManagedBy"].append(
+                collections.OrderedDict())
+            attrs["Links"]["ManagedBy"][0]["@odata.id"] = \
+                "/redfish/v1/Managers/" + manager_uuid
+
+        attrs["Links"]["ResourceBlocks"] = ComputerSystem.\
+            _build_resource_block_members(drives,
+                                          server_hardware,
+                                          server_profile_template_uuid)
+        attrs["Actions"] = collections.OrderedDict()
+        attrs["Actions"]["#ComputerSystem.Reset"] = \
+            collections.OrderedDict()
+        attrs["Actions"]["#ComputerSystem.Reset"]["target"] = \
+            ComputerSystem.BASE_URI + "/" + \
+            base_resource["uuid"] + \
+            "/Actions/ComputerSystem.Reset"
+        attrs["Actions"]["#ComputerSystem.Reset"][
+            "ResetType@Redfish.AllowableValues"] = \
+            RESET_ALLOWABLE_VALUES_LIST
+        attrs["@odata.id"] = ComputerSystem.BASE_URI + "/" \
+            + base_resource["uuid"]
+
+        return ComputerSystem(attrs)
+
+    @staticmethod
+    def build_physical_system(server_hardware, manager_uuid):
+        """Builds and returns a Physical ComputerSystem
+
+            Args:
+                server_hardware: server hardware dict from OneView
+                manager_uuid: Oneview's current manager
+        """
+
+        attrs = {}
+        server_hardware = server_hardware
+
+        attrs["Id"] = server_hardware["uuid"]
+        attrs["Name"] = server_hardware["name"]
+        attrs["SystemType"] = "Physical"
+        attrs["Manufacturer"] = "HPE"
+        attrs["Model"] = server_hardware["model"]
+        attrs["SerialNumber"] = server_hardware["serialNumber"]
+        attrs["Status"] = collections.OrderedDict()
+        state, health = status_mapping. \
+            get_redfish_server_hardware_status_struct(server_hardware)
+        attrs["Status"]["State"] = state
+        attrs["Status"]["Health"] = health
+        attrs["PowerState"] = server_hardware["powerState"]
+        attrs["BiosVersion"] = server_hardware["romVersion"]
+
+        attrs["ProcessorSummary"] = collections.OrderedDict()
+        attrs["ProcessorSummary"]['Count'] = \
+            server_hardware["processorCount"]
+        attrs["ProcessorSummary"]["Model"] = \
+            server_hardware["processorType"]
+        attrs["Processors"] = dict()
+        attrs["Processors"]["@odata.id"] = \
+            ResourceBlockCollection.BASE_URI + "/" \
+            + server_hardware["uuid"] + "/Systems/1/Processors"
+
+        attrs["MemorySummary"] = collections.OrderedDict()
+        attrs["MemorySummary"]["TotalSystemMemoryGiB"] = \
+            server_hardware["memoryMb"] / 1024
+
+        attrs["Links"] = {
+            "Chassis": [{
+                "@odata.id": "/redfish/v1/Chassis/{}"
+                             .format(server_hardware["uuid"])
+            }],
+            "ManagedBy": []
+        }
+
+        if manager_uuid:
+            attrs["Links"]["ManagedBy"].append({
+                "@odata.id": "/redfish/v1/Managers/" + manager_uuid
+            })
+
+        attrs["@odata.id"] = \
+            ResourceBlockCollection.BASE_URI + "/" \
+            + server_hardware["uuid"] \
+            + "/Systems/1"
+
+        return ComputerSystem(attrs)
 
     @staticmethod
     def build_server_profile(profile_name,
@@ -243,22 +319,25 @@ class ComputerSystem(RedfishJsonValidator):
 
         return sas_logical_jbods
 
-    def _fill_resource_block_members(self,
-                                     drives,
-                                     server_hardware,
-                                     server_profile_template_uuid):
+    @staticmethod
+    def _build_resource_block_members(drives,
+                                      server_hardware,
+                                      server_profile_template_uuid):
         resource_block_uuids = \
-            self._get_resource_block_uuids(drives,
-                                           server_hardware,
-                                           server_profile_template_uuid)
+            ComputerSystem._get_resource_block_uuids(
+                drives,
+                server_hardware,
+                server_profile_template_uuid)
 
         base_uri = ResourceBlockCollection.BASE_URI + "/{}"
-        blocks = self.redfish["Links"]["ResourceBlocks"]
+        blocks = []
         for resource_block_uuid in resource_block_uuids:
             blocks.append({"@odata.id": base_uri.format(resource_block_uuid)})
 
-    def _get_resource_block_uuids(self,
-                                  drives,
+        return blocks
+
+    @staticmethod
+    def _get_resource_block_uuids(drives,
                                   server_hardware,
                                   server_profile_template_uuid):
         resource_block_uuids = list()
