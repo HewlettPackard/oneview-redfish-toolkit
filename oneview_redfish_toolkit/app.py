@@ -29,7 +29,6 @@ from flask import abort
 from flask import Flask
 from flask import g
 from flask import request
-from flask import Response
 from flask_api import status
 
 # own libs
@@ -37,7 +36,6 @@ from hpOneView import HPOneViewException
 from paste.translogger import TransLogger
 
 from oneview_redfish_toolkit.api.errors import OneViewRedfishException
-from oneview_redfish_toolkit.api.redfish_error import RedfishError
 from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.api.session_collection import SessionCollection
 from oneview_redfish_toolkit.blueprints.chassis import chassis
@@ -248,17 +246,7 @@ def main(config_file_path, logging_config_file_path,
         """Creates a Bad Request Error response"""
         logging.error(error.description)
 
-        redfish_error = RedfishError(
-            "PropertyValueNotInList", error.description)
-
-        # TODO(karolcatunda) Improve args passed to add_extended_info method
-        # redfish_error.add_extended_info()
-
-        error_str = redfish_error.serialize()
-        return Response(
-            response=error_str,
-            status=status.HTTP_400_BAD_REQUEST,
-            mimetype='application/json')
+        return ResponseBuilder.error_400(error)
 
     @app.errorhandler(status.HTTP_401_UNAUTHORIZED)
     def unauthorized_error(error):

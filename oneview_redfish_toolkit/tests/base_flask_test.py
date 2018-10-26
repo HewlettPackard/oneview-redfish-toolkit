@@ -18,7 +18,6 @@ import logging
 from flask import Flask
 from flask import g
 from flask import request
-from flask import Response
 from flask_api import status
 from unittest import mock
 
@@ -78,13 +77,9 @@ class BaseFlaskTest(BaseTest):
         @cls.app.errorhandler(status.HTTP_404_NOT_FOUND)
         def not_found(error):
             """Creates a Not Found Error response"""
-            redfish_error = RedfishError(
-                "GeneralError", error.description)
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_404_NOT_FOUND,
-                mimetype='application/json')
+            logging.error(error.description)
+
+            return ResponseBuilder.error_404(error)
 
         @cls.app.errorhandler(status.HTTP_400_BAD_REQUEST)
         def bad_request(error):
@@ -92,16 +87,8 @@ class BaseFlaskTest(BaseTest):
             redfish_error = RedfishError(
                 "PropertyValueNotInList", error.description)
 
-            redfish_error.add_extended_info(
-                message_id="PropertyValueNotInList",
-                message_args=["VALUE", "PROPERTY"],
-                related_properties=["PROPERTY"])
-
-            error_str = redfish_error.serialize()
-            return Response(
-                response=error_str,
-                status=status.HTTP_400_BAD_REQUEST,
-                mimetype='application/json')
+            return ResponseBuilder.response(redfish_error,
+                                            status.HTTP_400_BAD_REQUEST)
 
         @cls.app.errorhandler(HPOneViewException)
         def hp_oneview_client_exception(exception):

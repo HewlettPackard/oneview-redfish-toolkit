@@ -670,7 +670,7 @@ class TestChassis(BaseFlaskTest):
                 data=json.dumps(dict(ResetType="ForceOn")),
                 content_type='application/json')
         except OneViewRedfishException:
-            self.assertEqual(status.HTTP_501_NOT_IMPLEMENTED,
+            self.assertEqual(status.HTTP_400_BAD_REQUEST,
                              response.status_code)
 
     def test_change_power_state_unexpected_error(self):
