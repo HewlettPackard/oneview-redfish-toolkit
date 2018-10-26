@@ -21,18 +21,16 @@ from flask_api import status
 
 from oneview_redfish_toolkit.api.drive import Drive
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
-from oneview_redfish_toolkit.api.storage_composition_details import \
-    StorageCompositionDetails
+from oneview_redfish_toolkit.api.storage import Storage
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 
-storage_composition_details = Blueprint("storage_composition_details",
-                                        __name__)
+storage_for_resource_block = Blueprint("storage_for_resource_block", __name__)
 
 FROZEN_ID = "1"
 
 
-@storage_composition_details.route(
+@storage_for_resource_block.route(
     ResourceBlock.BASE_URI +
     "/<resource_block_uuid>/Storage/<storage_id>", methods=["GET"])
 def get_storage_details(resource_block_uuid, storage_id):
@@ -53,12 +51,12 @@ def get_storage_details(resource_block_uuid, storage_id):
 
     drive = g.oneview_client.index_resources.get(
         '/rest/drives/' + resource_block_uuid)
-    result = StorageCompositionDetails(drive)
+    result = Storage.build_for_resource_block(drive)
 
     return ResponseBuilder.success(result)
 
 
-@storage_composition_details.route(
+@storage_for_resource_block.route(
     ResourceBlock.BASE_URI +
     "/<resource_block_uuid>/Storage/<storage_id>/Drives/<drive_id>",
     methods=["GET"])

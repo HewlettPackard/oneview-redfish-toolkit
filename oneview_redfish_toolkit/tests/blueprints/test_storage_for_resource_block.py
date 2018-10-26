@@ -18,7 +18,7 @@ import json
 
 from flask_api import status
 
-from oneview_redfish_toolkit.blueprints import storage_composition_details
+from oneview_redfish_toolkit.blueprints import storage_for_resource_block
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
 
@@ -30,7 +30,7 @@ class TestStorageCompositionDetails(BaseFlaskTest):
         super(TestStorageCompositionDetails, self).setUpClass()
 
         self.app.register_blueprint(
-            storage_composition_details.storage_composition_details)
+            storage_for_resource_block.storage_for_resource_block)
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/Drive.json'
@@ -42,7 +42,7 @@ class TestStorageCompositionDetails(BaseFlaskTest):
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
-            'StorageCompositionDetails.json'
+            'StorageForResourceBlock.json'
         ) as f:
             expected_storage_details = json.load(f)
 

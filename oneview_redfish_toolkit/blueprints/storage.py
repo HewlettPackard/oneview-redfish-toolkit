@@ -54,7 +54,9 @@ def get_storage(uuid):
         g.oneview_client.server_hardware_types.get(sht_uri)
     sas_logical_jbods = _find_sas_logical_jbods_by(server_profile)
 
-    st = Storage(server_profile, server_hardware_type, sas_logical_jbods)
+    st = Storage.build_for_composed_system(server_profile,
+                                           server_hardware_type,
+                                           sas_logical_jbods)
 
     return ResponseBuilder.success(st)
 
