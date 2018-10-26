@@ -65,7 +65,7 @@ class TestStorage(BaseTest):
         ) as f:
             expected_result = json.load(f)
 
-        storage = Storage.build_for_resource_blcok(drive)
+        storage = Storage.build_for_resource_block(drive)
 
         result = json.loads(storage.serialize())
 

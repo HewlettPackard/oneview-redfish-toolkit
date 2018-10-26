@@ -132,8 +132,8 @@ class Storage(RedfishJsonValidator):
         return Storage(attrs)
 
     @staticmethod
-    def build_for_resource_blcok(drive):
-        """Returns a Storage with the contents of devices from anOneview's Drive
+    def build_for_resource_block(drive):
+        """Returns a Storage with the contents of devices from an Oneview's Drive
 
             Args:
                 drive: Oneview's Drive dict

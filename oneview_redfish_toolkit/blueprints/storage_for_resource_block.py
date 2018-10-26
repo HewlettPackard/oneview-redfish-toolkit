@@ -51,7 +51,7 @@ def get_storage_details(resource_block_uuid, storage_id):
 
     drive = g.oneview_client.index_resources.get(
         '/rest/drives/' + resource_block_uuid)
-    result = Storage.build_for_resource_blcok(drive)
+    result = Storage.build_for_resource_block(drive)
 
     return ResponseBuilder.success(result)
 
