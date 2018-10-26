@@ -80,12 +80,13 @@ def get_computer_system(uuid):
         manager_uuid = get_manager_uuid(resource['serverHardwareTypeUri'])
 
         # Build Computer System object and validates it
-        computer_system_resource = ComputerSystem(server_hardware,
-                                                  server_hardware_type,
-                                                  resource,
-                                                  drives,
-                                                  spt_uuid,
-                                                  manager_uuid)
+        computer_system_resource = ComputerSystem.build_composed_system(
+            server_hardware,
+            server_hardware_type,
+            resource,
+            drives,
+            spt_uuid,
+            manager_uuid)
     else:
         abort(status.HTTP_404_NOT_FOUND,
               'Computer System UUID {} not found'.format(uuid))
