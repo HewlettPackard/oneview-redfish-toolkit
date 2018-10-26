@@ -246,9 +246,6 @@ def main(config_file_path, logging_config_file_path,
         """Creates a Bad Request Error response"""
         logging.error(error.description)
 
-        # TODO(karolcatunda) Improve args passed to add_extended_info method
-        # redfish_error.add_extended_info()
-
         return ResponseBuilder.error_400(error)
 
     @app.errorhandler(status.HTTP_401_UNAUTHORIZED)
