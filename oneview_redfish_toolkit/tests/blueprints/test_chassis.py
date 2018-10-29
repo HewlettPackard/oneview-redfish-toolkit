@@ -143,6 +143,48 @@ class TestChassis(BaseFlaskTest):
             "{}{}".format("W/", self.enclosure["eTag"]),
             response.headers["ETag"])
 
+    @mock.patch.object(multiple_oneview, 'get_map_resources')
+    @mock.patch.object(multiple_oneview, 'get_map_appliances')
+    def test_get_enclosure_chassis_when_enclosure_do_not_belong_to_rack(
+            self,
+            get_map_appliances,
+            get_map_resources):
+        """"Tests EnclosureChassis when a Enclosure do not belong to a Rack"""
+
+        encl_env_config_mockup = copy.deepcopy(
+            self.enclosure_environment_configuration_mockup)
+        encl_env_config_mockup['rackId'] = None
+
+        encl_mockup = copy.deepcopy(self.enclosure_chassis_mockup)
+        del encl_mockup['Links']['ContainedBy']
+
+        get_map_resources.return_value = OrderedDict({
+            "0000000000A66101": "10.0.0.1",
+        })
+        get_map_appliances.return_value = self.map_appliance
+        self.oneview_client.index_resources.get_all.return_value = \
+            [{"category": "enclosures"}]
+        self.oneview_client.enclosures.get.return_value = self.enclosure
+        self.oneview_client.enclosures.get_environmental_configuration. \
+            return_value = encl_env_config_mockup
+        self.oneview_client.appliance_node_information.get_version.return_value = \
+            self.appliance_info
+
+        # Get EnclosureChassis
+        response = self.client.get(
+            "/redfish/v1/Chassis/0000000000A66101"
+        )
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        # Tests response
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(encl_mockup, result)
+        self.assertEqual(
+            "{}{}".format("W/", self.enclosure["eTag"]),
+            response.headers["ETag"])
+
     @mock.patch.object(multiple_oneview, 'config')
     @mock.patch.object(multiple_oneview, 'get_map_resources')
     @mock.patch.object(multiple_oneview, 'get_map_appliances')

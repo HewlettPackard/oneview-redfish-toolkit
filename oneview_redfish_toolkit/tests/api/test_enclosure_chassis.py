@@ -13,7 +13,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
+import copy
 import json
 
 from oneview_redfish_toolkit.api.enclosure_chassis import EnclosureChassis
@@ -47,36 +47,32 @@ class TestEnclosureChassis(BaseTest):
 
         self.manager_uuid = "b08eb206-a904-46cf-9172-dcdff2fa9639"
 
-    def test_class_instantiation(self):
-        # Tests if class is correctly instantiated and validated
-
-        try:
-            enclosure_chassis = EnclosureChassis(
-                self.enclosure,
-                self.environment_config,
-                self.manager_uuid
-            )
-        except Exception as e:
-            self.fail("Failed to instantiate Chassis class."
-                      " Error: {}".format(e))
-        self.assertIsInstance(enclosure_chassis, EnclosureChassis)
-
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            enclosure_chassis = EnclosureChassis(
-                self.enclosure,
-                self.environment_config,
-                self.manager_uuid
-            )
-        except Exception as e:
-            self.fail("Failed to instantiate Chassis class."
-                      " Error: {}".format(e))
+        enclosure_chassis = EnclosureChassis(
+            self.enclosure,
+            self.environment_config,
+            self.manager_uuid
+        )
 
-        try:
-            result = json.loads(enclosure_chassis.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(enclosure_chassis.serialize())
 
         self.assertEqualMockup(self.enclosure_mockup, result)
+
+    def test_serialize_without_rack(self):
+        env_config = copy.deepcopy(self.environment_config)
+        env_config['rackId'] = None
+
+        encl_mockup = copy.deepcopy(self.enclosure_mockup)
+        del encl_mockup['Links']['ContainedBy']
+
+        enclosure_chassis = EnclosureChassis(
+            self.enclosure,
+            env_config,
+            self.manager_uuid
+        )
+
+        result = json.loads(enclosure_chassis.serialize())
+
+        self.assertEqualMockup(encl_mockup, result)
