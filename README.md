@@ -33,6 +33,19 @@ A full list of dependencies is available at [requirements.txt](requirements.txt)
 $ pip install oneview-redfish-toolkit
 ```
 
+## Offline Installation
+### Obtaining Oneview Redfish Toolkit and dependencies
+You can download offline installer at [Releases page](https://github.com/HewlettPackard/oneview-redfish-toolkit/releases).
+Or you can download the toolkit from PyPI running this command:
+```bash
+$ pip download oneview-redfish-toolkit
+```
+### Installation
+Run pip install where the files are placed:
+```bash
+$ pip install <oneview-redfish-toolkit-installer-0.3.1>/*
+```
+
 ## Running the application
 
 The first time the application is run, it will create all the needed configuration files under user's home directory. It will also prompt for the OneView IP that you wish to connect to the redfish toolkit. This can either be a single IP address, or a comma seperated list of IP addresses.  The configuration is persisted in the  `redfish.conf`.
