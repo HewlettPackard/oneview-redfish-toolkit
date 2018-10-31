@@ -36,9 +36,10 @@ def get_computer_system_collection():
         Returns:
                 JSON: JSON with ComputerSystemCollection.
     """
-    server_hardware_list = g.oneview_client.server_hardware.get_all(
-        filter="NOT 'serverProfileUri' = NULL"
-    )
+
+    server_profile_list = g.oneview_client.server_profiles.get_all()
+    server_profile_list = list(filter(lambda i: i.get('serverHardwareUri'),
+                                      server_profile_list))
 
     server_profile_tmpls = \
         g.oneview_client.server_profile_templates.get_all()
@@ -46,7 +47,7 @@ def get_computer_system_collection():
     zone_service = ZoneService(g.oneview_client)
     zone_ids = zone_service.get_zone_ids_by_templates(server_profile_tmpls)
 
-    csc = ComputerSystemCollection(server_hardware_list,
+    csc = ComputerSystemCollection(server_profile_list,
                                    server_profile_tmpls,
                                    zone_ids)
 

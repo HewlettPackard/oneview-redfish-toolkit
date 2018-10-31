@@ -35,7 +35,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
     def test_get_computer_system_collection_empty(self):
         """Tests ComputerSystemCollection with an empty list"""
 
-        self.oneview_client.server_hardware.get_all.return_value = []
+        self.oneview_client.server_profiles.get_all.return_value = []
         self.oneview_client.server_profile_templates.get_all.return_value = []
 
         response = self.client.get("/redfish/v1/Systems/")
@@ -45,7 +45,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
-            'ServerProfilesAppliedCollectionEmpty.json'
+            'ComputerSystemCollectionEmpty.json'
         ) as f:
             expected_result = json.load(f)
 
@@ -56,7 +56,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
     def test_get_computer_system_collection_fail(self):
         """Tests ComputerSystemCollection with an error"""
 
-        self.oneview_client.server_hardware.get_all.side_effect = \
+        self.oneview_client.server_profiles.get_all.side_effect = \
             Exception("An exception has occurred")
 
         with open(
@@ -81,9 +81,10 @@ class TestComputerSystemCollection(BaseFlaskTest):
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
-                'ServerHardwareListWithServerProfileApplied.json'
+                'ServerProfileList.json'
         ) as f:
-            server_hardware_list = json.load(f)
+            # all server profiles, including the one invalid
+            server_profile_list = json.load(f)
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
@@ -107,8 +108,8 @@ class TestComputerSystemCollection(BaseFlaskTest):
                 'DriveEnclosureList.json'
         ) as f:
             drive_enclosure = json.load(f)
-        self.oneview_client.server_hardware.get_all.return_value = \
-            server_hardware_list
+        self.oneview_client.server_profiles.get_all.return_value = \
+            server_profile_list
 
         self.oneview_client.server_profile_templates.get_all.return_value = \
             server_profile_template_list
@@ -126,8 +127,7 @@ class TestComputerSystemCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(computer_system_collection_mockup, result)
 
-        self.oneview_client.server_hardware.get_all.assert_called_with(
-            filter="NOT 'serverProfileUri' = NULL")
+        self.oneview_client.server_profiles.get_all.assert_called_with()
         self.oneview_client.\
             server_profile_templates.get_all.assert_called_with()
 
