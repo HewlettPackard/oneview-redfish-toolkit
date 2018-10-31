@@ -34,9 +34,9 @@ class TestComputerSystemCollection(BaseTest):
         # Loading ServerHardware list mockup value
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
-            'ServerHardwareListWithServerProfileApplied.json'
+            'ServerProfileList.json'
         ) as f:
-            self.server_hardware_list = json.load(f)
+            self.server_profile_list = json.load(f)[0:2]  # only valid profiles
 
         # Loading ComputerSystemCollection result mockup
         with open(
@@ -62,7 +62,7 @@ class TestComputerSystemCollection(BaseTest):
         ]
 
         computer_system_collection = ComputerSystemCollection(
-            self.server_hardware_list,
+            self.server_profile_list,
             self.server_profile_template_list,
             zone_ids
         )
