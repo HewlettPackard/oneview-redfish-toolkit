@@ -25,11 +25,13 @@ from oneview_redfish_toolkit.config import \
     COUNTER_LOGGER_NAME
 from oneview_redfish_toolkit.services import logging_service
 from oneview_redfish_toolkit.services.zone_service import ZoneService
+from oneview_redfish_toolkit.single_oneview_context import single_oneview
 
 zone = Blueprint("zone", __name__)
 
 
 @zone.route(ZoneCollection.BASE_URI + "/<zone_uuid>", methods=["GET"])
+@single_oneview
 def get_zone(zone_uuid):
     """Get the Redfish Zone.
 
