@@ -145,11 +145,11 @@ class TestChassis(BaseFlaskTest):
 
     @mock.patch.object(multiple_oneview, 'get_map_resources')
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
-    def test_get_enclosure_chassis_when_enclosure_do_not_belong_to_rack(
+    def test_get_enclosure_chassis_when_enclosure_does_not_belong_to_rack(
             self,
             get_map_appliances,
             get_map_resources):
-        """"Tests EnclosureChassis when a Enclosure do not belong to a Rack"""
+        """"Tests EnclosureChassis when a Enclosure doesn't belong to a Rack"""
 
         encl_env_config_mockup = copy.deepcopy(
             self.enclosure_environment_configuration_mockup)
