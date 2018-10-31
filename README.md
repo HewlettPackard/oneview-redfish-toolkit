@@ -77,7 +77,7 @@ The toolkit configuration resides on `redfish.conf` file. All required propertie
 You can check all properties listed below:
 
 * `redfish` section
-
+  * **indent_json**: whether JSON objects on answers are indented or not
   * **xml_prettify**: whether XML objects on answers are indented or not
 
   * **redfish_host**: the IP address where redfish service will listen to. Using `host = 0.0.0.0` means it will listen to all IP addresses.
@@ -88,7 +88,11 @@ You can check all properties listed below:
     * **`conf`**: credentials from the conf file will be used for the requests. The toolkit will handle authentication with OneView internally. This configuration is the only mode that supports [Event Service](#event-service-notes) and it's recommended for demo purposes only.
     * **`session`**: the Redfish client must create a session and use the generated `x-auth-token` for the requests. For more details please check Session Management section.
 
-* `oneview` section
+* `redfish-composition` section
+  * **PowerOffServerOnCompose**: enable or disable power off the server on composition. The default value used is **ForceOff** - an immediate (hard) shutdown. If not specified (blank value) no power off action will be performed.
+  * **PowerOffServerOnDecompose**: enable or disable power off the server on decomposing a system. The default value used is **ForceOff** - an immediate (hard) shutdown. If not specified (blank value) no power off action will be performed. Other option can be **GracefulShutdown** - a normal (soft) power off.
+
+* `oneview_config` section
 
   * **ip**: HPE OneView's IP/FQDN address or comma separated list of OneView's IP/FQDN address for multiple instances.
   
@@ -137,6 +141,8 @@ You can check all properties listed below:
  
   * **emailAddress**: Email address to contact the responsible for this server/certificate. This is an optional information. Will not be added to certificate if not informed. **Optional.**
 
+* `cherrypy_config` section: See advanced CherryPy configuration [here](http://docs.cherrypy.org/en/latest/index.html)
+
 ## Logging
 
 Logging configuration can be found in `logging.conf` file. The provided configuration enables INFO level at both console and file output, which will generate a `redfish.log`, `redfish_performance.log` and `redfish_ov_data.log` files at `$HOME/.config/oneview-redfish-toolkit/`.
@@ -165,19 +171,14 @@ The OneView data logger will log the result for each OneView SDK request trigger
 
 #### Enabling loggers
 
-You can enable the `Performance` logger and the `OneView Data` logger by setting its level and root logger level as DEBUG on the `logging.conf` file:
+You can enable loggers `Performance`, `OneView Data` and others by setting its level and root logger level as DEBUG on the `logging.conf` file. For example:
 
 ```
 [logger_root]
 level=DEBUG
 
-[performance_handler]
-class=FileHandler
-level=DEBUG
-...
-
-[oneview_data_handler]
-class=FileHandler
+[logger_performance]
+propagate=0
 level=DEBUG
 ...
 ```
