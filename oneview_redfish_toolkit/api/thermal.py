@@ -39,13 +39,11 @@ class Thermal(RedfishJsonValidator):
         super().__init__(self.SCHEMA_NAME)
 
         self.redfish["@odata.type"] = self.get_odata_type()
-        self.redfish["Id"] = uuid
+        self.redfish["Id"] = "1"
         self.redfish["Name"] = name + " Thermal"
         self.redfish["Temperatures"] = list()
         self.redfish["Temperatures"].append(collections.OrderedDict())
-        self.redfish["Temperatures"][0]["@odata.id"] = \
-            "/redfish/v1/Chassis/" + uuid + "/Thermal/Temperatures/0"
-        self.redfish["Temperatures"][0]["MemberId"] = "0"
+        self.redfish["Temperatures"][0]["MemberId"] = "1"
         self.redfish["Temperatures"][0]["Name"] = "AmbientTemperature"
         self.redfish["Temperatures"][0]["Status"] = collections.OrderedDict()
         self.redfish["Temperatures"][0]["Status"]["State"] = "Enabled"
