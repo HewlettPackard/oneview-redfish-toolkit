@@ -17,6 +17,7 @@
 
 import collections
 
+import oneview_redfish_toolkit
 from oneview_redfish_toolkit.api.event_service import EventService
 from oneview_redfish_toolkit.api.redfish_json_validator import \
     RedfishJsonValidator
@@ -49,7 +50,7 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Id"] = "RootService"
         self.redfish["Name"] = "Root Service"
-        self.redfish["RedfishVersion"] = "1.2.0"
+        self.redfish["RedfishVersion"] = oneview_redfish_toolkit.version()
         self.redfish["UUID"] = oneview_uuid
         self.redfish["Systems"] = collections.OrderedDict()
         self.redfish["Systems"]["@odata.id"] = "/redfish/v1/Systems"
@@ -67,8 +68,8 @@ class ServiceRoot(RedfishJsonValidator):
         self.redfish["@odata.context"] = \
             "/redfish/v1/$metadata#ServiceRoot.ServiceRoot"
         self.redfish["@odata.id"] = "/redfish/v1/"
-        self.redfish["@Redfish.Copyright"] = \
-            "Copyright (2017-2018) Hewlett Packard Enterprise Development LP"
+        self.redfish["@Redfish.Copyright"] = oneview_redfish_toolkit.\
+            get_copyright()
 
         self._validate()
 

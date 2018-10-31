@@ -21,6 +21,7 @@
 import json
 from unittest import mock
 
+import oneview_redfish_toolkit
 from oneview_redfish_toolkit.api.service_root import ServiceRoot
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit.tests.base_test import BaseTest
@@ -29,6 +30,16 @@ from oneview_redfish_toolkit.tests.base_test import BaseTest
 class TestServiceRoot(BaseTest):
     """Tests for ServiceRoot class"""
 
+    def setUp(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
+        ) as f:
+            self.service_root_mockup = json.load(f)
+            self.service_root_mockup['RedfishVersion'] = \
+                oneview_redfish_toolkit.version()
+            self.service_root_mockup['@Redfish.Copyright'] = \
+                oneview_redfish_toolkit.get_copyright()
+
     @mock.patch.object(config, 'get_authentication_mode')
     def test_when_auth_mode_is_session(self, config_mock):
         config_mock.return_value = "session"
@@ -36,12 +47,7 @@ class TestServiceRoot(BaseTest):
         service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
         result = json.loads(service_root.serialize())
 
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
-        ) as f:
-            service_root_mockup = json.load(f)
-
-        self.assertEqualMockup(service_root_mockup, result)
+        self.assertEqualMockup(self.service_root_mockup, result)
 
     @mock.patch.object(config, 'get_authentication_mode')
     def test_when_auth_mode_is_conf(self, config_mock):
@@ -50,10 +56,6 @@ class TestServiceRoot(BaseTest):
         service_root = ServiceRoot('00000000-0000-0000-0000-000000000000')
         result = json.loads(service_root.serialize())
 
-        with open(
-                'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
-        ) as f:
-            service_root_mockup = json.load(f)
-            service_root_mockup['Links']['Sessions'] = {}
+        self.service_root_mockup['Links']['Sessions'] = {}
 
-        self.assertEqualMockup(service_root_mockup, result)
+        self.assertEqualMockup(self.service_root_mockup, result)
