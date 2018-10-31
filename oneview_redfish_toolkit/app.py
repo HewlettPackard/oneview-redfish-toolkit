@@ -35,6 +35,7 @@ from flask_api import status
 from hpOneView import HPOneViewException
 from paste.translogger import TransLogger
 
+import oneview_redfish_toolkit
 from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.api.session_collection import SessionCollection
@@ -301,6 +302,8 @@ def main(config_file_path, logging_config_file_path,
         logging.exception(exception)
 
         return ResponseBuilder.oneview_redfish_exception(exception)
+
+    logging.info("RedfishVersion : " + oneview_redfish_toolkit.version())
 
     scmb.init_event_service()
 
