@@ -44,11 +44,13 @@ from oneview_redfish_toolkit.services.computer_system_service import \
     ComputerSystemService
 from oneview_redfish_toolkit.services.manager_service import \
     get_manager_uuid
+from oneview_redfish_toolkit.single_oneview_context import single_oneview
 
 computer_system = Blueprint("computer_system", __name__)
 
 
 @computer_system.route("/redfish/v1/Systems/<uuid>", methods=["GET"])
+@single_oneview
 def get_computer_system(uuid):
     """Get the Redfish Computer System for a given UUID.
 
