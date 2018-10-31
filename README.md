@@ -34,16 +34,16 @@ $ pip install oneview-redfish-toolkit
 ```
 
 ## Offline Installation
-### Requirements
-You need to download the toolkit from PyPI package, inside a folder that you want to zip. After do that, zip the folder and send to the server that will be installed. To download the toolkit run this command:
+### Obtaining Oneview Redfish Toolkit and dependencies
+You can download offline installer at [Releases page](https://github.com/HewlettPackard/oneview-redfish-toolkit/releases).
+Or you can download the toolkit from the PyPI package running this command:
 ```bash
 $ pip download oneview-redfish-toolkit
 ```
-Or you can just access the [Releases page](https://github.com/HewlettPackard/oneview-redfish-toolkit/releases) and download the .zip file.
 ### Installation
-After downloaded and unzip the folder run this command to install the toolkit:
+Run pip install where the files are placed:
 ```bash
-$ pip install dependencies_folder/*
+$ pip install <oneview-redfish-toolkit-installer-0.3.1>/*
 ```
 
 ## Running the application
