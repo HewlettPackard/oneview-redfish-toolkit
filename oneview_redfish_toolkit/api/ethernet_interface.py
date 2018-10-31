@@ -76,15 +76,16 @@ class EthernetInterface(RedfishJsonValidator):
 
     @staticmethod
     def build_resource_block(server_profile_template, connection, network):
+        conn_id = str(connection["id"])
         server_profile_template_id = \
             server_profile_template["uri"].split("/")[-1]
         odata_id = ResourceBlockCollection.BASE_URI + "/" \
             + server_profile_template_id \
             + "/EthernetInterfaces/" \
-            + str(connection["id"])
+            + conn_id
 
         attrs = {
-            "Id": server_profile_template_id,
+            "Id": conn_id,
             "Name": network["name"],
             "SpeedMbps": int(connection["requestedMbps"])
         }
