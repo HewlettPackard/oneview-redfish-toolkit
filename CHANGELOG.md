@@ -1,6 +1,23 @@
+# 0.3.2 (unreleased)
+
+# Bug fixes & Enhancements
+ - #306 Create folder structure for CompositionService
+ - #342 Include OneviewRedfishError handle on flask
+ - #499 Bad request errors are not treated on ResponseBuilder
+ - #503 Add instruction about how to install Toolkit offline
+ - #504 Wrong ID inside EthernetInterface object
+ - #506 "Chassis/UUID" of Enclosure type raises a error when Enclosure have not Rack
+ - #508 [DEV mode] The app does not up properly without the "certs" files path in redfish.conf 
+ - #509 Thermal object returned by redfish service has a Temperature object not implemented yet
+ - #510 Requesting /Systems is listing systems that are not found
+ - #511 Add RedfishVersion in the log files
+ - #512 Check other endpoints to add decorator single_oneview
+ - #518 Adding missing info on redfish.conf and loggers sections
+
 # 0.3.1
 
 # Bug fixes & Enhancements
+ - #493 Update readme
  - #494 Stop service on production environment
  - #470 Create installation guide document for production environment
 
@@ -104,6 +121,7 @@
  - #448 Fix threading lock
  - #447 Log: add info about how many OV and Redfish resources
  - #433 Check performance for Storage Resource Block and Network Resource Block
+ - #333 Update @Redfish.Copyright attribute adding 2018
  - #321 Review build dependencies
  - #409 Support for Delete Session
  - #297 Update Managers collection and Manager
@@ -123,6 +141,7 @@
  - #480 Improve debug log
  - #478 Extend additional check for storage controller settings
  - #325 Package installation requirements
+ - #278 Publish package installer at PyPI
 
 # New Redfish resources
  - Event Service
