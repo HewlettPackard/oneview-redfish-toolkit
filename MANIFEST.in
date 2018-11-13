@@ -1,0 +1,2 @@
+recursive-exclude oneview_redfish_toolkit/tests *
+recursive-exclude oneview_redfish_toolkit/mockups *
