@@ -17,10 +17,8 @@ from flask import Flask
 from flask import g
 from unittest import mock
 
-from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import handler_multiple_oneview
 from oneview_redfish_toolkit import initialize_app
-from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
@@ -46,8 +44,6 @@ class BaseFlaskTest(BaseTest):
             '_get_oneview_client_by_ip')
         cls.mock_get_client_by_ip = cls.patcher_get_client_by_ip.start()
 
-        multiple_oneview.init_map_resources()
-
         # same configuration applied to Flask in app.py
         cls.app.url_map.strict_slashes = False
 
@@ -70,10 +66,10 @@ class BaseFlaskTest(BaseTest):
 
     @classmethod
     def setUp(cls):
+        initialize_app.initialize_components()
         cls.oneview_client = mock.MagicMock()
         cls.mock_get_client_by_ip.return_value = cls.oneview_client
         cls.mock_get_client_by_token.return_value = cls.oneview_client
-        category_resource.init_map_category_resources()
 
     @classmethod
     def tearDownClass(cls):
