@@ -32,10 +32,7 @@ class TestRedfishError(BaseTest):
     def test_class_instantiation(self):
         """Tests class instantiation"""
 
-        try:
-            redfish_error = RedfishError("GeneralError", "General Error")
-        except Exception as e:
-            self.fail("Failed to instantiate RedfishError. Error: ".format(e))
+        redfish_error = RedfishError("GeneralError", "General Error")
         self.assertIsInstance(redfish_error, RedfishError)
 
     def test_serialize(self):

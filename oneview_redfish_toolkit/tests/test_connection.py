@@ -46,10 +46,7 @@ class TestUtil(unittest.TestCase):
         oneview_client = oneview_client_mockup()
         oneview_client.connection.get.return_value = list()
 
-        try:
-            ov_client = connection.OneViewClient({})
-        except Exception as e:
-            self.fail('Failed to connect to OneView: '.format(e))
+        ov_client = connection.OneViewClient({})
         self.assertIsNotNone(ov_client)
 
     @mock.patch.object(connection, 'OneViewClient')
@@ -61,10 +58,7 @@ class TestUtil(unittest.TestCase):
             Exception('session expired')
         oneview_client.connection.login.return_value = oneview_client
 
-        try:
-            ov_client = connection.OneViewClient({})
-        except Exception as e:
-            self.fail('Failed to connect to OneView: '.format(e))
+        ov_client = connection.OneViewClient({})
         self.assertIsNotNone(ov_client)
 
     @mock.patch.object(connection, 'OneViewClient')
@@ -77,8 +71,5 @@ class TestUtil(unittest.TestCase):
         oneview_client.connection.login.return_value = \
             Exception('OneView not responding')
 
-        try:
-            ov_client = connection.OneViewClient({})
-        except Exception as e:
-            self.fail('Failed to connect to OneView: '.format(e))
+        ov_client = connection.OneViewClient({})
         self.assertIsNotNone(ov_client)

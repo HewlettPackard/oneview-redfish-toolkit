@@ -41,28 +41,17 @@ class TestSubscription(BaseTest):
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            subscription = Subscription("", "", [], None)
-        except Exception as e:
-            self.fail("Failed to instantiate Subscription class."
-                      " Error: {}".format(e))
+        subscription = Subscription("", "", [], None)
         self.assertIsInstance(subscription, Subscription)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            subscription = Subscription(
-                "e7f93fa2-0cb4-11e8-9060-e839359bc36a",
-                "http://www.dnsname.com/Destination1",
-                ["Alert", "ResourceUpdated"], None)
-        except Exception as e:
-            self.fail("Failed to instantiate Subscription class."
-                      " Error: {}".format(e))
+        subscription = Subscription(
+            "e7f93fa2-0cb4-11e8-9060-e839359bc36a",
+            "http://www.dnsname.com/Destination1",
+            ["Alert", "ResourceUpdated"], None)
 
-        try:
-            result = json.loads(subscription.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(subscription.serialize())
 
         self.assertEqualMockup(self.subscription_mockup, result)

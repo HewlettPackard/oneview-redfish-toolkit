@@ -45,15 +45,10 @@ class TestNetworkDeviceFunctionCollection(BaseTest):
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            network_device_function_collection = \
-                NetworkDeviceFunctionCollection(
-                    self.device_id,
-                    self.server_hardware)
-        except Exception as e:
-            self.fail(
-                "Failed to instantiate NetworkDeviceFunctionCollection class."
-                " Error: {}".format(e))
+        network_device_function_collection = \
+            NetworkDeviceFunctionCollection(
+                self.device_id,
+                self.server_hardware)
         self.assertIsInstance(
             network_device_function_collection,
             NetworkDeviceFunctionCollection)
@@ -61,21 +56,13 @@ class TestNetworkDeviceFunctionCollection(BaseTest):
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            network_device_function_collection = \
-                NetworkDeviceFunctionCollection(
-                    self.device_id,
-                    self.server_hardware)
-        except Exception as e:
-            self.fail(
-                "Failed to instantiate NetworkDeviceFunctionCollection class."
-                " Error: {}".format(e))
+        network_device_function_collection = \
+            NetworkDeviceFunctionCollection(
+                self.device_id,
+                self.server_hardware)
 
-        try:
-            result = json.loads(
-                network_device_function_collection.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(
+            network_device_function_collection.serialize())
 
         self.assertEqualMockup(
             self.network_device_function_collection_mockup,

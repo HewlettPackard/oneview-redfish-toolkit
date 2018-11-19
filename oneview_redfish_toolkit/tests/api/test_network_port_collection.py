@@ -46,29 +46,18 @@ class TestNetworkPortCollection(BaseTest):
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            network_interface_collection = \
-                NetworkPortCollection(self.server_hardware, self.device_id)
-        except Exception as e:
-            self.fail("Failed to instantiate NetworkInterfaceCollection class."
-                      " Error: {}".format(e))
+        network_interface_collection = \
+            NetworkPortCollection(self.server_hardware, self.device_id)
         self.assertIsInstance(
             network_interface_collection, NetworkPortCollection)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            network_interface_collection = \
-                NetworkPortCollection(self.server_hardware, self.device_id)
-        except Exception as e:
-            self.fail("Failed to instantiate NetworkInterfaceCollection class."
-                      " Error: {}".format(e))
+        network_interface_collection = \
+            NetworkPortCollection(self.server_hardware, self.device_id)
 
-        try:
-            result = json.loads(network_interface_collection.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(network_interface_collection.serialize())
 
         self.assertEqualMockup(self.network_interface_collection_mockup,
                                result)

@@ -35,26 +35,15 @@ class TestCompositionService(BaseTest):
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated
 
-        try:
-            compostion_service = CompositionService()
-        except Exception as e:
-            self.fail("Failed to instantiate CompositionService class."
-                      " Error: {}".format(e))
+        compostion_service = CompositionService()
         self.assertIsInstance(compostion_service, CompositionService)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            compostion_service = CompositionService()
-        except Exception as e:
-            self.fail("Failed to instantiate CompositionService class."
-                      " Error: {}".format(e))
+        compostion_service = CompositionService()
 
-        try:
-            expected_result = json.loads(compostion_service.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        expected_result = json.loads(compostion_service.serialize())
 
         self.assertEqualMockup(self.composition_service_mockup,
                                expected_result)

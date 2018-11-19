@@ -44,12 +44,8 @@ class TestNetworkAdapterCollection(BaseTest):
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            network_adapter_collection = \
-                NetworkAdapterCollection(self.server_hardware)
-        except Exception as e:
-            self.fail("Failed to instantiate NetworkAdapterCollection class."
-                      " Error: {}".format(e))
+        network_adapter_collection = \
+            NetworkAdapterCollection(self.server_hardware)
         self.assertIsInstance(
             network_adapter_collection,
             NetworkAdapterCollection)
@@ -57,16 +53,9 @@ class TestNetworkAdapterCollection(BaseTest):
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            network_adapter_collection = \
-                NetworkAdapterCollection(self.server_hardware)
-        except Exception as e:
-            self.fail("Failed to instantiate NetworkAdapterCollection class."
-                      " Error: {}".format(e))
+        network_adapter_collection = \
+            NetworkAdapterCollection(self.server_hardware)
 
-        try:
-            result = json.loads(network_adapter_collection.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(network_adapter_collection.serialize())
 
         self.assertEqualMockup(self.network_adapter_collection_mockup, result)

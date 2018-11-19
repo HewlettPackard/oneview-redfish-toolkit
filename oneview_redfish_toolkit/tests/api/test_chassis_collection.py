@@ -62,33 +62,22 @@ class TestChassisCollection(BaseTest):
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            chassis_collection = ChassisCollection(
-                self.server_hardware,
-                self.enclosures,
-                self.racks
-            )
-        except Exception as e:
-            self.fail("Failed to instantiate ChassisCollection class."
-                      " Error: {}".format(e))
+        chassis_collection = ChassisCollection(
+            self.server_hardware,
+            self.enclosures,
+            self.racks
+        )
         self.assertIsInstance(chassis_collection, ChassisCollection)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            chassis_collection = ChassisCollection(
-                self.server_hardware,
-                self.enclosures,
-                self.racks
-            )
-        except Exception as e:
-            self.fail("Failed to instantiate ChassisCollection class."
-                      " Error: {}".format(e))
+        chassis_collection = ChassisCollection(
+            self.server_hardware,
+            self.enclosures,
+            self.racks
+        )
 
-        try:
-            result = json.loads(chassis_collection.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(chassis_collection.serialize())
 
         self.assertEqualMockup(self.chassis_collection_mockup, result)

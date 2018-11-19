@@ -41,25 +41,14 @@ class TestEvent(BaseTest):
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            event = Event(self.alert)
-        except Exception as e:
-            self.fail("Failed to instantiate Event class."
-                      " Error: {}".format(e))
+        event = Event(self.alert)
         self.assertIsInstance(event, Event)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            event = Event(self.alert)
-        except Exception as e:
-            self.fail("Failed to instantiate Event class."
-                      " Error: {}".format(e))
+        event = Event(self.alert)
 
-        try:
-            result = json.loads(event.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: {}".format(e))
+        result = json.loads(event.serialize())
 
         self.assertEqualMockup(self.event_mockup, result)

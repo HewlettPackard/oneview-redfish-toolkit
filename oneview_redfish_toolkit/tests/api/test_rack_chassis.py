@@ -50,25 +50,14 @@ class TestRackChassis(BaseTest):
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            rack_chassis = RackChassis(self.rack)
-        except Exception as e:
-            self.fail("Failed to instantiate RackChassis class."
-                      " Error: {}".format(e))
+        rack_chassis = RackChassis(self.rack)
         self.assertIsInstance(rack_chassis, RackChassis)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            rack_chassis = RackChassis(self.rack)
-        except Exception as e:
-            self.fail("Failed to instantiate RackChassis class."
-                      " Error: {}".format(e))
+        rack_chassis = RackChassis(self.rack)
 
-        try:
-            result = json.loads(rack_chassis.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(rack_chassis.serialize())
 
         self.assertEqualMockup(self.rack_chassis_mockup, result)

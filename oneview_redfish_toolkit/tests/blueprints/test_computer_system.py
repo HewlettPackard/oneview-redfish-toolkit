@@ -486,7 +486,7 @@ class TestComputerSystem(BaseFlaskTest):
                 content_type='application/json')
         except OneViewRedfishException as e:
             self.assertEqual(status.HTTP_404_NOT_FOUND, e.status_code_error)
-            self.assertIn('There is no mapping for ForceOffff on the OneView',
+            self.assertIn('There is no mapping for ForceOff on the OneView',
                           str(e.msg))
 
         self.oneview_client.server_profiles.get.assert_called_with(
@@ -648,7 +648,7 @@ class TestComputerSystem(BaseFlaskTest):
 
         except OneViewRedfishException as e:
             self.assertEqual(status.HTTP_404_NOT_FOUND, e.status_code_error)
-            self.assertIn('There is no mapping for ForceOffff on the OneView',
+            self.assertIn('There is no mapping for ForceOff on the OneView',
                           str(e.msg))
 
         self.oneview_client.server_hardware.update_power_state\

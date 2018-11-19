@@ -57,32 +57,21 @@ class TestResourceBlockCollection(BaseTest):
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
-        try:
-            resource_block_collection = ResourceBlockCollection(
-                self.server_hardware_list,
-                self.server_profile_template_list,
-                self.drives_list)
-        except Exception as e:
-            self.fail("Failed to instantiate ResourceBlockCollection class."
-                      " Error: {}".format(e))
+        resource_block_collection = ResourceBlockCollection(
+            self.server_hardware_list,
+            self.server_profile_template_list,
+            self.drives_list)
         self.assertIsInstance(
             resource_block_collection, ResourceBlockCollection)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
-        try:
-            resource_block_collection = ResourceBlockCollection(
-                self.server_hardware_list,
-                self.server_profile_template_list,
-                self.drives_list)
-        except Exception as e:
-            self.fail("Failed to instantiate ResourceBlockCollection class."
-                      " Error: {}".format(e))
+        resource_block_collection = ResourceBlockCollection(
+            self.server_hardware_list,
+            self.server_profile_template_list,
+            self.drives_list)
 
-        try:
-            result = json.loads(resource_block_collection.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: {}".format(e))
+        result = json.loads(resource_block_collection.serialize())
 
         self.assertEqualMockup(self.resource_block_collection_mockup, result)
 
