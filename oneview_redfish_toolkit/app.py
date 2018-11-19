@@ -19,25 +19,19 @@ import argparse
 import ipaddress
 import logging
 import os
-import time
 
 # 3rd party libs
 import cherrypy
 from cherrypy.process.plugins import Daemonizer
 from cherrypy.process.plugins import PIDFile
-from flask import abort
 from flask import Flask
 from flask import g
 from flask import request
-from flask_api import status
 
 # own libs
-from hpOneView import HPOneViewException
 from paste.translogger import TransLogger
 
 import oneview_redfish_toolkit
-from oneview_redfish_toolkit.api.errors import OneViewRedfishException
-from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.api.session_collection import SessionCollection
 from oneview_redfish_toolkit.blueprints.chassis import chassis
 from oneview_redfish_toolkit.blueprints.chassis_collection \
@@ -92,19 +86,15 @@ from oneview_redfish_toolkit.blueprints.subscription\
 from oneview_redfish_toolkit.blueprints.subscription_collection \
     import subscription_collection
 from oneview_redfish_toolkit.blueprints.thermal import thermal
-from oneview_redfish_toolkit.blueprints.util.response_builder import \
-    ResponseBuilder
 from oneview_redfish_toolkit.blueprints.vlan_network_interface import \
     vlan_network_interface
 from oneview_redfish_toolkit.blueprints.zone import zone
 from oneview_redfish_toolkit.blueprints.zone_collection import zone_collection
-from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
-from oneview_redfish_toolkit.config import PERFORMANCE_LOGGER_NAME
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import handler_multiple_oneview
-from oneview_redfish_toolkit import multiple_oneview
+from oneview_redfish_toolkit import initialize_app
 from oneview_redfish_toolkit import util
 
 
@@ -171,12 +161,7 @@ def main(config_file_path, logging_config_file_path,
     app.register_blueprint(zone_collection)
     app.register_blueprint(zone)
 
-    # Init cached data
-    client_session.init_map_clients()
-    client_session.init_gc_for_expired_sessions()
-    multiple_oneview.init_map_resources()
-    multiple_oneview.init_map_appliances()
-    category_resource.init_map_category_resources()
+    initialize_app.initialize_components()
 
     if auth_mode == "conf":
         app.register_blueprint(subscription_collection)
@@ -186,11 +171,7 @@ def main(config_file_path, logging_config_file_path,
     else:
         app.register_blueprint(session)
 
-    @app.before_request
-    def init_performance_data():
-        if logging.getLogger().isEnabledFor(logging.DEBUG):
-            g.start_time_req = time.time()
-            g.elapsed_time_ov = 0
+    initialize_app.create_handlers(app)
 
     @app.before_request
     def check_authentication():
@@ -210,102 +191,7 @@ def main(config_file_path, logging_config_file_path,
         g.oneview_client = \
             handler_multiple_oneview.MultipleOneViewResource()
 
-    @app.before_request
-    def has_odata_version_header():
-        """Deny request that specify a different OData-Version than 4.0"""
-        odata_version_header = request.headers.get("OData-Version")
-
-        if odata_version_header is None:
-            pass
-        elif odata_version_header != "4.0":
-            abort(status.HTTP_412_PRECONDITION_FAILED,
-                  "The request specify a different OData-Version "
-                  "header then 4.0. This server also responds "
-                  "to requests without the OData-Version header")
-
-    @app.after_request
-    def set_odata_version_header(response):
-        """Set OData-Version header for all responses"""
-        response.headers["OData-Version"] = "4.0"
-        return response
-
-    @app.after_request
-    def log_performance_data(response):
-        if logging.getLogger().isEnabledFor(logging.DEBUG):
-            end_time = time.time()
-            req_time = end_time - g.start_time_req
-            logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "OneView process: " + str(g.elapsed_time_ov))
-            logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "Redfish process: " + str(req_time - g.elapsed_time_ov))
-            logging.getLogger(PERFORMANCE_LOGGER_NAME).debug(
-                "Total process: " + str(req_time))
-        return response
-
-    @app.errorhandler(status.HTTP_400_BAD_REQUEST)
-    def bad_request(error):
-        """Creates a Bad Request Error response"""
-        logging.error(error.description)
-
-        return ResponseBuilder.error_400(error)
-
-    @app.errorhandler(status.HTTP_401_UNAUTHORIZED)
-    def unauthorized_error(error):
-        """Creates a Unauthorized Error response"""
-        logging.error(error.description)
-
-        return ResponseBuilder.error_401(error)
-
-    @app.errorhandler(status.HTTP_403_FORBIDDEN)
-    def forbidden(error):
-        """Creates a Forbidden Error response"""
-        logging.error(error.description)
-
-        return ResponseBuilder.error_403(error)
-
-    @app.errorhandler(status.HTTP_404_NOT_FOUND)
-    def not_found(error):
-        """Creates a Not Found Error response"""
-        logging.error(error.description)
-
-        return ResponseBuilder.error_404(error)
-
-    @app.errorhandler(status.HTTP_500_INTERNAL_SERVER_ERROR)
-    def internal_server_error(error):
-        """Creates an Internal Server Error response"""
-        logging.error(error)
-
-        return ResponseBuilder.error_500(error)
-
-    @app.errorhandler(status.HTTP_501_NOT_IMPLEMENTED)
-    def not_implemented(error):
-        """Creates a Not Implemented Error response"""
-        logging.error(error.description)
-
-        return ResponseBuilder.error_501(error)
-
-    @app.errorhandler(HPOneViewException)
-    def hp_oneview_client_exception(exception):
-        logging.exception(exception)
-        response = ResponseBuilder.error_by_hp_oneview_exception(exception)
-
-        # checking if session has expired on Oneview
-        if config.auth_mode_is_session() and \
-                response.status_code == status.HTTP_401_UNAUTHORIZED:
-            token = request.headers.get('x-auth-token')
-            client_session.clear_session_by_token(token)
-
-        return response
-
-    @app.errorhandler(OneViewRedfishException)
-    def oneview_redfish_exception(exception):
-        logging.exception(exception)
-
-        return ResponseBuilder.oneview_redfish_exception(exception)
-
     logging.info("RedfishVersion : " + oneview_redfish_toolkit.version())
-
-    scmb.init_event_service()
 
     app_config = config.get_config()
 
