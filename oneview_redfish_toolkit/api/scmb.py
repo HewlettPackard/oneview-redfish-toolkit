@@ -74,7 +74,7 @@ def init_event_service():
         else:
             logging.info('SCMB certs not found. '
                          'Checking if already generated in Oneview...')
-            get_cert()
+            create_scmb_certs()
             logging.info('Got certs. Testing connection...')
             if not _is_cert_working_with_scmb():
                 logging.error('Failed to connect to scmb. Aborting...')
@@ -114,16 +114,21 @@ def get_oneview_client():
     )
     ov_client = OneViewClient(ov_config)
     ov_client.connection.login(config.get_credentials())
+
     return ov_client
 
 
-def _get_ca_cert(ov_client):
-    con = ov_client.connection
+def _get_ov_ca_cert(ov_client):
     URI = '/rest/certificates/ca'
-    resource_client = ResourceClient(con, URI)
+    resource_client = ResourceClient(ov_client.connection, URI)
     cert = resource_client.get(URI + "?filter=certType:INTERNAL")
+    return cert
+
+
+def _get_ov_ca_cert_base64data(ov_client):
+    cert = _get_ov_ca_cert(ov_client)
+    returnCert = None
     if isinstance(cert, dict):
-        returnCert = None
         if 'members' in cert.keys():
             for certObj in cert.get('members'):
                 if certObj and certObj.get('certificateDetails') and \
@@ -133,13 +138,13 @@ def _get_ca_cert(ov_client):
                     break
         return returnCert
     # If cert is not a dictionary then returning None
-    return None
+    return returnCert
 
 
-def get_cert():
+def create_scmb_certs():
     # Get CA
     ov_client = get_oneview_client()
-    cert = _get_ca_cert(ov_client)
+    cert = _get_ov_ca_cert_base64data(ov_client)
 
     # Create the dir to save the scmb files
     os.makedirs(name=_scmb_base_dir(), exist_ok=True)
