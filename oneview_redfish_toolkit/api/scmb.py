@@ -114,6 +114,7 @@ def get_oneview_client():
     )
     ov_client = OneViewClient(ov_config)
     ov_client.connection.login(config.get_credentials())
+
     return ov_client
 
 
