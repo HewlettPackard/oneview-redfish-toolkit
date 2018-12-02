@@ -193,6 +193,11 @@ class TestSCMB(BaseTest):
         scmb.create_scmb_certs()
         self.assertTrue(scmb._has_valid_certificates())
 
+        # Return None if cert is not a dict
+        _get_ov_ca_cert.return_value = []
+        cert = scmb._get_ov_ca_cert_base64data(oneview_client)
+        self.assertEqual(cert, None)
+
     @mock.patch.object(scmb, 'config')
     @mock.patch.object(scmb, 'get_oneview_client')
     @mock.patch.object(scmb, '_get_ov_ca_cert_base64data')
@@ -309,3 +314,26 @@ class TestSCMB(BaseTest):
         scmb.init_event_service()
 
         self.assertTrue(scmb._has_valid_certificates())
+
+    @mock.patch.object(scmb, 'config')
+    @mock.patch.object(scmb, 'OneViewClient')
+    def test_get_oneview_client(self, ov_client, config_mock):
+        config_mock.get_credentials.return_value = {
+            'password': 'password',
+            'userName': 'Administrator'
+            }
+        config_mock.get_oneview_multiple_ips.return_value = ['1.1.1.1',
+                                                             '2.1.2.2']
+
+        connection = mock.MagicMock()
+        connection.create_oneview_config.return_value = {
+            'ip': '1.1.1.1',
+            'credentials':
+                {
+                    'password': 'password',
+                    'userName': 'Administrator'
+                },
+            'api_version': 600}
+        ov_client.return_value = mock.MagicMock()
+        ov_client.connection.login = mock.MagicMock()
+        self.assertNotEqual(scmb.get_oneview_client(), None)
