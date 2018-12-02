@@ -74,7 +74,7 @@ def init_event_service():
         else:
             logging.info('SCMB certs not found. '
                          'Checking if already generated in Oneview...')
-            create_scmb_certs()
+            get_scmb_certs()
             logging.info('Got certs. Testing connection...')
             if not _is_cert_working_with_scmb():
                 logging.error('Failed to connect to scmb. Aborting...')
@@ -139,7 +139,7 @@ def _get_ov_ca_cert_base64data(ov_client):
     return returnCert
 
 
-def create_scmb_certs():
+def get_scmb_certs():
     # Get CA
     ov_client = get_oneview_client()
     cert = _get_ov_ca_cert_base64data(ov_client)

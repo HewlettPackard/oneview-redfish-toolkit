@@ -121,7 +121,7 @@ class TestSCMB(BaseTest):
 
         oneview_client.connection = 'con'
         _get_ov_ca_cert_base64data.return_value = "CA CERT"
-        scmb.create_scmb_certs()
+        scmb.get_scmb_certs()
         self.assertTrue(scmb._has_valid_certificates())
 
     @mock.patch('pika.BlockingConnection')
@@ -190,7 +190,7 @@ class TestSCMB(BaseTest):
                 ]
             }
 
-        scmb.create_scmb_certs()
+        scmb.get_scmb_certs()
         self.assertTrue(scmb._has_valid_certificates())
 
         # Return None if cert is not a dict
@@ -228,7 +228,7 @@ class TestSCMB(BaseTest):
         _get_ov_ca_cert_base64data.return_value = "CA CERT"
 
         with self.assertRaises(HPOneViewException) as hp_exception:
-            scmb.create_scmb_certs()
+            scmb.get_scmb_certs()
 
         test_exception = hp_exception.exception
         self.assertEqual(hp_ov_exception_msg, test_exception.msg)
