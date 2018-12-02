@@ -136,8 +136,6 @@ def _get_ov_ca_cert_base64data(ov_client):
                     returnCert = certObj.get('certificateDetails').\
                         get('base64Data')
                     break
-        return returnCert
-    # If cert is not a dictionary then returning None
     return returnCert
 
 
