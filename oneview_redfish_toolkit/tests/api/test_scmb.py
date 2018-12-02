@@ -309,3 +309,25 @@ class TestSCMB(BaseTest):
         scmb.init_event_service()
 
         self.assertTrue(scmb._has_valid_certificates())
+
+    @mock.patch.object(scmb, 'config')
+    def test_get_oneview_client(self, config_mock):
+        config_mock.get_credentials.return_value = {
+            'password': 'Compaq@123',
+            'userName': 'Administrator'
+            }
+        config_mock.get_oneview_multiple_ips.return_value = ['10.1.2.9',
+                                                             '10.1.2.10']
+
+        connection = mock.MagicMock()
+        connection.create_oneview_config.return_value = {
+            'ip': '10.1.2.9',
+            'credentials':
+                {
+                    'password': 'Compaq@123',
+                    'userName': 'Administrator'
+                },
+            'api_version': 600}
+        oneview_client = mock.MagicMock()
+        oneview_client.connection.login = mock.MagicMock()
+        self.assertNotEqual(scmb.get_oneview_client(), None)
