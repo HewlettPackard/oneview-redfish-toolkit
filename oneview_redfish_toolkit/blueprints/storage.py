@@ -27,6 +27,8 @@ from oneview_redfish_toolkit.api.drive import Drive
 from oneview_redfish_toolkit.api.storage import Storage
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
+from oneview_redfish_toolkit.api.volume_collection import VolumeCollection
+from oneview_redfish_toolkit.api.volume import Volume
 
 storage = Blueprint("storage", __name__)
 
@@ -103,6 +105,47 @@ def get_drive(profile_id, drive_id):
 
     return ResponseBuilder.success(drive_details)
 
+@storage.route(ComputerSystem.BASE_URI +
+               "/<uuid>/Storage/1/Volumes/",
+               methods=["GET"])
+def get_volumeCollection(uuid):
+    """Get the Redfish Volume Collection for a given UUID.
+
+        Return Volume Collection Redfish JSON for a given server profile UUID.
+
+        Returns:
+            JSON: Redfish json with Volume Collection
+            When Volume Collection is not found calls abort(404)
+
+    """
+
+    server_profile = g.oneview_client.server_profiles.get(uuid)
+
+    if len(server_profile["localStorage"]["sasLogicalJBODs"]) == 0:
+        abort(status.HTTP_404_NOT_FOUND, "Volumes not found")
+
+    volume_details = VolumeCollection(server_profile)
+
+    return ResponseBuilder.success(volume_details)
+
+
+@storage.route(ComputerSystem.BASE_URI +
+               "/<uuid>/Storage/1/Volumes/<volume_id>",
+               methods=["GET"])
+def get_volume(uuid, volume_id):
+    """Get the Redfish Volume for a given UUID and Volume ID.
+
+        Return Volume Redfish JSON for a given server profile UUID.
+
+        Returns:
+            JSON: Redfish json with Volume
+            When Volume is not found calls abort(404)
+
+    """
+
+    volume_details = Volume.build_volume_details(uuid, volume_id)
+
+    return ResponseBuilder.success(volume_details)
 
 def _get_logical_jbod(drive_id_int, logical_jbod, sas_logical_jbods):
     logical_jbods_sorted = sorted(sas_logical_jbods, key=lambda i: i["uri"])

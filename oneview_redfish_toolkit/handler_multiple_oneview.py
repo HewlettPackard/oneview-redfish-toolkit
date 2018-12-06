@@ -86,6 +86,9 @@ RESOURCE_STRATEGY = {
         "create": st.create_labels,
         "get_by_resource": st.first_parameter_resource
         },
+    "sas_logical_interconnects": {
+        "get": st.first_parameter_resource
+        },
 }
 
 
