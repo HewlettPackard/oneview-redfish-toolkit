@@ -70,6 +70,7 @@ def get_chassis(uuid):
     elif category == 'enclosures':
         enclosure = g.oneview_client.enclosures.get(uuid)
         etag = enclosure['eTag']
+
         enclosure_environment_config = g.oneview_client.enclosures. \
             get_environmental_configuration(uuid)
         ch = EnclosureChassis(

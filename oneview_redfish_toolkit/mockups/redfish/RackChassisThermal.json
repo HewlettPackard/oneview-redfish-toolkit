@@ -1,11 +1,10 @@
 {
     "@odata.type": "#Thermal.v1_3_0.Thermal",
-    "Id": "2AB100LMNB",
+    "Id": "1",
     "Name": "Rack Thermal",
     "Temperatures": [
         {
-            "@odata.id": "/redfish/v1/Chassis/2AB100LMNB/Thermal/Temperatures/0",
-            "MemberId": "0",
+            "MemberId": "1",
             "Name": "AmbientTemperature",
             "Status": {
                 "State": "Enabled",

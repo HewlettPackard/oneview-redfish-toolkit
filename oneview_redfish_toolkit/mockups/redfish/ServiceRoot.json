@@ -2,7 +2,7 @@
     "@odata.type": "#ServiceRoot.v1_2_0.ServiceRoot",
     "Id": "RootService",
     "Name": "Root Service",
-    "RedfishVersion": "1.2.0",
+    "RedfishVersion": "",
     "UUID": "00000000-0000-0000-0000-000000000000",
     "Systems": {
         "@odata.id": "/redfish/v1/Systems"
@@ -29,5 +29,5 @@
     },
     "@odata.context": "/redfish/v1/$metadata#ServiceRoot.ServiceRoot",
     "@odata.id": "/redfish/v1/",
-    "@Redfish.Copyright": "Copyright (2017-2018) Hewlett Packard Enterprise Development LP"
+    "@Redfish.Copyright": ""
 }

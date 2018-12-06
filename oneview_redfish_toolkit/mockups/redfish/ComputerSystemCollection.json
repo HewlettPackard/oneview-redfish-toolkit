@@ -1,19 +1,13 @@
 {
     "@odata.type": "#ComputerSystemCollection.ComputerSystemCollection",
     "Name": "Computer System Collection",
-    "Members@odata.count": 4,
+    "Members@odata.count": 2,
     "Members": [
         {
-            "@odata.id": "/redfish/v1/Systems/0443b64c-7f20-4005-8ded-152774a52b99"
+            "@odata.id": "/redfish/v1/Systems/592bedb3-a6e0-4381-a8ba-6206c613c455"
         },
         {
-            "@odata.id": "/redfish/v1/Systems/a598880b-02e9-439a-a23b-17802181e4db"
-        },
-        {
-            "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2"
-        },
-        {
-            "@odata.id": "/redfish/v1/Systems/ad04475c-94aa-4843-b8fc-3c78f4e6c2e8"
+            "@odata.id": "/redfish/v1/Systems/7f5a1cd6-cce3-4d6e-bd25-6fdff7ccefb3"
         }
     ],
     "@Redfish.CollectionCapabilities": {

@@ -73,6 +73,7 @@ RESOURCE_STRATEGY = {
     "server_profiles": {
         "delete": st.delete_server_profile,
         "get": st.first_parameter_resource,
+        "get_all": st.all_oneviews_resource,
         "get_available_targets": st.first_parameter_resource,
         },
     "server_profile_templates": {

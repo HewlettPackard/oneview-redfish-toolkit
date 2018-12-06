@@ -35,7 +35,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
     SCHEMA_NAME = 'ComputerSystemCollection'
 
     def __init__(self,
-                 sh_with_profile_applied,
+                 server_profile_list,
                  server_profile_templates,
                  zone_ids):
         """ComputerSystemCollection constructor
@@ -45,8 +45,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
             Server Profile applied and all server profile templates.
 
             Args:
-                sh_with_profile_applied: A list of dicts of server hardware
-                    with profile applied.
+                server_profile_list: A list of dicts of Server Profile applied
                 server_profile_templates: A list of dicts of server profile
                     templates
                 zone_ids: A list of Zone Ids
@@ -56,7 +55,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Computer System Collection"
         server_profile_members_list = \
-            self._get_server_profile_members_list(sh_with_profile_applied)
+            self._get_server_profile_members_list(server_profile_list)
         self.redfish["Members@odata.count"] = \
             len(server_profile_members_list)
         self.redfish["Members"] = server_profile_members_list
@@ -70,7 +69,7 @@ class ComputerSystemCollection(RedfishJsonValidator):
 
         self._validate()
 
-    def _get_server_profile_members_list(self, server_hardware_list):
+    def _get_server_profile_members_list(self, server_profile_list):
         """Returns a redfish members list with all server profiles applied
 
             Iterate over the server hardware list, filter the
@@ -78,19 +77,17 @@ class ComputerSystemCollection(RedfishJsonValidator):
             the member item to be filled on Redfish Members.
 
             Args:
-                server_hardware_list: list of Oneview's server
-                hardwares information.
+                server_profile_list: list of Oneview's Server
+                Profiles information.
 
             Returns:
                 list: list of computer system members to be filled on
                 Redfish Members.
         """
         members = list()
-        for server_hardware in server_hardware_list:
-            server_profile_uuid = \
-                server_hardware["serverProfileUri"].split("/")[-1]
+        for server_profile in server_profile_list:
             members.append({
-                "@odata.id": "/redfish/v1/Systems/" + server_profile_uuid
+                "@odata.id": "/redfish/v1/Systems/" + server_profile["uuid"]
             })
 
         return members

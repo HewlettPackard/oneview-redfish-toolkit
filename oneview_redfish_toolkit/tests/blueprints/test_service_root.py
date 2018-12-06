@@ -23,6 +23,7 @@ from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
+import oneview_redfish_toolkit
 from oneview_redfish_toolkit.blueprints import service_root
 from oneview_redfish_toolkit import client_session
 from oneview_redfish_toolkit import config
@@ -39,6 +40,16 @@ class TestServiceRoot(BaseFlaskTest):
 
         self.app.register_blueprint(
             service_root.service_root, url_prefix='/redfish/v1/')
+
+    def setUp(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
+        ) as f:
+            self.service_root_mockup = json.load(f)
+            self.service_root_mockup['RedfishVersion'] = \
+                oneview_redfish_toolkit.version()
+            self.service_root_mockup['@Redfish.Copyright'] = \
+                oneview_redfish_toolkit.get_copyright()
 
     @mock.patch.object(service_root, 'connection')
     def test_service_root_oneview_exception(self, connection):
@@ -85,12 +96,7 @@ class TestServiceRoot(BaseFlaskTest):
 
         result = json.loads(result.data.decode("utf-8"))
 
-        with open(
-            'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
-        ) as f:
-            service_root_mockup = json.load(f)
-
-        self.assertEqualMockup(service_root_mockup, result)
+        self.assertEqualMockup(self.service_root_mockup, result)
         get_credentials.assert_not_called()
         get_oneview_client.assert_not_called()
 
@@ -118,12 +124,8 @@ class TestServiceRoot(BaseFlaskTest):
 
         result = json.loads(result.data.decode("utf-8"))
 
-        with open(
-                'oneview_redfish_toolkit/mockups/redfish/ServiceRoot.json'
-        ) as f:
-            service_root_mockup = json.load(f)
-            service_root_mockup['Links']['Sessions'] = {}
+        self.service_root_mockup['Links']['Sessions'] = {}
 
-        self.assertEqualMockup(service_root_mockup, result)
+        self.assertEqualMockup(self.service_root_mockup, result)
         get_credentials.assert_not_called()
         get_oneview_client.assert_not_called()

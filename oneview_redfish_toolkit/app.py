@@ -35,6 +35,7 @@ from flask_api import status
 from hpOneView import HPOneViewException
 from paste.translogger import TransLogger
 
+import oneview_redfish_toolkit
 from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.api.session_collection import SessionCollection
@@ -302,6 +303,8 @@ def main(config_file_path, logging_config_file_path,
 
         return ResponseBuilder.oneview_redfish_exception(exception)
 
+    logging.info("RedfishVersion : " + oneview_redfish_toolkit.version())
+
     scmb.init_event_service()
 
     app_config = config.get_config()
@@ -358,8 +361,17 @@ def main(config_file_path, logging_config_file_path,
                     os.path.exists(ssl_key_file):
                 logging.warning("Generating self-signed certs")
                 # Generate certificates
+                file_name = "self-signed"
                 util.generate_certificate(
-                    os.path.dirname(ssl_cert_file), "self-signed", 2048)
+                    os.path.dirname(ssl_cert_file), file_name, 2048)
+
+                if ssl_cert_file == "" or ssl_key_file == "":
+                    ssl_cert_file = file_name + ".crt"
+                    ssl_key_file = file_name + ".key"
+                    logging.warning("The paths to the certs files were "
+                                    "not found in the redfish.conf file. "
+                                    "Using generated files %s and %s" %
+                                    (ssl_cert_file, ssl_key_file))
             else:
                 logging.warning("Using existing self-signed certs")
         elif ssl_cert_file == "" or ssl_key_file == "":
