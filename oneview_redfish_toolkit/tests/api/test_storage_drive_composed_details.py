@@ -14,8 +14,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
 import copy
+import json
 
 from oneview_redfish_toolkit.api.drive import Drive
 from oneview_redfish_toolkit.tests.base_test import BaseTest
