@@ -20,8 +20,7 @@ from oneview_redfish_toolkit.api.volume_collection import VolumeCollection
 from oneview_redfish_toolkit.tests.base_test import BaseTest
 
 
-
-class TestVolumeCollection(BaseTest):
+class TestolumeCollection(BaseTest):
     """Tests for VolumeCollection class"""
 
     def setUp(self):
@@ -39,7 +38,7 @@ class TestVolumeCollection(BaseTest):
 
     def test_serialize(self):
         # Tests the serialize function result against known result
-        
+
         volume_collection = \
             VolumeCollection(self.server_profile)
 

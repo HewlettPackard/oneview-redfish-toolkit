@@ -19,8 +19,9 @@ from flask import abort
 from flask import g
 
 from flask_api import status
-from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from hpOneView.resources.resource import ResourceClient
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
+
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
@@ -137,8 +138,8 @@ class Volume(RedfishJsonValidator):
             sas_logical_jbod["maxSizeGB"])
         attrs["Identifiers"] = list()
         attrs["Identifiers"].append(
-                {"DurableNameFormat": "UUID",
-                 "DurableName": sas_logical_jbod["uri"].split("/")[-1]})
+            {"DurableNameFormat": "UUID",
+             "DurableName": sas_logical_jbod["uri"].split("/")[-1]})
         attrs["Links"] = collections.OrderedDict()
         attrs["Links"]["Drives"] = list()
 

@@ -19,8 +19,8 @@ from oneview_redfish_toolkit.api.redfish_json_validator \
 
 
 class VolumeCollection(RedfishJsonValidator):
-    """Populates the volumes of a server profile in redfish format
-    """
+
+    """Populates the volumes of a server profile in redfish format"""
 
     SCHEMA_NAME = 'VolumeCollection'
 

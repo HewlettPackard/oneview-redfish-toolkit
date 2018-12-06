@@ -19,16 +19,16 @@ import copy
 import json
 
 # 3rd party libs
-from unittest.mock import call
 from unittest import mock
+from unittest.mock import call
 
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 
 # Module libs
+from oneview_redfish_toolkit.api import volume
 from oneview_redfish_toolkit.blueprints import storage
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
-from oneview_redfish_toolkit.api import volume
 
 
 class TestStorage(BaseFlaskTest):
@@ -355,38 +355,50 @@ class TestStorage(BaseFlaskTest):
         """Tests when volume is not found"""
 
         server_profile = copy.deepcopy(self.server_profile)
-        server_profile["localStorage"]["sasLogicalJBODs"]=[]
-        self.oneview_client.\
-             server_profiles.get.return_value = server_profile
+
+        server_profile["localStorage"]["sasLogicalJBODs"] = []
+        self.oneview_client.server_profiles.get.return_value = server_profile
 
         response = self.client.get(
-             "/redfish/v1/Systems/"
-             "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes"
-         )
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes"
+        )
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
     @mock.patch.object(volume, "get_drive_path_from_logical_Drive_Bay_Uri")
-    @mock.patch.object(volume, "get_drive_enclosure_uri_from_sas_Logical_Interconnect")
+    @mock.patch.object(volume, "get_drive_enclosure_uri_from_sas_Logical_"
+                       "Interconnect")
     def test_get_volume(self, get_drive_enclosure_uri, get_drive_mock):
         """Tests for get volume"""
 
         self.oneview_client.\
             server_profiles.get.return_value = self.server_profile
         self.oneview_client.sas_logical_jbods.get.return_value = {
-            "sasLogicalInterconnectUri": "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636",
-            "logicalDriveBayUris": [
-      "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636/logical-drive-enclosures/0d1d9142-f5fe-4256-aff2-d2dd95a0ce8f/logical-drive-bays/cef5316d-e5ab-4d46-83bc-caba10d954a8",
-      "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636/logical-drive-enclosures/0d1d9142-f5fe-4256-aff2-d2dd95a0ce8f/logical-drive-bays/3918cd02-7c70-4ef4-9936-ef6bad38c534"
+            "sasLogicalInterconnectUri": "/rest/sas-logical-interconnects/"
+            "63138084-6d81-4b50-b35b-7e01a2390636",
+            "logicalDriveBayUris": ["/rest/sas-logical-interconnects/63138084-"
+                                    "6d81-4b50-b35b-7e01a2390636/logical-"
+                                    "drive-enclosures/0d1d9142-f5fe-4256-"
+                                    "aff2-d2dd95a0ce8f/logical-drive-bays"
+                                    "/cef5316d-e5ab-4d46-83bc-caba10d954a8",
+                                    "/rest/sas-logical-interconnects/63138084-"
+                                    "6d81-4b50-b35b-7e01a2390636/logical-drive"
+                                    "-enclosures/0d1d9142-f5fe-4256-aff2-d2dd9"
+                                    "5a0ce8f/logical-drive-bays/3918cd02-7c70"
+                                    "-4ef4-9936-ef6bad38c534"
 
-    ],
-      "maxSizeGB": 3276,
-       "status": "OK",
-    "name": "SSD_storage",
-    "uri": "/rest/sas-logical-jbods/473db373-2d9c-4e7f-adca-a3649df5425d"
+                                    ],
+            "maxSizeGB": 3276,
+            "status": "OK",
+            "name": "SSD_storage",
+            "uri": "/rest/sas-logical-jbods/473db373-2d9c-4e7f-adca-"
+            "a3649df5425d"
             }
         get_drive_mock.return_value = "1:1:1"
-        get_drive_enclosure_uri.return_value = "/rest/drive-enclosures/SN123100"
+        get_drive_enclosure_uri.return_value = "/rest/drive-enclosures/"
+        "SN123100"
+
         self.oneview_client.\
             drive_enclosures.get.return_value = self.drive_enclosures
         response = self.client.get(
@@ -399,8 +411,11 @@ class TestStorage(BaseFlaskTest):
         self.assertEqualMockup(self.volume, result)
 
     @mock.patch.object(volume, "get_drive_path_from_logical_Drive_Bay_Uri")
-    @mock.patch.object(volume, "get_drive_enclosure_uri_from_sas_Logical_Interconnect")
-    def test_get_volume_with_controllers_with_RAID(self, get_drive_enclosure_uri_mock, get_drive_path_mock):
+    @mock.patch.object(volume, "get_drive_enclosure_uri_from_sas_Logical_"
+                       "Interconnect")
+    def test_get_volume_with_controllers_with_RAID(self,
+                                                   get_drive_enclosure_uri,
+                                                   get_drive_path_mock):
         """Tests for get volume with controllers"""
 
         server_profile = copy.deepcopy(self.server_profile)
@@ -410,7 +425,7 @@ class TestStorage(BaseFlaskTest):
         temp["deviceSlot"] = "Mezz 1"
         temp["mode"] = "Mixed"
         temp["initialize"] = False
-        temp["logicalDrives"] = list();
+        temp["logicalDrives"] = list()
         tempdict = {}
         tempdict["name"] = None
         tempdict["raidLevel"] = "RAID1"
@@ -424,19 +439,30 @@ class TestStorage(BaseFlaskTest):
         self.oneview_client.\
             server_profiles.get.return_value = server_profile
         self.oneview_client.sas_logical_jbods.get.return_value = {
-            "sasLogicalInterconnectUri": "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636",
-            "logicalDriveBayUris": [
-      "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636/logical-drive-enclosures/0d1d9142-f5fe-4256-aff2-d2dd95a0ce8f/logical-drive-bays/cef5316d-e5ab-4d46-83bc-caba10d954a8",
-      "/rest/sas-logical-interconnects/63138084-6d81-4b50-b35b-7e01a2390636/logical-drive-enclosures/0d1d9142-f5fe-4256-aff2-d2dd95a0ce8f/logical-drive-bays/3918cd02-7c70-4ef4-9936-ef6bad38c534"
+            "sasLogicalInterconnectUri": "/rest/sas-logical-interconnects/"
+            "63138084-6d81-4b50-b35b-7e01a2390636",
+            "logicalDriveBayUris": ["/rest/sas-logical-interconnects/63138084-"
+                                    "6d81-4b50-b35b-7e01a2390636/logical-"
+                                    "drive-enclosures/0d1d9142-f5fe-4256-"
+                                    "aff2-d2dd95a0ce8f/logical-drive-bays"
+                                    "/cef5316d-e5ab-4d46-83bc-caba10d954a8",
+                                    "/rest/sas-logical-interconnects/63138084-"
+                                    "6d81-4b50-b35b-7e01a2390636/logical-drive"
+                                    "-enclosures/0d1d9142-f5fe-4256-aff2-d2dd9"
+                                    "5a0ce8f/logical-drive-bays/3918cd02-7c70"
+                                    "-4ef4-9936-ef6bad38c534"
 
-    ],
-      "maxSizeGB": 3276,
-       "status": "OK",
-    "name": "SSD_storage",
-    "uri": "/rest/sas-logical-jbods/473db373-2d9c-4e7f-adca-a3649df5425d"
+                                    ],
+            "maxSizeGB": 3276,
+            "status": "OK",
+            "name": "SSD_storage",
+            "uri": "/rest/sas-logical-jbods/473db373-2d9c-4e7f-adca-"
+            "a3649df5425d"
             }
         get_drive_path_mock.return_value = "1:1:1"
-        get_drive_enclosure_uri_mock.return_value = "/rest/drive-enclosures/SN123100"
+        get_drive_enclosure_uri.return_value = "/rest/drive-enclosures/"
+        "SN123100"
+
         self.oneview_client.\
             drive_enclosures.get.return_value = self.drive_enclosures
         response = self.client.get(
@@ -452,13 +478,13 @@ class TestStorage(BaseFlaskTest):
         """Tests get volume when volume is not found"""
 
         server_profile = copy.deepcopy(self.server_profile)
-        server_profile["localStorage"]["sasLogicalJBODs"]=[]
-        self.oneview_client.\
-             server_profiles.get.return_value = server_profile
+        server_profile["localStorage"]["sasLogicalJBODs"] = []
+        self.oneview_client.server_profiles.get.return_value = server_profile
 
         response = self.client.get(
-             "/redfish/v1/Systems/"
-             "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes/1"
-         )
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes/1"
+        )
+
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)

@@ -44,7 +44,7 @@ class TestVolume(BaseTest):
             server_profile = json.load(f)
 
         volumeobj = volume.get_device_slot_from_sas_logical_jbod_by_volumeid(
-                server_profile, '3')
+            server_profile, '3')
 
         self.assertEqualMockup(None, volumeobj)
 
