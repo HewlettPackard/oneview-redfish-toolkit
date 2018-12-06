@@ -137,8 +137,8 @@ class Volume(RedfishJsonValidator):
             sas_logical_jbod["maxSizeGB"])
         attrs["Identifiers"] = list()
         attrs["Identifiers"].append(
-                {"DurableNameFormat": "UUID",
-                 "DurableName": sas_logical_jbod["uri"].split("/")[-1]})
+            {"DurableNameFormat": "UUID",
+             "DurableName": sas_logical_jbod["uri"].split("/")[-1]})
         attrs["Links"] = collections.OrderedDict()
         attrs["Links"]["Drives"] = list()
 
