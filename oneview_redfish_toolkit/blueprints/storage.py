@@ -25,10 +25,10 @@ from flask_api import status
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.drive import Drive
 from oneview_redfish_toolkit.api.storage import Storage
-from oneview_redfish_toolkit.blueprints.util.response_builder import \
-    ResponseBuilder
 from oneview_redfish_toolkit.api.volume import Volume
 from oneview_redfish_toolkit.api.volume_collection import VolumeCollection
+from oneview_redfish_toolkit.blueprints.util.response_builder import \
+    ResponseBuilder
 
 storage = Blueprint("storage", __name__)
 
