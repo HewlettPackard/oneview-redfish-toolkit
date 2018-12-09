@@ -107,6 +107,17 @@ CRITICALITY_STATUS = {
     "Warning": 2,
     "Critical": 3
 }
+RAID_LEVEL = {
+    "RAID0": "NonRedundant",
+    "RAID1": "Mirrored",
+    "RAID5": "StripedWithParity",
+    "RAID6": "StripedWithParity",
+    "RAID50": "StripedWithParity",
+    "RAID60": "StripedWithParity",
+    "RAID10": "SpannedMirrors",
+    "RAID10ADM": "SpannedMirrors",
+    "RAID1ADM": "SpannedMirrors"
+}
 
 
 def get_redfish_server_hardware_status_struct(resource):

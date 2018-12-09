@@ -1,0 +1,17 @@
+{
+    "@odata.type": "#VolumeCollection.VolumeCollection",
+    "Name": "Storage Volume Collection",
+    "Description": "Storage Volume Collection",
+    "Members@odata.count": 2,
+    "Members": [
+        {
+            "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes/1"
+        },
+        {
+        	"@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes/2"
+        }
+    ],
+    "Oem": {},
+    "@odata.context": "/redfish/v1/$metadata#VolumeCollection.VolumeCollection",
+    "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes"
+}
