@@ -1,0 +1,29 @@
+{
+    "CapacityBytes": 3517578215424,
+    "Identifiers": [
+        {
+            "DurableName": "473db373-2d9c-4e7f-adca-a3649df5425d",
+            "DurableNameFormat": "UUID"
+        }
+    ],
+    "Id": "1",
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "Links": {
+        "Drives": [
+            {
+                "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/5c3e5214-e9fb-469d-a8d5-2159fe2d97d8"
+            },
+            {
+                "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/5c3e5214-e9fb-469d-a8d5-2159fe2d97d8"
+            }
+        ]
+    },
+    "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes/1",
+    "Name": "SSD_storage",
+    "@odata.type": "#Volume.v1_0_3.Volume",
+    "VolumeType": "RawDevice",
+    "@odata.context": "/redfish/v1/$metadata#Volume.Volume"
+}

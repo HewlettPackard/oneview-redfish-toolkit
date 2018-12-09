@@ -128,6 +128,9 @@ class Storage(RedfishJsonValidator):
             attrs["Drives"].append({
                 "@odata.id": attrs["@odata.id"] + "/Drives/" + drive_id
             })
+        if len(sas_logical_jbods) != 0:
+            attrs["Volumes"] = collections.OrderedDict()
+            attrs["Volumes"]["@odata.id"] = attrs["@odata.id"] + "/Volumes"
 
         return Storage(attrs)
 
