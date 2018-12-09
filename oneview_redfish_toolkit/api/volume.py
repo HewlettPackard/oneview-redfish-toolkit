@@ -1,0 +1,202 @@
+# -*- coding: utf-8 -*-
+
+# Copyright (2017-2018) Hewlett Packard Enterprise Development LP
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+# WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+# License for the specific language governing permissions and limitations
+# under the License.
+
+import collections
+from flask import abort
+from flask import g
+
+from flask_api import status
+from hpOneView.resources.resource import ResourceClient
+from oneview_redfish_toolkit.api.computer_system import ComputerSystem
+
+
+from oneview_redfish_toolkit.api.redfish_json_validator \
+    import RedfishJsonValidator
+
+import oneview_redfish_toolkit.api.status_mapping as status_mapping
+
+
+class Volume(RedfishJsonValidator):
+    """Creates a Volume Redfish dict
+
+        Populates self.redfish with Volume data
+    """
+
+    SCHEMA_NAME = 'Volume'
+    METADATA_INFO = "/redfish/v1/$metadata#Volume.Volume"
+
+    def __init__(self, data):
+        """Volume constructor
+
+            Populates self.redfish and validates the result
+
+            Args:
+                data: a dict with Redfish's Volume data
+        """
+        super().__init__(self.SCHEMA_NAME)
+
+        self.redfish.update(data)
+
+        self.redfish["@odata.type"] = self.get_odata_type()
+        self.redfish["@odata.context"] = self.__class__.METADATA_INFO
+
+        self._validate()
+
+    @staticmethod
+    def build_volume_details(uuid, volume_id):
+        """Returns a Volume with the contents of data from an Oneview
+
+            Args:
+                uuid: Server Profile uuid
+                volume_id: Volume id
+
+        """
+
+        server_profile = g.oneview_client.server_profiles.get(uuid)
+        sas_logical_jbod = get_sas_logical_jbod_by_volumeid(server_profile,
+                                                            volume_id)
+
+        if sas_logical_jbod is None:
+            abort(status.HTTP_404_NOT_FOUND, "Volume {} not found"
+                  .format(volume_id))
+
+        sas_Logical_Interconnect_Uri = \
+            sas_logical_jbod["sasLogicalInterconnectUri"]
+
+        drivepaths = []
+        drivepath = None
+        for logical_Drive_Bay_Uri in sas_logical_jbod["logicalDriveBayUris"]:
+            drivepath = get_drive_path_from_logical_Drive_Bay_Uri(
+                logical_Drive_Bay_Uri)
+            drivepaths.append(drivepath)
+
+        drive_enclosure_uri = \
+            get_drive_enclosure_uri_from_sas_Logical_Interconnect(
+                sas_Logical_Interconnect_Uri)
+
+        drive_enclosure_object = get_drive_enclosure_object(
+            drive_enclosure_uri)
+
+        drivebayuris = []
+
+        drivebayuri = None
+        drivepath = None
+        flag = False
+        for path in drivepaths:
+            flag = False
+            for drivebay in drive_enclosure_object["driveBays"]:
+                for drivepath in drivebay["drive"]["drivePaths"]:
+                    if drivepath == path:
+                        flag = True
+                        drivebayuri = drivebay["uri"]
+                        drivebayuris.append(drivebayuri)
+                        break
+                if flag:
+                    break
+
+        device_slot = get_device_slot_from_sas_logical_jbod_by_volumeid(
+            server_profile, volume_id)
+        raidlevel = None
+        flag = False
+        for storagecontroller in server_profile["localStorage"]["controllers"]:
+            if(storagecontroller["deviceSlot"] == device_slot):
+                for logicaldrive in storagecontroller["logicalDrives"]:
+                    if logicaldrive["sasLogicalJBODId"] == int(volume_id):
+                        raidlevel = logicaldrive["raidLevel"]
+                        flag = True
+                        break
+            if flag:
+                break
+
+        attrs = {}
+        attrs["@odata.id"] = ComputerSystem.BASE_URI + "/" + uuid + \
+            "/Storage/1/Volumes/" + volume_id
+        attrs["Id"] = volume_id
+        attrs["Name"] = sas_logical_jbod["name"]
+        attrs["Status"] = collections.OrderedDict()
+        map_struct = status_mapping.STATUS_MAP.get(sas_logical_jbod["status"])
+        attrs["Status"]["State"] = map_struct["State"]
+        attrs["Status"]["Health"] = map_struct["Health"]
+        if raidlevel is not None:
+            attrs["VolumeType"] = status_mapping.RAID_LEVEL.get(raidlevel)
+        else:
+            attrs["VolumeType"] = "RawDevice"
+        attrs["CapacityBytes"] = get_capacity_in_bytes(
+            sas_logical_jbod["maxSizeGB"])
+        attrs["Identifiers"] = list()
+        attrs["Identifiers"].append(
+            {"DurableNameFormat": "UUID",
+             "DurableName": sas_logical_jbod["uri"].split("/")[-1]})
+        attrs["Links"] = collections.OrderedDict()
+        attrs["Links"]["Drives"] = list()
+
+        for drivebayuri in drivebayuris:
+            attrs["Links"]["Drives"].append(
+                {
+                    "@odata.id": ComputerSystem.BASE_URI + "/" + uuid +
+                    "/Storage/1/Drives/" + drivebayuri.split("/")[-1]
+                }
+            )
+
+        return Volume(attrs)
+
+
+def get_sas_logical_jbod_by_volumeid(server_profile, volume_id):
+
+    for logical_jbod in server_profile["localStorage"]["sasLogicalJBODs"]:
+        if logical_jbod["id"] == int(volume_id) and \
+                logical_jbod["sasLogicalJBODUri"]:
+            item = g.oneview_client.sas_logical_jbods\
+                .get(logical_jbod["sasLogicalJBODUri"])
+            return item
+
+    return None
+
+
+def get_device_slot_from_sas_logical_jbod_by_volumeid(server_profile,
+                                                      volume_id):
+
+    for logical_jbod in server_profile["localStorage"]["sasLogicalJBODs"]:
+        if logical_jbod["id"] == int(volume_id):
+            return logical_jbod["deviceSlot"]
+
+    return None
+
+
+def get_drive_path_from_logical_Drive_Bay_Uri(logical_Drive_Bay_Uri):
+    ov_client = g.oneview_client
+    conn = ov_client.connection
+    URI = logical_Drive_Bay_Uri
+    resource_client = ResourceClient(conn, URI)
+    item = resource_client.get(URI)
+    return item["drivePaths"][0]
+
+
+def get_drive_enclosure_uri_from_sas_Logical_Interconnect(
+        sas_Logical_Interconnect_Uri):
+    item = g.oneview_client.sas_logical_interconnects.get(
+        sas_Logical_Interconnect_Uri)
+    return item["driveEnclosureUris"][0]
+
+
+def get_drive_enclosure_object(drive_enclosure_uri):
+    item = g.oneview_client.drive_enclosures.get(drive_enclosure_uri)
+    return item
+
+
+def get_capacity_in_bytes(capacity_in_gb):
+        size_in_bytes = float(capacity_in_gb) * 1024 * 1024 * 1024
+        return int(size_in_bytes)
