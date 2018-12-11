@@ -15,9 +15,6 @@
         "Drives": [
             {
                 "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/5c3e5214-e9fb-469d-a8d5-2159fe2d97d8"
-            },
-            {
-                "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/5c3e5214-e9fb-469d-a8d5-2159fe2d97d8"
             }
         ]
     },

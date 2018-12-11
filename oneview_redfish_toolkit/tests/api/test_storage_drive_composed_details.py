@@ -14,6 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import copy
 import json
 
 from oneview_redfish_toolkit.api.drive import Drive
@@ -47,6 +48,18 @@ class TestDrive(BaseTest):
         ) as f:
             self.drive_enclosure = json.load(f)
 
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'DriveWithMediaTypeNull.json'
+        ) as f:
+            self.drive_with_mediaType_null = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'DriveForRBWithMediaTypeNull.json'
+        ) as f:
+            self.drive_with_mediaType_null_rb = json.load(f)
+
     def test_build_for_computer_system(self):
         with open(
             'oneview_redfish_toolkit/mockups/redfish/Drive.json'
@@ -73,3 +86,29 @@ class TestDrive(BaseTest):
         result = json.loads(target.serialize())
 
         self.assertEqualMockup(expected_result, result)
+
+    def test_build_for_composed_system_with_unknown_mediaType(self):
+
+        sas_logical_jbods = copy.deepcopy(self.sas_logical_jbods[1])
+
+        sas_logical_jbods["driveTechnology"]["driveMedia"] = "Unknown"
+
+        drive = Drive.build_for_computer_system("4", self.server_profile,
+                                                sas_logical_jbods)
+
+        result = json.loads(drive.serialize())
+
+        self.assertEqualMockup(self.drive_with_mediaType_null, result)
+
+    def test_build_for_resource_block_with_unknown_mediaType(self):
+
+        drive = copy.deepcopy(self.drive)
+
+        drive["attributes"]["mediaType"] = "Unknown"
+
+        drive = Drive.build_for_resource_block(drive,
+                                               self.drive_enclosure)
+
+        result = json.loads(drive.serialize())
+
+        self.assertEqualMockup(self.drive_with_mediaType_null_rb, result)
