@@ -30,6 +30,7 @@ from pika.credentials import ExternalCredentials
 
 # Own libs
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
@@ -110,7 +111,7 @@ def get_oneview_client():
         # multiple OneViews for events service
         ip=config.get_oneview_multiple_ips()[0],
         credentials=config.get_credentials(),
-        api_version=600
+        api_version=config.get_api_version()
     )
     ov_client = OneViewClient(ov_config)
     ov_client.connection.login(config.get_credentials())
@@ -143,6 +144,11 @@ def get_scmb_certs():
     # Get CA
     ov_client = get_oneview_client()
     cert = _get_ov_ca_cert_base64data(ov_client)
+
+    if cert is None:
+        raise OneViewRedfishException(
+            "Failed to fetch OneView CA Certificate"
+        )
 
     # Create the dir to save the scmb files
     os.makedirs(name=_scmb_base_dir(), exist_ok=True)
