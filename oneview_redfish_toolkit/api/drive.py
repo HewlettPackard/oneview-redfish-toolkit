@@ -55,7 +55,8 @@ class Drive(RedfishJsonValidator):
         profile_uuid = server_profile["uri"].split("/")[-1]
         odata_id = "{}/{}/Storage/1/Drives/{}"\
             .format(ComputerSystem.BASE_URI, profile_uuid, drive_id)
-
+        media_type = logical_jbod["driveTechnology"]["driveMedia"]
+        media_type = None if (media_type == "Unknown") else media_type
         attrs = {
             "Id": str(drive_id),
             "Name": logical_jbod["name"],
@@ -63,7 +64,7 @@ class Drive(RedfishJsonValidator):
             "CapacityBytes": Drive.get_capacity_in_bytes(
                 logical_jbod["maxSizeGB"]),
             "Protocol": logical_jbod["driveTechnology"]["deviceInterface"],
-            "MediaType": logical_jbod["driveTechnology"]["driveMedia"],
+            "MediaType": media_type,
             "Links": {
                 "Chassis": {
                     "@odata.id": "/redfish/v1/Chassis/" + enclosure_id
@@ -81,7 +82,8 @@ class Drive(RedfishJsonValidator):
         ov_drive_attrs = drive["attributes"]
         odata_id = "{}/{}/Storage/1/Drives/1"\
             .format(ResourceBlockCollection.BASE_URI, drive_uuid)
-
+        media_type = ov_drive_attrs["mediaType"]
+        media_type = None if (media_type == "Unknown") else media_type
         attrs = {
             "Id": "1",
             "Name": drive["name"],
@@ -89,7 +91,7 @@ class Drive(RedfishJsonValidator):
             "CapacityBytes": Drive.get_capacity_in_bytes(
                 ov_drive_attrs["capacityInGB"]),
             "Protocol": ov_drive_attrs["interfaceType"],
-            "MediaType": ov_drive_attrs["mediaType"],
+            "MediaType": media_type,
             "Links": {
                 "Chassis": {
                     "@odata.id": "/redfish/v1/Chassis/" + enclosure_id
