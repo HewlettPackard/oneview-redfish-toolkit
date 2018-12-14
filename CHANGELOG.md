@@ -1,4 +1,4 @@
-# 0.3.2 (unreleased)
+# 0.3.2
 
 # Bug fixes & Enhancements
  - #306 Create folder structure for CompositionService
@@ -7,12 +7,14 @@
  - #503 Add instruction about how to install Toolkit offline
  - #504 Wrong ID inside EthernetInterface object
  - #506 "Chassis/UUID" of Enclosure type raises a error when Enclosure have not Rack
- - #508 [DEV mode] The app does not up properly without the "certs" files path in redfish.conf 
+ - #508 [DEV mode] The app does not up properly without the "certs" files path in redfish.conf
  - #509 Thermal object returned by redfish service has a Temperature object not implemented yet
  - #510 Requesting /Systems is listing systems that are not found
  - #511 Add RedfishVersion in the log files
  - #512 Check other endpoints to add decorator single_oneview
  - #518 Adding missing info on redfish.conf and loggers sections
+ - #521 Excluding tests and mockups from build
+ - #526 Fix for drives call is failing if mediaType is unknwon
 
 # 0.3.1
 
