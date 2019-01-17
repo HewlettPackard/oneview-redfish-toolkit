@@ -1,0 +1,11 @@
+{
+  "@odata.type": "EthernetInterface.v1_4_0.EthernetInterface",
+  "Id": "2",
+  "Name": "set_example",
+  "SpeedMbps": 2500,
+  "VLANs": {
+    "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0/EthernetInterfaces/2/VLANs"
+  },
+  "@odata.context": "/redfish/v1/$metadata#EthernetInterface.EthernetInterface",
+  "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0/EthernetInterfaces/2"
+}

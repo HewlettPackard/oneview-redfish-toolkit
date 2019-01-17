@@ -50,8 +50,16 @@ def get_ethernet_interface(server_profile_uuid, eth_id):
         abort(status.HTTP_404_NOT_FOUND, "EthernetInterface {} not found"
               .format(eth_id))
 
-    network_attrs = g.oneview_client.index_resources\
-        .get(connection["networkUri"])
+    network_attrs = None
+    if connection["networkUri"].split("/")[-2] == 'ethernet-networks':
+        network_attrs = g.oneview_client.ethernet_networks.get(
+            connection["networkUri"])
+    if connection["networkUri"].split("/")[-2] == 'network-sets':
+        network_attrs = g.oneview_client.network_sets.get(
+            connection["networkUri"])
+
+    if network_attrs is None:
+        abort(status.HTTP_404_NOT_FOUND, "Given type is not supported")
 
     ethernet = EthernetInterface.build(profile, connection, network_attrs)
 

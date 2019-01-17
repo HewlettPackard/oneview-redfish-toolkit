@@ -560,7 +560,8 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.oneview_client.server_profile_templates.get.return_value = \
             self.server_profile_template
-        self.oneview_client.index_resources.get.return_value = \
+
+        self.oneview_client.ethernet_networks.get.return_value = \
             ethernet_network
 
         response = self.client.get(
@@ -591,6 +592,69 @@ class TestResourceBlock(BaseFlaskTest):
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
             "/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0/EthernetInterfaces/999")
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+    def test_get_network_set(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish'
+            '/EthernetInterfaceWithListOfVlansResourceBlock.json'
+        ) as f:
+            expected_ethernet_interface = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/NetworkSet.json'
+        ) as f:
+            network_set = json.load(f)
+
+        server_profile_template = copy.deepcopy(self.server_profile_template)
+        temp = {}
+        temp["portId"] = "Mezz 3:1-a"
+        temp["requestedMbps"] = "2500"
+        temp["id"] = 2
+        temp["requestedVFs"] = "0"
+        temp["functionType"] = "Ethernet"
+        temp["name"] = "set_example"
+        temp["networkUri"] = \
+            "/rest/network-sets/76f584da-1f9d-40b8-9b9d-5ccb09810142"
+        server_profile_template["connectionSettings"]["connections"].\
+            append(temp)
+        self.oneview_client.server_profile_templates.get.return_value = \
+            server_profile_template
+
+        self.oneview_client.network_sets.get.return_value = \
+            network_set
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0/EthernetInterfaces/2")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_ethernet_interface, result)
+
+    def test_get_ethernet_interface_when_type_not_supported(self):
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/EthernetNetwork.json'
+        ) as f:
+            ethernet_network = json.load(f)
+
+        server_profile_template = copy.deepcopy(self.server_profile_template)
+        server_profile_template["connectionSettings"]["connections"][0][
+            "networkUri"] = "/rest/any-type/id"
+        self.oneview_client.server_profile_templates.get.return_value = \
+            server_profile_template
+
+        self.oneview_client.ethernet_networks.get.return_value = \
+            ethernet_network
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0/EthernetInterfaces/1")
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
