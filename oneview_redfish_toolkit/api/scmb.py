@@ -25,15 +25,16 @@ import threading
 # 3rd party libs
 from hpOneView.exceptions import HPOneViewException
 from hpOneView.oneview_client import OneViewClient
+from hpOneView.resources.resource import ResourceClient
 from pika.credentials import ExternalCredentials
 
 # Own libs
 from oneview_redfish_toolkit.api.errors import NOT_FOUND_ONEVIEW_ERRORS
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api.event import Event
 from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import util
-
 
 SCMB_DIR_NAME = "scmb"
 ONEVIEW_CA_NAME = "oneview_ca.pem"
@@ -74,7 +75,7 @@ def init_event_service():
         else:
             logging.info('SCMB certs not found. '
                          'Checking if already generated in Oneview...')
-            get_cert()
+            get_scmb_certs()
             logging.info('Got certs. Testing connection...')
             if not _is_cert_working_with_scmb():
                 logging.error('Failed to connect to scmb. Aborting...')
@@ -110,7 +111,7 @@ def get_oneview_client():
         # multiple OneViews for events service
         ip=config.get_oneview_multiple_ips()[0],
         credentials=config.get_credentials(),
-        api_version=300
+        api_version=config.get_api_version()
     )
     ov_client = OneViewClient(ov_config)
     ov_client.connection.login(config.get_credentials())
@@ -118,11 +119,36 @@ def get_oneview_client():
     return ov_client
 
 
-def get_cert():
+def _get_ov_ca_cert(ov_client):
+    URI = '/rest/certificates/ca'
+    resource_client = ResourceClient(ov_client.connection, URI)
+    cert = resource_client.get(URI + "?filter=certType:INTERNAL")
+    return cert
+
+
+def _get_ov_ca_cert_base64data(ov_client):
+    cert = _get_ov_ca_cert(ov_client)
+    returnCert = None
+    if isinstance(cert, dict):
+        if 'members' in cert.keys():
+            for certObj in cert.get('members'):
+                if certObj and certObj.get('certificateDetails') and \
+                        certObj.get('certificateDetails').get('base64Data'):
+                    returnCert = certObj.get('certificateDetails').\
+                        get('base64Data')
+                    break
+    return returnCert
+
+
+def get_scmb_certs():
     # Get CA
     ov_client = get_oneview_client()
+    cert = _get_ov_ca_cert_base64data(ov_client)
 
-    cert = ov_client.certificate_authority.get()
+    if cert is None:
+        raise OneViewRedfishException(
+            "Failed to fetch OneView CA Certificate"
+        )
 
     # Create the dir to save the scmb files
     os.makedirs(name=_scmb_base_dir(), exist_ok=True)

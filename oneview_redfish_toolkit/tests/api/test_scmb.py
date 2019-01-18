@@ -87,7 +87,11 @@ class TestSCMB(BaseTest):
     @mock.patch.object(scmb, '_is_cert_working_with_scmb')
     @mock.patch.object(scmb, 'config')
     @mock.patch.object(scmb, 'get_oneview_client')
-    def test_get_cert_already_exists(self, get_oneview_client, config_mock,
+    @mock.patch.object(scmb, '_get_ov_ca_cert_base64data')
+    def test_get_cert_already_exists(self,
+                                     _get_ov_ca_cert_base64data,
+                                     get_oneview_client,
+                                     config_mock,
                                      _is_cert_working_with_scmb):
         config_mock.get_config.return_value = {
             'ssl': {
@@ -114,7 +118,10 @@ class TestSCMB(BaseTest):
             'message': 'certs already exist',
         })
         oneview_client.certificate_rabbitmq.generate.side_effect = e
-        scmb.get_cert()
+
+        oneview_client.connection = 'con'
+        _get_ov_ca_cert_base64data.return_value = "CA CERT"
+        scmb.get_scmb_certs()
         self.assertTrue(scmb._has_valid_certificates())
 
     @mock.patch('pika.BlockingConnection')
@@ -137,12 +144,16 @@ class TestSCMB(BaseTest):
 
         self.assertTrue(dispatch_mock.called)
 
+    @mock.patch.object(scmb, '_get_ov_ca_cert')
     @mock.patch.object(scmb, 'config')
     @mock.patch.object(scmb, '_is_cert_working_with_scmb')
     @mock.patch.object(scmb, 'get_oneview_client')
-    def test_generate_new_cert_for_oneview(self, get_oneview_client,
+    def test_generate_new_cert_for_oneview(self,
+                                           get_oneview_client,
                                            _is_cert_working_with_scmb,
-                                           config_mock):
+                                           config_mock,
+                                           _get_ov_ca_cert
+                                           ):
         config_mock.get_config.return_value = {
             'ssl': {
                 'SSLCertFile': 'cert_file.crt'
@@ -167,12 +178,32 @@ class TestSCMB(BaseTest):
             [e, cert_key_pair]
         get_oneview_client.return_value = oneview_client
         _is_cert_working_with_scmb.return_value = True
-        scmb.get_cert()
+
+        _get_ov_ca_cert.return_value = {
+            'type': 'CAInfo',
+            'members': [
+                {
+                    'certificateDetails': {
+                        'base64Data': 'CA CERT'
+                        }
+                    }
+                ]
+            }
+
+        scmb.get_scmb_certs()
         self.assertTrue(scmb._has_valid_certificates())
+
+        # Return None if cert is not a dict
+        _get_ov_ca_cert.return_value = []
+        cert = scmb._get_ov_ca_cert_base64data(oneview_client)
+        self.assertEqual(cert, None)
 
     @mock.patch.object(scmb, 'config')
     @mock.patch.object(scmb, 'get_oneview_client')
-    def test_get_oneview_cert_unexpected_error(self, get_oneview_client,
+    @mock.patch.object(scmb, '_get_ov_ca_cert_base64data')
+    def test_get_oneview_cert_unexpected_error(self,
+                                               _get_ov_ca_cert_base64data,
+                                               get_oneview_client,
                                                config_mock):
         config_mock.get_config.return_value = {
             'ssl': {
@@ -193,8 +224,11 @@ class TestSCMB(BaseTest):
         oneview_client.certificate_rabbitmq.get_key_pair.side_effect = e
         get_oneview_client.return_value = oneview_client
 
+        oneview_client.connection = 'con'
+        _get_ov_ca_cert_base64data.return_value = "CA CERT"
+
         with self.assertRaises(HPOneViewException) as hp_exception:
-            scmb.get_cert()
+            scmb.get_scmb_certs()
 
         test_exception = hp_exception.exception
         self.assertEqual(hp_ov_exception_msg, test_exception.msg)
@@ -205,7 +239,9 @@ class TestSCMB(BaseTest):
     @mock.patch('pika.ConnectionParameters')
     @mock.patch.object(scmb, 'config')
     @mock.patch.object(scmb, 'get_oneview_client')
+    @mock.patch.object(scmb, '_get_ov_ca_cert_base64data')
     def test_init_event_service_with_valid_certificate(self,
+                                                       _get_ov_ca_cert,
                                                        get_oneview_client,
                                                        config_mock, conn_param,
                                                        block_conn, channel):
@@ -225,6 +261,9 @@ class TestSCMB(BaseTest):
         oneview_client.certificate_rabbitmq.get_key_pair.return_value = {
             'base64SSLCertData': 'Client CERT',
             'base64SSLKeyData': 'Client Key'}
+
+        oneview_client.connection = 'con'
+        _get_ov_ca_cert.return_value = "CA CERT"
 
         pika_mock = mock.MagicMock()
         pika_mock.channel.Channel = {}
@@ -275,3 +314,26 @@ class TestSCMB(BaseTest):
         scmb.init_event_service()
 
         self.assertTrue(scmb._has_valid_certificates())
+
+    @mock.patch.object(scmb, 'config')
+    @mock.patch.object(scmb, 'OneViewClient')
+    def test_get_oneview_client(self, ov_client, config_mock):
+        config_mock.get_credentials.return_value = {
+            'password': 'password',
+            'userName': 'Administrator'
+            }
+        config_mock.get_oneview_multiple_ips.return_value = ['1.1.1.1',
+                                                             '2.1.2.2']
+
+        connection = mock.MagicMock()
+        connection.create_oneview_config.return_value = {
+            'ip': '1.1.1.1',
+            'credentials':
+                {
+                    'password': 'password',
+                    'userName': 'Administrator'
+                },
+            'api_version': 600}
+        ov_client.return_value = mock.MagicMock()
+        ov_client.connection.login = mock.MagicMock()
+        self.assertNotEqual(scmb.get_oneview_client(), None)
