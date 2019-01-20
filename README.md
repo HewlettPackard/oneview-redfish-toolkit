@@ -17,7 +17,8 @@ DMTF's Redfish is an open industry standard specification and schema that specif
 * **To install the application:**
   * Ubuntu 16.04 (standard server install works fine)
   * Python >=3.5
-  * pip >=8.1.2
+  * pip >=18.1
+  * setuptools >=40.6.3
   * OpenSSL >= 1.0.2g
   * Internet connectivity
  * **To run the application (and make it useful):**
