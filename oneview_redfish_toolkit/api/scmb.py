@@ -36,9 +36,9 @@ from oneview_redfish_toolkit import config
 from oneview_redfish_toolkit import util
 
 SCMB_DIR_NAME = "scmb"
-ONEVIEW_CA_NAME = "oneview_ca"
-SCMB_CERT_NAME = "oneview_scmb"
-SCMB_KEY_NAME = "oneview_scmb"
+ONEVIEW_CA_NAME = "oneview_ca.pem"
+SCMB_CERT_NAME = "oneview_scmb.pem"
+SCMB_KEY_NAME = "oneview_scmb.key"
 SCMB_PORT = 5671
 SCMB_SOCKET_TIMEOUT = 5  # seconds
 SCMB_RESOURCE_LIST = [
@@ -72,15 +72,15 @@ def _scmb_oneview_dir(ov_ip):
 
 
 def _oneview_ca_path(ov_ip):
-    return os.path.join(_scmb_oneview_dir(ov_ip), ONEVIEW_CA_NAME + ".pem")
+    return os.path.join(_scmb_oneview_dir(ov_ip), ONEVIEW_CA_NAME)
 
 
 def _scmb_cert_path(ov_ip):
-    return os.path.join(_scmb_oneview_dir(ov_ip), SCMB_CERT_NAME + ".pem")
+    return os.path.join(_scmb_oneview_dir(ov_ip), SCMB_CERT_NAME)
 
 
 def _scmb_key_path(ov_ip):
-    return os.path.join(_scmb_oneview_dir(ov_ip), SCMB_KEY_NAME + ".key")
+    return os.path.join(_scmb_oneview_dir(ov_ip), SCMB_KEY_NAME)
 
 
 def init_event_service(token=None):
