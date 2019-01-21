@@ -311,3 +311,21 @@ class TestAuthentication(unittest.TestCase):
         ])
         self.assertEqual(expected_map_client,
                          client_session._get_map_clients())
+
+    @mock.patch.object(client_session, 'config')
+    @mock.patch.object(client_session, '_get_oneview_client_by_token')
+    @mock.patch.object(client_session, '_get_oneview_client_by_ip')
+    def test_get_oneview_client(self, mock_get_map_clients, mock_ov_client,
+                                mock_config):
+        ip_oneview = "1.1.1.1"
+        token = "abc123"
+        mock_config.auth_mode_is_session.return_value = True
+        mock_ov_client.return_value = 'ov_client'
+        result = client_session.get_oneview_client(ip_oneview, token)
+        self.assertEqual(result, mock_ov_client.return_value)
+
+        mock_config.auth_mode_is_session.return_value = False
+        mock_config.auth_mode_is_conf.return_value = True
+        mock_get_map_clients.return_value = 'ov_client'
+        result = client_session.get_oneview_client(ip_oneview)
+        self.assertEqual(result, mock_ov_client.return_value)
