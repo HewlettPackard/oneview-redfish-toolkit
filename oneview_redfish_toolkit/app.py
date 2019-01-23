@@ -170,18 +170,18 @@ def main(config_file_path, logging_config_file_path,
     app.register_blueprint(vlan_network_interface)
     app.register_blueprint(zone_collection)
     app.register_blueprint(zone)
+    app.register_blueprint(subscription_collection)
+    app.register_blueprint(subscription)
 
     # Init cached data
     client_session.init_map_clients()
+    scmb.init_map_scmb_connections()
     client_session.init_gc_for_expired_sessions()
     multiple_oneview.init_map_resources()
     multiple_oneview.init_map_appliances()
     category_resource.init_map_category_resources()
 
     if auth_mode == "conf":
-        app.register_blueprint(subscription_collection)
-        app.register_blueprint(subscription)
-
         client_session.login_conf_mode()
     else:
         app.register_blueprint(session)
@@ -305,7 +305,8 @@ def main(config_file_path, logging_config_file_path,
 
     logging.info("RedfishVersion : " + oneview_redfish_toolkit.version())
 
-    scmb.init_event_service()
+    if config.auth_mode_is_conf():
+        scmb.init_event_service()
 
     app_config = config.get_config()
 

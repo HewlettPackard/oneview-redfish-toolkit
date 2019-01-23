@@ -171,9 +171,12 @@ def check_authentication(rf_token):
         abort(status.HTTP_401_UNAUTHORIZED, msg)
 
 
-def _get_oneview_client_by_token(ip_oneview):
+def _get_oneview_client_by_token(ip_oneview, token=None):
     try:
-        rf_token = request.headers.get('x-auth-token')
+        if token:
+            rf_token = token
+        else:
+            rf_token = request.headers.get('x-auth-token')
         client_ov_by_ip = _get_map_clients()[rf_token]['client_ov_by_ip']
         oneview_client = client_ov_by_ip[ip_oneview]
         return oneview_client
@@ -189,9 +192,9 @@ def _get_oneview_client_by_ip(ip_oneview):
     return oneview_client
 
 
-def get_oneview_client(ip_oneview):
+def get_oneview_client(ip_oneview, token=None):
     if config.auth_mode_is_session():
-        return _get_oneview_client_by_token(ip_oneview)
+        return _get_oneview_client_by_token(ip_oneview, token)
 
     if config.auth_mode_is_conf():
         return _get_oneview_client_by_ip(ip_oneview)
