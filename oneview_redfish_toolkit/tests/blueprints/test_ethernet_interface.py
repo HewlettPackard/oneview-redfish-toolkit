@@ -15,6 +15,7 @@
 # under the License.
 
 # Python libs
+import copy
 import json
 
 # 3rd party libs
@@ -58,7 +59,7 @@ class TestEthernetInterface(BaseFlaskTest):
 
         self.oneview_client.\
             server_profiles.get.return_value = self.server_profile
-        self.oneview_client.index_resources.get.return_value = network
+        self.oneview_client.ethernet_networks.get.return_value = network
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -74,7 +75,7 @@ class TestEthernetInterface(BaseFlaskTest):
             self.server_profile["uuid"])
 
         # if verifies the URI of connection from ServerProfile.json mockup
-        self.oneview_client.index_resources.get.assert_called_with(
+        self.oneview_client.ethernet_networks.get.assert_called_with(
             "/rest/ethernet-networks/19638712-679d-4232-9743-c7cb6c7bf718")
 
     def test_get_ethernet_interface_when_it_has_only_a_list_of_vlan(self):
@@ -82,7 +83,7 @@ class TestEthernetInterface(BaseFlaskTest):
 
         with open(
             'oneview_redfish_toolkit/mockups/oneview/'
-            'NetworkSetForEthernetInterface.json'
+            'NetworkSet.json'
         ) as f:
             network_set = json.load(f)
 
@@ -94,7 +95,7 @@ class TestEthernetInterface(BaseFlaskTest):
 
         self.oneview_client.\
             server_profiles.get.return_value = self.server_profile
-        self.oneview_client.index_resources.get.return_value = network_set
+        self.oneview_client.network_sets.get.return_value = network_set
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -110,7 +111,7 @@ class TestEthernetInterface(BaseFlaskTest):
             self.server_profile["uuid"])
 
         # if verifies the URI of connection from ServerProfile.json mockup
-        self.oneview_client.index_resources.get.assert_called_with(
+        self.oneview_client.network_sets.get.assert_called_with(
             "/rest/network-sets/76f584da-1f9d-40b8-9b9d-5ccb09810142")
 
     def test_get_ethernet_interface_when_id_is_not_found(self):
@@ -156,3 +157,27 @@ class TestEthernetInterface(BaseFlaskTest):
         self.oneview_client.server_profiles.get.assert_called_with(
             self.server_profile["uuid"])
         self.oneview_client.index_resources.get.assert_not_called()
+
+    def test_get_ethernet_interface_when_given_type_is_not_supported(self):
+        """Tests when given type is not found"""
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/'
+            'NetworkForEthernetInterface.json'
+        ) as f:
+            network = json.load(f)
+
+        server_profile = copy.deepcopy(self.server_profile)
+        server_profile["connectionSettings"]["connections"][0]["networkUri"] =\
+            "/rest/type-not-supported/19638712-679d-4232-9743-c7cb6c7bf718"
+        self.oneview_client.\
+            server_profiles.get.return_value = server_profile
+        self.oneview_client.ethernet_networks.get.return_value = network
+
+        response = self.client.get(
+            "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
+            "EthernetInterfaces/1"
+        )
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)

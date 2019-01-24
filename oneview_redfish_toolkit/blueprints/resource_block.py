@@ -148,7 +148,16 @@ def get_resource_block_ethernet_interface(uuid, id):
     if not connection:
         abort(status.HTTP_404_NOT_FOUND, "Ethernet interface not found")
 
-    network = g.oneview_client.index_resources.get(connection["networkUri"])
+    network = None
+    if connection["networkUri"].split("/")[-2] == 'ethernet-networks':
+        network = g.oneview_client.ethernet_networks.get(
+            connection["networkUri"])
+    if connection["networkUri"].split("/")[-2] == 'network-sets':
+        network = g.oneview_client.network_sets.get(
+            connection["networkUri"])
+
+    if network is None:
+        abort(status.HTTP_404_NOT_FOUND, "Given type is not supported")
 
     ethernet_interface = EthernetInterface.build_resource_block(
         server_profile_template, connection, network)

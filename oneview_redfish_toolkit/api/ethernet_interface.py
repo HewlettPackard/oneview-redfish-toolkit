@@ -40,8 +40,7 @@ class EthernetInterface(RedfishJsonValidator):
             Args:
                 server_profile: a server profile dict from OneView
                 connection: a connection dict from server profile
-                network_attr: a network (or networkSet) dict from
-                OneView index resources
+                network_attr: a network (or networkSet) dict
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -104,4 +103,4 @@ class EthernetInterface(RedfishJsonValidator):
             attrs_dict["VLAN"] = dict()
             attrs_dict["VLAN"]["VLANEnable"] = True
             attrs_dict["VLAN"]["VLANId"] = \
-                int(network_attr["attributes"]["vlan_id"])
+                int(network_attr["vlanId"])
