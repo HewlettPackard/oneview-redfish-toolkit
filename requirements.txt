@@ -5,6 +5,7 @@
 appdirs==1.4.3
 cherrypy==18.0.1
 configparser==3.5.0
+filelock==3.0.10
 flask==1.0.2
 flask-api==1.0
 hpOneView==4.7.0
