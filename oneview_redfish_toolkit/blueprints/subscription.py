@@ -178,8 +178,8 @@ def add_subscription():
             # write subscription to the all_subscription.json file
             _add_subscription_to_file(sc.redfish)
             for event_type in sc.get_event_types():
-                util.get_subscriptions_by_type()[event_type]
-                [subscription_id] = sc
+                util.get_subscriptions_by_type(
+                    )[event_type][subscription_id] = sc
 
             util.get_all_subscriptions()[subscription_id] = sc
     except Exception as e:
