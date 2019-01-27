@@ -88,6 +88,8 @@ from oneview_redfish_toolkit.blueprints.storage_collection \
 from oneview_redfish_toolkit.blueprints.storage_for_resource_block import \
     storage_for_resource_block
 from oneview_redfish_toolkit.blueprints.subscription\
+    import add_subscription_from_file
+from oneview_redfish_toolkit.blueprints.subscription\
     import subscription
 from oneview_redfish_toolkit.blueprints.subscription_collection \
     import subscription_collection
@@ -305,7 +307,7 @@ def main(config_file_path, logging_config_file_path,
 
     logging.info("RedfishVersion : " + oneview_redfish_toolkit.version())
 
-    if config.auth_mode_is_conf():
+    if config.auth_mode_is_conf() and add_subscription_from_file():
         scmb.init_event_service()
 
     app_config = config.get_config()
