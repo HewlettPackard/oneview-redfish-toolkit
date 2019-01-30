@@ -29,6 +29,7 @@ from hpOneView.exceptions import HPOneViewException
 from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.api.session import Session
 from oneview_redfish_toolkit.api.session_collection import SessionCollection
+from oneview_redfish_toolkit.blueprints import subscription
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 from oneview_redfish_toolkit import client_session
@@ -98,7 +99,10 @@ def post_session():
         token, session_id = client_session.login(username, password)
 
         sess = Session(session_id)
-        scmb.init_event_service(token)
+
+        if subscription.add_subscription_from_file():
+            scmb.init_event_service(token)
+
         return ResponseBuilder.success(sess, {
             "Location": sess.redfish["@odata.id"],
             "X-Auth-Token": token
