@@ -58,7 +58,9 @@ SCHEMAS = {
     "Session": "Session.v1_1_0.json",
     "SessionCollection": "SessionCollection.json",
     "EventDestinationCollection": "EventDestinationCollection.json",
-    "SessionService": "SessionService.v1_1_3.json"
+    "SessionService": "SessionService.v1_1_3.json",
+    "VolumeCollection": "VolumeCollection.json",
+    "Volume": "Volume.v1_0_3.json"
 }
 
 REGISTRY = {

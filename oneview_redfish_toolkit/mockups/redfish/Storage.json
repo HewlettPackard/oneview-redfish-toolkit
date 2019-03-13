@@ -1,7 +1,7 @@
 {
     "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1",
     "@odata.context": "/redfish/v1/$metadata#Storage.Storage",
-    "@odata.type": "#Storage.v1_2_0.Storage",
+    "@odata.type": "#Storage.v1_4_0.Storage",
     "StorageControllers@odata.count": 1,
     "Id": "1",
     "Name": "Storage Controller",
@@ -38,5 +38,6 @@
         {
             "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/4"
         }
-    ]
+    ],
+    "Volumes": {"@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes"}
 }
