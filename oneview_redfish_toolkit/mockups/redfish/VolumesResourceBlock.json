@@ -1,0 +1,19 @@
+{
+    "Id": "1",
+    "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/B526F59E-9BC7-467F-9205-A9F4015CE296/Storage/1/Volumes/1",
+    "Name": "externalVolume",
+    "CapacityBytes": 10737418240,    
+    "VolumeType": "StripedWithParity",
+    "Identifiers": [
+        {
+            "DurableName": "B526F59E-9BC7-467F-9205-A9F4015CE296",
+            "DurableNameFormat": "UUID"
+        }
+    ],
+    "Status": {
+        "State": "Enabled",
+        "Health": "OK"
+    },
+    "@odata.type": "#Volume.v1_0_3.Volume",
+    "@odata.context": "/redfish/v1/$metadata#Volume.Volume"
+}
