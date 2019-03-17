@@ -1,0 +1,115 @@
+{
+    "type": "StorageVolumeAttachmentListV2",
+    "category": "storage-volume-attachments",
+    "uri": "/rest/storage-volume-attachments?filter=storageVolumeUri%20=%20%27/rest/storage-volumes/B526F59E-9BC7-467F-9205-A9F4015CE296%27",
+    "members": [
+        {
+            "storageVolumeUri": "/rest/storage-volumes/B526F59E-9BC7-467F-9205-A9F4015CE296",
+            "storageSystemUri": null,
+            "ownerUri": "/rest/server-profiles/72d7f1ff-00e5-43b6-83c2-d4d61abd1708",
+            "host": {
+                "name": "sp3par",
+                "os": "Windows 2012 / WS2012 R2"
+            },
+            "lun": 1,
+            "requestingLunAutoSelection": null,
+            "supportsIndividualPathEnablement": true,
+            "paths": [
+                {
+                    "type": "StorageVolumeAttachmentPathV2",
+                    "status": "OK",
+                    "isEnabled": true,
+                    "transport": "FC",
+                    "connectionName": "1",
+                    "initiator": {
+                        "name": "10:00:62:D1:2C:C0:00:02",
+                        "chap": null,
+                        "mutualChap": null,
+                        "deviceSpecificSettings": {}
+                    },
+                    "proxyName": "20:01:00:05:30:00:28:02",
+                    "expectedNetworkUri": "/rest/fc-networks/ea5fa256-a3f9-46be-bcd9-0b1d934195cd",
+                    "expectedSanUri": null,
+                    "targets": [
+                        {
+                            "ipAddress": null,
+                            "tcpPort": null,
+                            "name": "20:00:00:02:AC:00:08:D6"
+                        }
+                    ],
+                    "requestingTargetsAutoSelection": null,
+                    "sanServiceUri": null
+                }
+            ],
+            "category": "storage-volume-attachments",
+            "name": null,
+            "description": null,
+            "status": "OK",
+            "state": "Configured",
+            "type": "StorageVolumeAttachmentV2",
+            "uri": "/rest/storage-volume-attachments/B5388E44-059B-4964-9014-A9F50180E5B7",
+            "eTag": "5/1430",
+            "created": "2019-02-15T23:21:22.000Z",
+            "modified": "2019-03-07T18:39:45.000Z",
+            "lastRefreshTime": "2019-03-07T18:39:45.000Z"
+        },
+        {
+            "storageVolumeUri": "/rest/storage-volumes/B526F59E-9BC7-467F-9205-A9F4015CE296",
+            "storageSystemUri": null,
+            "ownerUri": "/rest/server-profiles/416c23ad-1587-4484-9174-e10afd1801f9",
+            "host": {
+                "name": "SP3par1",
+                "os": "Windows 2012 / WS2012 R2"
+            },
+            "lun": 1,
+            "requestingLunAutoSelection": null,
+            "supportsIndividualPathEnablement": true,
+            "paths": [
+                {
+                    "type": "StorageVolumeAttachmentPathV2",
+                    "status": "OK",
+                    "isEnabled": true,
+                    "transport": "FC",
+                    "connectionName": "1",
+                    "initiator": {
+                        "name": "10:00:62:D1:2C:C0:00:04",
+                        "chap": null,
+                        "mutualChap": null,
+                        "deviceSpecificSettings": {}
+                    },
+                    "proxyName": "20:01:00:05:30:00:28:02",
+                    "expectedNetworkUri": "/rest/fc-networks/ea5fa256-a3f9-46be-bcd9-0b1d934195cd",
+                    "expectedSanUri": null,
+                    "targets": [
+                        {
+                            "ipAddress": null,
+                            "tcpPort": null,
+                            "name": "20:00:00:02:AC:00:08:D6"
+                        }
+                    ],
+                    "requestingTargetsAutoSelection": null,
+                    "sanServiceUri": null
+                }
+            ],
+            "category": "storage-volume-attachments",
+            "name": null,
+            "description": null,
+            "status": "OK",
+            "state": "Configured",
+            "type": "StorageVolumeAttachmentV2",
+            "uri": "/rest/storage-volume-attachments/235EA611-6332-49AE-9355-A9F901356C9F",
+            "eTag": "5/1156",
+            "created": "2019-02-19T18:46:34.000Z",
+            "modified": "2019-03-07T18:39:45.000Z",
+            "lastRefreshTime": "2019-03-07T18:39:45.000Z"
+        }
+    ],
+    "total": 2,
+    "count": 2,
+    "start": 0,
+    "prevPageUri": null,
+    "nextPageUri": null,
+    "eTag": "d11913bb-dcef-483b-903b-bdcd74888a60",
+    "created": "2019-03-07T18:53:12.994Z",
+    "modified": "2019-03-07T18:53:12.994Z"
+}

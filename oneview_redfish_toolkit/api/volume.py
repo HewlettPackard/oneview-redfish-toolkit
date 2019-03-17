@@ -25,6 +25,8 @@ from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit.api.resource_block_collection import \
+    ResourceBlockCollection
 
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 
@@ -56,6 +58,39 @@ class Volume(RedfishJsonValidator):
         self._validate()
 
     @staticmethod
+    def build_volume_for_resource_blocks(resource_block_id, volume):
+        """Returns a storage Volume with the contents of data from an Oneview
+
+            Args:
+                resource_block_id: storage volume uuid
+                volume: storage volume
+
+        """
+        attrs = {}
+        attrs["@odata.id"] = ResourceBlockCollection.BASE_URI + "/" + \
+            resource_block_id + "/Storage/1/Volumes/1"
+        attrs["Id"] = "1"
+        attrs["Identifiers"] = list()
+        attrs["Identifiers"].append({
+            "DurableNameFormat": "UUID",
+            "DurableName": volume["uri"].split("/")[-1]
+        })
+        attrs["CapacityBytes"] = int(volume["provisionedCapacity"])
+        attrs["Name"] = volume["name"]
+        attrs["Status"] = collections.OrderedDict()
+        map_struct = status_mapping.STATUS_MAP.get(volume["status"])
+        attrs["Status"]["State"] = map_struct["State"]
+        attrs["Status"]["Health"] = map_struct["Health"]
+
+        raidlevel = get_raid_level_for_storage_volume(volume)
+        if raidlevel:
+            attrs["VolumeType"] = status_mapping.RAID_LEVEL.get(raidlevel)
+        else:
+            attrs["VolumeType"] = "RawDevice"
+
+        return Volume(attrs)
+
+    @staticmethod
     def build_volume_details(uuid, volume_id):
         """Returns a Volume with the contents of data from an Oneview
 
@@ -77,7 +112,6 @@ class Volume(RedfishJsonValidator):
             sas_logical_jbod["sasLogicalInterconnectUri"]
 
         drivepaths = []
-        drivepath = None
         for logical_Drive_Bay_Uri in sas_logical_jbod["logicalDriveBayUris"]:
             drivepath = get_drive_path_from_logical_Drive_Bay_Uri(
                 logical_Drive_Bay_Uri)
@@ -90,37 +124,11 @@ class Volume(RedfishJsonValidator):
         drive_enclosure_object = get_drive_enclosure_object(
             drive_enclosure_uri)
 
-        drivebayuris = []
-
-        drivebayuri = None
-        drivepath = None
-        flag = False
-        for path in drivepaths:
-            flag = False
-            for drivebay in drive_enclosure_object["driveBays"]:
-                for drivepath in drivebay["drive"]["drivePaths"]:
-                    if drivepath == path:
-                        flag = True
-                        drivebayuri = drivebay["uri"]
-                        drivebayuris.append(drivebayuri)
-                        break
-                if flag:
-                    break
-
+        drivebayuris = get_drivebayuris_from_drive_enclosure_object(
+            drivepaths, drive_enclosure_object)
         device_slot = get_device_slot_from_sas_logical_jbod_by_volumeid(
             server_profile, volume_id)
-        raidlevel = None
-        flag = False
-        for storagecontroller in server_profile["localStorage"]["controllers"]:
-            if(storagecontroller["deviceSlot"] == device_slot):
-                for logicaldrive in storagecontroller["logicalDrives"]:
-                    if logicaldrive["sasLogicalJBODId"] == int(volume_id):
-                        raidlevel = logicaldrive["raidLevel"]
-                        flag = True
-                        break
-            if flag:
-                break
-
+        raidlevel = get_raidLevel(server_profile, device_slot, volume_id)
         attrs = {}
         attrs["@odata.id"] = ComputerSystem.BASE_URI + "/" + uuid + \
             "/Storage/1/Volumes/" + volume_id
@@ -198,5 +206,36 @@ def get_drive_enclosure_object(drive_enclosure_uri):
 
 
 def get_capacity_in_bytes(capacity_in_gb):
-        size_in_bytes = float(capacity_in_gb) * 1024 * 1024 * 1024
-        return int(size_in_bytes)
+    size_in_bytes = float(capacity_in_gb) * 1024 * 1024 * 1024
+    return int(size_in_bytes)
+
+
+def get_drivebayuris_from_drive_enclosure_object(drivepaths,
+                                                 drive_enclosure_object):
+    drivebayuris = []
+    for drivebay in drive_enclosure_object["driveBays"]:
+        for drivepath in drivebay["drive"]["drivePaths"]:
+                if drivepath in drivepaths:
+                    drivebayuri = drivebay["uri"]
+                    drivebayuris.append(drivebayuri)
+    return drivebayuris
+
+
+def get_raidLevel(server_profile, device_slot, volume_id):
+    for storagecontroller in server_profile["localStorage"]["controllers"]:
+        if(storagecontroller["deviceSlot"] == device_slot):
+            for logicaldrive in storagecontroller["logicalDrives"]:
+                if logicaldrive["sasLogicalJBODId"] == int(volume_id):
+                    raidlevel = logicaldrive["raidLevel"]
+                    return raidlevel
+    return None
+
+
+def get_raid_level_for_storage_volume(volume):
+    raidLevel = None
+    storage_pool = g.oneview_client.storage_pools.get(volume["storagePoolUri"])
+    if storage_pool:
+        deviceSpecifications = storage_pool["deviceSpecificAttributes"]
+        if deviceSpecifications.get("supportedRAIDLevel"):
+            raidLevel = deviceSpecifications["supportedRAIDLevel"]
+    return raidLevel

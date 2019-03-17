@@ -48,6 +48,12 @@ class TestResourceBlockCollection(BaseTest):
         ) as f:
             self.drives_list = json.load(f)
 
+        # Loading Volumes list mockup value
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/Volumes.json'
+        ) as f:
+            self.volume_list = json.load(f)
+
         # Loading ResourceBlockCollection result mockup
         with open(
             'oneview_redfish_toolkit/mockups/redfish/'
@@ -61,7 +67,8 @@ class TestResourceBlockCollection(BaseTest):
             resource_block_collection = ResourceBlockCollection(
                 self.server_hardware_list,
                 self.server_profile_template_list,
-                self.drives_list)
+                self.drives_list,
+                self.volume_list)
         except Exception as e:
             self.fail("Failed to instantiate ResourceBlockCollection class."
                       " Error: {}".format(e))
@@ -74,7 +81,8 @@ class TestResourceBlockCollection(BaseTest):
             resource_block_collection = ResourceBlockCollection(
                 self.server_hardware_list,
                 self.server_profile_template_list,
-                self.drives_list)
+                self.drives_list,
+                self.volume_list)
         except Exception as e:
             self.fail("Failed to instantiate ResourceBlockCollection class."
                       " Error: {}".format(e))

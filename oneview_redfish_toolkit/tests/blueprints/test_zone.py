@@ -63,6 +63,12 @@ class TestZone(BaseFlaskTest):
         ) as f:
             self.drives = json.load(f)
 
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'Volumes.json'
+        ) as f:
+            self.volumes = json.load(f)
+
         self.spt_id = self.server_profile_template["uri"].split("/")[-1]
 
     def test_get_zone_when_uuid_is_template_id_with_enclosure_id(self):
@@ -84,6 +90,7 @@ class TestZone(BaseFlaskTest):
             self.drive_encl_assoc,
             self.drives
         ]
+        api_client.volumes.get_all.return_value = []
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/" +
@@ -133,6 +140,7 @@ class TestZone(BaseFlaskTest):
             self.drive_encl_assoc,
             self.drives
         ]
+        api_client.volumes.get_all.return_value = []
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/" + self.spt_id)
@@ -178,6 +186,8 @@ class TestZone(BaseFlaskTest):
         ]
         api_client.server_hardware.get_all.return_value = \
             self.server_hardware_list
+
+        api_client.volumes.get_all.return_value = []
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceZones/" +
@@ -235,3 +245,35 @@ class TestZone(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+    def test_get_zone_when_external_storage_attached(self):
+        """Tests get a Zone when the zone uuid is only template id"""
+
+        api_client = self.oneview_client
+
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'ZoneWithExternalStorage.json'
+        ) as f:
+            zone_with_external_storage_mockup = json.load(f)
+
+        api_client.enclosures.get.return_value = self.enclosure
+        api_client.server_profile_templates.get.return_value = \
+            self.server_profile_template
+        api_client.server_hardware.get_all.return_value = \
+            self.server_hardware_list
+        api_client.connection.get.side_effect = [
+            self.drive_encl_assoc,
+            self.drives
+        ]
+        api_client.volumes.get_all.return_value = \
+            self.volumes
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceZones/" + self.spt_id
+            + "-" + self.enclosure["uuid"])
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(zone_with_external_storage_mockup, result)

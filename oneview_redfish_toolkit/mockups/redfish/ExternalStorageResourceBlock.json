@@ -1,0 +1,38 @@
+{
+  "Id": "B526F59E-9BC7-467F-9205-A9F4015CE296",
+  "Status": {
+    "State": "Enabled",
+    "Health": "OK"
+  },
+  "ResourceBlockType": [
+    "Storage"
+  ],
+  "Name": "externalVolume",
+  "Links": {
+    "Zones": [
+      {
+        "@odata.id": "/redfish/v1/CompositionService/ResourceZones/5394236a-384b-4151-9e32-685dbe990e93"
+      }
+    ],
+    "ComputerSystems": [
+      {
+        "@odata.id": "/redfish/v1/Systems/72d7f1ff-00e5-43b6-83c2-d4d61abd1708"
+      },
+      {
+        "@odata.id": "/redfish/v1/Systems/416c23ad-1587-4484-9174-e10afd1801f9"
+      }
+    ]
+  },
+  "CompositionStatus": {
+    "CompositionState": "ComposedAndAvailable",
+    "SharingCapable": true
+  },
+  "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/B526F59E-9BC7-467F-9205-A9F4015CE296",
+  "@odata.context": "/redfish/v1/$metadata#ResourceBlock.ResourceBlock",
+  "@odata.type": "#ResourceBlock.v1_1_0.ResourceBlock",
+  "Storage": [
+    {
+      "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/B526F59E-9BC7-467F-9205-A9F4015CE296/Storage/1"
+    }
+  ]
+}

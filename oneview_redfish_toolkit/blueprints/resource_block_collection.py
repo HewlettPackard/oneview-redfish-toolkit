@@ -44,10 +44,12 @@ def get_resource_block_collection():
         server_profile_templates.get_all()
     drives_list = g.oneview_client.index_resources \
         .get_all(category="drives", count=10000)
-
+    volume_list = g.oneview_client.volumes.get_all()
+    filter_volume_list = [volume for volume in volume_list
+                          if volume["isShareable"]]
     # Build ResourceBlockCollection object and validates it
     cc = ResourceBlockCollection(server_hardware_list,
                                  server_profile_template_list,
-                                 drives_list)
+                                 drives_list, filter_volume_list)
 
     return ResponseBuilder.success(cc)
