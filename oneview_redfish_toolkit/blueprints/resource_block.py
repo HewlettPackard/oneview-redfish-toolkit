@@ -84,7 +84,34 @@ def get_resource_block(uuid):
             server_profile_templs)
 
         result_resource_block = StorageResourceBlock(
-            resource, drive_index_trees, zone_ids)
+            resource, drive_index_trees, zone_ids, None)
+
+    elif category == "storage-volumes":
+        volumeUri = resource["uri"]
+
+        # filter STP's with volume attached
+        server_profile_templs = \
+            g.oneview_client.server_profile_templates.get_all()
+
+        filter_spt = list(filter(lambda i: i["sanStorage"][
+            "volumeAttachments"], server_profile_templs))
+
+        spt_with_volume = [spt for spt in filter_spt for volume in
+                           spt["sanStorage"]["volumeAttachments"]
+                           if volume.get("volumeUri") == volumeUri]
+
+        zone_ids = []
+        if spt_with_volume:
+            zone_ids = zone_service.get_zone_ids_by_templates(spt_with_volume)
+
+        # filter SP's with volume attached
+        volume_attachments = g.oneview_client. \
+            storage_volume_attachments.get_all(
+                filter="storageVolumeUri='{}'".format(volumeUri))
+        server_profiles = [i.get('ownerUri') for i in volume_attachments]
+
+        result_resource_block = StorageResourceBlock(
+            resource, None, zone_ids, server_profiles)
 
     else:
         abort(status.HTTP_404_NOT_FOUND, 'Resource block not found')
@@ -178,7 +205,8 @@ def _get_oneview_resource(uuid):
     categories = [
         {"func": g.oneview_client.server_hardware.get, "param": uuid},
         {"func": g.oneview_client.server_profile_templates.get, "param": uuid},
-        {"func": g.oneview_client.index_resources.get, "param": drives_param}
+        {"func": g.oneview_client.index_resources.get, "param": drives_param},
+        {"func": g.oneview_client.volumes.get, "param": uuid}
     ]
 
     for category in categories:

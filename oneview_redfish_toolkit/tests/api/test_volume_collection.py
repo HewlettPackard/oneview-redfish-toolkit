@@ -14,6 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import copy
 import json
 
 from oneview_redfish_toolkit.api.volume_collection import VolumeCollection
@@ -45,3 +46,24 @@ class TestolumeCollection(BaseTest):
         result = json.loads(volume_collection.serialize())
 
         self.assertEqualMockup(self.volume_collection_mockup, result)
+        server_profile = copy.deepcopy(self.server_profile)
+        server_profile["sanStorage"]["volumeAttachments"] = [{
+            "id": 1,
+            "lun": "1",
+            "lunType": "Auto",
+            "status": "OK",
+            "volumeUri": "/rest/storage-volumes/volumeUuid",
+        }]
+        volume = {
+            "@odata.id": "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes/volumeUuid"
+        }
+        volume_collection_mockup = copy.deepcopy(self.volume_collection_mockup)
+        volume_collection_mockup["Members"].append(volume)
+        volume_collection_mockup["Members@odata.count"] = 3
+        volume_collection = \
+            VolumeCollection(server_profile)
+
+        result = json.loads(volume_collection.serialize())
+
+        self.assertEqualMockup(volume_collection_mockup, result)

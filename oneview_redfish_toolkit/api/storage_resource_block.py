@@ -30,32 +30,49 @@ class StorageResourceBlock(ResourceBlock):
         Populates self.redfish with Drive data retrieved from OneView.
     """
 
-    def __init__(self, drive, drive_index_trees, zone_ids):
+    def __init__(self, storage_resource, drive_index_trees, zone_ids,
+                 server_profiles):
         """StorageResourceBlock constructor
 
             Populates self.redfish with the contents of drive
 
             Args:
-                drive: OneView Drive dict
+                storage_resource: OneView Drive or storage volume dict
                 drive_index_trees: Drives index trees dict
                 zone_ids: List of Zone Ids that this Resource Block belongs to
+                server_profiles: List of Server profiles
         """
-        uuid = drive["uri"].split("/")[-1]
-        super().__init__(uuid, drive)
+        uuid = storage_resource["uri"].split("/")[-1]
+        super().__init__(uuid, storage_resource)
         self.redfish["ResourceBlockType"] = ["Storage"]
-        self.redfish["Status"] = status_mapping.STATUS_MAP.get(drive["status"])
+        self.redfish["Status"] = status_mapping.STATUS_MAP.get(
+            storage_resource["status"])
 
-        if drive["attributes"]["available"] == "yes":
-            composit_state = "Unused"
-        else:
-            composit_state = "Composed"
-
-        self.redfish["CompositionStatus"]["CompositionState"] = composit_state
-        self.redfish["CompositionStatus"]["SharingCapable"] = False
         self.redfish["Links"] = collections.OrderedDict()
         self.redfish["Links"]["ComputerSystems"] = list()
         self.redfish["Links"]["Zones"] = list()
-        self._fill_link_members(drive_index_trees, zone_ids)
+
+        self.redfish["CompositionStatus"]["SharingCapable"] = False
+        if storage_resource["category"] == "drives":
+            if storage_resource["attributes"]["available"] == "yes":
+                composit_state = "Unused"
+            else:
+                composit_state = "Composed"
+            self._fill_link_members(drive_index_trees, zone_ids)
+        else:
+            isShareable = storage_resource["isShareable"]
+            if server_profiles:
+                if isShareable:
+                    composit_state = "ComposedAndAvailable"
+                else:
+                    composit_state = "Composed"
+            else:
+                composit_state = "Unused"
+            if isShareable:
+                self.redfish["CompositionStatus"]["SharingCapable"] = True
+            self._fill_volume_link_members(zone_ids, server_profiles)
+
+        self.redfish["CompositionStatus"]["CompositionState"] = composit_state
 
         self.redfish["Storage"] = [
             {
@@ -64,6 +81,20 @@ class StorageResourceBlock(ResourceBlock):
         ]
 
         self._validate()
+
+    def _fill_volume_link_members(self, zone_ids, sp_list):
+        for zone_id in zone_ids:
+            zone_dict = {
+                "@odata.id": ZoneCollection.BASE_URI + "/" + zone_id
+            }
+            self.redfish["Links"]["Zones"].append(zone_dict)
+
+        for system in sp_list:
+            system_dict = {
+                "@odata.id": ComputerSystem.BASE_URI + "/" +
+                system.split("/")[-1]
+            }
+            self.redfish["Links"]["ComputerSystems"].append(system_dict)
 
     def _fill_link_members(self, drive_index_trees, zone_ids):
         sp_uuid = self._get_server_profile_uuid(drive_index_trees)

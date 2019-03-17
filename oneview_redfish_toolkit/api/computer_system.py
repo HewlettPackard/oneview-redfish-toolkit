@@ -105,7 +105,8 @@ class ComputerSystem(RedfishJsonValidator):
     @staticmethod
     def build_composed_system(server_hardware, server_hardware_types,
                               server_profile, drives,
-                              server_profile_template_uuid, manager_uuid):
+                              server_profile_template_uuid, manager_uuid,
+                              volumes_uris):
         """Builds and returns a Composed ComputerSystem
 
             Args:
@@ -115,6 +116,7 @@ class ComputerSystem(RedfishJsonValidator):
                 drives: Drives list from OneView
                 server_profile_template_uuid: ServerProfileTemplate uuid
                 manager_uuid: Oneview's current manager uuid
+                volumes_uris: External storage volume URIs
         """
         attrs = {}
 
@@ -177,7 +179,8 @@ class ComputerSystem(RedfishJsonValidator):
         attrs["Links"]["ResourceBlocks"] = ComputerSystem.\
             _build_resource_block_members(drives,
                                           server_hardware,
-                                          server_profile_template_uuid)
+                                          server_profile_template_uuid,
+                                          volumes_uris)
         attrs["Actions"] = collections.OrderedDict()
         attrs["Actions"]["#ComputerSystem.Reset"] = \
             collections.OrderedDict()
@@ -259,7 +262,8 @@ class ComputerSystem(RedfishJsonValidator):
                              server_profile_template,
                              system_block,
                              network_blocks,
-                             storage_blocks):
+                             storage_blocks,
+                             external_storage_block):
         server_profile = deepcopy(server_profile_template)
 
         server_profile.pop("uri", None)
@@ -284,6 +288,16 @@ class ComputerSystem(RedfishJsonValidator):
         server_profile["localStorage"]["sasLogicalJBODs"] = \
             ComputerSystem._build_sas_logical_jbods(server_profile_template,
                                                     storage_blocks)
+
+        if external_storage_block or \
+                server_profile_template["sanStorage"]["volumeAttachments"]:
+            server_profile["sanStorage"]["hostOSType"] = \
+                "VMware (ESXi)"
+            server_profile["sanStorage"]["manageSanStorage"] = True
+            server_profile["sanStorage"]["volumeAttachments"] = \
+                ComputerSystem._build_volume_attachments(
+                    server_profile_template,
+                    external_storage_block)
 
         return server_profile
 
@@ -320,14 +334,53 @@ class ComputerSystem(RedfishJsonValidator):
         return sas_logical_jbods
 
     @staticmethod
+    def _build_volume_attachments(spt, external_storage_block):
+        volume_attachments = []
+
+        # Add storage volume from SPT to volume attachments object
+        volume_uris = []
+        for volume in spt["sanStorage"]["volumeAttachments"]:
+            volume["associatedTemplateAttachmentId"] = None
+            volume_attachments.append(volume)
+            if volume.get("volumeUri"):
+                volume_uris.append(volume["volumeUri"])
+
+        # Create volume attachments object for external storage volume
+        if external_storage_block:
+            storage_paths = []
+            for connection in spt["connectionSettings"]["connections"]:
+                if connection["functionType"] == "FibreChannel":
+                    storage_path = {
+                        "targetSelector": "Auto",
+                        "targets": [],
+                        "connectionId": connection["id"],
+                        "isEnabled": True
+                    }
+                    storage_paths.append(storage_path)
+
+            for volume in external_storage_block:
+                if volume["uri"] not in volume_uris:
+                    volume_obj = {
+                        "lunType": "Auto",
+                        "volumeUri": volume["uri"],
+                        "volumeStorageSystemUri": volume["storageSystemUri"],
+                        "storagePaths": storage_paths,
+                    }
+                    volume_attachments.append(volume_obj)
+
+        return volume_attachments
+
+    @staticmethod
     def _build_resource_block_members(drives,
                                       server_hardware,
-                                      server_profile_template_uuid):
+                                      server_profile_template_uuid,
+                                      volumes_uris):
         resource_block_uuids = \
             ComputerSystem._get_resource_block_uuids(
                 drives,
                 server_hardware,
-                server_profile_template_uuid)
+                server_profile_template_uuid,
+                volumes_uris)
 
         base_uri = ResourceBlockCollection.BASE_URI + "/{}"
         blocks = []
@@ -339,7 +392,8 @@ class ComputerSystem(RedfishJsonValidator):
     @staticmethod
     def _get_resource_block_uuids(drives,
                                   server_hardware,
-                                  server_profile_template_uuid):
+                                  server_profile_template_uuid,
+                                  volumes_uris):
         resource_block_uuids = list()
         resource_block_uuids.append(server_hardware["uuid"])
 
@@ -350,5 +404,8 @@ class ComputerSystem(RedfishJsonValidator):
         for drive in drives:
             storage_resource_uuid = drive["uri"].split("/")[-1]
             resource_block_uuids.append(storage_resource_uuid)
+
+        for volume_uri in volumes_uris:
+            resource_block_uuids.append(volume_uri.split("/")[-1])
 
         return resource_block_uuids

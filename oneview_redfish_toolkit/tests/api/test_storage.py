@@ -45,9 +45,15 @@ class TestStorage(BaseTest):
         ) as f:
             storage_mockup = json.load(f)
 
+        with open('oneview_redfish_toolkit/mockups/oneview/'
+                  'Volumes.json') as f:
+            volumes = json.load(f)
+            volume = volumes[0]
+
         storage = Storage.build_for_composed_system(server_profile,
                                                     server_hardware_types,
-                                                    sas_logical_jbods)
+                                                    sas_logical_jbods,
+                                                    volume)
 
         result = json.loads(storage.serialize())
 
@@ -66,6 +72,24 @@ class TestStorage(BaseTest):
             expected_result = json.load(f)
 
         storage = Storage.build_for_resource_block(drive)
+
+        result = json.loads(storage.serialize())
+
+        self.assertEqualMockup(expected_result, result)
+
+    def test_build_for_resource_block_for_external_storage(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/Volumes.json'
+        ) as f:
+            volume = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'ExternalStorageForResourceBlock.json'
+        ) as f:
+            expected_result = json.load(f)
+
+        storage = Storage.build_for_resource_block(volume[0])
 
         result = json.loads(storage.serialize())
 

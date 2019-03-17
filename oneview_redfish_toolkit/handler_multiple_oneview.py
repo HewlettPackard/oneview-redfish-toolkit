@@ -90,6 +90,16 @@ RESOURCE_STRATEGY = {
     "sas_logical_interconnects": {
         "get": st.first_parameter_resource
         },
+    "volumes": {
+        "get_all": st.all_oneviews_resource,
+        "get": st.first_parameter_resource,
+        },
+    "storage_volume_attachments": {
+        "get_all": st.all_oneviews_resource,
+        },
+    "storage_pools": {
+        "get": st.first_parameter_resource,
+        }
 }
 
 

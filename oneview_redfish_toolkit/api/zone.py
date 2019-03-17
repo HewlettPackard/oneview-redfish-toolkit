@@ -41,7 +41,8 @@ class Zone(RedfishJsonValidator):
                  profile_template,
                  server_hardware_list,
                  enclosure_name,
-                 drives=[]):
+                 drives=[],
+                 volume_list=[]):
         """Zone constructor
 
             Populates self.redfish with the contents of
@@ -55,6 +56,7 @@ class Zone(RedfishJsonValidator):
                 enclosure_name: Enclosure name associated with a Zone.
                 If Zone has not enclosure it will be None.
                 drives: Oneview's dict drives list
+                volume_list: Oneview's storage volume list
         """
         super().__init__(self.SCHEMA_NAME)
 
@@ -75,7 +77,7 @@ class Zone(RedfishJsonValidator):
         self.redfish["Links"]["ResourceBlocks"] = list()
 
         self.fill_resource_blocks(profile_template, server_hardware_list,
-                                  drives)
+                                  drives, volume_list)
 
         self.capabilities_key = "@Redfish.CollectionCapabilities"
         self.redfish[self.capabilities_key] = dict()
@@ -99,11 +101,14 @@ class Zone(RedfishJsonValidator):
         return zone_name
 
     def fill_resource_blocks(self, profile_template, server_hardware_list,
-                             drives):
+                             drives, volume_list):
         for item in server_hardware_list:
             self.add_resource_block_item_to_links(item, "uri")
 
         for item in drives:
+            self.add_resource_block_item_to_links(item, "uri")
+
+        for item in volume_list:
             self.add_resource_block_item_to_links(item, "uri")
 
         self.add_resource_block_item_to_links(profile_template, "uri")

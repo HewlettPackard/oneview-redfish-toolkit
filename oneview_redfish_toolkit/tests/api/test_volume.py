@@ -16,6 +16,8 @@
 
 import json
 
+from unittest import mock
+
 from oneview_redfish_toolkit.api import volume
 
 from oneview_redfish_toolkit.tests.base_test import BaseTest
@@ -54,3 +56,35 @@ class TestVolume(BaseTest):
             volume.get_capacity_in_bytes('3276')
 
         self.assertEqualMockup(3517578215424, volumeobj)
+
+    @mock.patch.object(volume, "get_raid_level_for_storage_volume")
+    def test_build_external_storage_volume_details(self, mock_get_raid_level):
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/Volumes.json'
+        ) as f:
+            volume_data = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'VolumesResourceBlock.json'
+        ) as f:
+            expected_result = json.load(f)
+
+        expected_result["@odata.id"] = "/redfish/v1/Systems/" + \
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes/" + \
+            "B526F59E-9BC7-467F-9205-A9F4015CE296"
+
+        expected_result["Id"] = \
+            "B526F59E-9BC7-467F-9205-A9F4015CE296"
+
+        expected_result["VolumeType"] = "RawDevice"
+        mock_get_raid_level.return_value = None
+
+        sp_uuid = "b425802b-a6a5-4941-8885-aab68dfa2ee2"
+        volume_id = "B526F59E-9BC7-467F-9205-A9F4015CE296"
+        result = volume.Volume.build_external_storage_volume_details(
+            sp_uuid, volume_data[0], volume_id)
+
+        volume_result = json.loads(result.serialize())
+
+        self.assertEqualMockup(expected_result, volume_result)

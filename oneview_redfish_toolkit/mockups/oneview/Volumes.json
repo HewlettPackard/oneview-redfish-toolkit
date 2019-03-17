@@ -1,0 +1,31 @@
+[{
+    "provisioningType": "Thin",
+    "deviceVolumeName": "externalVolume",
+    "name": "externalVolume",
+    "description": "",
+    "isPermanent": true,
+    "isShareable": true,  
+    "requestingRefresh": null,
+    "allocatedCapacity": "2415919104",
+    "provisionedCapacity": "10737418240",
+    "lunWwn": "DC:76:70:73:77:00:10:00:30:71:55:01:78:61:59:63",
+    "deviceSpecificAttributes": {
+        "copyState": "NotCopying",
+        "snapshotPoolUri": "/rest/storage-pools/DC8BD64B-9A4E-4722-92D3-A9F4015B0B71"
+    },
+    "storagePoolUri": "/rest/storage-pools/DC8BD64B-9A4E-4722-92D3-A9F4015B0B71",
+    "volumeTemplateUri": null,
+    "revertToSnapshotUri": null,
+    "templateConsistency": "Consistent",
+    "snapshotsUri": "/rest/storage-volumes/B526F59E-9BC7-467F-9205-A9F4015CE296/snapshots",
+    "scopesUri": "/rest/scopes/resources/rest/storage-volumes/B526F59E-9BC7-467F-9205-A9F4015CE296",
+    "category": "storage-volumes",
+    "status": "OK",
+    "state": "Managed",
+    "type": "StorageVolumeV5",
+    "uri": "/rest/storage-volumes/B526F59E-9BC7-467F-9205-A9F4015CE296",
+    "eTag": "3/1497",
+    "created": "2019-02-14T21:10:15.000Z",
+    "modified": "2019-03-05T23:59:44.000Z",
+    "lastRefreshTime": "2019-03-05T23:59:44.000Z"
+}]

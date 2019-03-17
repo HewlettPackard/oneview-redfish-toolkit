@@ -31,7 +31,8 @@ class ResourceBlockCollection(RedfishJsonValidator):
     def __init__(self,
                  server_hardware=[],
                  server_profile_templates=[],
-                 drives=[]):
+                 drives=[],
+                 external_volume_list=[]):
         """ResourceBlockCollection constructor
 
             Populates self.redfish with a hardcoded ResourceBlockCollection
@@ -42,7 +43,8 @@ class ResourceBlockCollection(RedfishJsonValidator):
 
         self.members = server_hardware \
             + server_profile_templates \
-            + drives
+            + drives \
+            + external_volume_list
 
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["Name"] = "Resource Block Collection"

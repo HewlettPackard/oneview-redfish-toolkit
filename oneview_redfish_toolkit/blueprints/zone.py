@@ -70,8 +70,12 @@ def get_zone(zone_uuid):
     server_hardware_list = g.oneview_client.server_hardware.get_all(
         filter=sh_filter)
 
+    volume_list = g.oneview_client.volumes.get_all()
+    filter_volume_list = [volume for volume in volume_list
+                          if volume["isShareable"]]
+
     zone_data = Zone(zone_uuid, profile_template, server_hardware_list,
-                     enclosure_name, drives)
+                     enclosure_name, drives, filter_volume_list)
 
     sh_count = len(server_hardware_list)
     blocks_count = len(zone_data.redfish["Links"]["ResourceBlocks"])
