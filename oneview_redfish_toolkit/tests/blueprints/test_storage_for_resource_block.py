@@ -18,6 +18,8 @@ import json
 
 from flask_api import status
 
+from hpOneView.exceptions import HPOneViewException
+
 from oneview_redfish_toolkit.blueprints import storage_for_resource_block
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
@@ -37,6 +39,11 @@ class TestStorageCompositionDetails(BaseFlaskTest):
         ) as f:
             self.drive = json.load(f)
 
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/Volumes.json'
+        ) as f:
+            self.volume = json.load(f)
+
     def test_get_storage_details(self):
         self.oneview_client.index_resources.get.return_value = self.drive
 
@@ -45,6 +52,13 @@ class TestStorageCompositionDetails(BaseFlaskTest):
             'StorageForResourceBlock.json'
         ) as f:
             expected_storage_details = json.load(f)
+
+        resource_not_found = HPOneViewException({
+            "errorCode": "RESOURCE_NOT_FOUND",
+            "message": "Any resource not found message"
+        })
+
+        self.oneview_client.volumes.get.side_effect = resource_not_found
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -135,4 +149,82 @@ class TestStorageCompositionDetails(BaseFlaskTest):
 
         msg_error = "Storage 2 not found for ResourceBlock " \
                     "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e"
+        self.assertIn(msg_error, str(result))
+
+    def test_get_external_storage_details(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'ExternalStorageForResourceBlock.json'
+        ) as f:
+            expected_storage_details = json.load(f)
+
+        self.oneview_client.volumes.get.return_value = self.volume[0]
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/B526F59E-9BC7-467F-9205-A9F4015CE296/Storage/1")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_storage_details, result)
+
+    def test_external_storage_resource_block(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'VolumesResourceBlock.json'
+        ) as f:
+            expected_storage_details = json.load(f)
+
+        self.oneview_client.volumes.get.return_value = self.volume[0]
+
+        self.oneview_client.storage_pools.get.return_value = {
+            "uri": "/rest/storage-pools/DC8BD64B-9A4E-4722-92D3-A9F4015B0B71",
+            "deviceSpecificAttributes": {"supportedRAIDLevel": "RAID6"}
+        }
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/B526F59E-9BC7-467F-9205-A9F4015CE296/Storage/1/Volumes/1")
+        result = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_storage_details, result)
+
+    def test_get_external_storage_details_when_storage_is_not_found(self):
+        self.oneview_client.volumes.get.return_value = self.volume[0]
+
+        wrong_id = "2"  # any value other than "1"
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/B526F59E-9BC7-467F-9205-A9F4015CE296/Storage/{}/Volumes/1"
+            .format(wrong_id))
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        msg_error = "Storage 2 not found for ResourceBlock " \
+                    "B526F59E-9BC7-467F-9205-A9F4015CE296"
+        self.assertIn(msg_error, str(result))
+
+    def test_get_external_storage_details_when_volume_is_not_found(self):
+        self.oneview_client.volumes.get.return_value = self.volume[0]
+
+        wrong_id = "2"  # any value other than "1"
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/B526F59E-9BC7-467F-9205-A9F4015CE296/Storage/1/Volumes/{}"
+            .format(wrong_id))
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        msg_error = "Volume 2 not found for Storage 1 of ResourceBlock " \
+                    "B526F59E-9BC7-467F-9205-A9F4015CE296"
         self.assertIn(msg_error, str(result))

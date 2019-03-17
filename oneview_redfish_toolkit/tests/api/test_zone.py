@@ -36,6 +36,10 @@ class TestZone(BaseTest):
         drives_by_encl = json.load(f)
         drives = drives_by_encl["members"]
 
+    with open('oneview_redfish_toolkit/mockups/oneview/'
+              'Volumes.json') as f:
+        volumes = json.load(f)
+
     with open('oneview_redfish_toolkit/mockups/redfish/Zone.json') as f:
         zone_mockup = json.load(f)
 
@@ -124,3 +128,25 @@ class TestZone(BaseTest):
                     self.drives)
         result = json.loads(zone.serialize())
         self.assertEqualMockup(self.zone_mockup, result)
+
+    def test_zone_when_external_storage_available(self):
+        """Tests when all is configured properly"""
+
+        profile_template = copy.deepcopy(self.server_profile_template)
+        zone_id = "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101"
+
+        with open(
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'ZoneWithExternalStorage.json'
+        ) as f:
+            zone_with_external_storage_mockup = json.load(f)
+
+        zone = Zone(zone_id,
+                    profile_template,
+                    self.server_hardware_list,
+                    self.enclosure_name,
+                    self.drives,
+                    self.volumes)
+        result = json.loads(zone.serialize())
+
+        self.assertEqualMockup(zone_with_external_storage_mockup, result)

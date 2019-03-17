@@ -25,6 +25,8 @@ from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit.api.resource_block_collection import \
+    ResourceBlockCollection
 
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 
@@ -54,6 +56,39 @@ class Volume(RedfishJsonValidator):
         self.redfish["@odata.context"] = self.__class__.METADATA_INFO
 
         self._validate()
+
+    @staticmethod
+    def build_volume_for_resource_blocks(resource_block_id, volume):
+        """Returns a storage Volume with the contents of data from an Oneview
+
+            Args:
+                resource_block_id: storage volume uuid
+                volume: storage volume
+
+        """
+        attrs = {}
+        attrs["@odata.id"] = ResourceBlockCollection.BASE_URI + "/" + \
+            resource_block_id + "/Storage/1/Volumes/1"
+        attrs["Id"] = "1"
+        attrs["Identifiers"] = list()
+        attrs["Identifiers"].append({
+            "DurableNameFormat": "UUID",
+            "DurableName": volume["uri"].split("/")[-1]
+        })
+        attrs["CapacityBytes"] = int(volume["provisionedCapacity"])
+        attrs["Name"] = volume["name"]
+        attrs["Status"] = collections.OrderedDict()
+        map_struct = status_mapping.STATUS_MAP.get(volume["status"])
+        attrs["Status"]["State"] = map_struct["State"]
+        attrs["Status"]["Health"] = map_struct["Health"]
+
+        raidlevel = get_raid_level_for_storage_volume(volume)
+        if raidlevel:
+            attrs["VolumeType"] = status_mapping.RAID_LEVEL.get(raidlevel)
+        else:
+            attrs["VolumeType"] = "RawDevice"
+
+        return Volume(attrs)
 
     @staticmethod
     def build_volume_details(uuid, volume_id):
@@ -194,3 +229,13 @@ def get_raidLevel(server_profile, device_slot, volume_id):
                     raidlevel = logicaldrive["raidLevel"]
                     return raidlevel
     return None
+
+
+def get_raid_level_for_storage_volume(volume):
+    raidLevel = None
+    storage_pool = g.oneview_client.storage_pools.get(volume["storagePoolUri"])
+    if storage_pool:
+        deviceSpecifications = storage_pool["deviceSpecificAttributes"]
+        if deviceSpecifications.get("supportedRAIDLevel"):
+            raidLevel = deviceSpecifications["supportedRAIDLevel"]
+    return raidLevel

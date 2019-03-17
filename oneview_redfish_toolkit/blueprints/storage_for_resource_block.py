@@ -19,9 +19,12 @@ from flask import Blueprint
 from flask import g
 from flask_api import status
 
+from hpOneView.exceptions import HPOneViewException
+
 from oneview_redfish_toolkit.api.drive import Drive
 from oneview_redfish_toolkit.api.resource_block import ResourceBlock
 from oneview_redfish_toolkit.api.storage import Storage
+from oneview_redfish_toolkit.api.volume import Volume
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
     ResponseBuilder
 
@@ -49,9 +52,14 @@ def get_storage_details(resource_block_uuid, storage_id):
               "Storage {} not found for ResourceBlock {}"
               .format(storage_id, resource_block_uuid))
 
-    drive = g.oneview_client.index_resources.get(
-        '/rest/drives/' + resource_block_uuid)
-    result = Storage.build_for_resource_block(drive)
+    storage_block = []
+    try:
+        storage_block = g.oneview_client.volumes.get(resource_block_uuid)
+    except HPOneViewException as e:
+        if e.oneview_response["errorCode"] == 'RESOURCE_NOT_FOUND':
+            storage_block = g.oneview_client.index_resources.get(
+                '/rest/drives/' + resource_block_uuid)
+    result = Storage.build_for_resource_block(storage_block)
 
     return ResponseBuilder.success(result)
 
@@ -87,5 +95,38 @@ def get_storage_drive_details(resource_block_uuid, storage_id, drive_id):
     drive_encl_uri = drive["attributes"]["driveEnclosureUri"].split('/')[-1]
     drive_enclosure = g.oneview_client.drive_enclosures.get(drive_encl_uri)
     result = Drive.build_for_resource_block(drive, drive_enclosure)
+
+    return ResponseBuilder.success(result)
+
+
+@storage_for_resource_block.route(
+    ResourceBlock.BASE_URI +
+    "/<resource_block_uuid>/Storage/<storage_id>/Volumes/<volume_id>",
+    methods=["GET"])
+def get_storage_volume_details(resource_block_uuid, storage_id, volume_id):
+    """Get the Redfish Volume details of a Storage of a Storage Resource Block
+
+        Return Volume redfish JSON for a given ID.
+        Logs exception of any error and return Internal Server
+        Error or Not Found.
+
+        Returns:
+            JSON: Redfish json with Volume detail information.
+    """
+
+    volume = g.oneview_client.volumes.get(resource_block_uuid)
+
+    if str(storage_id) != FROZEN_ID:
+        abort(status.HTTP_404_NOT_FOUND,
+              "Storage {} not found for ResourceBlock {}"
+              .format(storage_id, resource_block_uuid))
+
+    if str(volume_id) != FROZEN_ID:
+        abort(status.HTTP_404_NOT_FOUND,
+              "Volume {} not found for Storage {} of ResourceBlock {}"
+              .format(volume_id, storage_id, resource_block_uuid))
+
+    result = Volume.build_volume_for_resource_blocks(
+        resource_block_uuid, volume)
 
     return ResponseBuilder.success(result)
