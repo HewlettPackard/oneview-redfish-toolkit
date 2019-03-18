@@ -48,29 +48,18 @@ class TestManagerCollection(BaseTest):
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            manager_collection = ManagerCollection(
-                self.appliance_info_list
-            )
-        except Exception as e:
-            self.fail("Failed to instantiate ManagerCollection class."
-                      " Error: {}".format(e))
+        manager_collection = ManagerCollection(
+            self.appliance_info_list
+        )
         self.assertIsInstance(manager_collection, ManagerCollection)
 
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        try:
-            manager_collection = ManagerCollection(
-                self.appliance_info_list
-            )
-        except Exception as e:
-            self.fail("Failed to instantiate ManagerCollection class."
-                      " Error: {}".format(e))
+        manager_collection = ManagerCollection(
+            self.appliance_info_list
+        )
 
-        try:
-            result = json.loads(manager_collection.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(manager_collection.serialize())
 
         self.assertEqualMockup(self.manager_collection_mockup, result)

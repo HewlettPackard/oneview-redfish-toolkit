@@ -33,10 +33,7 @@ class TestOdata(BaseTest):
     def test_class_instantiation(self):
         """Tests class instantiation and validation"""
 
-        try:
-            metadata = Metadata(self.schemas)
-        except Exception as e:
-            self.fail("Failed to instantiate Metadata. Error: ".format(e))
+        metadata = Metadata(self.schemas)
         self.assertIsInstance(metadata, Metadata)
 
     def test_serialize(self):

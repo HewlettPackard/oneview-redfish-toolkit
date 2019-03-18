@@ -307,7 +307,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             result = json.loads(response.data.decode("utf-8"))
         except OneViewRedfishException:
             self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
-            self.assertIn('There is no mapping for ForceOffff on the OneView',
+            self.assertIn('There is no mapping for ForceOff on the OneView',
                           str(result))
 
         self.oneview_client.server_hardware.update_power_state \

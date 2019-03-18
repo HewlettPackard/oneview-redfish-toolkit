@@ -43,11 +43,7 @@ class TestRedfishJsonValidator(BaseTest):
 
     def test_class_instantiation(self):
         # Tests if class is correctly instantiated
-        try:
-            redfish_json_validator = RedfishJsonValidator('ServiceRoot')
-        except Exception as e:
-            self.fail("Failed to instantiate RedfishJsonValidator class."
-                      " Error: {}".format(e))
+        redfish_json_validator = RedfishJsonValidator('ServiceRoot')
         self.assertIsInstance(redfish_json_validator, RedfishJsonValidator)
 
     def test_has_valid_config_file(self):

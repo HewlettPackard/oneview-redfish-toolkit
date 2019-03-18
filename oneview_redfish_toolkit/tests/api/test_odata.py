@@ -26,10 +26,7 @@ class TestOdata(BaseTest):
     def test_class_instantiation(self):
         """Tests class instantiation and validation"""
 
-        try:
-            odata = Odata()
-        except Exception as e:
-            self.fail("Failed to instantiate Odata. Error: ".format(e))
+        odata = Odata()
         self.assertIsInstance(odata, Odata)
 
     def test_serialize(self):

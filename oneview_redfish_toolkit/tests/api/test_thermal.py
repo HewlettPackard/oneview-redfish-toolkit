@@ -67,86 +67,53 @@ class TestThermal(BaseTest):
     def test_class_instantiation_for_blade(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            obj = Thermal(self.server_hardware_utilization, 'uuid', 'Blade')
-        except Exception as e:
-            self.fail("Failed to instantiate Thermal class."
-                      " Error: {}".format(e))
+        obj = Thermal(self.server_hardware_utilization, 'uuid', 'Blade')
         self.assertIsInstance(obj, Thermal)
 
     def test_class_instantiation_for_enclosure(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            obj = Thermal(self.enclosure_utilization, 'uuid', 'Enclosure')
-        except Exception as e:
-            self.fail("Failed to instantiate Thermal class."
-                      " Error: {}".format(e))
+        obj = Thermal(self.enclosure_utilization, 'uuid', 'Enclosure')
         self.assertIsInstance(obj, Thermal)
 
     def test_class_instantiation_for_rack(self):
         # Tests if class is correctly instantiated and validated
 
-        try:
-            obj = Thermal(self.rack_utilization, 'uuid', 'Rack')
-        except Exception as e:
-            self.fail("Failed to instantiate Thermal class."
-                      " Error: {}".format(e))
+        obj = Thermal(self.rack_utilization, 'uuid', 'Rack')
         self.assertIsInstance(obj, Thermal)
 
     def test_serialize_for_blade(self):
         # Tests the serialize function result against known result
 
-        try:
-            obj = Thermal(
-                self.server_hardware_utilization,
-                "36343537-3338-4448-3538-4E5030333434",
-                "Blade")
-        except Exception as e:
-            self.fail("Failed to instantiate Thermal class."
-                      " Error: {}".format(e))
+        obj = Thermal(
+            self.server_hardware_utilization,
+            "36343537-3338-4448-3538-4E5030333434",
+            "Blade")
 
-        try:
-            result = json.loads(obj.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(obj.serialize())
 
         self.assertEqualMockup(self.blade_thermal_mockup, result)
 
     def test_serialize_for_enclosure(self):
         # Tests the serialize function result against known result
 
-        try:
-            obj = Thermal(
-                self.enclosure_utilization,
-                "0000000000A66101",
-                "Enclosure")
-        except Exception as e:
-            self.fail("Failed to instantiate Thermal class."
-                      " Error: {}".format(e))
+        obj = Thermal(
+            self.enclosure_utilization,
+            "0000000000A66101",
+            "Enclosure")
 
-        try:
-            result = json.loads(obj.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(obj.serialize())
 
         self.assertEqualMockup(self.enclosure_thermal_mockup, result)
 
     def test_serialize_for_rack(self):
         # Tests the serialize function result against known result
 
-        try:
-            obj = Thermal(
-                self.rack_utilization,
-                "2AB100LMNB",
-                "Rack")
-        except Exception as e:
-            self.fail("Failed to instantiate Thermal class."
-                      " Error: {}".format(e))
+        obj = Thermal(
+            self.rack_utilization,
+            "2AB100LMNB",
+            "Rack")
 
-        try:
-            result = json.loads(obj.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: ".format(e))
+        result = json.loads(obj.serialize())
 
         self.assertEqualMockup(self.rack_thermal_mockup, result)
