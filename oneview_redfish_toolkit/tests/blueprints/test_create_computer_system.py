@@ -62,12 +62,32 @@ class TestCreateComputerSystem(BaseFlaskTest):
                 'PostToComposeSystem.json'
         ) as f:
             self.data_to_create_system = json.load(f)
+            self.data_to_create_system["Links"]["ResourceBlocks"].append(
+                {
+                    "@odata.id": "/redfish/v1/CompositionService/"
+                    "ResourceBlocks/B526F59E-9BC7-467F-9205-A9F4015CE296"
+                }
+            )
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
                 'ServerProfileTemplate.json'
         ) as f:
-            self.server_profile_template = json.load(f)
+            server_profile_template = json.load(f)
+            self.server_profile_template = copy.deepcopy(
+                server_profile_template)
+            self.server_profile_template["connectionSettings"][
+                "connections"].append({
+                    "portId": "Mezz 3:1-b",
+                    "id": 2,
+                    "requestedVFs": "0",
+                    "functionType": "FibreChannel",
+                    "name": "fcnw",
+                    "boot": {
+                        "priority": "NotBootable",
+                    },
+                    "networkUri": "/rest/fc-networks/nw_id"
+                })
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
@@ -75,16 +95,25 @@ class TestCreateComputerSystem(BaseFlaskTest):
         ) as f:
             self.drives = json.load(f)
 
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'Volumes.json'
+        ) as f:
+            volumes = json.load(f)
+            self.volume = volumes[0]
+
         self.sh_id = "30303437-3034-4D32-3230-313133364752"
         self.spt_id = "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
         self.drive1_id = "e11dd3e0-78cd-47e8-bacb-9813f4bb58a8"
         self.drive2_id = "53bd734f-19fe-42fe-a8ef-3f1a83b4e5c1"
+        self.volume_id = "B526F59E-9BC7-467F-9205-A9F4015CE296"
 
         self.common_calls_to_assert_hardware = [
             call(self.sh_id),
             call(self.spt_id),
             call(self.drive1_id),
-            call(self.drive2_id)
+            call(self.drive2_id),
+            call(self.volume_id)
         ]
 
         self.common_calls_to_assert_spt = [
@@ -92,6 +121,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             call(self.spt_id),
             call(self.drive1_id),
             call(self.drive2_id),
+            call(self.volume_id),
             call(self.spt_id)
         ]
 
@@ -99,13 +129,59 @@ class TestCreateComputerSystem(BaseFlaskTest):
             call('/rest/drives/' + self.sh_id),
             call('/rest/drives/' + self.spt_id),
             call('/rest/drives/' + self.drive1_id),
-            call('/rest/drives/' + self.drive2_id)
+            call('/rest/drives/' + self.drive2_id),
+            call('/rest/drives/' + self.volume_id)
         ]
+
+        self.common_calls_to_assert_volumes = [
+            call(self.sh_id),
+            call(self.spt_id),
+            call(self.drive1_id),
+            call(self.drive2_id),
+            call(self.volume_id),
+            call(self.spt_id)
+        ]
+
+        self.fc_connection = {
+            "portId": "Mezz 3:1-b",
+            "id": 2,
+            "requestedVFs": "0",
+            "functionType": "FibreChannel",
+            "name": "fcnw",
+            "boot": {
+                "priority": "NotBootable",
+            },
+            "networkUri": "/rest/fc-networks/nw_id"
+        }
+
+        self.san_storage = {
+            "hostOSType": "VMware (ESXi)",
+            "manageSanStorage": True,
+            "volumeAttachments": [
+                {
+                    "lunType": "Auto",
+                    "volumeUri": "/rest/storage-volumes/" +
+                    "B526F59E-9BC7-467F-9205-A9F4015CE296",
+                    "volumeStorageSystemUri": "/rest/storage-systems/"
+                    "TXQ1000307",
+                    "storagePaths": [
+                        {
+                            "targetSelector": "Auto",
+                            "isEnabled": True,
+                            "connectionId": 2,
+                            "targets": [
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
 
     def run_common_mock_to_server_hardware(self):
         ov_client = self.oneview_client
         ov_client.server_hardware.get.side_effect = [
             self.server_hardware,
+            self.not_found_error,
             self.not_found_error,
             self.not_found_error,
             self.not_found_error,
@@ -120,7 +196,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_profile_template,
             self.not_found_error,
             self.not_found_error,
-            self.server_profile_template
+            self.not_found_error,
+            self.server_profile_template,
         ]
 
     def run_common_mock_to_drives(self):
@@ -128,7 +205,18 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.not_found_error,
             self.not_found_error,
             self.drives[0],
-            self.drives[1]
+            self.drives[1],
+            self.not_found_error,
+        ]
+
+    def run_common_mock_to_volumes(self):
+        self.oneview_client.volumes.get.side_effect = [
+            self.not_found_error,
+            self.not_found_error,
+            self.not_found_error,
+            self.not_found_error,
+            self.volume,
+            self.not_found_error,
         ]
 
     def assert_common_calls(self):
@@ -149,6 +237,11 @@ class TestCreateComputerSystem(BaseFlaskTest):
         ) as f:
             expected_server_profile_built = json.load(f)
 
+        expected_server_profile_built["sanStorage"] = self.san_storage
+
+        expected_server_profile_built["connectionSettings"][
+            "connections"].append(self.fc_connection)
+
         task_without_resource_uri = {
             "associatedResource": {
                 "resourceUri": None
@@ -166,7 +259,11 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.run_common_mock_to_server_hardware()
         self.run_common_mock_to_server_profile_template()
         self.run_common_mock_to_drives()
+        self.run_common_mock_to_volumes()
 
+        self.oneview_client.storage_pools.get.return_value = {
+            "storageSystemUri": "/rest/storage-systems/TXQ1000307"
+        }
         # The connection.post return for /rest/server-profiles is a tuple
         self.oneview_client.connection.post.return_value = \
             (task_without_resource_uri, None)
@@ -253,9 +350,19 @@ class TestCreateComputerSystem(BaseFlaskTest):
         ) as f:
             expected_server_profile_built = json.load(f)
 
+        expected_server_profile_built["sanStorage"] = self.san_storage
+
+        expected_server_profile_built["connectionSettings"][
+            "connections"].append(self.fc_connection)
+
         self.run_common_mock_to_server_hardware()
         self.run_common_mock_to_server_profile_template()
         self.run_common_mock_to_drives()
+        self.run_common_mock_to_volumes()
+
+        self.oneview_client.storage_pools.get.return_value = {
+            "storageSystemUri": "/rest/storage-systems/TXQ1000307"
+        }
 
         config_mock.get_composition_settings.return_value = {
             'PowerOffServerOnCompose': ''
@@ -338,6 +445,11 @@ class TestCreateComputerSystem(BaseFlaskTest):
             "uri": "/rest/tasks/123456"
         }
 
+        expected_server_profile_built["sanStorage"] = self.san_storage
+
+        expected_server_profile_built["connectionSettings"][
+            "connections"].append(self.fc_connection)
+
         data_to_create_without_desc = copy.deepcopy(self.data_to_create_system)
         del expected_server_profile_built['description']
         data_to_create_without_desc['Description'] = ''
@@ -345,6 +457,11 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.run_common_mock_to_server_hardware()
         self.run_common_mock_to_server_profile_template()
         self.run_common_mock_to_drives()
+        self.run_common_mock_to_volumes()
+
+        self.oneview_client.storage_pools.get.return_value = {
+            "storageSystemUri": "/rest/storage-systems/TXQ1000307"
+        }
 
         # The connection.post return for /rest/server-profiles is a tuple
         self.oneview_client.connection.post.return_value = \
@@ -412,6 +529,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.not_found_error,
             self.not_found_error,
             self.not_found_error,
+            self.not_found_error,
             self.not_found_error
         ]
 
@@ -440,10 +558,12 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_hardware,
             self.not_found_error,
             self.not_found_error,
+            self.not_found_error,
             self.not_found_error
         ]
 
         self.oneview_client.server_profile_templates.get.side_effect = [
+            self.not_found_error,
             self.not_found_error,
             self.not_found_error,
             self.not_found_error,
@@ -482,12 +602,14 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_hardware,
             self.not_found_error,
             self.not_found_error,
+            self.not_found_error,
             self.not_found_error
         ]
 
         self.oneview_client.server_profile_templates.get.side_effect = [
             self.not_found_error,
             self.server_profile_template,
+            self.not_found_error,
             self.not_found_error,
             self.not_found_error
         ]
@@ -573,6 +695,9 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.not_found_error,
             self.not_found_error,
         ]
+
+        self.run_common_mock_to_volumes()
+
         self.oneview_client.connection.post.return_value = (task, None)
 
         response = self.client.post(
@@ -630,6 +755,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.not_found_error,
             self.not_found_error,
             self.not_found_error,
+            self.not_found_error,
             self.server_hardware,  # for multiple oneview (power update status)
             self.server_hardware  # Get for multiple OneView support
         ]
@@ -642,14 +768,22 @@ class TestCreateComputerSystem(BaseFlaskTest):
             template_without_controller,
             self.not_found_error,
             self.not_found_error,
+            self.not_found_error,
             template_without_controller
         ]
         self.oneview_client.index_resources.get.side_effect = [
             self.not_found_error,
             self.not_found_error,
             self.not_found_error,
-            self.not_found_error
+            self.not_found_error,
+            self.not_found_error,
         ]
+
+        self.run_common_mock_to_volumes()
+        self.oneview_client.storage_pools.get.return_value = {
+            "storageSystemUri": "/rest/storage-systems/TXQ1000307"
+        }
+
         self.oneview_client.connection.post.return_value = (task, None)
 
         response = self.client.post(
@@ -704,6 +838,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.run_common_mock_to_server_hardware()
         self.run_common_mock_to_server_profile_template()
         self.run_common_mock_to_drives()
+        self.run_common_mock_to_volumes()
 
         self.oneview_client.connection.post.return_value = (task, object())
 
@@ -745,6 +880,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.run_common_mock_to_server_hardware()
         self.run_common_mock_to_server_profile_template()
         self.run_common_mock_to_drives()
+        self.run_common_mock_to_volumes()
 
         self.oneview_client.connection.post.return_value = (task, object())
 

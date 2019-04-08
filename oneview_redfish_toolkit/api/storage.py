@@ -76,13 +76,15 @@ class Storage(RedfishJsonValidator):
 
     @staticmethod
     def build_for_composed_system(server_profile, server_hardware_type,
-                                  sas_logical_jbods,):
+                                  sas_logical_jbods,
+                                  external_storage_volumes):
         """Returns a Storage with the contents of data from an Oneview
 
             Args:
                 server_profile: Server Profile from Oneview
                 server_hardware_type: Server Hardware Type from Oneview
                 sas_logical_jbods: SAS Logical JBODs info from Oneview
+                external_storage_volumes: Storage volumes from OneView
         """
         attrs = {}
 
@@ -128,7 +130,7 @@ class Storage(RedfishJsonValidator):
             attrs["Drives"].append({
                 "@odata.id": attrs["@odata.id"] + "/Drives/" + drive_id
             })
-        if len(sas_logical_jbods) != 0:
+        if len(sas_logical_jbods) != 0 or external_storage_volumes:
             attrs["Volumes"] = collections.OrderedDict()
             attrs["Volumes"]["@odata.id"] = attrs["@odata.id"] + "/Volumes"
 
