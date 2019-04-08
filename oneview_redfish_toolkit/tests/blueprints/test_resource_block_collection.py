@@ -55,6 +55,11 @@ class TestResourceBlockCollection(BaseFlaskTest):
             drives_list = json.load(f)
 
         with open(
+            'oneview_redfish_toolkit/mockups/oneview/Volumes.json'
+        ) as f:
+            volume_list = json.load(f)
+
+        with open(
             'oneview_redfish_toolkit/mockups/redfish/'
             'ResourceBlockCollection.json'
         ) as f:
@@ -68,6 +73,9 @@ class TestResourceBlockCollection(BaseFlaskTest):
 
         self.oneview_client.index_resources.get_all.return_value = \
             drives_list
+
+        self.oneview_client.volumes.get_all.return_value = \
+            volume_list
 
         # Get ResourceBlockCollection
         response = self.client.get(
@@ -87,6 +95,7 @@ class TestResourceBlockCollection(BaseFlaskTest):
         self.oneview_client.server_hardware.get_all.return_value = []
         self.oneview_client.server_profile_templates.get_all.return_value = []
         self.oneview_client.index_resources.get_all.return_value = []
+        self.oneview_client.volumes.get_all.return_value = []
 
         # Get ResourceBlockCollection
         response = self.client.get(

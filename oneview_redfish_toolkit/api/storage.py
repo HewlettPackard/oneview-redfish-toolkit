@@ -135,26 +135,35 @@ class Storage(RedfishJsonValidator):
         return Storage(attrs)
 
     @staticmethod
-    def build_for_resource_block(drive):
-        """Returns a Storage with the contents of devices from an Oneview's Drive
+    def build_for_resource_block(storage_block):
+        """Returns a Storage with the contents of devices from an
+
+            Oneview's Drive or storage volume
 
             Args:
-                drive: Oneview's Drive dict
+                storage_block: Oneview's Drive or Volume dict
         """
         attrs = {}
 
-        drive_uuid = drive["uri"].split("/")[-1]
+        drive_uuid = storage_block["uri"].split("/")[-1]
         odata_id = "{}/{}/Storage/1" \
             .format(ResourceBlockCollection.BASE_URI, drive_uuid)
 
         attrs["Id"] = "1"
-        attrs["Name"] = drive["name"]
-        attrs["Status"] = status_mapping.STATUS_MAP.get(drive["status"])
-        attrs["Drives"] = [
-            {
-                "@odata.id": odata_id + "/Drives/1"
+        attrs["Name"] = storage_block["name"]
+        attrs["Status"] = status_mapping.STATUS_MAP.get(
+            storage_block["status"])
+
+        if storage_block["category"] == "storage-volumes":
+            attrs["Volumes"] = {
+                "@data.id": odata_id + "/Volumes/1"
             }
-        ]
+        else:
+            attrs["Drives"] = [
+                {
+                    "@odata.id": odata_id + "/Drives/1"
+                }
+            ]
 
         attrs["@odata.id"] = odata_id
 

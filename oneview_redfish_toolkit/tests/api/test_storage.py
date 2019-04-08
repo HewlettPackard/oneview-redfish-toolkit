@@ -70,3 +70,21 @@ class TestStorage(BaseTest):
         result = json.loads(storage.serialize())
 
         self.assertEqualMockup(expected_result, result)
+
+    def test_build_for_resource_block_for_external_storage(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/Volumes.json'
+        ) as f:
+            volume = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'ExternalStorageForResourceBlock.json'
+        ) as f:
+            expected_result = json.load(f)
+
+        storage = Storage.build_for_resource_block(volume[0])
+
+        result = json.loads(storage.serialize())
+
+        self.assertEqualMockup(expected_result, result)

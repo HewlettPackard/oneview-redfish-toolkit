@@ -594,3 +594,49 @@ class TestResourceBlock(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+    @mock.patch.object(resource_block, "_get_oneview_resource")
+    def test_get_external_storage_resource_block(self,
+                                                 mock_get_oneview_resource):
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish'
+            '/ExternalStorageResourceBlock.json'
+        ) as f:
+            expected_resource_block = json.load(f)
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'Volumes.json'
+        ) as f:
+            volume_list = json.load(f)
+            volume = volume_list[0]
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerProfileTemplateWithSanStorage.json'
+        ) as f:
+            server_profile_template = json.load(f)
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'StorageVolumeAttachment.json'
+        ) as f:
+            storage_volume_attachments = json.load(f)
+            filter_storage_volume_attachments = storage_volume_attachments[
+                "members"]
+
+        mock_get_oneview_resource.return_value = volume
+        self.oneview_client.server_profile_templates.get_all.return_value = \
+            server_profile_template
+        self.oneview_client.storage_volume_attachments.get_all.return_value = \
+            filter_storage_volume_attachments
+
+        response = self.client.get(
+            "/redfish/v1/CompositionService/ResourceBlocks"
+            "/B526F59E-9BC7-467F-9205-A9F4015CE296")
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_resource_block, result)
