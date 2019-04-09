@@ -161,6 +161,40 @@ class Volume(RedfishJsonValidator):
 
         return Volume(attrs)
 
+    @staticmethod
+    def build_external_storage_volume_details(sp_uuid, volume, volume_id):
+        """Returns a storage Volume with the contents of data from an Oneview
+
+            Args:
+                sp_uuid: server profile uuid
+                volume: storage volume
+                volume_id: storage_volume_id
+
+        """
+        attrs = {}
+        attrs["@odata.id"] = ComputerSystem.BASE_URI + "/" + \
+            sp_uuid + "/Storage/1/Volumes/" + volume_id
+        attrs["Id"] = volume_id
+        attrs["Identifiers"] = list()
+        attrs["Identifiers"].append({
+            "DurableNameFormat": "UUID",
+            "DurableName": volume_id
+        })
+        attrs["CapacityBytes"] = int(volume["provisionedCapacity"])
+        attrs["Name"] = volume["name"]
+        attrs["Status"] = collections.OrderedDict()
+        map_struct = status_mapping.STATUS_MAP.get(volume["status"])
+        attrs["Status"]["State"] = map_struct["State"]
+        attrs["Status"]["Health"] = map_struct["Health"]
+
+        raidlevel = get_raid_level_for_storage_volume(volume)
+        if raidlevel:
+            attrs["VolumeType"] = status_mapping.RAID_LEVEL.get(raidlevel)
+        else:
+            attrs["VolumeType"] = "RawDevice"
+
+        return Volume(attrs)
+
 
 def get_sas_logical_jbod_by_volumeid(server_profile, volume_id):
 

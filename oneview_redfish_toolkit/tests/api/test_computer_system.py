@@ -14,7 +14,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from copy import deepcopy
 import json
+
 
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.tests.base_test import BaseTest
@@ -73,12 +75,37 @@ class TestComputerSystem(BaseTest):
             self.server_profile,
             [self.drives[4]],
             spt_uuid,
-            self.manager_uuid
+            self.manager_uuid,
+            []
         )
 
         result = json.loads(computer_system.serialize())
 
         self.assertEqualMockup(self.computer_system_mockup, result)
+
+    def test_build_composed_system_with_external_storage(self):
+        volume_resource_block = {
+            "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/"
+            "volume_uuid"
+        }
+        computer_system_mockup = deepcopy(self.computer_system_mockup)
+        computer_system_mockup["Links"]["ResourceBlocks"].append(
+            volume_resource_block)
+        spt_uuid = "61c3a463-1355-4c68-a4e3-4f08c322af1b"
+        volume_uri = ["/rest/storage-volumes/volume_uuid"]
+        computer_system = ComputerSystem.build_composed_system(
+            self.server_hardware,
+            self.server_hardware_types,
+            self.server_profile,
+            [self.drives[4]],
+            spt_uuid,
+            self.manager_uuid,
+            volume_uri
+        )
+
+        result = json.loads(computer_system.serialize())
+
+        self.assertEqualMockup(computer_system_mockup, result)
 
     def test_build_physical_system(self):
         with open(
