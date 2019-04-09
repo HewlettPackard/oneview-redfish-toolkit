@@ -45,9 +45,15 @@ class TestStorage(BaseTest):
         ) as f:
             storage_mockup = json.load(f)
 
+        with open('oneview_redfish_toolkit/mockups/oneview/'
+                  'Volumes.json') as f:
+            volumes = json.load(f)
+            volume = volumes[0]
+
         storage = Storage.build_for_composed_system(server_profile,
                                                     server_hardware_types,
-                                                    sas_logical_jbods)
+                                                    sas_logical_jbods,
+                                                    volume)
 
         result = json.loads(storage.serialize())
 

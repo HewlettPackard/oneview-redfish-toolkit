@@ -60,11 +60,15 @@ class StorageResourceBlock(ResourceBlock):
                 composit_state = "Composed"
             self._fill_link_members(drive_index_trees, zone_ids)
         else:
+            isShareable = storage_resource["isShareable"]
             if server_profiles:
-                composit_state = "ComposedAndAvailable"
+                if isShareable:
+                    composit_state = "ComposedAndAvailable"
+                else:
+                    composit_state = "Composed"
             else:
                 composit_state = "Unused"
-            if storage_resource["isShareable"]:
+            if isShareable:
                 self.redfish["CompositionStatus"]["SharingCapable"] = True
             self._fill_volume_link_members(zone_ids, server_profiles)
 

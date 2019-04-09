@@ -112,3 +112,24 @@ class TestStorageResourceBlock(BaseTest):
 
         self.assertEqual(expected_resource_block["Name"], result["Name"])
         self.assertEqual(expected_resource_block["Id"], result["Id"])
+
+    def test_private_storage_volume_resource_block(self):
+        zone_ids = ["5394236a-384b-4151-9e32-685dbe990e93"]
+        server_profiles = [
+            "/rest/server-profiles/72d7f1ff-00e5-43b6-83c2-d4d61abd1708",
+            "/rest/server-profiles/416c23ad-1587-4484-9174-e10afd1801f9"
+        ]
+        volume = copy.deepcopy(self.volume)
+        volume["isShareable"] = False
+        external_storage_rb_mockup = copy.deepcopy(
+            self.external_storage_rb_mockup)
+        external_storage_rb_mockup["CompositionStatus"]["CompositionState"] = \
+            "Composed"
+        external_storage_rb_mockup["CompositionStatus"]["SharingCapable"] = \
+            False
+
+        resource_block = StorageResourceBlock(
+            volume, None, zone_ids, server_profiles)
+        result = json.loads(resource_block.serialize())
+
+        self.assertEqualMockup(external_storage_rb_mockup, result)
