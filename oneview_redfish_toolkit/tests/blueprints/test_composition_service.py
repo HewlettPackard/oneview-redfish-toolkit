@@ -56,7 +56,7 @@ class TestCompositionService(BaseFlaskTest):
         error_500_excep = copy.deepcopy(error_500)
         error_500_excep["error"]["message"] = \
             "The server encountered an internal error and " \
-            "was unable to complete your request.  " \
+            "was unable to complete your request. " \
             "Either the server is overloaded or there is " \
             "an error in the application."
 
@@ -69,7 +69,7 @@ class TestCompositionService(BaseFlaskTest):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.assertEqualMockup(error_500_excep, result)
+        self.assertEqual(error_500_excep, result)
 
     def test_get_composition_service(self):
         """Tests CompositionService"""
