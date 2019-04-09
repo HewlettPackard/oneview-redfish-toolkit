@@ -84,6 +84,29 @@ class TestStorage(BaseFlaskTest):
             'message': 'some message not found',
         })
 
+        self.san_storage = {
+            "hostOSType": "VMware (ESXi)",
+            "manageSanStorage": True,
+            "volumeAttachments": [
+                {
+                    "lunType": "Auto",
+                    "volumeUri": "/rest/storage-volumes/" +
+                    "B526F59E-9BC7-467F-9205-A9F4015CE296",
+                    "volumeStorageSystemUri": "/rest/storage-systems/"
+                    "TXQ1000307",
+                    "storagePaths": [
+                        {
+                            "targetSelector": "Auto",
+                            "isEnabled": True,
+                            "connectionId": 2,
+                            "targets": [
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+
     def test_get_storage(self):
         """Tests Storage"""
 
@@ -488,3 +511,63 @@ class TestStorage(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
+
+    def test_get_external_storage_volumes(self):
+        """Tests get external storage volume for computer system"""
+
+        with open(
+            'oneview_redfish_toolkit/mockups/redfish/'
+            'VolumesResourceBlock.json'
+        ) as f:
+            expected_storage_details = json.load(f)
+
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview/Volumes.json'
+        ) as f:
+            volume = json.load(f)
+
+        expected_storage_details["@odata.id"] = "/redfish/v1/Systems/" + \
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes/" + \
+            "B526F59E-9BC7-467F-9205-A9F4015CE296"
+        expected_storage_details["Id"] = \
+            "B526F59E-9BC7-467F-9205-A9F4015CE296"
+
+        self.oneview_client.storage_pools.get.return_value = {
+            "uri": "/rest/storage-pools/DC8BD64B-9A4E-4722-92D3-A9F4015B0B71",
+            "deviceSpecificAttributes": {"supportedRAIDLevel": "RAID6"}
+        }
+        server_profile = copy.deepcopy(self.server_profile)
+        server_profile["sanStorage"] = self.san_storage
+
+        self.oneview_client.server_profiles.get.return_value = server_profile
+        self.oneview_client.volumes.get.return_value = volume[0]
+
+        response = self.client.get(
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes/"
+            "B526F59E-9BC7-467F-9205-A9F4015CE296"
+        )
+
+        result = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+        self.assertEqualMockup(expected_storage_details, result)
+
+    def test_get_volumes_when_volume_not_found(self):
+        server_profile = copy.deepcopy(self.server_profile)
+        server_profile["sanStorage"] = self.san_storage
+
+        response = self.client.get(
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Volumes/"
+            "wrong_uuid"
+        )
+
+        result = json.loads(response.data.decode("utf-8"))
+
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual("application/json", response.mimetype)
+
+        msg_error = "Volume wrong_uuid not found for Storage 1 of System " \
+                    "b425802b-a6a5-4941-8885-aab68dfa2ee2"
+        self.assertIn(msg_error, str(result))
