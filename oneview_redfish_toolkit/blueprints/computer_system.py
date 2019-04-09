@@ -79,6 +79,10 @@ def get_computer_system(uuid):
         spt_uuid = computer_system_service.\
             get_server_profile_template_from_sp(resource["uri"])
 
+        # Get external storage volumes from server profile
+        volumes_uris = [volume["volumeUri"] for volume in resource[
+            "sanStorage"]["volumeAttachments"]]
+
         manager_uuid = get_manager_uuid(resource['serverHardwareTypeUri'])
 
         # Build Computer System object and validates it
@@ -88,7 +92,8 @@ def get_computer_system(uuid):
             resource,
             drives,
             spt_uuid,
-            manager_uuid)
+            manager_uuid,
+            volumes_uris)
     else:
         abort(status.HTTP_404_NOT_FOUND,
               'Computer System UUID {} not found'.format(uuid))
@@ -218,13 +223,29 @@ def create_composed_system():
 
         spt = g.oneview_client.server_profile_templates.get(spt_id)
 
+        # Check for external storage block.
+        external_storage_blocks = _get_external_storage_block(block_ids)
+        if external_storage_blocks:
+            is_fibre_channel_nw = _get_fibre_channel_network(spt)
+            if is_fibre_channel_nw:
+                for volume in external_storage_blocks:
+                    storage_pool = g.oneview_client.storage_pools.get(
+                        volume["storagePoolUri"])
+                    if storage_pool:
+                        storage_system_uri = storage_pool["storageSystemUri"]
+                        volume["storageSystemUri"] = storage_system_uri
+            else:
+                raise ValidationError(
+                    "Should have a Fibre Channel Network Connection")
+
         server_profile = ComputerSystem.build_server_profile(
             body["Name"],
             body.get("Description"),
             spt,
             system_block,
             network_blocks,
-            storage_blocks)
+            storage_blocks,
+            external_storage_blocks)
 
         service.power_off_server_hardware(system_block["uuid"],
                                           on_compose=True)
@@ -308,6 +329,20 @@ def _get_storage_resource_blocks(ids):
 
     return _get_resource_block_data(
         g.oneview_client.index_resources.get, drive_ids)
+
+
+def _get_external_storage_block(ids):
+    return _get_resource_block_data(
+        g.oneview_client.volumes.get, ids)
+
+
+def _get_fibre_channel_network(spt):
+    is_fibre_channel_nw = False
+    for connection in spt["connectionSettings"]["connections"]:
+        if connection["functionType"] == "FibreChannel":
+            is_fibre_channel_nw = True
+            break
+    return is_fibre_channel_nw
 
 
 def _get_resource_block_data(func, uuids):
