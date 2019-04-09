@@ -38,7 +38,9 @@ class VolumeCollection(RedfishJsonValidator):
         self.redfish["Name"] = "Storage Volume Collection"
         self.redfish["Description"] = "Storage Volume Collection"
         self.redfish["Members@odata.count"] = len(
-            server_profile["localStorage"]["sasLogicalJBODs"])
+            server_profile["localStorage"]["sasLogicalJBODs"]) + \
+            len(server_profile["sanStorage"]["volumeAttachments"])
+
         self.redfish["Members"] = list()
 
         for i in range(len(server_profile["localStorage"]["sasLogicalJBODs"])):
@@ -48,6 +50,15 @@ class VolumeCollection(RedfishJsonValidator):
                 + "/Storage/1/Volumes/" \
                 + str(server_profile["localStorage"]
                       ["sasLogicalJBODs"][i]["id"])
+            self.redfish["Members"].append(link_dict)
+
+        for volume in server_profile["sanStorage"]["volumeAttachments"]:
+            link_dict = collections.OrderedDict()
+            volume_id = volume["volumeUri"].split("/")[-1]
+            link_dict["@odata.id"] = "/redfish/v1/Systems/" \
+                + server_profile["uuid"] \
+                + "/Storage/1/Volumes/" \
+                + volume_id
             self.redfish["Members"].append(link_dict)
 
         self.redfish["Oem"] = {}
