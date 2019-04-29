@@ -4,6 +4,7 @@
     "Name": "Blade Thermal",
     "Temperatures": [
         {
+            "@odata.id": "/redfish/v1/Chassis/36343537-3338-4448-3538-4E5030333434/Thermal#/Temperatures/1",
             "MemberId": "1",
             "Name": "AmbientTemperature",
             "Status": {

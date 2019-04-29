@@ -48,7 +48,7 @@
                 }
             }
         ],
-        "@odata.type": "#CollectionCapabilities.v1_0_0"
+        "@odata.type": "#CollectionCapabilities.v1_1_1"
     },
     "@odata.context": "/redfish/v1/$metadata#ComputerSystemCollection.ComputerSystemCollection",
     "@odata.id": "/redfish/v1/Systems"
