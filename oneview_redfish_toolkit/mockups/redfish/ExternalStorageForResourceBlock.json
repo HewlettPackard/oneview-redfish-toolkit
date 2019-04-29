@@ -2,7 +2,7 @@
     "Name": "externalVolume",
     "Id": "1",
     "Volumes": {
-        "@data.id": "/redfish/v1/CompositionService/ResourceBlocks/B526F59E-9BC7-467F-9205-A9F4015CE296/Storage/1/Volumes/1"
+        "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/B526F59E-9BC7-467F-9205-A9F4015CE296/Storage/1/Volumes/1"
     },
     "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/B526F59E-9BC7-467F-9205-A9F4015CE296/Storage/1",
     "Status": {
