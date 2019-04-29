@@ -281,6 +281,9 @@ def load_schemas(schema_dir):
             file_name = path.split('\\')[-1]
         else:
             file_name = path.split('/')[-1]
+        if file_name == "VolumeCollection.json" or "Volume.json":
+            stored_schemas["http://redfish.dmtf.org/schemas/swordfish/v1/" +
+                           file_name] = json_schema
         stored_schemas["http://redfish.dmtf.org/schemas/v1/" + file_name] = \
             json_schema
 
