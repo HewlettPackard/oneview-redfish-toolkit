@@ -4,6 +4,7 @@
     "Name": "Enclosure Thermal",
     "Temperatures": [
         {
+            "@odata.id": "/redfish/v1/Chassis/0000000000A66101/Thermal#/Temperatures/1",
             "MemberId": "1",
             "Name": "AmbientTemperature",
             "Status": {

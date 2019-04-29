@@ -103,12 +103,17 @@ class Storage(RedfishJsonValidator):
         attrs["Status"]["Health"] = ok_struct["Health"]
         attrs["StorageControllers"] = list()
 
+        storage_controller_count = 0
         # adapter storage capabilities (if any)
         for adapter in server_hardware_type['adapters']:
             if adapter['storageCapabilities']:
                 new_capability = collections.OrderedDict()
                 new_capability["SupportedDeviceProtocols"] = sorted(
                     Storage._map_supported_device_protos(drive_technologies))
+                new_capability["@odata.id"] = attrs["@odata.id"] + \
+                    "#/StorageControllers/" + str(storage_controller_count)
+                new_capability["MemberId"] = str(storage_controller_count)
+                storage_controller_count = storage_controller_count + 1
                 attrs["StorageControllers"].append(new_capability)
 
         # internal storage capabilities
@@ -116,6 +121,9 @@ class Storage(RedfishJsonValidator):
         storage_controllers["Manufacturer"] = "HPE"
         storage_controllers["SupportedDeviceProtocols"] = \
             sorted(Storage._map_supported_device_protos(drive_technologies))
+        storage_controllers["@odata.id"] = attrs["@odata.id"] + \
+            "#/StorageControllers/" + str(storage_controller_count)
+        storage_controllers["MemberId"] = str(storage_controller_count)
         attrs["StorageControllers"].append(storage_controllers)
 
         count_drives_by_jbod = \
@@ -158,7 +166,7 @@ class Storage(RedfishJsonValidator):
 
         if storage_block["category"] == "storage-volumes":
             attrs["Volumes"] = {
-                "@data.id": odata_id + "/Volumes/1"
+                "@odata.id": odata_id + "/Volumes/1"
             }
         else:
             attrs["Drives"] = [

@@ -1,10 +1,13 @@
 {
-    "@odata.type": "#Event.v1_2_0.Event",
+    "@odata.type": "#Event.v1_3_1.Event",
     "@odata.context": "/redfish/v1/$metadata#Event.Event",
-    "Events@odata.count": 1,
+    "Events@odata.count": 1,  
+    "@odata.id": "/redfish/v1/EventService/Event",  
     "Events": [{
+    	"MemberId": "1",        
         "EventType": "Alert",
         "EventTimestamp": "2018-02-12T20:12:03.231Z",
+        "@odata.id": "/redfish/v1/EventService/Event/1",      
         "MessageId": "Base.1.1.Success"
     }],
     "Id": "30373737-3237-4D32-3230-313530314752",
