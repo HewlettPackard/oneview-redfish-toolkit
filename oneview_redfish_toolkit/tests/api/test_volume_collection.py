@@ -40,12 +40,6 @@ class TestolumeCollection(BaseTest):
     def test_serialize(self):
         # Tests the serialize function result against known result
 
-        volume_collection = \
-            VolumeCollection(self.server_profile)
-
-        result = json.loads(volume_collection.serialize())
-
-        self.assertEqualMockup(self.volume_collection_mockup, result)
         server_profile = copy.deepcopy(self.server_profile)
         server_profile["sanStorage"]["volumeAttachments"] = [{
             "id": 1,

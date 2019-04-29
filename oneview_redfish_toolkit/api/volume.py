@@ -25,6 +25,8 @@ from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 
 from oneview_redfish_toolkit.api.redfish_json_validator \
     import RedfishJsonValidator
+from oneview_redfish_toolkit.api.resource_block_collection import \
+    ResourceBlockCollection
 
 import oneview_redfish_toolkit.api.status_mapping as status_mapping
 
@@ -110,7 +112,6 @@ class Volume(RedfishJsonValidator):
             sas_logical_jbod["sasLogicalInterconnectUri"]
 
         drivepaths = []
-        drivepath = None
         for logical_Drive_Bay_Uri in sas_logical_jbod["logicalDriveBayUris"]:
             drivepath = get_drive_path_from_logical_Drive_Bay_Uri(
                 logical_Drive_Bay_Uri)
@@ -122,37 +123,6 @@ class Volume(RedfishJsonValidator):
 
         drive_enclosure_object = get_drive_enclosure_object(
             drive_enclosure_uri)
-
-        drivebayuris = []
-
-        drivebayuri = None
-        drivepath = None
-        flag = False
-        for path in drivepaths:
-            flag = False
-            for drivebay in drive_enclosure_object["driveBays"]:
-                for drivepath in drivebay["drive"]["drivePaths"]:
-                    if drivepath == path:
-                        flag = True
-                        drivebayuri = drivebay["uri"]
-                        drivebayuris.append(drivebayuri)
-                        break
-                if flag:
-                    break
-
-        device_slot = get_device_slot_from_sas_logical_jbod_by_volumeid(
-            server_profile, volume_id)
-        raidlevel = None
-        flag = False
-        for storagecontroller in server_profile["localStorage"]["controllers"]:
-            if(storagecontroller["deviceSlot"] == device_slot):
-                for logicaldrive in storagecontroller["logicalDrives"]:
-                    if logicaldrive["sasLogicalJBODId"] == int(volume_id):
-                        raidlevel = logicaldrive["raidLevel"]
-                        flag = True
-                        break
-            if flag:
-                break
 
         drivebayuris = get_drivebayuris_from_drive_enclosure_object(
             drivepaths, drive_enclosure_object)
@@ -270,8 +240,6 @@ def get_drive_enclosure_object(drive_enclosure_uri):
 
 
 def get_capacity_in_bytes(capacity_in_gb):
-        size_in_bytes = float(capacity_in_gb) * 1024 * 1024 * 1024
-        return int(size_in_bytes)
     size_in_bytes = float(capacity_in_gb) * 1024 * 1024 * 1024
     return int(size_in_bytes)
 

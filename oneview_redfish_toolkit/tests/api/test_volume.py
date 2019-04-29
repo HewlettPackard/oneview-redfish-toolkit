@@ -15,7 +15,6 @@
 # under the License.
 
 import json
-
 from unittest import mock
 
 from oneview_redfish_toolkit.api import volume

@@ -125,7 +125,6 @@ def get_volumeCollection(uuid):
 
     server_profile = g.oneview_client.server_profiles.get(uuid)
 
-    if len(server_profile["localStorage"]["sasLogicalJBODs"]) == 0:
     if len(server_profile["localStorage"]["sasLogicalJBODs"]) == 0 and \
             len(server_profile["sanStorage"]["volumeAttachments"]) == 0:
         abort(status.HTTP_404_NOT_FOUND, "Volumes not found")
@@ -148,8 +147,6 @@ def get_volume(uuid, volume_id):
             When Volume is not found calls abort(404)
 
     """
-
-    volume_details = Volume.build_volume_details(uuid, volume_id)
     is_volume_id_integer = _is_volume_id_number(volume_id)
     # volume id can be number in case of sas logical jbod
     # or uuid in case of external storage volume

@@ -38,7 +38,6 @@ class VolumeCollection(RedfishJsonValidator):
         self.redfish["Name"] = "Storage Volume Collection"
         self.redfish["Description"] = "Storage Volume Collection"
         self.redfish["Members@odata.count"] = len(
-        server_profile["localStorage"]["sasLogicalJBODs"])
             server_profile["localStorage"]["sasLogicalJBODs"]) + \
             len(server_profile["sanStorage"]["volumeAttachments"])
 
