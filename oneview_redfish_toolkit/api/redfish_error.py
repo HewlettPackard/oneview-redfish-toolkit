@@ -35,7 +35,7 @@ class RedfishError(RedfishJsonValidator):
 
     """
 
-    SCHEMA_NAME = None
+    SCHEMA_NAME = "Message"
 
     def __init__(self, code, message):
         """Constructor
@@ -103,7 +103,7 @@ class RedfishError(RedfishJsonValidator):
 
         # Construct the dict
         extended_info = collections.OrderedDict()
-        extended_info["@odata.type"] = "#Message.v1_0_5.Message"
+        extended_info["@odata.type"] = self.get_odata_type() + ".Message"
         extended_info["MessageId"] = "Base.1.1." + message_id
         extended_info["Message"] = message
         extended_info["RelatedProperties"] = related_properties

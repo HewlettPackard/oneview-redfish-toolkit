@@ -1,5 +1,5 @@
 {
-    "@odata.type": "#Zone.v1_1_0.Zone",
+    "@odata.type": "#Zone.v1_2_1.Zone",
     "Id": "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0-0000000000A66101",
     "Name": "Apache_Template - 0000A66101",
     "Status": {
@@ -41,7 +41,7 @@
         ]
     },
     "@Redfish.CollectionCapabilities": {
-        "@odata.type": "#CollectionCapabilities.v1_0_0",
+        "@odata.type": "#CollectionCapabilities.v1_1_1",
         "Capabilities": [
             {
                 "CapabilitiesObject": {
