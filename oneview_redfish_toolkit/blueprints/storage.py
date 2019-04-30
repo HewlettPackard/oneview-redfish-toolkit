@@ -55,10 +55,13 @@ def get_storage(uuid):
     server_hardware_type = \
         g.oneview_client.server_hardware_types.get(sht_uri)
     sas_logical_jbods = _find_sas_logical_jbods_by(server_profile)
+    external_storage_volumes = [volume for volume in server_profile[
+        "sanStorage"]["volumeAttachments"]]
 
     st = Storage.build_for_composed_system(server_profile,
                                            server_hardware_type,
-                                           sas_logical_jbods)
+                                           sas_logical_jbods,
+                                           external_storage_volumes)
 
     return ResponseBuilder.success(st)
 
@@ -122,7 +125,8 @@ def get_volumeCollection(uuid):
 
     server_profile = g.oneview_client.server_profiles.get(uuid)
 
-    if len(server_profile["localStorage"]["sasLogicalJBODs"]) == 0:
+    if len(server_profile["localStorage"]["sasLogicalJBODs"]) == 0 and \
+            len(server_profile["sanStorage"]["volumeAttachments"]) == 0:
         abort(status.HTTP_404_NOT_FOUND, "Volumes not found")
 
     volume_details = VolumeCollection(server_profile)
@@ -143,8 +147,24 @@ def get_volume(uuid, volume_id):
             When Volume is not found calls abort(404)
 
     """
-
-    volume_details = Volume.build_volume_details(uuid, volume_id)
+    is_volume_id_integer = _is_volume_id_number(volume_id)
+    # volume id can be number in case of sas logical jbod
+    # or uuid in case of external storage volume
+    if is_volume_id_integer:
+        volume_details = Volume.build_volume_details(uuid, volume_id)
+    else:
+        server_profile = g.oneview_client.server_profiles.get(uuid)
+        sp_volume = [volume for volume in server_profile[
+            "sanStorage"]["volumeAttachments"]
+            if volume["volumeUri"].split("/")[-1] == volume_id]
+        if sp_volume:
+            volume = g.oneview_client.volumes.get(volume_id)
+            volume_details = Volume.build_external_storage_volume_details(
+                uuid, volume, volume_id)
+        else:
+            abort(status.HTTP_404_NOT_FOUND,
+                  "Volume {} not found for Storage 1 of System {}"
+                  .format(volume_id, uuid))
 
     return ResponseBuilder.success(volume_details)
 
@@ -174,3 +194,11 @@ def _find_sas_logical_jbods_by(server_profile):
             sas_logical_jbods.append(item)
 
     return sas_logical_jbods
+
+
+def _is_volume_id_number(volume_id):
+    try:
+        int(volume_id)
+        return True
+    except ValueError:
+        return False
