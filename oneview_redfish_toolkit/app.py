@@ -15,10 +15,12 @@
 # under the License.
 
 # Python libs
+import appdirs
 import argparse
 import ipaddress
 import logging
 import os
+import sys
 import time
 
 # 3rd party libs
@@ -111,6 +113,7 @@ from oneview_redfish_toolkit import util
 
 
 PID_FILE_NAME = 'toolkit.pid'
+CFG_DIR_NAME = 'oneview-redfish-toolkit'
 
 
 def main(config_file_path, logging_config_file_path,
@@ -388,12 +391,38 @@ def main(config_file_path, logging_config_file_path,
             app.run(host=host, port=port, debug=is_debug_mode,
                     ssl_context=ssl_context)
         else:
-            start_cherrypy(app,
-                           host=host,
-                           port=port,
-                           ssl_cert_file=ssl_cert_file,
-                           ssl_key_file=ssl_key_file,
-                           is_dev_env=is_dev_env)
+            is_service_up = check_if_pid_exists()
+            if is_service_up:
+                print('Application is already running')
+                sys.exit(1)
+            else:
+                start_cherrypy(app,
+                               host=host,
+                               port=port,
+                               ssl_cert_file=ssl_cert_file,
+                               ssl_key_file=ssl_key_file,
+                               is_dev_env=is_dev_env)
+
+
+def check_if_pid_exists():
+    is_pid_alive = False
+    cfg_dir = appdirs.user_config_dir(CFG_DIR_NAME)
+    pid_file_path = os.path.join(cfg_dir, PID_FILE_NAME)
+    if not os.path.isfile(pid_file_path):
+        is_pid_alive = False
+    else:
+        pid_file = open(pid_file_path, 'r')
+        pid = pid_file.read()
+        # Check if process is already running or not
+        try:
+            # Sending signal 0 to a pid will raise an OSError exception
+            # if the pid is not running.
+            os.kill(int(pid), 0)
+        except OSError:
+            is_pid_alive = False
+        else:
+            is_pid_alive = True
+    return is_pid_alive
 
 
 def start_cherrypy(app,

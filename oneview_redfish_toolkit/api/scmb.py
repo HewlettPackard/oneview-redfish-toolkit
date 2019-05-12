@@ -67,8 +67,7 @@ def _scmb_base_dir():
 
 
 def _scmb_oneview_dir(ov_ip):
-    ov_certs_dir = os.path.basename(_scmb_base_dir())
-    return os.path.join(ov_certs_dir, ov_ip)
+    return os.path.join(_scmb_base_dir(), ov_ip)
 
 
 def _oneview_ca_path(ov_ip):

@@ -14,7 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-
+import inspect
 import json
 import logging
 import os
@@ -41,7 +41,8 @@ ALL_SUBSCRIPTION_FILE = 'all_subscription.json'
 
 
 def _all_subscription_file():
-    base_dir = os.path.basename(REDFISH_TOOLKIT_BASE_DIR)
+    base_dir = os.path.abspath(os.path.join(
+        os.path.dirname(inspect.getfile(inspect.currentframe())), '..'))
     return os.path.join(base_dir, ALL_SUBSCRIPTION_FILE)
 
 
