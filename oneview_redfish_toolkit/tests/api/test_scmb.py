@@ -259,6 +259,13 @@ class TestSCMB(BaseTest):
                          "Failed to fetch OneView CA Certificate")
 
         e = HPOneViewException({
+            'errorCode': 'RABBITMQ_CLIENTCERT_CONFLICT',
+            'message': 'RABBITMQ_CLIENTCERT_CONFLICT',
+        })
+        oneview_client.certificate_rabbitmq.generate.side_effect = e
+        scmb_thread._generate_certificate_in_oneview(oneview_client)
+
+        e = HPOneViewException({
             'errorCode': 'NOT_FOUND',
             'message': 'NOT_FOUND',
         })
