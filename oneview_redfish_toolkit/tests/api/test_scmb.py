@@ -67,11 +67,11 @@ class TestSCMB(BaseTest):
             }
         }
         ov_ip = '1.1.1.1'
-        self.assertEqual('scmb/1.1.1.1/oneview_ca.pem',
+        self.assertEqual('/dir/scmb/1.1.1.1/oneview_ca.pem',
                          scmb._oneview_ca_path(ov_ip))
-        self.assertEqual('scmb/1.1.1.1/oneview_scmb.pem',
+        self.assertEqual('/dir/scmb/1.1.1.1/oneview_scmb.pem',
                          scmb._scmb_cert_path(ov_ip))
-        self.assertEqual('scmb/1.1.1.1/oneview_scmb.key',
+        self.assertEqual('/dir/scmb/1.1.1.1/oneview_scmb.key',
                          scmb._scmb_key_path(ov_ip))
 
     @mock.patch.object(scmb, 'config')
