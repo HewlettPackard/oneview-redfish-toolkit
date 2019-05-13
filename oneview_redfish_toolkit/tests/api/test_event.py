@@ -66,22 +66,14 @@ class TestEvent(BaseTest):
 
     def test_build_event_from_task(self):
 
-        try:
-            task = self.alert
-            task["resource"]["category"] = "task"
-            task["resourceUri"] = \
-                "/rest/server-hardware/30373737-3237-4D32-3230-313530314752"
-            task["resource"]["name"] = "0000A66101, bay 3"
-            event = Event(self.alert)
+        task = self.alert
+        task["resource"]["category"] = "task"
+        task["resourceUri"] = \
+            "/rest/server-hardware/30373737-3237-4D32-3230-313530314752"
+        task["resource"]["name"] = "0000A66101, bay 3"
+        event = Event(self.alert)
 
-        except Exception as e:
-            self.fail("Failed to instantiate Event class."
-                      " Error: {}".format(e))
-
-        try:
-            result = json.loads(event.serialize())
-        except Exception as e:
-            self.fail("Failed to serialize. Error: {}".format(e))
+        result = json.loads(event.serialize())
 
         event_mockup = self.event_mockup
         event_mockup["Events"][0]["EventType"] = "ResourceAdded"
