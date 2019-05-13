@@ -23,6 +23,7 @@ from unittest import mock
 from hpOneView.exceptions import HPOneViewException
 
 # Own libs
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.api.scmb import SCMB
 from oneview_redfish_toolkit import client_session
@@ -67,11 +68,11 @@ class TestSCMB(BaseTest):
             }
         }
         ov_ip = '1.1.1.1'
-        self.assertEqual('scmb/1.1.1.1/oneview_ca.pem',
+        self.assertEqual('/dir/scmb/1.1.1.1/oneview_ca.pem',
                          scmb._oneview_ca_path(ov_ip))
-        self.assertEqual('scmb/1.1.1.1/oneview_scmb.pem',
+        self.assertEqual('/dir/scmb/1.1.1.1/oneview_scmb.pem',
                          scmb._scmb_cert_path(ov_ip))
-        self.assertEqual('scmb/1.1.1.1/oneview_scmb.key',
+        self.assertEqual('/dir/scmb/1.1.1.1/oneview_scmb.key',
                          scmb._scmb_key_path(ov_ip))
 
     @mock.patch.object(scmb, 'config')
@@ -214,7 +215,11 @@ class TestSCMB(BaseTest):
     @mock.patch.object(scmb, 'config')
     @mock.patch.object(client_session, 'get_oneview_client')
     @mock.patch.object(SCMB, '_get_ov_ca_cert_base64data')
+    @mock.patch.object(scmb, 'ResourceClient')
+    @mock.patch.object(SCMB, 'scmb_connect')
     def test_get_oneview_cert_unexpected_error(self,
+                                               scmb_connect,
+                                               resource_client,
                                                _get_ov_ca_cert_base64data,
                                                get_oneview_client,
                                                config_mock):
@@ -247,6 +252,44 @@ class TestSCMB(BaseTest):
         test_exception = hp_exception.exception
         self.assertEqual(hp_ov_exception_msg, test_exception.msg)
         self.assertEqual(e.oneview_response, test_exception.oneview_response)
+
+        scmb_connect.side_effect = e
+
+        scmb_thread._listen_scmb()
+
+        # test get certificate exception
+        _get_ov_ca_cert_base64data.return_value = None
+
+        with self.assertRaises(OneViewRedfishException) as redfish_exception:
+            scmb_thread.get_scmb_certs()
+
+        test_exception = redfish_exception.exception.msg
+        self.assertEqual(test_exception,
+                         "Failed to fetch OneView CA Certificate")
+
+        e = HPOneViewException({
+            'errorCode': 'RABBITMQ_CLIENTCERT_CONFLICT',
+            'message': 'RABBITMQ_CLIENTCERT_CONFLICT',
+        })
+        oneview_client.certificate_rabbitmq.generate.side_effect = e
+        scmb_thread._generate_certificate_in_oneview(oneview_client)
+
+        resource_client.get.return_value = "Cert"
+
+        scmb_thread._get_ov_ca_cert(oneview_client)
+
+        # test certificate generation exception
+        e = HPOneViewException({
+            'errorCode': 'NOT_FOUND',
+            'message': 'NOT_FOUND',
+        })
+        oneview_client.certificate_rabbitmq.generate.side_effect = e
+        with self.assertRaises(HPOneViewException) as hp_exception:
+            scmb_thread._generate_certificate_in_oneview(oneview_client)
+
+        test_exception = hp_exception.exception.msg
+        self.assertEqual(test_exception,
+                         "NOT_FOUND")
 
     @mock.patch('pika.channel.Channel')
     @mock.patch('pika.BlockingConnection')
