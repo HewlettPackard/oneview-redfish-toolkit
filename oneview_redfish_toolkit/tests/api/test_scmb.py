@@ -258,6 +258,18 @@ class TestSCMB(BaseTest):
         self.assertEqual(test_exception,
                          "Failed to fetch OneView CA Certificate")
 
+        e = HPOneViewException({
+            'errorCode': 'NOT_FOUND',
+            'message': 'NOT_FOUND',
+        })
+        oneview_client.certificate_rabbitmq.generate.side_effect = e
+        with self.assertRaises(HPOneViewException) as hp_exception:
+            scmb_thread._generate_certificate_in_oneview(oneview_client)
+
+        test_exception = hp_exception.exception.msg
+        self.assertEqual(test_exception,
+                         "NOT_FOUND")
+
     @mock.patch('pika.channel.Channel')
     @mock.patch('pika.BlockingConnection')
     @mock.patch('pika.ConnectionParameters')
