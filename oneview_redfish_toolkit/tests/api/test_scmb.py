@@ -23,6 +23,7 @@ from unittest import mock
 from hpOneView.exceptions import HPOneViewException
 
 # Own libs
+from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.api import scmb
 from oneview_redfish_toolkit.api.scmb import SCMB
 from oneview_redfish_toolkit import client_session
@@ -247,6 +248,15 @@ class TestSCMB(BaseTest):
         test_exception = hp_exception.exception
         self.assertEqual(hp_ov_exception_msg, test_exception.msg)
         self.assertEqual(e.oneview_response, test_exception.oneview_response)
+
+        _get_ov_ca_cert_base64data.return_value = None
+
+        with self.assertRaises(OneViewRedfishException) as redfish_exception:
+            scmb_thread.get_scmb_certs()
+
+        test_exception = redfish_exception.exception.msg
+        self.assertEqual(test_exception,
+                         "Failed to fetch OneView CA Certificate")
 
     @mock.patch('pika.channel.Channel')
     @mock.patch('pika.BlockingConnection')
