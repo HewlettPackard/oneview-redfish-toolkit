@@ -216,7 +216,9 @@ class TestSCMB(BaseTest):
     @mock.patch.object(client_session, 'get_oneview_client')
     @mock.patch.object(SCMB, '_get_ov_ca_cert_base64data')
     @mock.patch.object(scmb, 'ResourceClient')
+    @mock.patch.object(SCMB, 'scmb_connect')
     def test_get_oneview_cert_unexpected_error(self,
+                                               scmb_connect,
                                                resource_client,
                                                _get_ov_ca_cert_base64data,
                                                get_oneview_client,
@@ -251,6 +253,11 @@ class TestSCMB(BaseTest):
         self.assertEqual(hp_ov_exception_msg, test_exception.msg)
         self.assertEqual(e.oneview_response, test_exception.oneview_response)
 
+        scmb_connect.side_effect = e
+
+        scmb_thread._listen_scmb()
+
+        # test get certificate exception
         _get_ov_ca_cert_base64data.return_value = None
 
         with self.assertRaises(OneViewRedfishException) as redfish_exception:
@@ -271,6 +278,7 @@ class TestSCMB(BaseTest):
 
         scmb_thread._get_ov_ca_cert(oneview_client)
 
+        # test certificate generation exception
         e = HPOneViewException({
             'errorCode': 'NOT_FOUND',
             'message': 'NOT_FOUND',
