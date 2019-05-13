@@ -215,7 +215,9 @@ class TestSCMB(BaseTest):
     @mock.patch.object(scmb, 'config')
     @mock.patch.object(client_session, 'get_oneview_client')
     @mock.patch.object(SCMB, '_get_ov_ca_cert_base64data')
+    @mock.patch.object(scmb, 'ResourceClient')
     def test_get_oneview_cert_unexpected_error(self,
+                                               resource_client,
                                                _get_ov_ca_cert_base64data,
                                                get_oneview_client,
                                                config_mock):
@@ -264,6 +266,10 @@ class TestSCMB(BaseTest):
         })
         oneview_client.certificate_rabbitmq.generate.side_effect = e
         scmb_thread._generate_certificate_in_oneview(oneview_client)
+
+        resource_client.get.return_value = "Cert"
+
+        scmb_thread._get_ov_ca_cert(oneview_client)
 
         e = HPOneViewException({
             'errorCode': 'NOT_FOUND',
