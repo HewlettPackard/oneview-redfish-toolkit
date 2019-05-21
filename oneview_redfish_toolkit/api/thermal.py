@@ -43,6 +43,8 @@ class Thermal(RedfishJsonValidator):
         self.redfish["Name"] = name + " Thermal"
         self.redfish["Temperatures"] = list()
         self.redfish["Temperatures"].append(collections.OrderedDict())
+        self.redfish["Temperatures"][0]["@odata.id"] = "/redfish/v1/" + \
+            "Chassis/" + uuid + "/Thermal#/Temperatures/1"
         self.redfish["Temperatures"][0]["MemberId"] = "1"
         self.redfish["Temperatures"][0]["Name"] = "AmbientTemperature"
         self.redfish["Temperatures"][0]["Status"] = collections.OrderedDict()

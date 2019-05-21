@@ -56,6 +56,7 @@ class Event(RedfishJsonValidator):
         self.redfish["@odata.type"] = self.get_odata_type()
         self.redfish["@odata.context"] = "/redfish/v1/$metadata#Event.Event"
         self.redfish["Events@odata.count"] = 1
+        self.redfish["@odata.id"] = "/redfish/v1/EventService/Event"
         self.redfish["Events"] = list()
 
         if (category == "alerts"):
@@ -76,6 +77,8 @@ class Event(RedfishJsonValidator):
         event_record["EventTimestamp"] = oneview_alert["timestamp"]
         event_record["EventType"] = "Alert"
         event_record["MessageId"] = "Base.1.1.Success"
+        event_record["@odata.id"] = "/redfish/v1/EventService/Event/1"
+        event_record["MemberId"] = "1"
         # TODO(svoboda) add link to Redfish resource
         # event_record["OriginOfCondition"] = origin_of_condition
 
@@ -92,6 +95,8 @@ class Event(RedfishJsonValidator):
         event_record["EventType"] = \
             ONEVIEW_TO_REDFISH_EVENTS[oneview_task["changeType"]]
         event_record["MessageId"] = "Base.1.1.Success"
+        event_record["@odata.id"] = "/redfish/v1/EventService/Event/1"
+        event_record["MemberId"] = "1"
         # TODO(svoboda) add link to Redfish resource
         # event_record["OriginOfCondition"] = origin_of_condition
 

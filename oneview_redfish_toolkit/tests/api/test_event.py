@@ -14,6 +14,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import copy
 import json
 
 from oneview_redfish_toolkit.api.event import Event
@@ -63,3 +64,25 @@ class TestEvent(BaseTest):
             self.fail("Failed to serialize. Error: {}".format(e))
 
         self.assertEqualMockup(self.event_mockup, result)
+
+    def test_event_from_task(self):
+        try:
+            task = copy.deepcopy(self.alert)
+            task["resource"]["category"] = "created"
+            task["resource"]["name"] = "0000A66101, bay 3"
+            task["resourceUri"] = \
+                "/rest/server-hardware/30373737-3237-4D32-3230-313530314752"
+            event = Event(task)
+        except Exception as e:
+            self.fail("Failed to instantiate Event class."
+                      " Error: {}".format(e))
+
+        try:
+            result = json.loads(event.serialize())
+        except Exception as e:
+            self.fail("Failed to serialize. Error: {}".format(e))
+
+        event_mockup = copy.deepcopy(self.event_mockup)
+        event_mockup["Events"][0]["EventType"] = "ResourceAdded"
+
+        self.assertEqualMockup(event_mockup, result)
