@@ -25,6 +25,8 @@ from flask_api import status
 from oneview_redfish_toolkit.api.computer_system import ComputerSystem
 from oneview_redfish_toolkit.api.drive import Drive
 from oneview_redfish_toolkit.api.storage import Storage
+from oneview_redfish_toolkit.api.volume import \
+    get_drive_enclosure_and_drivepaths
 from oneview_redfish_toolkit.api.volume import Volume
 from oneview_redfish_toolkit.api.volume_collection import VolumeCollection
 from oneview_redfish_toolkit.blueprints.util.response_builder import \
@@ -85,27 +87,32 @@ def get_drive(profile_id, drive_id):
 
     """
 
-    drive_id_int = None
-    logical_jbod = None
-    try:
-        drive_id_int = int(drive_id)
-    except ValueError:
-        abort(status.HTTP_400_BAD_REQUEST, "Drive id should be a integer")
-
     server_profile = g.oneview_client.server_profiles.get(profile_id)
     sas_logical_jbods = _find_sas_logical_jbods_by(server_profile)
 
-    logical_jbod = _get_logical_jbod(drive_id_int, logical_jbod,
-                                     sas_logical_jbods)
+    try:
+        logical_jbod = None
+        drive_id_int = int(drive_id)
 
-    if logical_jbod is None:
-        abort(status.HTTP_404_NOT_FOUND, "Drive {} not found"
-              .format(drive_id))
+        logical_jbod = _get_logical_jbod(drive_id_int, logical_jbod,
+                                         sas_logical_jbods)
+        if logical_jbod is None:
+            abort(status.HTTP_404_NOT_FOUND, "Drive {} not found"
+                  .format(drive_id))
 
-    drive_details = Drive.build_for_computer_system(drive_id_int,
-                                                    server_profile,
-                                                    logical_jbod)
+        drive_details = Drive.build_for_computer_system(drive_id_int,
+                                                        server_profile,
+                                                        logical_jbod)
+    except ValueError:
+        drive = _get_drive(sas_logical_jbods, drive_id)
 
+        if drive is None:
+            abort(status.HTTP_404_NOT_FOUND, "Drive {} not found"
+                  .format(drive_id))
+
+        drive_details = Drive.build_for_computer_system_volume(drive_id,
+                                                               server_profile,
+                                                               drive)
     return ResponseBuilder.success(drive_details)
 
 
@@ -202,3 +209,29 @@ def _is_volume_id_number(volume_id):
         return True
     except ValueError:
         return False
+
+
+def _get_drive(sas_logical_jbods, drive_id):
+    drive = None
+    for sas_logical_jbod in sas_logical_jbods:
+        drive_enclosure_object, drivepaths = \
+            get_drive_enclosure_and_drivepaths(sas_logical_jbod)
+        drive_bays = _get_drive_bays(drivepaths, drive_enclosure_object)
+        for drive_bay in drive_bays:
+            if drive_bay["uri"].split("/")[-1] == drive_id:
+                drive = drive_bay["drive"]
+                break
+        if drive:
+            break
+
+    return drive
+
+
+def _get_drive_bays(drivepaths, drive_enclosure_object):
+    drive_bays = []
+    for drivebay in drive_enclosure_object["driveBays"]:
+        for drivepath in drivebay["drive"]["drivePaths"]:
+                if drivepath in drivepaths:
+                    drive_bays.append(drivebay)
+
+    return drive_bays

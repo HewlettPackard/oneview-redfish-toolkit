@@ -103,6 +103,32 @@ class Drive(RedfishJsonValidator):
         return Drive(attrs)
 
     @staticmethod
+    def build_for_computer_system_volume(drive_id, server_profile, drive):
+        enclosure_id = server_profile["enclosureUri"].split("/")[-1]
+        profile_uuid = server_profile["uri"].split("/")[-1]
+        odata_id = "{}/{}/Storage/1/Drives/{}"\
+            .format(ComputerSystem.BASE_URI, profile_uuid, drive_id)
+        media_type = drive["driveMedia"]
+        media_type = None if (media_type == "Unknown") else media_type
+        attrs = {
+            "Id": drive_id,
+            "Name": drive["name"],
+            "Status": status_mapping.STATUS_MAP.get(drive["status"]),
+            "CapacityBytes": Drive.get_capacity_in_bytes(
+                drive["capacity"]),
+            "Protocol": drive["deviceInterface"],
+            "MediaType": media_type,
+            "Links": {
+                "Chassis": {
+                    "@odata.id": "/redfish/v1/Chassis/" + enclosure_id
+                }
+            },
+            "@odata.id": odata_id
+        }
+
+        return Drive(attrs)
+
+    @staticmethod
     def get_capacity_in_bytes(capacity_in_gb):
         size_in_bytes = float(capacity_in_gb) * 1024 * 1024 * 1024
         return int(size_in_bytes)
