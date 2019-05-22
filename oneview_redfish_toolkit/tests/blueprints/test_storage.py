@@ -358,6 +358,7 @@ class TestStorage(BaseFlaskTest):
 
         result = json.loads(response.data.decode("utf-8"))
         self.assertEqual(result, expected_result)
+<<<<<<< HEAD
         self.assertEqual("application/json", response.mimetype)
 
     def test_get_drive_when_drive_id_invalid(self):
@@ -376,6 +377,8 @@ class TestStorage(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual(result["error"]["message"],
                          "Drive invalid_id not found")
+=======
+>>>>>>> 8ac6a642fdcf46697925c18ec5d2d1855b58d2de
         self.assertEqual("application/json", response.mimetype)
 
     def test_composed_system_without_drives(self):
