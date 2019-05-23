@@ -19,7 +19,7 @@ from flask_api import status
 
 NOT_FOUND_ONEVIEW_ERRORS = ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException',
                             'DFRM_SAS_LOGICAL_JBOD_NOT_FOUND',
-                            'Cert.CERT_KEY_MISSING_ERROR']
+                            'Cert.CERT_KEY_MISSING_ERROR', 'GENERIC_HTTP_404']
 
 AUTH_ONEVIEW_ERRORS = ['AUTHN_AUTH_FAIL',
                        'AUTHN_AUTH_FAIL_LOGINDOMAINNOTFOUND',
