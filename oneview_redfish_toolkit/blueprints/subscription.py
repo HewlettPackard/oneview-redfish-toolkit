@@ -53,7 +53,7 @@ def get_file_content():
         with open(_all_subscription_file()) as f:
             file_content = json.load(f)
     except Exception as e:
-        logging.exception("Error while reading File: ", str(e))
+        logging.exception("Error while reading File: " + str(e))
 
     return file_content
 
