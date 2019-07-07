@@ -286,7 +286,8 @@ class ComputerSystem(RedfishJsonValidator):
         server_profile["serverHardwareUri"] = \
             "/rest/server-hardware/" + system_block["uuid"]
         server_profile["localStorage"]["sasLogicalJBODs"] = \
-            ComputerSystem._build_sas_logical_jbods(server_profile_template,
+            ComputerSystem._build_sas_logical_jbods(profile_name,
+                                                    server_profile_template,
                                                     storage_blocks)
 
         if external_storage_block or \
@@ -302,7 +303,8 @@ class ComputerSystem(RedfishJsonValidator):
         return server_profile
 
     @staticmethod
-    def _build_sas_logical_jbods(server_profile_template, storage_blocks):
+    def _build_sas_logical_jbods(profile_name, server_profile_template,
+                                 storage_blocks):
         sas_logical_jbods = []
 
         controller = ComputerSystemService.get_storage_controller(
@@ -320,7 +322,7 @@ class ComputerSystem(RedfishJsonValidator):
 
             storage = {
                 "id": storage_id,
-                "name": "Storage " + str(storage_id),
+                "name": profile_name + " - Storage " + str(storage_id),
                 "deviceSlot": controller["deviceSlot"],
                 "numPhysicalDrives": 1,
                 "driveMinSizeGB": attributes["capacityInGB"],
