@@ -8,7 +8,7 @@
     "sasLogicalJBODs": [
       {
         "id": 1,
-        "name": "Storage 1",
+        "name": "Composed System Using Redfish - Storage 1",
         "deviceSlot": "Mezz 1",
         "numPhysicalDrives": 1,
         "driveMinSizeGB": "100",
@@ -17,7 +17,7 @@
       },
       {
         "id": 2,
-        "name": "Storage 2",
+        "name": "Composed System Using Redfish - Storage 2",
         "deviceSlot": "Mezz 1",
         "numPhysicalDrives": 1,
         "driveMinSizeGB": "200",
