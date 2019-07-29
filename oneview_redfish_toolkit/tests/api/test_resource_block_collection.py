@@ -82,7 +82,7 @@ class TestResourceBlockCollection(BaseTest):
                 self.server_hardware_list,
                 self.server_profile_template_list,
                 self.drives_list,
-                self.volume_list)
+                [])
         except Exception as e:
             self.fail("Failed to instantiate ResourceBlockCollection class."
                       " Error: {}".format(e))

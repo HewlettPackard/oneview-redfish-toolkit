@@ -120,3 +120,27 @@ class TestComputerSystem(BaseTest):
         result = json.loads(computer_system.serialize())
 
         self.assertEqualMockup(computer_system_mockup, result)
+
+    def test_build_server_profile(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview'
+            '/ServerProfileTemplates.json'
+        ) as f:
+            spt = json.load(f)
+
+        system_block = {
+            "uuid": "FE50A6FE-B1AC-4E42-8D40-B73CA8CC0CD2"
+        }
+
+        computer_system = ComputerSystem.build_server_profile(
+            "Composed System Using Redfish", "", spt[0], system_block,
+            [], [], [])
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerProfileBuiltFromTemplateToCreateASystem.json'
+        ) as f:
+            expected_server_profile_built = json.load(f)
+
+        self.assertEqual(computer_system["name"],
+                         expected_server_profile_built["name"])
