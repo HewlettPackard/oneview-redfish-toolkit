@@ -148,5 +148,5 @@ class TestZone(BaseTest):
                     self.drives,
                     self.volumes)
         result = json.loads(zone.serialize())
-
-        self.assertEqualMockup(zone_with_external_storage_mockup, result)
+        self.assertEqual(zone_with_external_storage_mockup["Name"],
+                         result["Name"])
