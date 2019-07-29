@@ -47,6 +47,12 @@ def get_resource_block_collection():
     volume_list = g.oneview_client.volumes.get_all()
     filter_volume_list = [volume for volume in volume_list
                           if volume["isShareable"]]
+
+    # Emptying volume list to suppress external storage changes for
+    # current release.
+    # In future, remove this line to enable external storage support
+    filter_volume_list = []
+
     # Build ResourceBlockCollection object and validates it
     cc = ResourceBlockCollection(server_hardware_list,
                                  server_profile_template_list,

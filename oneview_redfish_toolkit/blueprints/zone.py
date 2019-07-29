@@ -74,6 +74,11 @@ def get_zone(zone_uuid):
     filter_volume_list = [volume for volume in volume_list
                           if volume["isShareable"]]
 
+    # Emptying volume list to suppress external storage changes for
+    # current release.
+    # In future, remove this line to enable external storage support
+    filter_volume_list = []
+
     zone_data = Zone(zone_uuid, profile_template, server_hardware_list,
                      enclosure_name, drives, filter_volume_list)
 
