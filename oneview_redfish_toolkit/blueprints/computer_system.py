@@ -83,6 +83,11 @@ def get_computer_system(uuid):
         volumes_uris = [volume["volumeUri"] for volume in resource[
             "sanStorage"]["volumeAttachments"]]
 
+        # Emptying volume list to suppress external storage changes for
+        # current release.
+        # In future, remove this line to enable external storage support
+        volumes_uris = []
+
         manager_uuid = get_manager_uuid(resource['serverHardwareTypeUri'])
 
         # Build Computer System object and validates it
