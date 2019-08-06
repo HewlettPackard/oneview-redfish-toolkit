@@ -1,3 +1,16 @@
+# 0.3.3
+
+# Bug fixes & Enhancements
+ - #564 - Fix for logger exception and concurrent compose request
+ - #559 - [OneView 4.2] Handle drive enclosure exception if there are no drive-enclosures.
+ - #558 - Fix for application multiple start up issue.
+ - #554 - Modify status change code for session request.
+ - #548 - Enable compose request for with external storage -  boot from SAN.
+ - #529 - Adding redfish implementation for volumes.
+ - #539 - Support persistent subscriptions.
+ - #535 - Enable SCMB connection for multiple OneView in session and conf mode.
+ - #524 - Fix for SCMB not working when using API 600.
+
 # 0.3.2
 
 # Bug fixes & Enhancements
