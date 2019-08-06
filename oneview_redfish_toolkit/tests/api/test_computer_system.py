@@ -120,3 +120,52 @@ class TestComputerSystem(BaseTest):
         result = json.loads(computer_system.serialize())
 
         self.assertEqualMockup(computer_system_mockup, result)
+
+    def test_build_server_profile(self):
+        with open(
+            'oneview_redfish_toolkit/mockups/oneview'
+            '/ServerProfileTemplates.json'
+        ) as f:
+            spt = json.load(f)
+
+        san_storage = {
+            "hostOSType": "VMware (ESXi)",
+            "manageSanStorage": True,
+            "volumeAttachments": [
+                {
+                    "lunType": "Auto",
+                    "volumeUri": "/rest/storage-volumes/" +
+                    "B526F59E-9BC7-467F-9205-A9F4015CE296",
+                    "volumeStorageSystemUri": "/rest/storage-systems/"
+                    "TXQ1000307",
+                    "storagePaths": [
+                        {
+                            "targetSelector": "Auto",
+                            "isEnabled": True,
+                            "connectionId": 2,
+                            "targets": [
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+
+        spt[0]["sanStorage"] = san_storage
+
+        system_block = {
+            "uuid": "FE50A6FE-B1AC-4E42-8D40-B73CA8CC0CD2"
+        }
+
+        computer_system = ComputerSystem.build_server_profile(
+            "Composed System Using Redfish", "", spt[0], system_block,
+            [], [], [])
+
+        with open(
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'ServerProfileBuiltFromTemplateToCreateASystem.json'
+        ) as f:
+            expected_server_profile_built = json.load(f)
+
+        self.assertEqual(computer_system["name"],
+                         expected_server_profile_built["name"])

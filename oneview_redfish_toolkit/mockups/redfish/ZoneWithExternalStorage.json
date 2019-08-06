@@ -36,9 +36,6 @@
                 "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/a068bfb3-0e85-41bf-a892-d192b5dd1dcf"
             },
             {
-                "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/B526F59E-9BC7-467F-9205-A9F4015CE296"
-            },
-           {
                 "@odata.id": "/redfish/v1/CompositionService/ResourceBlocks/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
             }
         ]
