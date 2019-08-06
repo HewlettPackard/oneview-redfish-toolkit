@@ -44,7 +44,7 @@ $ pip download oneview-redfish-toolkit
 ### Installation
 Run pip install where the files are placed:
 ```bash
-$ pip install <oneview-redfish-toolkit-installer-0.3.1>/*
+$ pip install <oneview-redfish-toolkit-installer-0.3.3>/*
 ```
 
 ## Running the application
