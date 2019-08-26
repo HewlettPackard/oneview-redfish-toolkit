@@ -197,7 +197,7 @@ class TestSession(BaseFlaskTest):
         result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_session_mockup, result)
         self.assertIn("/redfish/v1/SessionService/Sessions/" + self.session_id,
@@ -307,7 +307,7 @@ class TestSession(BaseFlaskTest):
         result = json.loads(response.data.decode("utf-8"))
 
         # Tests response
-        self.assertEqual(status.HTTP_201_CREATED, response.status_code)
+        self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_session_mockup, result)
         self.assertIn("/redfish/v1/SessionService/Sessions/" + self.session_id,

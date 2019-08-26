@@ -42,11 +42,6 @@ class ResponseBuilder(object):
         return ResponseBuilder.response(api_data, status.HTTP_200_OK, headers)
 
     @staticmethod
-    def success_201(api_data, headers={}):
-        return ResponseBuilder.response(api_data, status.HTTP_201_CREATED,
-                                        headers)
-
-    @staticmethod
     def error_by_hp_oneview_exception(exception):
         error_code = exception.oneview_response['errorCode']
         http_error_code = status.HTTP_500_INTERNAL_SERVER_ERROR
