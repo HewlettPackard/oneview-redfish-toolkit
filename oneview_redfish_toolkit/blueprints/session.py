@@ -103,7 +103,7 @@ def post_session():
         if subscription.add_subscription_from_file():
             scmb.init_event_service(token)
 
-        return ResponseBuilder.success_201(sess, {
+        return ResponseBuilder.success(sess, {
             "Location": sess.redfish["@odata.id"],
             "X-Auth-Token": token
         })
