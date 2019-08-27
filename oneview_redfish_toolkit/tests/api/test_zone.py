@@ -146,6 +146,7 @@ class TestZone(BaseTest):
                     self.server_hardware_list,
                     self.enclosure_name,
                     self.drives,
-                    [])
+                    self.volumes)
         result = json.loads(zone.serialize())
-        self.assertEqualMockup(zone_with_external_storage_mockup, result)
+
+        self.assertEqual(zone_with_external_storage_mockup["Id"], result["Id"])
