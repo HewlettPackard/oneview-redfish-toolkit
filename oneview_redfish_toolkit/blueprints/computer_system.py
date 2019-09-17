@@ -277,7 +277,7 @@ def create_composed_system():
               "Trying access an invalid key {}".format(e.args))
     except HPOneViewTaskError as e:
         abort(status.HTTP_403_FORBIDDEN, e.msg)
-
+    # Demo
     if not result_location_uri:
         logging.error("It was not possible get the server profile URI when "
                       "creating a composed system")
