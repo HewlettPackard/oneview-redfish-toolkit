@@ -90,6 +90,7 @@ def init_event_service(token=None):
         # Loading scmb connection
         # If scmb connection is already present for respective ov then
         # do not fork new thread to listen scmb
+        # demo
         if ov_ip not in _get_map_scmb_connections():
             scmb_thread = SCMB(ov_ip, config.get_credentials(), token)
             scmb_thread.daemon = True
