@@ -106,6 +106,8 @@ def _get_drives(enclosure):
         drive_encl_uri = member["childResource"]["uri"]
         drives_index_list = g.oneview_client.connection.get(
             get_drives_uri.format(drive_encl_uri))
-        drives += drives_index_list["members"]
+
+        drives = [drive for drive in drives_index_list["members"]
+                  if int(drive["attributes"]["capacityInGB"]) > 0]
 
     return drives
