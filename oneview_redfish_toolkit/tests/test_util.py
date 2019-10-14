@@ -62,7 +62,7 @@ class TestUtil(unittest.TestCase):
     @mock.patch.object(config, 'get_config')
     def test_get_ov_ip(self, mock_config):
         # Tests get_ip function; This test may not work if it returns an IPV6.
-        mock_config.return_Value = {"oneview_config": {"ip": "1.1.1.1"}}
+        mock_config.return_value = {"oneview_config": {"ip": "1.1.1.1"}}
         ip = util.get_ip()
         try:
             socket.inet_aton(ip)
