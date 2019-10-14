@@ -155,9 +155,16 @@ def generate_certificate(dir_name, file_name, key_length, key_type="rsa"):
 
 def get_ip():
     """Tries to detect default route IP Address"""
+    app_config = config.get_config()
+    ov_ip = app_config["oneview_config"]["ip"]
+    if ov_ip:
+        host_ip = ov_ip
+    else:
+        host_ip = "8.8.8.8"
+
     s = socket.socket(type=socket.SOCK_DGRAM)
     try:
-        s.connect(("8.8.8.8", 1))
+        s.connect((host_ip, 1))
         ip = s.getsockname()[0]
     except Exception as e:
         logging.exception(e)
