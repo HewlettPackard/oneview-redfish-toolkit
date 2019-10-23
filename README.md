@@ -42,9 +42,26 @@ Or you can download the toolkit from PyPI running this command:
 $ pip download oneview-redfish-toolkit
 ```
 ### Installation
+Create Python 3.5 virtual environment and activate it:
+```bash
+$ python3.5 -m venv <virtual-environment-name>
+$ source <virtual-environment-name>/bin/activate
+```
+
+Update pip and setuptools to the latest version:
+```bash
+$ pip install pip -U
+$ pip install setuptools -U
+```
+
+Unzip oneview-redfish-toolkit-installer:
+```bash
+$ unzip <oneview-redfish-toolkit-installer-0.3.3.zip>
+```
+
 Run pip install where the files are placed:
 ```bash
-$ pip install <oneview-redfish-toolkit-installer-0.3.1>/*
+$ pip install <oneview-redfish-toolkit-installer-0.3.3>/*
 ```
 
 ## Running the application
