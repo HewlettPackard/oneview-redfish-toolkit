@@ -21,10 +21,7 @@ from oneview_redfish_toolkit import multiple_oneview
 
 def first_parameter_resource(resource, function, *args, **kwargs):
     resource_id = args[0]
-
-    resp = multiple_oneview.query_ov_client_by_resource(resource_id, resource,
-                                                        function, *args,
-                                                        **kwargs)
+    resp = multiple_oneview.query_ov_client_by_resource(resource_id, resource,function, *args, **kwargs)
     category_resource.set_map_category_resources_entry(resource_id,
                                                        resource,
                                                        function)
@@ -87,19 +84,19 @@ def create_server_profile(resource, function, *args, **kwargs):
     # The first index represents the URI to access;
     sp = args[1]
     server_hardware_uri = sp['serverHardwareUri']
-    return _run_action(server_hardware_uri, 'server_hardware', 'get', resource,
-                       function, *args, **kwargs)
+    return _run_action(server_hardware_uri, 'server_hardware', 'get_by_uri', resource, function, *args, **kwargs)
 
 
 def delete_server_profile(resource, function, *args, **kwargs):
     sp_uuid = args[0]
-    return _run_action(sp_uuid, 'server_profiles', 'get', resource,
+    return _run_action(sp_uuid, 'server_profiles', 'get_by_id', resource,
                        function, *args, **kwargs)
 
 
 def update_power_state_server_hardware(resource, function, *args, **kwargs):
     sh_uuid = args[1]
-    return _run_action(sh_uuid, 'server_hardware', 'get', resource,
+
+    return _run_action(sh_uuid, 'server_hardware', 'get_by_uri', resource,
                        function, *args, **kwargs)
 
 
@@ -107,7 +104,7 @@ def create_labels(resource, function, *args, **kwargs):
     resource_id = args[0]["resourceUri"]
 
     return \
-        _run_action(resource_id, 'server_profiles', 'get', resource,
+        _run_action(resource_id, 'server_profiles', 'get_by_uri', resource,
                     function, *args, **kwargs)
 
 

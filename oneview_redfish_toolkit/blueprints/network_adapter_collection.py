@@ -34,7 +34,7 @@ def get_network_adapter_collection(uuid):
     Return NetworkAdapterCollection Redfish JSON.
     """
 
-    server_hardware = g.oneview_client.server_hardware.get(uuid)
+    server_hardware = g.oneview_client.server_hardware.get_by_id(uuid).data
 
     nic = NetworkAdapterCollection(server_hardware)
 

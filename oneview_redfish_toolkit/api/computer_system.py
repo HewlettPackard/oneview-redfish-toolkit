@@ -281,7 +281,7 @@ class ComputerSystem(RedfishJsonValidator):
         server_profile["name"] = profile_name
         if profile_description:
             server_profile["description"] = profile_description
-        server_profile["type"] = "ServerProfileV8"
+        server_profile["type"] = "ServerProfileV11"
         server_profile["category"] = "server-profiles"
         server_profile["serverHardwareUri"] = \
             "/rest/server-hardware/" + system_block["uuid"]
@@ -299,6 +299,13 @@ class ComputerSystem(RedfishJsonValidator):
                 ComputerSystem._build_volume_attachments(
                     server_profile_template,
                     external_storage_block)
+
+        key = 'complianceControl'
+        for item in server_profile.keys():
+            if isinstance(server_profile[item], dict):
+                if (key in server_profile[item].keys()):
+                    server_profile[item].pop(key)
+
 
         return server_profile
 

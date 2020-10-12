@@ -114,6 +114,7 @@ class ComputerSystemService(object):
                     The resource_uri can be None if the task has errors before
                     the server profile be created.
         """
+
         task, _ = self.ov_client.connection.post(
             ServerProfiles.URI,
             server_profile)
@@ -121,7 +122,7 @@ class ComputerSystemService(object):
 
         while not task.get("taskErrors") and not resource_uri:
             time.sleep(DELAY_TO_WAIT_IN_SEC)
-            task = self.ov_client.tasks.get(task["uri"])
+            task = self.ov_client.tasks.get_by_uri(task["uri"]).data
             resource_uri = task["associatedResource"]["resourceUri"]
 
         return task, resource_uri
@@ -135,7 +136,7 @@ class ComputerSystemService(object):
             try:
                 spt_uuid = label["name"].replace(" ", "-")
                 is_valid_spt = \
-                    self.ov_client.server_profile_templates.get(spt_uuid)
+                    self.ov_client.server_profile_templates.get_by_id(spt_uuid).data
                 if is_valid_spt:
                     server_profile_template_uuid = spt_uuid
                     break

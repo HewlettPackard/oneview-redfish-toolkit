@@ -107,6 +107,7 @@ def query_ov_client_by_resource(resource_id, resource, function,
         single.set_single_oneview_ip(ip_oneview)
 
     ov_client = client_session.get_oneview_client(ip_oneview)
+
     try:
         resp = execute_query_ov_client(ov_client, resource, function,
                                        *args, **kwargs)
@@ -144,6 +145,7 @@ def get_ov_ip_by_resource(resource_id):
 
 def search_resource_multiple_ov(resource, function, resource_id, ov_ips,
                                 *args, **kwargs):
+
     """Search resource on multiple OneViews
 
         Query resource on all OneViews.
@@ -188,6 +190,12 @@ def search_resource_multiple_ov(resource, function, resource_id, ov_ips,
     for ov_ip in list_ov_ips:
 
         ov_client = client_session.get_oneview_client(ov_ip)
+        #print("printing from get all block")
+        #print(ov_client)
+        #print(ov_ip)
+        #print(function)
+        #print("printing from get all block - end")
+        #print("resource = " + str(resource) )
 
         try:
             # Query resource on OneView
@@ -235,6 +243,14 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
     """Execute query for resource on OneView client received as parameter"""
     ov_resource = getattr(ov_client, resource)
     ov_function = getattr(ov_resource, function)
+
+    if function == "update_power_state":
+        ov_resource = getattr(ov_client, "server_hardware")
+        ov_function = getattr(ov_resource, "get_by_id")
+        server = ov_function(args[1])
+        #print(server)
+        result = server.update_power_state(args[0])
+        return result
 
     if logging.getLogger().isEnabledFor(logging.DEBUG):
         start_time = time.time()

@@ -56,7 +56,7 @@ def get_network_adapter(uuid, device_id):
     try:
         device_id_validation = int(device_id)
 
-        server_hardware = g.oneview_client.server_hardware.get(uuid)
+        server_hardware = g.oneview_client.server_hardware.get_by_id(uuid).data
 
         if (device_id_validation - 1) < 0 or (device_id_validation - 1) >= \
             len(server_hardware["portMap"]["deviceSlots"]):

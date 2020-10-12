@@ -33,7 +33,7 @@ from oneview_redfish_toolkit import connection
 from oneview_redfish_toolkit import util
 
 
-API_VERSION = 600
+API_VERSION = 1200
 
 COUNTER_LOGGER_NAME = 'qtty'
 PERFORMANCE_LOGGER_NAME = 'perf'

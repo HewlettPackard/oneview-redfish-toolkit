@@ -35,7 +35,7 @@ def get_ethernet_interface_collection(server_profile_uuid):
 
     Return EthernetInterfaceCollection Redfish JSON.
     """
-    profile = g.oneview_client.server_profiles.get(server_profile_uuid)
+    profile = g.oneview_client.server_profiles.get_by_id(server_profile_uuid).data
 
     ethernet_collection = EthernetInterfaceCollection(profile)
 

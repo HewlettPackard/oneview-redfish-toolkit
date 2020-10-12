@@ -37,7 +37,7 @@ def get_network_device_function_collection(uuid, device_id):
     Return NetworkDeviceFunctionCollection Redfish JSON.
     """
 
-    server_hardware = g.oneview_client.server_hardware.get(uuid)
+    server_hardware = g.oneview_client.server_hardware.get_by_id(uuid).data
 
     ndfc = NetworkDeviceFunctionCollection(device_id, server_hardware)
 

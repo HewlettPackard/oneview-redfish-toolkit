@@ -40,20 +40,29 @@ RESOURCE_STRATEGY = {
     },
     "enclosures": {
         "get": st.first_parameter_resource,
+        "get_by_id": st.first_parameter_resource,
+        "get_by_uri": st.first_parameter_resource,
         "get_all": st.all_oneviews_resource,
         "get_environmental_configuration": st.first_parameter_resource,
         "get_utilization": st.first_parameter_resource,
         },
-    "ethernet_networks": {"get": st.first_parameter_resource},
+    "ethernet_networks": {"get": st.first_parameter_resource,
+                          "get_by_id": st.first_parameter_resource
+                          },
     "index_resources": {
         "get": st.first_parameter_resource,
         "get_all": st.filter_uuid_parameter_resource,
         },
     "logical_enclosures": {
         "get": st.first_parameter_resource,
+        "get_by_id": st.first_parameter_resource,
+        "get_by_uri": st.first_parameter_resource,
         "get_all": st.all_oneviews_resource,
         },
-    "network_sets": {"get": st.first_parameter_resource},
+    "network_sets": {"get": st.first_parameter_resource,
+                     "get_by_id": st.first_parameter_resource,
+                     "get_by_uri": st.first_parameter_resource,
+                     },
     "racks": {
         "get": st.first_parameter_resource,
         "get_all": st.all_oneviews_resource,
@@ -65,33 +74,48 @@ RESOURCE_STRATEGY = {
         },
     "server_hardware": {
         "get": st.first_parameter_resource,
+        "get_by_id": st.first_parameter_resource,
+        "get_by_uri": st.first_parameter_resource,
         "get_all": st.all_oneviews_resource,
         "get_utilization": st.first_parameter_resource,
         "update_power_state": st.update_power_state_server_hardware,
         },
-    "server_hardware_types": {"get": st.first_parameter_resource},
+    "server_hardware_types": {"get": st.first_parameter_resource,
+                              "get_by_id": st.first_parameter_resource,
+                              "get_by_uri": st.first_parameter_resource
+                              },
     "server_profiles": {
         "delete": st.delete_server_profile,
         "get": st.first_parameter_resource,
         "get_all": st.all_oneviews_resource,
         "get_available_targets": st.first_parameter_resource,
+        "get_by_id": st.first_parameter_resource,
+        "get_by_uri": st.first_parameter_resource,
         },
     "server_profile_templates": {
         "get": st.first_parameter_resource,
+        "get_by_id": st.first_parameter_resource,
+        "get_by_uri": st.first_parameter_resource,
         "get_all": st.spt_get_all_with_filter,
         },
     "tasks": {
-        "get": st.first_parameter_resource
+        "get": st.first_parameter_resource,
+        "get_by_id": st.first_parameter_resource,
+        "get_by_uri": st.first_parameter_resource,
         },
     "labels": {
         "create": st.create_labels,
         "get_by_resource": st.first_parameter_resource
         },
     "sas_logical_interconnects": {
-        "get": st.first_parameter_resource
-        },
+        "get": st.first_parameter_resource,
+        "get_by_id": st.first_parameter_resource,
+        "get_by_uri": st.first_parameter_resource
+    },
     "volumes": {
         "get_all": st.all_oneviews_resource,
+        "get_by_id": st.first_parameter_resource,
+        "get_by_uri": st.first_parameter_resource,
         "get": st.first_parameter_resource,
         },
     "storage_volume_attachments": {
@@ -99,7 +123,9 @@ RESOURCE_STRATEGY = {
         },
     "storage_pools": {
         "get": st.first_parameter_resource,
-        }
+        "get_by_id": st.first_parameter_resource,
+        "get_by_uri": st.first_parameter_resource
+    }
 }
 
 
@@ -126,6 +152,7 @@ class MultipleOneViewResourceRetriever(object):
     def __init__(self, resource_name, function_name):
         self.multiple_ov_resource_name = resource_name
         self.multiple_ov_function_name = function_name
+
 
     def retrieve(self, *args, **kwargs):
         resource = self.multiple_ov_resource_name
