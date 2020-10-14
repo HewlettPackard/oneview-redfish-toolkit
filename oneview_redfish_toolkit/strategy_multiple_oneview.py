@@ -95,9 +95,13 @@ def delete_server_profile(resource, function, *args, **kwargs):
 
 def update_power_state_server_hardware(resource, function, *args, **kwargs):
     sh_uuid = args[1]
+    key = "rest"
+    if key in str(sh_uuid):
 
-    return _run_action(sh_uuid, 'server_hardware', 'get_by_uri', resource,
-                       function, *args, **kwargs)
+        return _run_action(sh_uuid, 'server_hardware', 'get_by_uri', resource, function, *args, **kwargs)
+    return _run_action(sh_uuid, 'server_hardware', 'get_by_id', resource, function, *args, **kwargs)
+
+
 
 
 def create_labels(resource, function, *args, **kwargs):

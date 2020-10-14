@@ -243,13 +243,27 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
     """Execute query for resource on OneView client received as parameter"""
     ov_resource = getattr(ov_client, resource)
     ov_function = getattr(ov_resource, function)
-
+    # below two condition are checked due to changes made in oneview sdk
     if function == "update_power_state":
+
+        if "rest" in args[1]:
+            get_function = "get_by_uri"
+        else:
+            get_function = "get_by_id"
         ov_resource = getattr(ov_client, "server_hardware")
-        ov_function = getattr(ov_resource, "get_by_id")
+        ov_function = getattr(ov_resource, get_function)
         server = ov_function(args[1])
         #print(server)
         result = server.update_power_state(args[0])
+        return result
+
+    if function == "delete" :
+        ov_resource = getattr(ov_client, "server_profiles")
+        ov_function = getattr(ov_resource, "get_by_id")
+        profile = ov_function(args[0])
+        print(profile)
+        # print(server)
+        result = profile.delete()
         return result
 
     if logging.getLogger().isEnabledFor(logging.DEBUG):
