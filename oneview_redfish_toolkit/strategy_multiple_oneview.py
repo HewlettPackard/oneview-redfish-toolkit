@@ -25,6 +25,7 @@ def first_parameter_resource(resource, function, *args, **kwargs):
     category_resource.set_map_category_resources_entry(resource_id,
                                                        resource,
                                                        function)
+
     return resp
 
 

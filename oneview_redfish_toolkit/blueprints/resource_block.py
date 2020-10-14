@@ -190,13 +190,8 @@ def get_resource_block_ethernet_interface(uuid, id):
 
 def _get_oneview_resource(uuid):
     drives_param = "/rest/drives/" + uuid
-    #print(uuid)
-    """
     cached_categ = category_resource.get_category_by_resource_id(uuid) or \
         category_resource.get_category_by_resource_id(drives_param)
-    print("printing cached category")
-    print(cached_categ)
-
     if cached_categ:
         resource_uuid = uuid
 
@@ -205,9 +200,13 @@ def _get_oneview_resource(uuid):
 
         resource = getattr(g.oneview_client, cached_categ.resource)
         function = getattr(resource, cached_categ.function)
+        result = function(resource_uuid)
+        if isinstance(result, dict) :
+            return result
+        else:
+            return result.data
 
-        return function(resource_uuid)
-        """
+
 
     categories = [
         {"func": g.oneview_client.server_hardware.get_by_id, "param": uuid},

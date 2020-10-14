@@ -300,15 +300,18 @@ def create_composed_system():
 def _get_oneview_resource(uuid):
     """Gets a Server hardware or Server profile templates"""
     cached_category = category_resource.get_category_by_resource_id(uuid)
-    """
+
 
     if cached_category:
         resource = getattr(g.oneview_client, cached_category.resource)
         function = getattr(resource, cached_category.function)
-
-        return function(uuid).data
+        result = function(uuid)
+        if isinstance(result, dict):
+            return result
+        else:
+            return result.data
         
-    """
+
 
     categories = [
         {"func": g.oneview_client.server_profiles.get_by_id, "param": uuid},
