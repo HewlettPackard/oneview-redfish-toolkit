@@ -123,7 +123,7 @@ def _get_vlan_network_interface_collection(network_uri):
             JSON: Redfish json with VLanNetworkInterfaceCollection.
     """
 
-    network_set = g.oneview_client.network_sets.get_by_id(network_uri).data
+    network_set = g.oneview_client.network_sets.get_by_uri(network_uri).data
 
     vlan_collection = \
         VLanNetworkInterfaceCollection(network_set, request.path)
