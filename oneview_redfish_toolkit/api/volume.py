@@ -224,12 +224,13 @@ def get_drive_path_from_logical_Drive_Bay_Uri(logical_Drive_Bay_Uri):
     URI = logical_Drive_Bay_Uri
     resource_client = ResourceClient(conn, URI)
     item = resource_client.get(URI)
+    print(item)
     return item["drivePaths"][0]
 
 
 def get_drive_enclosure_uri_from_sas_Logical_Interconnect(
         sas_Logical_Interconnect_Uri):
-    item = g.oneview_client.sas_logical_interconnects.get_by_id(
+    item = g.oneview_client.sas_logical_interconnects.get_by_uri(
         sas_Logical_Interconnect_Uri).data
     return item["driveEnclosureUris"][0]
 
@@ -248,7 +249,9 @@ def get_drivebayuris_from_drive_enclosure_object(drivepaths,
                                                  drive_enclosure_object):
     drivebayuris = []
     for drivebay in drive_enclosure_object["driveBays"]:
-        for drivepath in drivebay["drive"]["drivePaths"]:
+        # eliminating drive = NONE condition to avoid TypeError: 'NoneType' object is not subscriptable
+        if isinstance(drivebay["drive"], dict):
+            for drivepath in drivebay["drive"]["drivePaths"]:
                 if drivepath in drivepaths:
                     drivebayuri = drivebay["uri"]
                     drivebayuris.append(drivebayuri)

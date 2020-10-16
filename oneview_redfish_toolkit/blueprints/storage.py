@@ -53,7 +53,7 @@ def get_storage(uuid):
     server_profile = g.oneview_client.server_profiles.get_by_id(uuid).data
     sht_uri = server_profile['serverHardwareTypeUri']
     server_hardware_type = \
-        g.oneview_client.server_hardware_types.get_by_id(sht_uri)
+        g.oneview_client.server_hardware_types.get_by_uri(sht_uri).data
     sas_logical_jbods = _find_sas_logical_jbods_by(server_profile)
     external_storage_volumes = [volume for volume in server_profile[
         "sanStorage"]["volumeAttachments"]]
