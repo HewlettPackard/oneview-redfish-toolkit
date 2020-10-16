@@ -253,18 +253,22 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
         ov_resource = getattr(ov_client, "server_hardware")
         ov_function = getattr(ov_resource, get_function)
         server = ov_function(args[1])
-        #print(server)
         result = server.update_power_state(args[0])
         return result
 
-    if function == "delete" :
+    elif function == "delete" :
         ov_resource = getattr(ov_client, "server_profiles")
         ov_function = getattr(ov_resource, "get_by_id")
         profile = ov_function(args[0])
-        print(profile)
-        # print(server)
         result = profile.delete()
         return result
+    elif function == "get_environmental_configuration" :
+        ov_resource = getattr(ov_client, "enclosures")
+        ov_function = getattr(ov_resource, "get_by_id")
+        enclosure = ov_function(args[0])
+        result = enclosure.get_environmental_configuration()
+        return result
+
 
     if logging.getLogger().isEnabledFor(logging.DEBUG):
         start_time = time.time()
