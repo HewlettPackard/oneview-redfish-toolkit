@@ -33,8 +33,11 @@ def multiple_parameter_resource(resource, function, *args, **kwargs):
         get_function = 'get_by_uri'
     else:
         get_function = 'get_by_id'
+    temp_args = list(args)
+    temp_args.remove(uri_or_id)
+    new_args = tuple(temp_args)
     resource_object = multiple_oneview.query_ov_client_by_resource(uri_or_id,resource, get_function, uri_or_id)
-    resp = multiple_oneview.execute_queryfunction(resource_object,function, **kwargs)
+    resp = multiple_oneview.execute_query_function(resource_object,function, *new_args, **kwargs)
     return resp
 
 def filter_uuid_parameter_resource(resource, function, *args, **kwargs):
@@ -104,11 +107,15 @@ def delete_server_profile(resource, function, *args, **kwargs):
 
 def update_power_state_server_hardware(resource, function, *args, **kwargs):
     sh_uuid = args[1]
-    key = "rest"
-    if key in str(sh_uuid):
+    if 'rest' in sh_uuid:
+        get_function = 'get_by_uri'
+    else:
+        get_function = 'get_by_id'
+    
+    resource_object = multiple_oneview.query_ov_client_by_resource(sh_uuid, resource, get_function, sh_uuid)
+    resp = multiple_oneview.execute_query_function(resource_object, function, args[0], **kwargs)
+    return resp
 
-        return _run_action(sh_uuid, 'server_hardware', 'get_by_uri', resource, function, *args, **kwargs)
-    return _run_action(sh_uuid, 'server_hardware', 'get_by_id', resource, function, *args, **kwargs)
 
 
 

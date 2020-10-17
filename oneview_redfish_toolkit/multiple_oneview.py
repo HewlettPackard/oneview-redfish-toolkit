@@ -237,6 +237,7 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
     """Execute query for resource on OneView client received as parameter"""
     ov_resource = getattr(ov_client, resource)
     ov_function = getattr(ov_resource, function)
+    """
     # below two condition are checked due to changes made in oneview sdk
     if function == "update_power_state":
 
@@ -262,6 +263,7 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
         enclosure = ov_function(args[0])
         result = enclosure.get_environmental_configuration()
         return result
+    """
 
 
     if logging.getLogger().isEnabledFor(logging.DEBUG):
@@ -290,6 +292,6 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
 
 def execute_query_function(resource,function,*args, **kwargs):
     ov_function = getattr(resource, function)
-    result = ov_function(**kwargs)
+    result = ov_function(*args, **kwargs)
     return result
 
