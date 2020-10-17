@@ -190,12 +190,6 @@ def search_resource_multiple_ov(resource, function, resource_id, ov_ips,
     for ov_ip in list_ov_ips:
 
         ov_client = client_session.get_oneview_client(ov_ip)
-        #print("printing from get all block")
-        #print(ov_client)
-        #print(ov_ip)
-        #print(function)
-        #print("printing from get all block - end")
-        #print("resource = " + str(resource) )
 
         try:
             # Query resource on OneView
@@ -293,3 +287,9 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
                 host, resource, function, elapsed_time)
 
     return ov_function(*args, **kwargs)
+
+def execute_query_function(resource,function,*args, **kwargs):
+    ov_function = getattr(resource, function)
+    result = ov_function(**kwargs)
+    return result
+

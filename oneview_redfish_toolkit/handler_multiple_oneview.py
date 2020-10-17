@@ -44,7 +44,7 @@ RESOURCE_STRATEGY = {
         "get_by_uri": st.first_parameter_resource,
         "get_all": st.all_oneviews_resource,
         "get_environmental_configuration": st.first_parameter_resource,
-        "get_utilization": st.first_parameter_resource,
+        "get_utilization": st.multiple_parameter_resource,
         },
     "ethernet_networks": {"get": st.first_parameter_resource,
                           "get_by_id": st.first_parameter_resource
@@ -77,7 +77,7 @@ RESOURCE_STRATEGY = {
         "get_by_id": st.first_parameter_resource,
         "get_by_uri": st.first_parameter_resource,
         "get_all": st.all_oneviews_resource,
-        "get_utilization": st.first_parameter_resource,
+        "get_utilization": st.multiple_parameter_resource,
         "update_power_state": st.update_power_state_server_hardware,
         },
     "server_hardware_types": {"get": st.first_parameter_resource,

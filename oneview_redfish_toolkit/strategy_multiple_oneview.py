@@ -27,6 +27,15 @@ def first_parameter_resource(resource, function, *args, **kwargs):
                                                        function)
     return resp
 
+def multiple_parameter_resource(resource, function, *args, **kwargs):
+    uri_or_id = args[0]
+    if 'rest' in uri_or_id :
+        get_function = 'get_by_uri'
+    else:
+        get_function = 'get_by_id'
+    resource_object = multiple_oneview.query_ov_client_by_resource(uri_or_id,resource, get_function, uri_or_id)
+    resp = multiple_oneview.execute_queryfunction(resource_object,function, **kwargs)
+    return resp
 
 def filter_uuid_parameter_resource(resource, function, *args, **kwargs):
     if 'filter' not in kwargs:
