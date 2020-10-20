@@ -55,7 +55,6 @@ def get_resource_block(uuid):
     """
     zone_service = ZoneService(g.oneview_client)
     resource = _get_oneview_resource(uuid)
-    #print(resource)
     category = resource["category"]
 
     if category == "server-hardware":

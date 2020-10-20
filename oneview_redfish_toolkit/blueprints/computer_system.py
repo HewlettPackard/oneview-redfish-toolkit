@@ -205,8 +205,6 @@ def create_composed_system():
 
         blocks = body["Links"]["ResourceBlocks"]
         block_ids = [block["@odata.id"].split("/")[-1] for block in blocks]
-        #print("printing block ids ***")
-        #print(block_ids)
 
         # Should contain only one computer system entry
         system_blocks = _get_system_resource_blocks(block_ids)
@@ -237,7 +235,7 @@ def create_composed_system():
             is_fibre_channel_nw = _get_fibre_channel_network(spt)
             if is_fibre_channel_nw:
                 for volume in external_storage_blocks:
-                    storage_pool = g.oneview_client.storage_pools.get_by_id(
+                    storage_pool = g.oneview_client.storage_pools.get_by_uri(
                         volume["storagePoolUri"]).data
                     if storage_pool:
                         storage_system_uri = storage_pool["storageSystemUri"]
@@ -258,8 +256,6 @@ def create_composed_system():
             storage_blocks,
             external_storage_blocks)
 
-        #print("printing from computer system ****")
-        #print(system_block["uuid"])
 
         service.power_off_server_hardware(system_block["uuid"],
                                           on_compose=True)

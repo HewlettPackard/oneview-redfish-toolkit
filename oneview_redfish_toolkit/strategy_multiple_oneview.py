@@ -111,7 +111,7 @@ def update_power_state_server_hardware(resource, function, *args, **kwargs):
         get_function = 'get_by_uri'
     else:
         get_function = 'get_by_id'
-    
+
     resource_object = multiple_oneview.query_ov_client_by_resource(sh_uuid, resource, get_function, sh_uuid)
     resp = multiple_oneview.execute_query_function(resource_object, function, args[0], **kwargs)
     return resp

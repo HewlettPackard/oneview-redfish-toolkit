@@ -475,7 +475,5 @@ if __name__ == '__main__':
                              'the development mode is set too, otherwise '
                              'it is ignored.')
     args = parser.parse_args()
-    #print("printing")
-
     main(args.config, args.log_config,
          is_dev_env=args.dev, is_debug_mode=args.debug)
