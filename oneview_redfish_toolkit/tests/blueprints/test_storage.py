@@ -310,24 +310,74 @@ class TestStorage(BaseFlaskTest):
             ]
         )
 
-    def test_get_drive_when_drive_id_is_invalid(self):
+    @mock.patch.object(volume, "get_drive_path_from_logical_Drive_Bay_Uri")
+    @mock.patch.object(volume, "get_drive_enclosure_uri_from_sas_Logical_"
+                       "Interconnect")
+    def test_get_drive_when_drive_id_is_not_int(self, get_drive_enclosure_uri,
+                                                get_drive_mock):
         """Tests when drive id is not a number"""
 
+        expected_result = {
+            "@odata.context": "/redfish/v1/$metadata#Drive.Drive",
+            "@odata.id": "/redfish/v1/Systems/b425802b-a6a5-4941-8885-"
+            "aab68dfa2ee2/Storage/1/Drives/"
+            "5c3e5214-e9fb-469d-a8d5-2159fe2d97d8",
+            "@odata.type": "#Drive.v1_4_0.Drive",
+            "CapacityBytes": 107374182400,
+            "Id": "5c3e5214-e9fb-469d-a8d5-2159fe2d97d8",
+            "Links": {
+                "Chassis": {
+                    "@odata.id": "/redfish/v1/Chassis/0000000000A66101"
+                }
+            },
+            "MediaType": "SSD",
+            "Name": "Drive 1",
+            "Protocol": "SATA",
+            "Status": {
+                "Health": "OK",
+                "State": "Enabled"
+            }
+        }
         self.oneview_client.\
             server_profiles.get.return_value = self.server_profile
         self.oneview_client.\
             sas_logical_jbods.get.side_effect = self.logical_jbods
 
+        get_drive_mock.return_value = "1:1:1"
+        get_drive_enclosure_uri.return_value = "/rest/drive-enclosures/"
+        "SN123100"
+
+        self.oneview_client.\
+            drive_enclosures.get.return_value = self.drive_enclosures
+
         response = self.client.get(
             "/redfish/v1/Systems/"
-            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/abc"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/"
+            "5c3e5214-e9fb-469d-a8d5-2159fe2d97d8"
         )
 
-        self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
+        result = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(result, expected_result)
         self.assertEqual("application/json", response.mimetype)
-        self.assertIn("Drive id should be a integer", str(response.data))
-        self.oneview_client.server_profiles.get.assert_not_called()
-        self.oneview_client.sas_logical_jbods.get.assert_not_called()
+
+    def test_get_drive_when_drive_id_invalid(self):
+        self.oneview_client.\
+            server_profiles.get.return_value = self.server_profile
+        self.oneview_client.\
+            sas_logical_jbods.get.side_effect = None
+
+        response = self.client.get(
+            "/redfish/v1/Systems/"
+            "b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage/1/Drives/"
+            "invalid_id"
+        )
+
+        result = json.loads(response.data.decode("utf-8"))
+        self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
+        self.assertEqual(result["error"]["message"],
+                         "Drive invalid_id not found")
+
+        self.assertEqual("application/json", response.mimetype)
 
     def test_composed_system_without_drives(self):
         """Tests Storage when it does not have drives"""

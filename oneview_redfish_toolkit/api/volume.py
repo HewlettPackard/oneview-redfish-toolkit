@@ -108,24 +108,12 @@ class Volume(RedfishJsonValidator):
             abort(status.HTTP_404_NOT_FOUND, "Volume {} not found"
                   .format(volume_id))
 
-        sas_Logical_Interconnect_Uri = \
-            sas_logical_jbod["sasLogicalInterconnectUri"]
-
-        drivepaths = []
-        for logical_Drive_Bay_Uri in sas_logical_jbod["logicalDriveBayUris"]:
-            drivepath = get_drive_path_from_logical_Drive_Bay_Uri(
-                logical_Drive_Bay_Uri)
-            drivepaths.append(drivepath)
-
-        drive_enclosure_uri = \
-            get_drive_enclosure_uri_from_sas_Logical_Interconnect(
-                sas_Logical_Interconnect_Uri)
-
-        drive_enclosure_object = get_drive_enclosure_object(
-            drive_enclosure_uri)
+        drive_enclosure_object, drivepaths = \
+            get_drive_enclosure_and_drivepaths(sas_logical_jbod)
 
         drivebayuris = get_drivebayuris_from_drive_enclosure_object(
             drivepaths, drive_enclosure_object)
+
         device_slot = get_device_slot_from_sas_logical_jbod_by_volumeid(
             server_profile, volume_id)
         raidlevel = get_raidLevel(server_profile, device_slot, volume_id)
@@ -194,6 +182,26 @@ class Volume(RedfishJsonValidator):
             attrs["VolumeType"] = "RawDevice"
 
         return Volume(attrs)
+
+
+def get_drive_enclosure_and_drivepaths(sas_logical_jbod):
+    sas_Logical_Interconnect_Uri = \
+        sas_logical_jbod["sasLogicalInterconnectUri"]
+
+    drivepaths = []
+    for logical_Drive_Bay_Uri in sas_logical_jbod["logicalDriveBayUris"]:
+        drivepath = get_drive_path_from_logical_Drive_Bay_Uri(
+            logical_Drive_Bay_Uri)
+        drivepaths.append(drivepath)
+
+    drive_enclosure_uri = \
+        get_drive_enclosure_uri_from_sas_Logical_Interconnect(
+            sas_Logical_Interconnect_Uri)
+
+    drive_enclosure_object = get_drive_enclosure_object(
+        drive_enclosure_uri)
+
+    return drive_enclosure_object, drivepaths
 
 
 def get_sas_logical_jbod_by_volumeid(server_profile, volume_id):
