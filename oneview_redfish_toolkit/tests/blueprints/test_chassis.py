@@ -19,11 +19,13 @@ from collections import OrderedDict
 import copy
 import json
 from unittest import mock
-from unittest.mock import call
+from unittest.mock import call, patch
 
 # 3rd party libs
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
+from hpOneView.resources.servers.enclosures import Enclosures
+from hpOneView.resources.resource import Resource, ResourceHelper
 
 # Module libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishException
@@ -105,26 +107,29 @@ class TestChassis(BaseFlaskTest):
         self.map_appliance = OrderedDict({
             "10.0.0.1": self.appliance_info["uuid"]
         })
+        env = self.enclosure_environment_configuration_mockup
 
     #############
     # Enclosure #
     #############
 
+    @mock.patch.object(Enclosures, 'get_environmental_configuration')
     @mock.patch.object(multiple_oneview, 'get_map_resources')
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
     def test_get_enclosure_chassis(self, get_map_appliances,
-                                   get_map_resources):
+                                   get_map_resources,get_env):
         """"Tests EnclosureChassis with a known Enclosure"""
-
+        get_env.return_value = self.enclosure_environment_configuration_mockup
+        enclosure_obj = Enclosures(self.oneview_client, self.enclosure)
         get_map_resources.return_value = OrderedDict({
             "0000000000A66101": "10.0.0.1",
         })
         get_map_appliances.return_value = self.map_appliance
         self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
-        self.oneview_client.enclosures.get.return_value = self.enclosure
-        self.oneview_client.enclosures.get_environmental_configuration.\
-            return_value = self.enclosure_environment_configuration_mockup
+        self.oneview_client.enclosures.get_by_id.return_value = enclosure_obj
+        Enclosures.get_environmental_configuration.return_value = \
+            get_env.return_value
         self.oneview_client.appliance_node_information.get_version.return_value = \
             self.appliance_info
 
@@ -143,12 +148,13 @@ class TestChassis(BaseFlaskTest):
             "{}{}".format("W/", self.enclosure["eTag"]),
             response.headers["ETag"])
 
+    @mock.patch.object(Enclosures, 'get_environmental_configuration')
     @mock.patch.object(multiple_oneview, 'get_map_resources')
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
     def test_get_enclosure_chassis_when_enclosure_does_not_belong_to_rack(
             self,
             get_map_appliances,
-            get_map_resources):
+            get_map_resources, get_env):
         """"Tests EnclosureChassis when a Enclosure doesn't belong to a Rack"""
 
         encl_env_config_mockup = copy.deepcopy(
@@ -157,16 +163,17 @@ class TestChassis(BaseFlaskTest):
 
         encl_mockup = copy.deepcopy(self.enclosure_chassis_mockup)
         del encl_mockup['Links']['ContainedBy']
-
+        enclosure_obj = Enclosures(self.oneview_client, self.enclosure)
         get_map_resources.return_value = OrderedDict({
             "0000000000A66101": "10.0.0.1",
         })
+        get_env.return_value = encl_env_config_mockup
         get_map_appliances.return_value = self.map_appliance
         self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
-        self.oneview_client.enclosures.get.return_value = self.enclosure
-        self.oneview_client.enclosures.get_environmental_configuration. \
-            return_value = encl_env_config_mockup
+        self.oneview_client.enclosures.get_by_id.return_value = enclosure_obj
+        Enclosures.get_environmental_configuration. \
+            return_value = get_env.return_value
         self.oneview_client.appliance_node_information.get_version.return_value = \
             self.appliance_info
 
@@ -239,7 +246,7 @@ class TestChassis(BaseFlaskTest):
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'environmental configuration not found',
         })
-        self.oneview_client.enclosures.get_environmental_configuration.\
+        self.oneview_client.enclosures.get_environmental_configuration. \
             side_effect = e
 
         response = self.client.get(
@@ -272,7 +279,7 @@ class TestChassis(BaseFlaskTest):
             [{"category": "enclosures"}]
 
         self.oneview_client.enclosures.get.return_value = self.enclosure
-        self.oneview_client.enclosures.get_environmental_configuration.\
+        self.oneview_client.enclosures.get_environmental_configuration. \
             side_effect = Exception()
 
         response = self.client.get(
@@ -297,7 +304,7 @@ class TestChassis(BaseFlaskTest):
         self.oneview_client.index_resources.get_all.return_value = \
             [{"category": "enclosures"}]
         self.oneview_client.enclosures.get.return_value = self.enclosure
-        self.oneview_client.enclosures.get_environmental_configuration.\
+        self.oneview_client.enclosures.get_environmental_configuration. \
             return_value = self.enclosure_environment_configuration_mockup
         self.oneview_client.appliance_node_information.get_version.return_value = \
             self.appliance_info
@@ -430,7 +437,7 @@ class TestChassis(BaseFlaskTest):
 
         self.oneview_client.index_resources.get_all.return_value = [
             {"category": "server-hardware"}]
-        self.oneview_client.server_hardware.get.return_value =\
+        self.oneview_client.server_hardware.get.return_value = \
             {'serverHardwareUri': 'invalidUri'}
         e = HPOneViewException({
             'errorCode': 'RESOURCE_NOT_FOUND',
