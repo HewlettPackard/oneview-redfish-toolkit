@@ -20,6 +20,7 @@ import json
 # 3rd party libs
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
+from hpOneView.resources.servers.server_hardware import ServerHardware
 from unittest import mock
 
 # Module libs
@@ -59,8 +60,9 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             network_device_function_collection_mockup = json.load(f)
 
         # Create mock response
-        self.oneview_client.server_hardware.get.return_value = \
-            self.server_hardware
+        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        self.oneview_client.server_hardware.get_by_id.return_value = \
+            serverhw_obj
 
         # Get NetworkDeviceFunctionCollection
         response = self.client.get(
@@ -84,7 +86,7 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        self.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get_by_id.side_effect = e
 
         # Get NetworkDeviceFunctionCollection
         response = self.client.get(
@@ -102,7 +104,7 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware-types error',
         })
-        self.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get_by_id.side_effect = e
 
         # Get NetworkDeviceFunctionCollection
         response = self.client.get(
@@ -129,8 +131,9 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             network_device_function_collection_mockup = json.load(f)
 
         # Create mock response
-        self.oneview_client.server_hardware.get.return_value = \
-            self.server_hardware
+        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        self.oneview_client.server_hardware.get_by_id.return_value = \
+            serverhw_obj
 
         # Get NetworkDeviceFunctionCollection
         response = self.client.get(
