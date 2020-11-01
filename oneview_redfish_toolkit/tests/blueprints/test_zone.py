@@ -20,6 +20,9 @@ from unittest.mock import call
 from flask_api import status
 from hpOneView import HPOneViewException
 
+from hpOneView.resources.servers.enclosures import Enclosures
+from hpOneView.resources.servers.server_profile_templates import ServerProfileTemplate
+
 from oneview_redfish_toolkit.blueprints import zone
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
 
@@ -81,9 +84,13 @@ class TestZone(BaseFlaskTest):
         ) as f:
             zone_mockup = json.load(f)
 
-        api_client.enclosures.get.return_value = self.enclosure
-        api_client.server_profile_templates.get.return_value = \
-            self.server_profile_template
+        enclosure_obj = Enclosures(self.oneview_client, self.enclosure)
+        api_client.enclosures.get_by_id.return_value = enclosure_obj
+
+        spt_obj = ServerProfileTemplate(self.oneview_client,self.server_profile_template)
+        api_client.server_profile_templates.get_by_id.return_value = \
+            spt_obj
+
         api_client.server_hardware.get_all.return_value = \
             self.server_hardware_list
         api_client.connection.get.side_effect = [
@@ -102,8 +109,8 @@ class TestZone(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(zone_mockup, result)
 
-        api_client.enclosures.get.assert_called_with(self.enclosure["uuid"])
-        api_client.server_profile_templates.get.assert_called_with(self.spt_id)
+        api_client.enclosures.get_by_id.assert_called_with(self.enclosure["uuid"])
+        api_client.server_profile_templates.get_by_id.assert_called_with(self.spt_id)
         api_client.connection.get.assert_has_calls(
             [
                 call("/rest/index/associations/resources?parenturi=" +
@@ -132,8 +139,10 @@ class TestZone(BaseFlaskTest):
         ) as f:
             zone_without_drives_mockup = json.load(f)
 
-        api_client.server_profile_templates.get.return_value = \
-            self.server_profile_template
+        spt_obj = ServerProfileTemplate(self.oneview_client,self.server_profile_template)
+        api_client.server_profile_templates.get_by_id.return_value = \
+            spt_obj
+
         api_client.server_hardware.get_all.return_value = \
             self.server_hardware_list
         api_client.connection.get.side_effect = [
@@ -151,8 +160,8 @@ class TestZone(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(zone_without_drives_mockup, result)
 
-        api_client.enclosures.get.assert_not_called()
-        api_client.server_profile_templates.get.assert_called_with(self.spt_id)
+        api_client.enclosures.get_by_id.assert_not_called()
+        api_client.server_profile_templates.get_by_id.assert_called_with(self.spt_id)
         api_client.connection.get.assert_not_called()
         api_client.server_hardware.get_all.assert_called_with(
             filter=[
@@ -174,9 +183,12 @@ class TestZone(BaseFlaskTest):
         ) as f:
             zone_without_drives_mockup = json.load(f)
 
-        api_client.enclosures.get.return_value = self.enclosure
-        api_client.server_profile_templates.get.return_value = \
-            self.server_profile_template
+        enclosure_obj = Enclosures(self.oneview_client, self.enclosure)
+        api_client.enclosures.get_by_id.return_value = enclosure_obj
+
+        spt_obj = ServerProfileTemplate(self.oneview_client,self.server_profile_template)
+        api_client.server_profile_templates.get_by_id.return_value = \
+            spt_obj
 
         drive_encl_by_encl = copy.copy(self.drive_encl_assoc)
         drive_encl_by_encl["members"] = []
@@ -199,8 +211,8 @@ class TestZone(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(zone_without_drives_mockup, result)
 
-        api_client.enclosures.get.assert_called_with(self.enclosure["uuid"])
-        api_client.server_profile_templates.get.assert_called_with(self.spt_id)
+        api_client.enclosures.get_by_id.assert_called_with(self.enclosure["uuid"])
+        api_client.server_profile_templates.get_by_id.assert_called_with(self.spt_id)
         api_client.connection.get.assert_has_calls([
             call("/rest/index/associations/resources?parenturi="
                  + self.enclosure["uri"]
@@ -217,7 +229,7 @@ class TestZone(BaseFlaskTest):
     def test_get_zone_not_found(self):
         """Tests Zone when UUID was not found"""
 
-        self.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get_by_id.side_effect = \
             HPOneViewException({
                 'errorCode': 'RESOURCE_NOT_FOUND',
                 'message': 'SPT not found'
@@ -233,7 +245,7 @@ class TestZone(BaseFlaskTest):
     def test_get_zone_when_enclosure_not_found(self):
         """Tests Zone when UUID was not found due the enclosure not found"""
 
-        self.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get_by_id.side_effect = \
             HPOneViewException({
                 'errorCode': 'RESOURCE_NOT_FOUND',
                 'message': 'Enclosure not found'
@@ -257,9 +269,13 @@ class TestZone(BaseFlaskTest):
         ) as f:
             zone_with_external_storage_mockup = json.load(f)
 
-        api_client.enclosures.get.return_value = self.enclosure
-        api_client.server_profile_templates.get.return_value = \
-            self.server_profile_template
+        enclosure_obj = Enclosures(self.oneview_client, self.enclosure)
+        api_client.enclosures.get_by_id.return_value = enclosure_obj
+
+        spt_obj = ServerProfileTemplate(self.oneview_client,self.server_profile_template)
+        api_client.server_profile_templates.get_by_id.return_value = \
+            spt_obj
+            
         api_client.server_hardware.get_all.return_value = \
             self.server_hardware_list
         api_client.connection.get.side_effect = [
