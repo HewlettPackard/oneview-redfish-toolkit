@@ -1,3 +1,9 @@
+# 0.4.0
+
+# Bug fixes & Enhancements
+ - #580 - Adds support for HPE OneView 5.3 and later.
+ - #580 - OneView SDK update.
+	
 # 0.3.3
 
 # Bug fixes & Enhancements

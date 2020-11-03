@@ -56,12 +56,12 @@ $ pip install setuptools -U
 
 Unzip oneview-redfish-toolkit-installer:
 ```bash
-$ unzip <oneview-redfish-toolkit-installer-0.3.3.zip>
+$ unzip <oneview-redfish-toolkit-installer-0.4.0.zip>
 ```
 
 Run pip install where the files are placed:
 ```bash
-$ pip install <oneview-redfish-toolkit-installer-0.3.3>/*
+$ pip install <oneview-redfish-toolkit-installer-0.4.0>/*
 ```
 
 ## Running the application

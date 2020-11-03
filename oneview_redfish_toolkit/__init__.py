@@ -16,7 +16,7 @@
 
 __title__ = 'oneview-redfish-toolkit'
 
-__version__ = '0.3.3'
+__version__ = '0.4.0'
 
 __copyright__ = '(C) Copyright (2018-2019) Hewlett Packard Enterprise '\
     'Development LP'
