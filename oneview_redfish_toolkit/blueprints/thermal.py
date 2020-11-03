@@ -66,12 +66,18 @@ def get_thermal(uuid):
                 abort(status.HTTP_404_NOT_FOUND, 'Cannot find Index resource')
 
         if category == 'server-hardware':
-            server_hardware = g.oneview_client.server_hardware. \
+            try:
+                server_hardware = g.oneview_client.server_hardware. \
                 get_utilization(uuid, fields='AmbientTemperature')
+            except HPOneViewException as e:
+                abort(status.HTTP_404_NOT_FOUND, e.msg)
             thrml = Thermal(server_hardware, uuid, 'Blade')
         elif category == 'enclosures':
-            enclosure = g.oneview_client.enclosures. \
+            try:
+                enclosure = g.oneview_client.enclosures. \
                 get_utilization(uuid, fields='AmbientTemperature')
+            except HPOneViewException as e:
+                abort(status.HTTP_404_NOT_FOUND, e.msg)
             thrml = Thermal(enclosure, uuid, 'Enclosure')
         elif category == 'racks':
             rack = g.oneview_client.racks.\
