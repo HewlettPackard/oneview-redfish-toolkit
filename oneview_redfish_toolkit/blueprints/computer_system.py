@@ -29,6 +29,7 @@ from flask_api import status
 # own libs
 from hpOneView.exceptions import HPOneViewException
 from hpOneView.exceptions import HPOneViewTaskError
+
 from hpOneView.resources.task_monitor import TASK_ERROR_STATES
 from jsonschema import ValidationError
 
@@ -154,8 +155,11 @@ def remove_computer_system(uuid):
         Args:
             uuid: The System ID.
     """
+    try:
+            profile = g.oneview_client.server_profiles.get_by_id(uuid).data
+    except HPOneViewException as e:
+        abort(status.HTTP_404_NOT_FOUND, e.msg)
 
-    profile = g.oneview_client.server_profiles.get_by_id(uuid).data
     sh_uuid = profile['serverHardwareUri']
     if sh_uuid:
         service = ComputerSystemService(g.oneview_client)
