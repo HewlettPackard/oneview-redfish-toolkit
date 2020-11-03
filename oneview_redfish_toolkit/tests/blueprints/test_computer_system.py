@@ -703,8 +703,9 @@ class TestComputerSystem(BaseFlaskTest):
 
     def test_remove_computer_system_sp_not_found(self):
         """Tests remove ComputerSystem with ServerProfile not found"""
-        ServerProfiles.delete.side_effect = \
-             self.not_found_error
+
+        self.oneview_client.server_profiles.get_by_id.side_effect = \
+             self.not_found_server_profile
 
         response = self.client.delete(
             "/redfish/v1/Systems/"
@@ -747,7 +748,9 @@ class TestComputerSystem(BaseFlaskTest):
     @mock.patch.object(ServerProfiles, 'delete')
     def test_remove_computer_system_task_completed(self, sp_delete):
         """Tests remove ComputerSystem with task completed"""
-
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
+        self.oneview_client.server_profiles.get_by_id.return_value = \
+            profile_obj
         sp_delete.return_value = {'taskState': 'Completed'}
         response = self.client.delete(
             "/redfish/v1/Systems/"
