@@ -57,9 +57,10 @@ def get_network_interface(server_profile_uuid, device_id):
     try:
         device_id_validation = int(device_id)
 
-        profile = g.oneview_client.server_profiles.get(server_profile_uuid)
+        profile = g.oneview_client.server_profiles.get_by_id(
+            server_profile_uuid).data
         server_hardware = g.oneview_client.server_hardware\
-            .get(profile["serverHardwareUri"])
+            .get_by_uri(profile["serverHardwareUri"]).data
 
         if (device_id_validation - 1) < 0 or (device_id_validation - 1) >= \
                 len(server_hardware["portMap"]["deviceSlots"]):

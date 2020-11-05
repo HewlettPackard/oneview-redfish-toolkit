@@ -35,7 +35,7 @@ def get_storage_collection(uuid):
     Return StorageCollection Redfish JSON.
     """
     # It just verifies if server profile there is in Oneview
-    g.oneview_client.server_profiles.get(uuid)
+    g.oneview_client.server_profiles.get_by_id(uuid).data
 
     storage = StorageCollection(uuid)
 

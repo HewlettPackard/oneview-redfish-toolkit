@@ -3,6 +3,6 @@
 # process, which may cause wedges in the gate later.
 
 hacking==0.12.0 # Apache-2.0 - test pep8
-oslotest==3.5.0 # Apache-2.0 - test py35
+oslotest>=2.0.0 # Apache-2.0 - test py35
 coverage==4.5.1
 tox==3.4.0

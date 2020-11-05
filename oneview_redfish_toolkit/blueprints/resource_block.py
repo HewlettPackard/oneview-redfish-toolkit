@@ -135,7 +135,7 @@ def get_resource_block_computer_system(uuid):
             JSON: Redfish json with ResourceBlock Computer System.
     """
 
-    server_hardware = g.oneview_client.server_hardware.get(uuid)
+    server_hardware = g.oneview_client.server_hardware.get_by_id(uuid).data
     manager_uuid = get_manager_uuid(uuid)
 
     computer_system = ComputerSystem.build_physical_system(
@@ -162,7 +162,7 @@ def get_resource_block_ethernet_interface(uuid, id):
     """
 
     server_profile_template = \
-        g.oneview_client.server_profile_templates.get(uuid)
+        g.oneview_client.server_profile_templates.get_by_id(uuid).data
 
     conn_settings = server_profile_template["connectionSettings"]
     connection = None
@@ -187,10 +187,8 @@ def get_resource_block_ethernet_interface(uuid, id):
 
 def _get_oneview_resource(uuid):
     drives_param = "/rest/drives/" + uuid
-
     cached_categ = category_resource.get_category_by_resource_id(uuid) or \
         category_resource.get_category_by_resource_id(drives_param)
-
     if cached_categ:
         resource_uuid = uuid
 
@@ -199,25 +197,33 @@ def _get_oneview_resource(uuid):
 
         resource = getattr(g.oneview_client, cached_categ.resource)
         function = getattr(resource, cached_categ.function)
-
-        return function(resource_uuid)
+        result = function(resource_uuid)
+        if isinstance(result, dict):
+            return result
+        else:
+            return result.data
 
     categories = [
-        {"func": g.oneview_client.server_hardware.get, "param": uuid},
-        {"func": g.oneview_client.server_profile_templates.get, "param": uuid},
+        {"func": g.oneview_client.server_hardware.get_by_id, "param": uuid},
+        {"func": g.oneview_client.server_profile_templates.get_by_id, "param": uuid},
         {"func": g.oneview_client.index_resources.get, "param": drives_param},
-        {"func": g.oneview_client.volumes.get, "param": uuid}
+        {"func": g.oneview_client.volumes.get_by_id, "param": uuid}
     ]
 
     for category in categories:
         try:
-            resource = category["func"](category["param"])
 
-            return resource
+            resource = category["func"](category["param"])
+            if isinstance(resource, dict):
+                return resource
+
+            return resource.data
         except HPOneViewException as e:
+
             if e.oneview_response["errorCode"] == 'RESOURCE_NOT_FOUND':
                 pass
             else:
+
                 raise  # Raise any unexpected errors
 
     abort(status.HTTP_404_NOT_FOUND,

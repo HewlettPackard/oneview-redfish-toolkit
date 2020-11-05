@@ -20,6 +20,7 @@ import json
 # 3rd party libs
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
+from hpOneView.resources.servers.server_hardware import ServerHardware
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import network_port
@@ -52,7 +53,8 @@ class TestNetworkPort(BaseFlaskTest):
             network_port_mockup = json.load(f)
 
         # Create mock response
-        self.oneview_client.server_hardware.get.return_value = server_hardware
+        serverhw_obj = ServerHardware(self.oneview_client, server_hardware)
+        self.oneview_client.server_hardware.get_by_id.return_value = serverhw_obj
 
         # Get NetworkPort
         response = self.client.get(
@@ -86,7 +88,8 @@ class TestNetworkPort(BaseFlaskTest):
             network_port_mockup = json.load(f)
 
         # Create mock response
-        self.oneview_client.server_hardware.get.return_value = server_hardware
+        serverhw_obj = ServerHardware(self.oneview_client, server_hardware)
+        self.oneview_client.server_hardware.get_by_id.return_value = serverhw_obj
 
         # Get NetworkPort
         response = self.client.get(
@@ -113,7 +116,7 @@ class TestNetworkPort(BaseFlaskTest):
             server_hardware = json.load(f)
 
         # Create mock response
-        self.oneview_client.server_hardware.get.return_value = server_hardware
+        self.oneview_client.server_hardware.get_by_id.return_value = server_hardware
 
         # Get NetworkPort
         response = self.client.get(
@@ -132,7 +135,7 @@ class TestNetworkPort(BaseFlaskTest):
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        self.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get_by_id.side_effect = e
 
         # Get NetworkPort
         response = self.client.get(
@@ -150,7 +153,7 @@ class TestNetworkPort(BaseFlaskTest):
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware error',
         })
-        self.oneview_client.server_hardware.get.side_effect = e
+        self.oneview_client.server_hardware.get_by_id.side_effect = e
 
         # Get NetworkPort
         response = self.client.get(

@@ -48,7 +48,7 @@ def get_vlan_network_interface_collection_sp(sp_uuid, connection_id):
     """
 
     server_profile = \
-        g.oneview_client.server_profiles.get(sp_uuid)
+        g.oneview_client.server_profiles.get_by_id(sp_uuid).data
 
     connection = \
         _get_connection_oneview_resource(server_profile,
@@ -76,7 +76,7 @@ def get_vlan_network_interface_collection_spt(spt_uuid, connection_id):
     """
 
     server_profile_template = \
-        g.oneview_client.server_profile_templates.get(spt_uuid)
+        g.oneview_client.server_profile_templates.get_by_id(spt_uuid).data
 
     connection = \
         _get_connection_oneview_resource(server_profile_template,
@@ -123,7 +123,7 @@ def _get_vlan_network_interface_collection(network_uri):
             JSON: Redfish json with VLanNetworkInterfaceCollection.
     """
 
-    network_set = g.oneview_client.network_sets.get(network_uri)
+    network_set = g.oneview_client.network_sets.get_by_uri(network_uri).data
 
     vlan_collection = \
         VLanNetworkInterfaceCollection(network_set, request.path)
@@ -148,12 +148,12 @@ def get_vlan_network_interface_sp(sp_uuid, conn_id, vlan_id):
     """
 
     server_profile = \
-        g.oneview_client.server_profiles.get(sp_uuid)
+        g.oneview_client.server_profiles.get_by_id(sp_uuid).data
 
     _get_connection_oneview_resource(server_profile, conn_id)
 
     ethernet_network = \
-        g.oneview_client.ethernet_networks.get(vlan_id)
+        g.oneview_client.ethernet_networks.get_by_id(vlan_id).data
 
     vlan = VLanNetworkInterface(ethernet_network, request.path)
 
@@ -177,12 +177,12 @@ def get_vlan_network_interface_spt(spt_uuid, conn_id, vlan_id):
     """
 
     server_profile_template = \
-        g.oneview_client.server_profile_templates.get(spt_uuid)
+        g.oneview_client.server_profile_templates.get_by_id(spt_uuid).data
 
     _get_connection_oneview_resource(server_profile_template, conn_id)
 
     ethernet_network = \
-        g.oneview_client.ethernet_networks.get(vlan_id)
+        g.oneview_client.ethernet_networks.get_by_id(vlan_id).data
 
     vlan = VLanNetworkInterface(ethernet_network, request.path)
 

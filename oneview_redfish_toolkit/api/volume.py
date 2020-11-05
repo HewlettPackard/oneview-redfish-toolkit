@@ -100,7 +100,7 @@ class Volume(RedfishJsonValidator):
 
         """
 
-        server_profile = g.oneview_client.server_profiles.get(uuid)
+        server_profile = g.oneview_client.server_profiles.get_by_id(uuid).data
         sas_logical_jbod = get_sas_logical_jbod_by_volumeid(server_profile,
                                                             volume_id)
 
@@ -229,8 +229,8 @@ def get_drive_path_from_logical_Drive_Bay_Uri(logical_Drive_Bay_Uri):
 
 def get_drive_enclosure_uri_from_sas_Logical_Interconnect(
         sas_Logical_Interconnect_Uri):
-    item = g.oneview_client.sas_logical_interconnects.get(
-        sas_Logical_Interconnect_Uri)
+    item = g.oneview_client.sas_logical_interconnects.get_by_uri(
+        sas_Logical_Interconnect_Uri).data
     return item["driveEnclosureUris"][0]
 
 
@@ -248,7 +248,9 @@ def get_drivebayuris_from_drive_enclosure_object(drivepaths,
                                                  drive_enclosure_object):
     drivebayuris = []
     for drivebay in drive_enclosure_object["driveBays"]:
-        for drivepath in drivebay["drive"]["drivePaths"]:
+        # eliminating drive = NONE condition to avoid TypeError: 'NoneType' object is not subscriptable
+        if isinstance(drivebay["drive"], dict):
+            for drivepath in drivebay["drive"]["drivePaths"]:
                 if drivepath in drivepaths:
                     drivebayuri = drivebay["uri"]
                     drivebayuris.append(drivebayuri)
@@ -267,7 +269,8 @@ def get_raidLevel(server_profile, device_slot, volume_id):
 
 def get_raid_level_for_storage_volume(volume):
     raidLevel = None
-    storage_pool = g.oneview_client.storage_pools.get(volume["storagePoolUri"])
+    storage_pool = g.oneview_client.storage_pools.get_by_uri(
+        volume["storagePoolUri"]).data
     if storage_pool:
         deviceSpecifications = storage_pool["deviceSpecificAttributes"]
         if deviceSpecifications.get("supportedRAIDLevel"):

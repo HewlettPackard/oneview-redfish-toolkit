@@ -24,6 +24,11 @@ from unittest.mock import call
 
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
+from hpOneView.resources.servers.server_hardware_types import ServerHardwareTypes
+from hpOneView.resources.servers.server_profiles import ServerProfiles
+from hpOneView.resources.storage.volumes import Volumes
+from hpOneView.resources.storage.storage_pools import StoragePools
+
 
 # Module libs
 from oneview_redfish_toolkit.api import volume
@@ -109,11 +114,14 @@ class TestStorage(BaseFlaskTest):
 
     def test_get_storage(self):
         """Tests Storage"""
+        server_hardware_type_obj = ServerHardwareTypes(
+            self.oneview_client, self.server_hardware_type)
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
 
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
-        self.oneview_client.server_hardware_types.get.return_value \
-            = self.server_hardware_type
+            server_profiles.get_by_id.return_value = profile_obj
+        self.oneview_client.server_hardware_types.get_by_uri.return_value \
+            = server_hardware_type_obj
         self.oneview_client.\
             sas_logical_jbods.get.side_effect = self.logical_jbods
 
@@ -129,9 +137,9 @@ class TestStorage(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(self.storage_mockup, result)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
-        self.oneview_client.server_hardware_types.get.assert_called_with(
+        self.oneview_client.server_hardware_types.get_by_uri.assert_called_with(
             self.server_hardware_type["uri"])
         self.oneview_client.sas_logical_jbods.get.assert_has_calls(
             [
@@ -144,7 +152,7 @@ class TestStorage(BaseFlaskTest):
         """Tests when server profile not found"""
 
         self.oneview_client.\
-            server_profiles.get.side_effect = self.not_found_error
+            server_profiles.get_by_id.side_effect = self.not_found_error
 
         # Get Storage
         response = self.client.get(
@@ -175,7 +183,7 @@ class TestStorage(BaseFlaskTest):
     def test_get_storage_when_hardware_type_not_found(self):
         """Tests when server hardware type not found"""
 
-        self.oneview_client.server_hardware_types.get.side_effect = \
+        self.oneview_client.server_hardware_types.get_by_uri.side_effect = \
             self.not_found_error
 
         # Get Storage
@@ -190,7 +198,7 @@ class TestStorage(BaseFlaskTest):
     def test_get_storage_when_hardware_type_raises_any_exception(self):
         """Tests when the searching of server hardware type raises an error"""
 
-        self.oneview_client.server_hardware_types.get.side_effect = Exception
+        self.oneview_client.server_hardware_types.get_by_uri.side_effect = Exception
 
         # Get Storage
         response = self.client.get(
@@ -204,9 +212,9 @@ class TestStorage(BaseFlaskTest):
 
     def test_get_drive(self):
         """Tests get a valid Drive"""
-
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
+            server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.\
             sas_logical_jbods.get.side_effect = self.logical_jbods
 
@@ -220,7 +228,7 @@ class TestStorage(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(self.drive_mockup, result)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
         self.oneview_client.sas_logical_jbods.get.assert_has_calls(
             [
@@ -242,14 +250,14 @@ class TestStorage(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
         self.oneview_client.sas_logical_jbods.get.assert_not_called()
 
     def test_get_drive_when_profile_raises_any_exception(self):
         """Tests when the searching of server profile raises any error"""
 
-        self.oneview_client.server_profiles.get.side_effect = Exception
+        self.oneview_client.server_profiles.get_by_id.side_effect = Exception
 
         response = self.client.get(
             "/redfish/v1/Systems/"
@@ -259,15 +267,15 @@ class TestStorage(BaseFlaskTest):
         self.assertEqual(status.HTTP_500_INTERNAL_SERVER_ERROR,
                          response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
         self.oneview_client.sas_logical_jbods.get.assert_not_called()
 
     def test_get_drive_when_sas_logical_jbod_not_found(self):
         """Tests when sas logical jbod not found"""
-
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
+            server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.sas_logical_jbods.get.side_effect = \
             self.not_found_error
 
@@ -278,7 +286,7 @@ class TestStorage(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
         self.oneview_client.sas_logical_jbods.get.assert_called_with(
             self.logical_jbods[0]["uri"]
@@ -286,9 +294,9 @@ class TestStorage(BaseFlaskTest):
 
     def test_get_drive_when_drive_not_found(self):
         """Tests when drive id can't be found"""
-
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
+            server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.\
             sas_logical_jbods.get.side_effect = self.logical_jbods
 
@@ -301,7 +309,7 @@ class TestStorage(BaseFlaskTest):
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertIn("Drive 5 not found", str(response.data))
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
         self.oneview_client.sas_logical_jbods.get.assert_has_calls(
             [
@@ -312,9 +320,9 @@ class TestStorage(BaseFlaskTest):
 
     def test_get_drive_when_drive_id_is_invalid(self):
         """Tests when drive id is not a number"""
-
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
+            server_profiles.get.return_value = profile_obj
         self.oneview_client.\
             sas_logical_jbods.get.side_effect = self.logical_jbods
 
@@ -326,7 +334,7 @@ class TestStorage(BaseFlaskTest):
         self.assertEqual(status.HTTP_400_BAD_REQUEST, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertIn("Drive id should be a integer", str(response.data))
-        self.oneview_client.server_profiles.get.assert_not_called()
+        self.oneview_client.server_profiles.get_by_id.assert_not_called()
         self.oneview_client.sas_logical_jbods.get.assert_not_called()
 
     def test_composed_system_without_drives(self):
@@ -337,9 +345,12 @@ class TestStorage(BaseFlaskTest):
         storage_mockup_without_drives["Drives"] = []
         storage_mockup_without_drives["Drives@odata.count"] = 0
         del storage_mockup_without_drives["Volumes"]
-        self.oneview_client.server_profiles.get.return_value = server_profile
-        self.oneview_client.server_hardware_types.get.return_value \
-            = self.server_hardware_type
+        profile_obj = ServerProfiles(self.oneview_client, server_profile)
+        self.oneview_client.server_profiles.get_by_id.return_value = profile_obj
+        server_hardware_type_obj = ServerHardwareTypes(
+            self.oneview_client, self.server_hardware_type)
+        self.oneview_client.server_hardware_types.get_by_uri.return_value \
+            = server_hardware_type_obj
 
         response = self.client.get(
             "/redfish/v1/Systems/"
@@ -353,17 +364,17 @@ class TestStorage(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(storage_mockup_without_drives, result)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
-        self.oneview_client.server_hardware_types.get.assert_called_with(
+        self.oneview_client.server_hardware_types.get_by_uri.assert_called_with(
             self.server_hardware_type["uri"])
         self.oneview_client.sas_logical_jbods.get.assert_not_called()
 
     def test_get_volumeCollection(self):
         """Tests for get volume collection"""
-
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
+            server_profiles.get_by_id.return_value = profile_obj
 
         response = self.client.get(
             "/redfish/v1/Systems/"
@@ -380,7 +391,8 @@ class TestStorage(BaseFlaskTest):
         server_profile = copy.deepcopy(self.server_profile)
 
         server_profile["localStorage"]["sasLogicalJBODs"] = []
-        self.oneview_client.server_profiles.get.return_value = server_profile
+        profile_obj = ServerProfiles(self.oneview_client, server_profile)
+        self.oneview_client.server_profiles.get.return_value = profile_obj
 
         response = self.client.get(
             "/redfish/v1/Systems/"
@@ -394,9 +406,9 @@ class TestStorage(BaseFlaskTest):
                        "Interconnect")
     def test_get_volume(self, get_drive_enclosure_uri, get_drive_mock):
         """Tests for get volume"""
-
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
+            server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.sas_logical_jbods.get.return_value = {
             "sasLogicalInterconnectUri": "/rest/sas-logical-interconnects/"
             "63138084-6d81-4b50-b35b-7e01a2390636",
@@ -459,8 +471,9 @@ class TestStorage(BaseFlaskTest):
         tempdict["driveNumber"] = 1
         temp["logicalDrives"].append(tempdict)
         server_profile["localStorage"]["controllers"].append(temp)
+        profile_obj = ServerProfiles(self.oneview_client, server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = server_profile
+            server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.sas_logical_jbods.get.return_value = {
             "sasLogicalInterconnectUri": "/rest/sas-logical-interconnects/"
             "63138084-6d81-4b50-b35b-7e01a2390636",
@@ -502,7 +515,8 @@ class TestStorage(BaseFlaskTest):
 
         server_profile = copy.deepcopy(self.server_profile)
         server_profile["localStorage"]["sasLogicalJBODs"] = []
-        self.oneview_client.server_profiles.get.return_value = server_profile
+        profile_obj = ServerProfiles(self.oneview_client, server_profile)
+        self.oneview_client.server_profiles.get.return_value = profile_obj
 
         response = self.client.get(
             "/redfish/v1/Systems/"
@@ -532,15 +546,19 @@ class TestStorage(BaseFlaskTest):
         expected_storage_details["Id"] = \
             "B526F59E-9BC7-467F-9205-A9F4015CE296"
 
-        self.oneview_client.storage_pools.get.return_value = {
+        storage_pool_obj = StoragePools(self.oneview_client, {
             "uri": "/rest/storage-pools/DC8BD64B-9A4E-4722-92D3-A9F4015B0B71",
             "deviceSpecificAttributes": {"supportedRAIDLevel": "RAID6"}
-        }
+        })
+
+        self.oneview_client.storage_pools.get_by_uri.return_value = storage_pool_obj
         server_profile = copy.deepcopy(self.server_profile)
         server_profile["sanStorage"] = self.san_storage
 
-        self.oneview_client.server_profiles.get.return_value = server_profile
-        self.oneview_client.volumes.get.return_value = volume[0]
+        profile_obj = ServerProfiles(self.oneview_client, server_profile)
+        self.oneview_client.server_profiles.get_by_id.return_value = profile_obj
+        volume_obj = Volumes(self.oneview_client, volume[0])
+        self.oneview_client.volumes.get_by_id.return_value = volume_obj
 
         response = self.client.get(
             "/redfish/v1/Systems/"
@@ -549,6 +567,7 @@ class TestStorage(BaseFlaskTest):
         )
 
         result = json.loads(response.data.decode("utf-8"))
+        print(result)
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_storage_details, result)

@@ -48,7 +48,7 @@ def get_processor(uuid, id):
         abort(status.HTTP_400_BAD_REQUEST,
               "Cannot convert processor_id {} to integer".format(id))
 
-    server_hardware = g.oneview_client.server_hardware.get(uuid)
+    server_hardware = g.oneview_client.server_hardware.get_by_id(uuid).data
     processor_count = server_hardware["processorCount"]
 
     if processor_id < 1 or processor_id > processor_count:

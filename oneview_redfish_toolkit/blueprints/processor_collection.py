@@ -42,7 +42,7 @@ def get_processor_collection(uuid):
             JSON: JSON with Resource Block System Processor Collection info.
     """
 
-    server_hardware = g.oneview_client.server_hardware.get(uuid)
+    server_hardware = g.oneview_client.server_hardware.get_by_id(uuid).data
 
     processor_collection = ProcessorCollection(server_hardware)
 

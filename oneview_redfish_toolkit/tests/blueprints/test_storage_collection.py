@@ -20,6 +20,7 @@ import json
 # 3rd party libs
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
+from hpOneView.resources.servers.server_profiles import ServerProfiles
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import storage_collection
@@ -48,8 +49,9 @@ class TestStorageCollection(BaseFlaskTest):
     def test_get_storage_collection(self):
         """Tests StorageCollection"""
 
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
+            server_profiles.get_by_id.return_value = profile_obj
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage"
@@ -60,7 +62,7 @@ class TestStorageCollection(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(self.storage_collection_mockup, result)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
 
     def test_get_storage_collection_when_profile_not_found(self):
@@ -70,7 +72,7 @@ class TestStorageCollection(BaseFlaskTest):
             'errorCode': 'RESOURCE_NOT_FOUND',
             'message': 'server-hardware not found',
         })
-        self.oneview_client.server_profiles.get.side_effect = e
+        self.oneview_client.server_profiles.get_by_id.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage"
@@ -78,7 +80,7 @@ class TestStorageCollection(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
 
     def test_get_storage_collection_when_profile_raises_any_exception(self):
@@ -88,7 +90,7 @@ class TestStorageCollection(BaseFlaskTest):
             'errorCode': 'ANOTHER_ERROR',
             'message': 'server-hardware-types error',
         })
-        self.oneview_client.server_profiles.get.side_effect = e
+        self.oneview_client.server_profiles.get_by_id.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/Storage"
@@ -99,5 +101,5 @@ class TestStorageCollection(BaseFlaskTest):
             response.status_code
         )
         self.assertEqual("application/json", response.mimetype)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
