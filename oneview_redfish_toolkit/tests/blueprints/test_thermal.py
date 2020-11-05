@@ -149,7 +149,7 @@ class TestChassis(BaseFlaskTest):
              call(uuid)]
         )
         # below assert is commented as in the upgraded version
-        #self.assertTrue(category_resource.get_category_by_resource_id(uuid))
+        # self.assertTrue(category_resource.get_category_by_resource_id(uuid))
 
     @mock.patch.object(ServerHardware, 'get_utilization')
     def test_get_blade_not_found(self, server_utilization):
@@ -293,7 +293,7 @@ class TestChassis(BaseFlaskTest):
 
         # Below assert is commented as multiple_parameter_resource has
         # no caching- done as a part of upgrade
-        #self.assertTrue(category_resource.get_category_by_resource_id(uuid))
+        # self.assertTrue(category_resource.get_category_by_resource_id(uuid))
 
     ########
     # Rack #

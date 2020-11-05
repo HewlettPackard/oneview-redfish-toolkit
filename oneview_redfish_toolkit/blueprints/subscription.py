@@ -98,9 +98,9 @@ def _delete_subscription_from_file(subscription_id):
 def _is_duplicate_subscription(destination):
     file_content = get_file_content()
     if file_content and file_content.get('members'):
-            for i in file_content.get('members'):
-                if i.get('Destination') == destination:
-                    return True
+        for i in file_content.get('members'):
+            if i.get('Destination') == destination:
+                return True
     return False
 
 

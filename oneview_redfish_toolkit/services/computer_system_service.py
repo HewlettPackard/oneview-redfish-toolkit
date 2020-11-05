@@ -136,7 +136,8 @@ class ComputerSystemService(object):
             try:
                 spt_uuid = label["name"].replace(" ", "-")
                 is_valid_spt = \
-                    self.ov_client.server_profile_templates.get_by_id(spt_uuid).data
+                    self.ov_client.server_profile_templates.get_by_id(
+                        spt_uuid).data
                 if is_valid_spt:
                     server_profile_template_uuid = spt_uuid
                     break

@@ -35,7 +35,8 @@ def get_network_interface_collection(server_profile_uuid):
 
     Return NetworkInterfaceCollection Redfish JSON.
     """
-    profile = g.oneview_client.server_profiles.get_by_id(server_profile_uuid).data
+    profile = g.oneview_client.server_profiles.get_by_id(
+        server_profile_uuid).data
     server_hardware = g.oneview_client.server_hardware\
         .get_by_uri(profile["serverHardwareUri"]).data
 

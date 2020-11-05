@@ -68,14 +68,14 @@ def get_thermal(uuid):
         if category == 'server-hardware':
             try:
                 server_hardware = g.oneview_client.server_hardware. \
-                get_utilization(uuid, fields='AmbientTemperature')
+                    get_utilization(uuid, fields='AmbientTemperature')
             except HPOneViewException as e:
                 abort(status.HTTP_404_NOT_FOUND, e.msg)
             thrml = Thermal(server_hardware, uuid, 'Blade')
         elif category == 'enclosures':
             try:
                 enclosure = g.oneview_client.enclosures. \
-                get_utilization(uuid, fields='AmbientTemperature')
+                    get_utilization(uuid, fields='AmbientTemperature')
             except HPOneViewException as e:
                 abort(status.HTTP_404_NOT_FOUND, e.msg)
             thrml = Thermal(enclosure, uuid, 'Enclosure')

@@ -36,7 +36,8 @@ def get_ethernet_interface(server_profile_uuid, eth_id):
 
     Return EthernetInterface Redfish JSON.
     """
-    profile = g.oneview_client.server_profiles.get_by_id(server_profile_uuid).data
+    profile = g.oneview_client.server_profiles.get_by_id(
+        server_profile_uuid).data
 
     connections = profile["connectionSettings"]["connections"]
 

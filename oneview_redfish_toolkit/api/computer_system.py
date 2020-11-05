@@ -306,7 +306,6 @@ class ComputerSystem(RedfishJsonValidator):
                 if (key in server_profile[item].keys()):
                     server_profile[item].pop(key)
 
-
         return server_profile
 
     @staticmethod

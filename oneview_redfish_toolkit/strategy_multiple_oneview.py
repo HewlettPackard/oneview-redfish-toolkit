@@ -21,24 +21,29 @@ from oneview_redfish_toolkit import multiple_oneview
 
 def first_parameter_resource(resource, function, *args, **kwargs):
     resource_id = args[0]
-    resp = multiple_oneview.query_ov_client_by_resource(resource_id, resource,function, *args, **kwargs)
+    resp = multiple_oneview.query_ov_client_by_resource(
+        resource_id, resource, function, *args, **kwargs)
     category_resource.set_map_category_resources_entry(resource_id,
                                                        resource,
                                                        function)
     return resp
 
+
 def multiple_parameter_resource(resource, function, *args, **kwargs):
     uri_or_id = args[0]
-    if 'rest' in uri_or_id :
+    if 'rest' in uri_or_id:
         get_function = 'get_by_uri'
     else:
         get_function = 'get_by_id'
     temp_args = list(args)
     temp_args.remove(uri_or_id)
     new_args = tuple(temp_args)
-    resource_object = multiple_oneview.query_ov_client_by_resource(uri_or_id,resource, get_function, uri_or_id)
-    resp = multiple_oneview.execute_query_function(resource_object,function, *new_args, **kwargs)
+    resource_object = multiple_oneview.query_ov_client_by_resource(
+        uri_or_id, resource, get_function, uri_or_id)
+    resp = multiple_oneview.execute_query_function(
+        resource_object, function, *new_args, **kwargs)
     return resp
+
 
 def filter_uuid_parameter_resource(resource, function, *args, **kwargs):
     if 'filter' not in kwargs:
@@ -112,12 +117,11 @@ def update_power_state_server_hardware(resource, function, *args, **kwargs):
     else:
         get_function = 'get_by_id'
 
-    resource_object = multiple_oneview.query_ov_client_by_resource(sh_uuid, resource, get_function, sh_uuid)
-    resp = multiple_oneview.execute_query_function(resource_object, function, args[0], **kwargs)
+    resource_object = multiple_oneview.query_ov_client_by_resource(
+        sh_uuid, resource, get_function, sh_uuid)
+    resp = multiple_oneview.execute_query_function(
+        resource_object, function, args[0], **kwargs)
     return resp
-
-
-
 
 
 def create_labels(resource, function, *args, **kwargs):

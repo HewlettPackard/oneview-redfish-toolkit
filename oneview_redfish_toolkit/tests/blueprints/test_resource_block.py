@@ -204,7 +204,8 @@ class TestResourceBlock(BaseFlaskTest):
             [call(uri),
              call(uri)]
         )
-        self.oneview_client.server_hardware.get_by_id.assert_called_once_with(uuid)
+        self.oneview_client.server_hardware.get_by_id.assert_called_once_with(
+            uuid)
         self.oneview_client.index_resources.get.assert_has_calls(
             [call('/rest/drives/' + uuid),
              call('/rest/drives/' + uuid)]
@@ -394,9 +395,9 @@ class TestResourceBlock(BaseFlaskTest):
         sh_type_uri = self.server_hardware["serverHardwareTypeUri"]
         self.oneview_client. \
             server_profile_templates.get_all.assert_called_with(
-            filter=["enclosureGroupUri='" + encl_group_uri + "'",
-                    "serverHardwareTypeUri='" + sh_type_uri + "'"]
-        )
+                filter=["enclosureGroupUri='" + encl_group_uri + "'",
+                        "serverHardwareTypeUri='" + sh_type_uri + "'"]
+                )
         self.oneview_client.logical_enclosures.get_all.assert_called_with()
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
@@ -466,7 +467,8 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_resource_block, result)
 
-        self.oneview_client.server_hardware.get_by_id.assert_called_once_with(uuid)
+        self.oneview_client.server_hardware.get_by_id.assert_called_once_with(
+            uuid)
         self.oneview_client.server_profile_templates.get_by_id.assert_has_calls(
             [call(uuid),
              call(uuid)]
@@ -561,7 +563,8 @@ class TestResourceBlock(BaseFlaskTest):
                 'oneview_redfish_toolkit/mockups/oneview/EthernetNetwork.json'
         ) as f:
             ethernet_network = json.load(f)
-        spt_obj = ServerProfileTemplate(self.oneview_client, self.server_profile_template)
+        spt_obj = ServerProfileTemplate(
+            self.oneview_client, self.server_profile_template)
 
         self.oneview_client.server_profile_templates.get_by_id.return_value = \
             spt_obj

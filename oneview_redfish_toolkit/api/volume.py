@@ -269,7 +269,8 @@ def get_raidLevel(server_profile, device_slot, volume_id):
 
 def get_raid_level_for_storage_volume(volume):
     raidLevel = None
-    storage_pool = g.oneview_client.storage_pools.get_by_uri(volume["storagePoolUri"]).data
+    storage_pool = g.oneview_client.storage_pools.get_by_uri(
+        volume["storagePoolUri"]).data
     if storage_pool:
         deviceSpecifications = storage_pool["deviceSpecificAttributes"]
         if deviceSpecifications.get("supportedRAIDLevel"):
