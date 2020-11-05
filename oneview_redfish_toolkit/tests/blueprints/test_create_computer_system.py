@@ -25,7 +25,6 @@ from unittest.mock import call
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
 from hpOneView.resources.storage.storage_pools import StoragePools
-from hpOneView.resources.servers.server_profiles import ServerProfiles
 from hpOneView.resources.servers.server_hardware import ServerHardware
 from hpOneView.resources.servers.server_profile_templates import ServerProfileTemplate
 from hpOneView.resources.storage.volumes import Volumes
@@ -688,12 +687,13 @@ class TestCreateComputerSystem(BaseFlaskTest):
                 'PostToComposeSystemWithoutStorage.json'
         ) as f:
             data_to_send = json.load(f)
-
+        """
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'
                 'ServerProfileBuiltFromZoneWithoutStorageToCreateASystem.json'
         ) as f:
             expected_server_profile_built = json.load(f)
+        """
 
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/'

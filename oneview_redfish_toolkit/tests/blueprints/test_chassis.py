@@ -107,7 +107,6 @@ class TestChassis(BaseFlaskTest):
         self.map_appliance = OrderedDict({
             "10.0.0.1": self.appliance_info["uuid"]
         })
-        env = self.enclosure_environment_configuration_mockup
 
     #############
     # Enclosure #

@@ -266,4 +266,3 @@ def execute_query_function(resource, function, *args, **kwargs):
     ov_function = getattr(resource, function)
     result = ov_function(*args, **kwargs)
     return result
-

@@ -202,8 +202,7 @@ class TestVLanNetworkInterface(BaseFlaskTest):
         spt_obj = ServerProfileTemplate(
             self.oneview_client, self.server_profile_template)
         self.oneview_client.server_profile_templates.get_by_id.return_value = \
-            spt_obj            
-
+            spt_obj
         self.oneview_client.network_sets.get_by_uri.side_effect = \
             self.resource_not_found
 
