@@ -81,7 +81,7 @@ class TestAuthentication(unittest.TestCase):
             {
                 'ip': '10.0.0.1',
                 'credentials': {'userName': 'user', 'password': 'password'},
-                'api_version': 600
+                'api_version': 1200
             }
         )
         self.assertEqual(rf_token, mocked_rf_token)
@@ -122,7 +122,7 @@ class TestAuthentication(unittest.TestCase):
                     'password': 'password123',
                     'authLoginDomain': 'SOME_DOMAIN'
                 },
-                'api_version': 600
+                'api_version': 1200
             }
         )
 

@@ -20,6 +20,7 @@ import json
 # 3rd party libs
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
+from hpOneView.resources.servers.server_hardware import ServerHardware
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import processor_collection
@@ -46,7 +47,7 @@ class TestProcessorCollection(BaseFlaskTest):
             self.expected_processor_collection = json.load(f)
 
     def test_get_processor_collection_server_hardware_not_found(self):
-        self.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get_by_id.side_effect = \
             HPOneViewException({"errorCode": "RESOURCE_NOT_FOUND"})
 
         response = self.client.get(
@@ -57,8 +58,10 @@ class TestProcessorCollection(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
 
     def test_get_processor(self):
-        self.oneview_client.server_hardware.get.return_value = \
-            self.server_hardware
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
+        self.oneview_client.server_hardware.get_by_id.return_value = \
+            serverhw_obj
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"

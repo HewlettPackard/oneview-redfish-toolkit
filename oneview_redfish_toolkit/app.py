@@ -458,6 +458,7 @@ def start_cherrypy(app,
 
 
 if __name__ == '__main__':
+
     parser = argparse.ArgumentParser(description='Arguments parser')
     parser.add_argument('--config', type=str,
                         help='A required path to config file')
@@ -474,6 +475,5 @@ if __name__ == '__main__':
                              'the development mode is set too, otherwise '
                              'it is ignored.')
     args = parser.parse_args()
-
     main(args.config, args.log_config,
          is_dev_env=args.dev, is_debug_mode=args.debug)

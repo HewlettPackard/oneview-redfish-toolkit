@@ -64,11 +64,11 @@ def get_chassis(uuid):
     manager_uuid = get_manager_uuid(uuid)
 
     if category == 'server-hardware':
-        server_hardware = g.oneview_client.server_hardware.get(uuid)
+        server_hardware = g.oneview_client.server_hardware.get_by_id(uuid).data
         etag = server_hardware['eTag']
         ch = BladeChassis(server_hardware, manager_uuid)
     elif category == 'enclosures':
-        enclosure = g.oneview_client.enclosures.get(uuid)
+        enclosure = g.oneview_client.enclosures.get_by_id(uuid).data
         etag = enclosure['eTag']
 
         enclosure_environment_config = g.oneview_client.enclosures. \
@@ -123,7 +123,7 @@ def change_server_hardware_power_state(uuid):
     category = resource_index[0]["category"]
     if category == 'server-hardware':
         # Gets ServerHardware for given UUID
-        sh = g.oneview_client.server_hardware.get(uuid)
+        sh = g.oneview_client.server_hardware.get_by_id(uuid).data
 
         # Gets power configuration based on OneView pattern
         oneview_power_configuration = \

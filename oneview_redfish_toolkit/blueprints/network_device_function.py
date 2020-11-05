@@ -60,7 +60,7 @@ def get_network_device_function(uuid, device_id, device_function_id):
         # Initial validation of device_id
         device_id_validation = int(device_id)
 
-        server_hardware = g.oneview_client.server_hardware.get(uuid)
+        server_hardware = g.oneview_client.server_hardware.get_by_id(uuid).data
 
         # Final validation of device_id
         if device_id_validation - 1 < 0 or (device_id_validation - 1) >= \

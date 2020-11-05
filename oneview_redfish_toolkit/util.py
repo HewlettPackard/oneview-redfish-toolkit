@@ -45,7 +45,7 @@ globals()['subscriptions_by_type'] = {
 
 globals()['all_subscriptions'] = {}
 
-API_VERSION = 600
+API_VERSION = 1200
 
 CFG_DIR_NAME = 'oneview-redfish-toolkit'
 

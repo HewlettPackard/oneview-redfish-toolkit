@@ -32,6 +32,8 @@ from oneview_redfish_toolkit.blueprints import resource_block
 from oneview_redfish_toolkit import category_resource
 from oneview_redfish_toolkit import multiple_oneview
 from oneview_redfish_toolkit.tests.base_flask_test import BaseFlaskTest
+from hpOneView.resources.servers.server_hardware import ServerHardware
+from hpOneView.resources.servers.server_profile_templates import ServerProfileTemplate
 
 
 class TestResourceBlock(BaseFlaskTest):
@@ -44,40 +46,40 @@ class TestResourceBlock(BaseFlaskTest):
         self.app.register_blueprint(resource_block.resource_block)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
+                'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             self.server_hardware = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview'
-            '/ServerProfileTemplate.json'
+                'oneview_redfish_toolkit/mockups/oneview'
+                '/ServerProfileTemplate.json'
         ) as f:
             self.server_profile_template = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/Drive.json'
+                'oneview_redfish_toolkit/mockups/oneview/Drive.json'
         ) as f:
             self.drive = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/DriveIndexTrees.json'
+                'oneview_redfish_toolkit/mockups/oneview/DriveIndexTrees.json'
         ) as f:
             self.drive_index_tree = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/'
-            'DriveComposedIndexTrees.json'
+                'oneview_redfish_toolkit/mockups/oneview/'
+                'DriveComposedIndexTrees.json'
         ) as f:
             self.drive_composed_index_tree = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview'
-            '/ServerProfileTemplates.json'
+                'oneview_redfish_toolkit/mockups/oneview'
+                '/ServerProfileTemplates.json'
         ) as f:
             self.server_profile_templates = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosures.json'
+                'oneview_redfish_toolkit/mockups/oneview/LogicalEnclosures.json'
         ) as f:
             self.log_encl_list = json.load(f)
 
@@ -115,13 +117,13 @@ class TestResourceBlock(BaseFlaskTest):
 
     def test_get_storage_resource_block(self):
         with open(
-            'oneview_redfish_toolkit/mockups/redfish/StorageResourceBlock.json'
+                'oneview_redfish_toolkit/mockups/redfish/StorageResourceBlock.json'
         ) as f:
             expected_resource_block = json.load(f)
 
-        self.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get_by_id.side_effect = \
             self.resource_not_found
-        self.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get_by_id.side_effect = \
             self.resource_not_found
         self.oneview_client.index_resources.get.return_value = self.drive
         self.oneview_client.connection.get.side_effect = [
@@ -129,7 +131,7 @@ class TestResourceBlock(BaseFlaskTest):
         ]
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        self.oneview_client.\
+        self.oneview_client. \
             logical_enclosures.get_all.return_value = self.log_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
@@ -151,20 +153,20 @@ class TestResourceBlock(BaseFlaskTest):
                 call("/rest/index/trees/rest/drives/"
                      "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e?parentDepth=3"),
             ])
-        self.oneview_client.\
+        self.oneview_client. \
             server_profile_templates.get_all.assert_called_with()
         self.oneview_client.logical_enclosures.get_all.assert_called_with()
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
     def test_get_storage_resource_block_cached(self):
         with open(
-            'oneview_redfish_toolkit/mockups/redfish/StorageResourceBlock.json'
+                'oneview_redfish_toolkit/mockups/redfish/StorageResourceBlock.json'
         ) as f:
             expected_resource_block = json.load(f)
 
-        self.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get_by_id.side_effect = \
             self.resource_not_found
-        self.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get_by_id.side_effect = \
             self.resource_not_found
         self.oneview_client.index_resources.get.return_value = self.drive
         self.oneview_client.connection.get.side_effect = [
@@ -172,12 +174,12 @@ class TestResourceBlock(BaseFlaskTest):
         ]
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
-        self.oneview_client.\
+        self.oneview_client. \
             logical_enclosures.get_all.return_value = self.log_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
-        uri = "/redfish/v1/CompositionService/ResourceBlocks/"\
+        uri = "/redfish/v1/CompositionService/ResourceBlocks/" \
               "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e"
         uuid = uri.split('/')[-1]
 
@@ -202,7 +204,8 @@ class TestResourceBlock(BaseFlaskTest):
             [call(uri),
              call(uri)]
         )
-        self.oneview_client.server_hardware.get.assert_called_once_with(uuid)
+        self.oneview_client.server_hardware.get_by_id.assert_called_once_with(
+            uuid)
         self.oneview_client.index_resources.get.assert_has_calls(
             [call('/rest/drives/' + uuid),
              call('/rest/drives/' + uuid)]
@@ -212,17 +215,17 @@ class TestResourceBlock(BaseFlaskTest):
 
     def test_get_storage_resource_block_when_drive_is_composed(self):
         with open(
-            'oneview_redfish_toolkit/mockups/redfish/'
-            'StorageResourceBlockComposed.json'
+                'oneview_redfish_toolkit/mockups/redfish/'
+                'StorageResourceBlockComposed.json'
         ) as f:
             expected_resource_block = json.load(f)
 
         drive_composed = copy.copy(self.drive)
         drive_composed["attributes"]["available"] = "no"
 
-        self.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get_by_id.side_effect = \
             self.resource_not_found
-        self.oneview_client.server_profile_templates.get.side_effect = \
+        self.oneview_client.server_profile_templates.get_by_id.side_effect = \
             self.resource_not_found
         self.oneview_client.index_resources.get.return_value = drive_composed
         self.oneview_client.connection.get.side_effect = [
@@ -252,13 +255,13 @@ class TestResourceBlock(BaseFlaskTest):
                 call("/rest/index/trees/rest/drives/"
                      "c4f0392d-fae9-4c2e-a2e6-b22e6bb7533e?parentDepth=3"),
             ])
-        self.oneview_client.\
+        self.oneview_client. \
             server_profile_templates.get_all.assert_called_with()
         self.oneview_client.logical_enclosures.get_all.assert_called_with()
         self.oneview_client.drive_enclosures.get_all.assert_called_with()
 
     def test_get_server_hardware_resource_block(self):
-        self.oneview_client.server_hardware.get.return_value = \
+        self.oneview_client.server_hardware.get_by_id.return_value = \
             self.server_hardware
         self.oneview_client.server_profile_templates.get_all.return_value = \
             self.server_profile_templates
@@ -287,12 +290,12 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
-        for oneview_state, redfish_state in status_mapping.\
+        for oneview_state, redfish_state in status_mapping. \
                 SERVER_HARDWARE_STATE_TO_REDFISH_STATE.items():
 
             server_hardware["state"] = oneview_state
             expected_rb["Status"]["State"] = redfish_state
-            expected_composition_state = status_mapping.\
+            expected_composition_state = status_mapping. \
                 COMPOSITION_STATE.get(oneview_state)
 
             if not expected_composition_state:
@@ -302,7 +305,7 @@ class TestResourceBlock(BaseFlaskTest):
             expected_rb["CompositionStatus"]["CompositionState"] = \
                 expected_composition_state
 
-            self.oneview_client.server_hardware.get.return_value = \
+            self.oneview_client.server_hardware.get_by_id.return_value = \
                 server_hardware
 
             response = self.client.get(
@@ -327,23 +330,23 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
-        for oneview_state, redfish_state in status_mapping.\
+        for oneview_state, redfish_state in status_mapping. \
                 SERVER_HARDWARE_STATE_TO_REDFISH_STATE.items():
 
             server_hardware["state"] = oneview_state
             expected_rb["Status"]["State"] = redfish_state
 
-            expected_composition_state = status_mapping.\
+            expected_composition_state = status_mapping. \
                 COMPOSITION_STATE.get(oneview_state)
 
             if not expected_composition_state:
-                expected_composition_state = status_mapping.\
+                expected_composition_state = status_mapping. \
                     COMPOSITION_STATE["NoProfileApplied"]
 
             expected_rb["CompositionStatus"]["CompositionState"] = \
                 expected_composition_state
 
-            self.oneview_client.server_hardware.get.return_value = \
+            self.oneview_client.server_hardware.get_by_id.return_value = \
                 server_hardware
 
             response = self.client.get(
@@ -372,7 +375,7 @@ class TestResourceBlock(BaseFlaskTest):
             server_hardware["status"] = oneview_status
             expected_cs["Status"]["Health"] = redfish_status
 
-            self.oneview_client.server_hardware.get.return_value = \
+            self.oneview_client.server_hardware.get_by_id.return_value = \
                 server_hardware
 
             response = self.client.get(
@@ -385,12 +388,12 @@ class TestResourceBlock(BaseFlaskTest):
             self.assertEqual("application/json", response.mimetype)
             self.assertEqualMockup(expected_cs, result)
 
-        self.oneview_client.server_hardware.get.assert_called_with(
+        self.oneview_client.server_hardware.get_by_id.assert_called_with(
             self.server_hardware["uuid"])
 
         encl_group_uri = self.server_hardware["serverGroupUri"]
         sh_type_uri = self.server_hardware["serverHardwareTypeUri"]
-        self.oneview_client.\
+        self.oneview_client. \
             server_profile_templates.get_all.assert_called_with(
                 filter=["enclosureGroupUri='" + encl_group_uri + "'",
                         "serverHardwareTypeUri='" + sh_type_uri + "'"]
@@ -400,14 +403,14 @@ class TestResourceBlock(BaseFlaskTest):
 
     def test_get_spt_resource_block(self):
         with open(
-            'oneview_redfish_toolkit/mockups/redfish'
-            '/ServerProfileTemplateResourceBlock.json'
+                'oneview_redfish_toolkit/mockups/redfish'
+                '/ServerProfileTemplateResourceBlock.json'
         ) as f:
             expected_resource_block = json.load(f)
 
-        self.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get_by_id.side_effect = \
             self.resource_not_found
-        self.oneview_client.server_profile_templates.get.return_value = \
+        self.oneview_client.server_profile_templates.get_by_id.return_value = \
             self.server_profile_template
         self.oneview_client.logical_enclosures.get_all.return_value = \
             self.log_encl_list
@@ -429,21 +432,21 @@ class TestResourceBlock(BaseFlaskTest):
 
     def test_get_spt_resource_block_cached(self):
         with open(
-            'oneview_redfish_toolkit/mockups/redfish'
-            '/ServerProfileTemplateResourceBlock.json'
+                'oneview_redfish_toolkit/mockups/redfish'
+                '/ServerProfileTemplateResourceBlock.json'
         ) as f:
             expected_resource_block = json.load(f)
 
-        self.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get_by_id.side_effect = \
             self.resource_not_found
-        self.oneview_client.server_profile_templates.get.return_value = \
+        self.oneview_client.server_profile_templates.get_by_id.return_value = \
             self.server_profile_template
         self.oneview_client.logical_enclosures.get_all.return_value = \
             self.log_encl_list
         self.oneview_client.drive_enclosures.get_all.return_value = \
             self.drive_enclosure_list
 
-        uri = "/redfish/v1/CompositionService/ResourceBlocks"\
+        uri = "/redfish/v1/CompositionService/ResourceBlocks" \
               "/1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
         uuid = uri.split('/')[-1]
 
@@ -464,8 +467,9 @@ class TestResourceBlock(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(expected_resource_block, result)
 
-        self.oneview_client.server_hardware.get.assert_called_once_with(uuid)
-        self.oneview_client.server_profile_templates.get.assert_has_calls(
+        self.oneview_client.server_hardware.get_by_id.assert_called_once_with(
+            uuid)
+        self.oneview_client.server_profile_templates.get_by_id.assert_has_calls(
             [call(uuid),
              call(uuid)]
         )
@@ -473,14 +477,14 @@ class TestResourceBlock(BaseFlaskTest):
 
     def test_get_spt_resource_when_template_has_not_valid_controller(self):
         with open(
-            'oneview_redfish_toolkit/mockups/redfish'
-            '/SPTResourceBlockWithOnlyOneZone.json'
+                'oneview_redfish_toolkit/mockups/redfish'
+                '/SPTResourceBlockWithOnlyOneZone.json'
         ) as f:
             expected_resource_block = json.load(f)
 
-        self.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get_by_id.side_effect = \
             self.resource_not_found
-        self.oneview_client.server_profile_templates.get.return_value = \
+        self.oneview_client.server_profile_templates.get_by_id.return_value = \
             self.server_profile_templates[1]
         self.oneview_client.logical_enclosures.get_all.return_value = \
             self.log_encl_list
@@ -499,7 +503,7 @@ class TestResourceBlock(BaseFlaskTest):
         self.oneview_client.logical_enclosures.get.assert_not_called()
 
     def test_get_computer_system_not_found(self):
-        self.oneview_client.server_hardware.get.side_effect = \
+        self.oneview_client.server_hardware.get_by_id.side_effect = \
             HPOneViewException({"errorCode": "RESOURCE_NOT_FOUND"})
 
         response = self.client.get(
@@ -513,8 +517,8 @@ class TestResourceBlock(BaseFlaskTest):
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
     def test_get_computer_system(self, get_map_appliances, get_map_resources):
         with open(
-            'oneview_redfish_toolkit/mockups/redfish'
-            '/ComputerSystemPhysicalType.json'
+                'oneview_redfish_toolkit/mockups/redfish'
+                '/ComputerSystemPhysicalType.json'
         ) as f:
             expected_computer_system = json.load(f)
 
@@ -532,9 +536,11 @@ class TestResourceBlock(BaseFlaskTest):
         get_map_resources.return_value = OrderedDict({
             "30303437-3034-4D32-3230-313133364752": "10.0.0.1",
         })
+        server_hardware = copy.deepcopy(self.server_hardware)
+        serverhw_obj = ServerHardware(self.oneview_client, server_hardware)
         get_map_appliances.return_value = map_appliance
-        self.oneview_client.server_hardware.get.return_value = \
-            self.server_hardware
+        self.oneview_client.server_hardware.get_by_id.return_value = \
+            serverhw_obj
 
         response = self.client.get(
             "/redfish/v1/CompositionService/ResourceBlocks"
@@ -548,18 +554,20 @@ class TestResourceBlock(BaseFlaskTest):
 
     def test_get_ethernet_interface(self):
         with open(
-            'oneview_redfish_toolkit/mockups/redfish'
-            '/ResourceBlockEthernetInterface.json'
+                'oneview_redfish_toolkit/mockups/redfish'
+                '/ResourceBlockEthernetInterface.json'
         ) as f:
             expected_ethernet_interface = json.load(f)
 
         with open(
-            'oneview_redfish_toolkit/mockups/oneview/EthernetNetwork.json'
+                'oneview_redfish_toolkit/mockups/oneview/EthernetNetwork.json'
         ) as f:
             ethernet_network = json.load(f)
+        spt_obj = ServerProfileTemplate(
+            self.oneview_client, self.server_profile_template)
 
-        self.oneview_client.server_profile_templates.get.return_value = \
-            self.server_profile_template
+        self.oneview_client.server_profile_templates.get_by_id.return_value = \
+            spt_obj
         self.oneview_client.index_resources.get.return_value = \
             ethernet_network
 
@@ -599,8 +607,8 @@ class TestResourceBlock(BaseFlaskTest):
     def test_get_external_storage_resource_block(self,
                                                  mock_get_oneview_resource):
         with open(
-            'oneview_redfish_toolkit/mockups/redfish'
-            '/ExternalStorageResourceBlock.json'
+                'oneview_redfish_toolkit/mockups/redfish'
+                '/ExternalStorageResourceBlock.json'
         ) as f:
             expected_resource_block = json.load(f)
 

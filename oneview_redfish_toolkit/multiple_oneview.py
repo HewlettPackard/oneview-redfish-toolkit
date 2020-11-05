@@ -107,6 +107,7 @@ def query_ov_client_by_resource(resource_id, resource, function,
         single.set_single_oneview_ip(ip_oneview)
 
     ov_client = client_session.get_oneview_client(ip_oneview)
+
     try:
         resp = execute_query_ov_client(ov_client, resource, function,
                                        *args, **kwargs)
@@ -259,3 +260,9 @@ def execute_query_ov_client(ov_client, resource, function, *args, **kwargs):
                 host, resource, function, elapsed_time)
 
     return ov_function(*args, **kwargs)
+
+
+def execute_query_function(resource, function, *args, **kwargs):
+    ov_function = getattr(resource, function)
+    result = ov_function(*args, **kwargs)
+    return result

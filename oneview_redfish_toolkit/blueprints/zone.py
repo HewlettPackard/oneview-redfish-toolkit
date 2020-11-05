@@ -46,13 +46,13 @@ def get_zone(zone_uuid):
     template_id, enclosure_id = ZoneService.\
         split_zone_id_to_spt_uuid_and_enclosure_id(zone_uuid)
 
-    profile_template = g.oneview_client.server_profile_templates.get(
-        template_id)
+    profile_template = g.oneview_client.server_profile_templates.get_by_id(
+        template_id).data
     sh_type_uri = profile_template['serverHardwareTypeUri']
     enclosure_name = None
 
     if enclosure_id:
-        enclosure = g.oneview_client.enclosures.get(enclosure_id)
+        enclosure = g.oneview_client.enclosures.get_by_id(enclosure_id).data
         enclosure_name = enclosure["name"]
         drives = _get_drives(enclosure)
         sh_filter = [

@@ -20,6 +20,7 @@ import json
 # 3rd party libs
 from flask_api import status
 from hpOneView.exceptions import HPOneViewException
+from hpOneView.resources.servers.server_profiles import ServerProfiles
 
 # Module libs
 from oneview_redfish_toolkit.blueprints import ethernet_interface
@@ -56,8 +57,9 @@ class TestEthernetInterface(BaseFlaskTest):
         ) as f:
             network = json.load(f)
 
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
+            server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.index_resources.get.return_value = network
 
         response = self.client.get(
@@ -70,7 +72,7 @@ class TestEthernetInterface(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(ethernet_interface_mockup, result)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
 
         # if verifies the URI of connection from ServerProfile.json mockup
@@ -92,8 +94,9 @@ class TestEthernetInterface(BaseFlaskTest):
         ) as f:
             ethernet_interface_mockup = json.load(f)
 
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
+            server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.index_resources.get.return_value = network_set
 
         response = self.client.get(
@@ -106,7 +109,7 @@ class TestEthernetInterface(BaseFlaskTest):
         self.assertEqual(status.HTTP_200_OK, response.status_code)
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(ethernet_interface_mockup, result)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
 
         # if verifies the URI of connection from ServerProfile.json mockup
@@ -116,8 +119,9 @@ class TestEthernetInterface(BaseFlaskTest):
     def test_get_ethernet_interface_when_id_is_not_found(self):
         """Tests request a not found EthernetInterface"""
 
+        profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.\
-            server_profiles.get.return_value = self.server_profile
+            server_profiles.get.return_value = profile_obj
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -126,7 +130,7 @@ class TestEthernetInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
         self.oneview_client.index_resources.get.assert_not_called()
 
@@ -144,7 +148,7 @@ class TestEthernetInterface(BaseFlaskTest):
             'errorCode': 'RESOURCE_NOT_FOUND'
         })
 
-        self.oneview_client.server_profiles.get.side_effect = e
+        self.oneview_client.server_profiles.get_by_id.side_effect = e
 
         response = self.client.get(
             "/redfish/v1/Systems/b425802b-a6a5-4941-8885-aab68dfa2ee2/"
@@ -153,6 +157,6 @@ class TestEthernetInterface(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.oneview_client.server_profiles.get.assert_called_with(
+        self.oneview_client.server_profiles.get_by_id.assert_called_with(
             self.server_profile["uuid"])
         self.oneview_client.index_resources.get.assert_not_called()

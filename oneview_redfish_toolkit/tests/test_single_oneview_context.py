@@ -88,12 +88,12 @@ class TestSingleOneViewContext(BaseFlaskTest):
         list_ips = ['10.0.0.1', '10.0.0.2', '10.0.0.3']
         get_oneview_multiple_ips.return_value = list_ips
 
-        self.oneview_client.server_hardware.get.side_effect = [
+        self.oneview_client.server_hardware.get_by_id.side_effect = [
             self.resource_not_found,
             self.resource_not_found,
             self.resource_not_found,
             ]
-        self.oneview_client.server_profile_templates.get.side_effect = [
+        self.oneview_client.server_profile_templates.get_by_id.side_effect = [
             self.resource_not_found,
             self.resource_not_found,
             self.resource_not_found,
@@ -122,12 +122,12 @@ class TestSingleOneViewContext(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(self.expected_resource_block, result)
 
-        self.oneview_client.server_hardware.get.assert_has_calls([
+        self.oneview_client.server_hardware.get_by_id.assert_has_calls([
             call(uuid),
             call(uuid),
             call(uuid)
             ])
-        self.oneview_client.server_profile_templates.get.assert_has_calls([
+        self.oneview_client.server_profile_templates.get_by_id.assert_has_calls([
             call(uuid),
             call(uuid),
             call(uuid)
@@ -170,12 +170,12 @@ class TestSingleOneViewContext(BaseFlaskTest):
 
         is_single_ov_context.return_value = False
 
-        self.oneview_client.server_hardware.get.side_effect = [
+        self.oneview_client.server_hardware.get_by_id.side_effect = [
             self.resource_not_found,
             self.resource_not_found,
             self.resource_not_found,
             ]
-        self.oneview_client.server_profile_templates.get.side_effect = [
+        self.oneview_client.server_profile_templates.get_by_id.side_effect = [
             self.resource_not_found,
             self.resource_not_found,
             self.resource_not_found,
@@ -217,12 +217,12 @@ class TestSingleOneViewContext(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
         self.assertEqualMockup(self.expected_resource_block, result)
 
-        self.oneview_client.server_hardware.get.assert_has_calls([
+        self.oneview_client.server_hardware.get_by_id.assert_has_calls([
             call(uuid),
             call(uuid),
             call(uuid)
             ])
-        self.oneview_client.server_profile_templates.get.assert_has_calls([
+        self.oneview_client.server_profile_templates.get_by_id.assert_has_calls([
             call(uuid),
             call(uuid),
             call(uuid)

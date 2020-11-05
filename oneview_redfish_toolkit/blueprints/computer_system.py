@@ -29,6 +29,7 @@ from flask_api import status
 # own libs
 from hpOneView.exceptions import HPOneViewException
 from hpOneView.exceptions import HPOneViewTaskError
+
 from hpOneView.resources.task_monitor import TASK_ERROR_STATES
 from jsonschema import ValidationError
 
@@ -70,9 +71,9 @@ def get_computer_system(uuid):
         computer_system_resource = CapabilitiesObject(resource)
     elif category == 'server-profiles':
         server_hardware = g.oneview_client.server_hardware\
-            .get(resource["serverHardwareUri"])
+            .get_by_uri(resource["serverHardwareUri"]).data
         server_hardware_type = g.oneview_client.server_hardware_types\
-            .get(resource['serverHardwareTypeUri'])
+            .get_by_uri(resource['serverHardwareTypeUri']).data
 
         computer_system_service = ComputerSystemService(g.oneview_client)
         drives = _get_drives_from_sp(resource)
@@ -129,8 +130,9 @@ def change_power_state(uuid):
               "Invalid JSON key: {}".format(invalid_key))
 
     # Gets ServerHardware for given UUID
-    profile = g.oneview_client.server_profiles.get(uuid)
-    sh = g.oneview_client.server_hardware.get(profile["serverHardwareUri"])
+    profile = g.oneview_client.server_profiles.get_by_id(uuid).data
+    sh = g.oneview_client.server_hardware.get_by_uri(
+        profile["serverHardwareUri"]).data
 
     oneview_power_configuration = \
         OneViewPowerOption.get_oneview_power_configuration(
@@ -154,8 +156,11 @@ def remove_computer_system(uuid):
         Args:
             uuid: The System ID.
     """
+    try:
+        profile = g.oneview_client.server_profiles.get_by_id(uuid).data
+    except HPOneViewException as e:
+        abort(status.HTTP_404_NOT_FOUND, e.msg)
 
-    profile = g.oneview_client.server_profiles.get(uuid)
     sh_uuid = profile['serverHardwareUri']
     if sh_uuid:
         service = ComputerSystemService(g.oneview_client)
@@ -196,6 +201,7 @@ def create_composed_system():
               "The request content should be a valid JSON")
 
     body = request.get_json()
+
     result_location_uri = None
 
     try:
@@ -226,7 +232,7 @@ def create_composed_system():
         # It can contain zero or more Storage Block
         storage_blocks = _get_storage_resource_blocks(block_ids)
 
-        spt = g.oneview_client.server_profile_templates.get(spt_id)
+        spt = g.oneview_client.server_profile_templates.get_by_id(spt_id).data
 
         # Check for external storage block.
         external_storage_blocks = _get_external_storage_block(block_ids)
@@ -234,8 +240,8 @@ def create_composed_system():
             is_fibre_channel_nw = _get_fibre_channel_network(spt)
             if is_fibre_channel_nw:
                 for volume in external_storage_blocks:
-                    storage_pool = g.oneview_client.storage_pools.get(
-                        volume["storagePoolUri"])
+                    storage_pool = g.oneview_client.storage_pools.get_by_uri(
+                        volume["storagePoolUri"]).data
                     if storage_pool:
                         storage_system_uri = storage_pool["storageSystemUri"]
                         volume["storageSystemUri"] = storage_system_uri
@@ -295,19 +301,24 @@ def _get_oneview_resource(uuid):
     if cached_category:
         resource = getattr(g.oneview_client, cached_category.resource)
         function = getattr(resource, cached_category.function)
-
-        return function(uuid)
+        result = function(uuid)
+        if isinstance(result, dict):
+            return result
+        else:
+            return result.data
 
     categories = [
-        {"func": g.oneview_client.server_profiles.get, "param": uuid},
-        {"func": g.oneview_client.server_profile_templates.get, "param": uuid}
+        {"func": g.oneview_client.server_profiles.get_by_id, "param": uuid},
+        {"func": g.oneview_client.server_profile_templates.get_by_id, "param": uuid}
     ]
 
     for category in categories:
         try:
             resource = category["func"](category["param"])
+            if isinstance(resource, dict):
+                return resource
+            return resource.data
 
-            return resource
         except HPOneViewException as e:
             if e.oneview_response["errorCode"] in \
                     ['RESOURCE_NOT_FOUND', 'ProfileNotFoundException']:
@@ -321,12 +332,12 @@ def _get_oneview_resource(uuid):
 
 def _get_system_resource_blocks(ids):
     return _get_resource_block_data(
-        g.oneview_client.server_hardware.get, ids)
+        g.oneview_client.server_hardware.get_by_id, ids)
 
 
 def _get_network_resource_blocks(ids):
     return _get_resource_block_data(
-        g.oneview_client.server_profile_templates.get, ids)
+        g.oneview_client.server_profile_templates.get_by_id, ids)
 
 
 def _get_storage_resource_blocks(ids):
@@ -338,7 +349,7 @@ def _get_storage_resource_blocks(ids):
 
 def _get_external_storage_block(ids):
     return _get_resource_block_data(
-        g.oneview_client.volumes.get, ids)
+        g.oneview_client.volumes.get_by_id, ids)
 
 
 def _get_fibre_channel_network(spt):
@@ -356,8 +367,11 @@ def _get_resource_block_data(func, uuids):
     for uuid in uuids:
         try:
             resource = func(uuid)
+            if isinstance(resource, dict):
+                resources.append(resource)
+            else:
+                resources.append(resource.data)
 
-            resources.append(resource)
         except HPOneViewException as e:
             # With our current implementation, we do not getting
             # server_profile, but if we need get it in some moment,
