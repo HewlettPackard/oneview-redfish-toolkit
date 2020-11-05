@@ -92,7 +92,8 @@ def get_drive(profile_id, drive_id):
     except ValueError:
         abort(status.HTTP_400_BAD_REQUEST, "Drive id should be a integer")
 
-    server_profile = g.oneview_client.server_profiles.get_by_id(profile_id).data
+    server_profile = g.oneview_client.server_profiles.get_by_id(
+        profile_id).data
     sas_logical_jbods = _find_sas_logical_jbods_by(server_profile)
 
     logical_jbod = _get_logical_jbod(drive_id_int, logical_jbod,

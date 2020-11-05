@@ -58,7 +58,8 @@ class TestNetworkInterfaceCollection(BaseFlaskTest):
             network_interface_collection_mockup = json.load(f)
 
         profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.\
             server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.server_hardware.get_by_uri.return_value = \

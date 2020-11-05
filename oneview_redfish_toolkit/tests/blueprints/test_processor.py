@@ -58,7 +58,8 @@ class TestProcessor(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
 
     def test_get_processor_id_not_found(self):
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.server_hardware.get_by_id.return_value = \
             serverhw_obj
 
@@ -70,7 +71,8 @@ class TestProcessor(BaseFlaskTest):
         self.assertEqual("application/json", response.mimetype)
 
     def test_get_processor(self):
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.server_hardware.get_by_id.return_value = \
             serverhw_obj
 

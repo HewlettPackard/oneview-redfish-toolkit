@@ -63,7 +63,8 @@ class TestNetworkInterface(BaseFlaskTest):
         profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.server_profiles.get_by_id.return_value = \
             profile_obj
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.server_hardware.get_by_uri.return_value = \
             serverhw_obj
 
@@ -85,7 +86,8 @@ class TestNetworkInterface(BaseFlaskTest):
     def test_get_network_interface_invalid_id(self):
         """Tests NetworkInterfaceCollection"""
         profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.\
             server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.server_hardware.get_by_uri.return_value = \

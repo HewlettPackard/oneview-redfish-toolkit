@@ -131,7 +131,8 @@ def change_power_state(uuid):
 
     # Gets ServerHardware for given UUID
     profile = g.oneview_client.server_profiles.get_by_id(uuid).data
-    sh = g.oneview_client.server_hardware.get_by_uri(profile["serverHardwareUri"]).data
+    sh = g.oneview_client.server_hardware.get_by_uri(
+        profile["serverHardwareUri"]).data
 
     oneview_power_configuration = \
         OneViewPowerOption.get_oneview_power_configuration(
@@ -156,7 +157,7 @@ def remove_computer_system(uuid):
             uuid: The System ID.
     """
     try:
-            profile = g.oneview_client.server_profiles.get_by_id(uuid).data
+        profile = g.oneview_client.server_profiles.get_by_id(uuid).data
     except HPOneViewException as e:
         abort(status.HTTP_404_NOT_FOUND, e.msg)
 
@@ -248,9 +249,6 @@ def create_composed_system():
                 raise ValidationError(
                     "Should have a Fibre Channel Network Connection")
 
-
-
-
         server_profile = ComputerSystem.build_server_profile(
             body["Name"],
             body.get("Description"),
@@ -259,7 +257,6 @@ def create_composed_system():
             network_blocks,
             storage_blocks,
             external_storage_blocks)
-
 
         service.power_off_server_hardware(system_block["uuid"],
                                           on_compose=True)
@@ -301,7 +298,6 @@ def _get_oneview_resource(uuid):
     """Gets a Server hardware or Server profile templates"""
     cached_category = category_resource.get_category_by_resource_id(uuid)
 
-
     if cached_category:
         resource = getattr(g.oneview_client, cached_category.resource)
         function = getattr(resource, cached_category.function)
@@ -310,8 +306,6 @@ def _get_oneview_resource(uuid):
             return result
         else:
             return result.data
-        
-
 
     categories = [
         {"func": g.oneview_client.server_profiles.get_by_id, "param": uuid},
@@ -324,7 +318,6 @@ def _get_oneview_resource(uuid):
             if isinstance(resource, dict):
                 return resource
             return resource.data
-
 
         except HPOneViewException as e:
             if e.oneview_response["errorCode"] in \
@@ -387,7 +380,6 @@ def _get_resource_block_data(func, uuids):
                 pass
             else:
                 raise  # Raise any unexpected errors
-
 
     return resources
 

@@ -32,8 +32,6 @@ from hpOneView.resources.storage.volumes import Volumes
 from hpOneView.resources.activity.tasks import Tasks
 
 
-
-
 # Module libs
 from oneview_redfish_toolkit.api.errors import OneViewRedfishException
 from oneview_redfish_toolkit.blueprints import computer_system
@@ -61,13 +59,11 @@ class TestCreateComputerSystem(BaseFlaskTest):
             self.server_profile = json.load(f)
             #profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
 
-
         with open(
                 'oneview_redfish_toolkit/mockups/oneview/ServerHardware.json'
         ) as f:
             self.server_hardware = json.load(f)
             self.server_hardware['serverProfileUri'] = None
-
 
         with open(
                 'oneview_redfish_toolkit/mockups/redfish/'
@@ -113,7 +109,6 @@ class TestCreateComputerSystem(BaseFlaskTest):
         ) as f:
             volumes = json.load(f)
             self.volume = volumes[0]
-
 
         self.sh_id = "30303437-3034-4D32-3230-313133364752"
         self.spt_id = "1f0ca9ef-7f81-45e3-9d64-341b46cf87e0"
@@ -190,11 +185,10 @@ class TestCreateComputerSystem(BaseFlaskTest):
             ]
         }
 
-
-    
     def run_common_mock_to_server_hardware(self):
         ov_client = self.oneview_client
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         ov_client.server_hardware.get_by_id.side_effect = [
             serverhw_obj,
             self.not_found_error,
@@ -207,7 +201,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
         #power_state.return_value = None
 
     def run_common_mock_to_server_profile_template(self):
-        template_obj = ServerProfileTemplate(self.oneview_client, self.server_profile_template)
+        template_obj = ServerProfileTemplate(
+            self.oneview_client, self.server_profile_template)
         self.oneview_client.server_profile_templates.get_by_id.side_effect = [
             self.not_found_error,
             template_obj,
@@ -291,8 +286,10 @@ class TestCreateComputerSystem(BaseFlaskTest):
         # The task will be requested 3 times in this case,
         # simulating the checking of resource uri
 
-        task_without_resource_uri_obj = Tasks(self.oneview_client, task_without_resource_uri)
-        task_with_resource_uri_obj = Tasks(self.oneview_client, task_with_resource_uri)
+        task_without_resource_uri_obj = Tasks(
+            self.oneview_client, task_without_resource_uri)
+        task_with_resource_uri_obj = Tasks(
+            self.oneview_client, task_with_resource_uri)
 
         self.oneview_client.tasks.get_by_uri.side_effect = [
             task_without_resource_uri_obj,
@@ -387,7 +384,7 @@ class TestCreateComputerSystem(BaseFlaskTest):
         storage_pool_obj = StoragePools(self.oneview_client, {
             "storageSystemUri": "/rest/storage-systems/TXQ1000307"
         }
-)
+            )
         self.oneview_client.storage_pools.get_by_uri.return_value = storage_pool_obj
         config_mock.get_composition_settings.return_value = {
             'PowerOffServerOnCompose': ''
@@ -497,8 +494,10 @@ class TestCreateComputerSystem(BaseFlaskTest):
 
         # The task will be requested 3 times in this case,
         # simulating the checking of resource uri
-        task_without_resource_uri_obj = Tasks(self.oneview_client, task_without_resource_uri )
-        task_with_resource_uri_obj = Tasks(self.oneview_client, task_with_resource_uri)
+        task_without_resource_uri_obj = Tasks(
+            self.oneview_client, task_without_resource_uri)
+        task_with_resource_uri_obj = Tasks(
+            self.oneview_client, task_with_resource_uri)
         self.oneview_client.tasks.get_by_uri.side_effect = [
             task_without_resource_uri_obj,
             task_without_resource_uri_obj,
@@ -710,7 +709,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
             },
             "uri": "/rest/tasks/123456"
         }
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.server_hardware.get_by_id.side_effect = [
             serverhw_obj,
             self.not_found_error,
@@ -783,7 +783,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
             },
             "uri": "/rest/tasks/123456"
         }
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.server_hardware.get_by_id.side_effect = [
             serverhw_obj,
             self.not_found_error,
@@ -798,7 +799,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
         template_without_controller = copy.deepcopy(
             self.server_profile_template)
         template_without_controller["localStorage"]["controllers"] = []
-        template_obj = ServerProfileTemplate(self.oneview_client, template_without_controller)
+        template_obj = ServerProfileTemplate(
+            self.oneview_client, template_without_controller)
         self.oneview_client.server_profile_templates.get_by_id.side_effect = [
             self.not_found_error,
             template_obj,
@@ -849,7 +851,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
         self.assertEqual(status.HTTP_500_INTERNAL_SERVER_ERROR,
                          response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.oneview_client.server_hardware.get_by_id.assert_called_with(self.sh_id)
+        self.oneview_client.server_hardware.get_by_id.assert_called_with(
+            self.sh_id)
         self.oneview_client.server_profile_templates.get_by_id.assert_not_called()
         self.oneview_client.index_resources.get.assert_not_called()
 
@@ -956,7 +959,8 @@ class TestCreateComputerSystem(BaseFlaskTest):
         template_without_controller = copy.deepcopy(
             self.server_profile_template)
         template_without_controller["localStorage"]["controllers"] = []
-        spt_without_controller_obj = ServerProfileTemplate(self.oneview_client, template_without_controller)
+        spt_without_controller_obj = ServerProfileTemplate(
+            self.oneview_client, template_without_controller)
         self.oneview_client.server_profile_templates.get_by_id.side_effect = [
             self.not_found_error,
             spt_without_controller_obj,

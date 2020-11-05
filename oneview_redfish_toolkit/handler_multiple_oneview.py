@@ -153,7 +153,6 @@ class MultipleOneViewResourceRetriever(object):
         self.multiple_ov_resource_name = resource_name
         self.multiple_ov_function_name = function_name
 
-
     def retrieve(self, *args, **kwargs):
         resource = self.multiple_ov_resource_name
         function = self.multiple_ov_function_name

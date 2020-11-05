@@ -30,7 +30,6 @@ from hpOneView.resources.servers.server_profile_templates import ServerProfileTe
 from hpOneView.resources.servers.server_hardware_types import ServerHardwareTypes
 
 
-
 from unittest.mock import call
 
 # Module libs
@@ -149,7 +148,7 @@ class TestComputerSystem(BaseFlaskTest):
         profile_obj = ServerProfiles(self.oneview_client, {
             "category": "server-profiles",
             "serverHardwareUri": "notFoundUri"
-        }  )
+        })
 
         self.oneview_client.server_profiles.get_by_id.return_value = \
             profile_obj
@@ -174,7 +173,6 @@ class TestComputerSystem(BaseFlaskTest):
             "serverHardwareTypeUri": "notFoundURI"
         })
 
-
         self.oneview_client.server_profiles.get_by_id.return_value = \
             profile_obj
         self.oneview_client.server_hardware.get_by_uri.return_value = \
@@ -188,7 +186,8 @@ class TestComputerSystem(BaseFlaskTest):
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
-        self.oneview_client.server_hardware.get_by_uri.assert_called_with("validURI")
+        self.oneview_client.server_hardware.get_by_uri.assert_called_with(
+            "validURI")
         self.oneview_client.server_hardware_types.get_by_uri\
             .assert_called_with("notFoundURI")
 
@@ -217,9 +216,9 @@ class TestComputerSystem(BaseFlaskTest):
         """Tests ComputerSystem with ServerHardwareTypes exception"""
 
         profile_obj = ServerProfiles(self.oneview_client, {
-                'serverHardwareTypeUri': 'invalidUri',
-                'serverHardwareUri': 'validUri',
-                'category': 'server-profiles'
+            'serverHardwareTypeUri': 'invalidUri',
+            'serverHardwareUri': 'validUri',
+            'category': 'server-profiles'
             })
         self.oneview_client.server_profiles.get_by_id.return_value = \
             profile_obj
@@ -295,9 +294,12 @@ class TestComputerSystem(BaseFlaskTest):
         })
 
         profile_obj = ServerProfiles(self.oneview_client, server_profile)
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
-        template_obj = ServerProfileTemplate(self.oneview_client, server_profile_template)
-        server_hardware_type_obj = ServerHardwareTypes(self.oneview_client, self.server_hardware_types )
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
+        template_obj = ServerProfileTemplate(
+            self.oneview_client, server_profile_template)
+        server_hardware_type_obj = ServerHardwareTypes(
+            self.oneview_client, self.server_hardware_types)
         get_map_appliances.return_value = self.map_appliance
         self.oneview_client.server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.server_hardware.get_by_uri.return_value = \
@@ -454,7 +456,8 @@ class TestComputerSystem(BaseFlaskTest):
                 - PushPowerButton
         """
         profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         power_state.return_value = {"status": "OK"}
         self.oneview_client.\
             server_profiles.get_by_id.return_value = profile_obj
@@ -492,7 +495,7 @@ class TestComputerSystem(BaseFlaskTest):
              call("30303437-3034-4D32-3230-313130304752")]
         )
         serverhw_obj = ServerHardware(self.oneview_client, {
-                    'uri': '/rest/server-hardware/30303437-3034-4D32-3230-313130304752'})
+            'uri': '/rest/server-hardware/30303437-3034-4D32-3230-313130304752'})
         self.oneview_client.server_hardware.get_by_uri = serverhw_obj
 
         ServerHardware.update_power_state \
@@ -504,7 +507,8 @@ class TestComputerSystem(BaseFlaskTest):
     def test_change_power_state_invalid_value(self):
         """Tests change SH power state with invalid power value"""
         profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
 
         self.oneview_client.\
             server_profiles.get_by_id.return_value = profile_obj
@@ -566,7 +570,8 @@ class TestComputerSystem(BaseFlaskTest):
     def test_change_power_state_unable_reset(self, power_state):
         """Tests change SH power state with SH unable to reset"""
         profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.\
             server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.server_hardware.get_by_id.return_value = \
@@ -630,7 +635,8 @@ class TestComputerSystem(BaseFlaskTest):
 
         self.oneview_client.server_profiles.get_by_id.return_value = profile_obj
         ServerProfiles.delete.return_value = sp_delete.return_value
-        serverhw_obj = ServerHardware(self.oneview_client, {"uri":"/rest/server-hardware/uuid_1"})
+        serverhw_obj = ServerHardware(
+            self.oneview_client, {"uri": "/rest/server-hardware/uuid_1"})
 
         response = self.client.delete(
             "/redfish/v1/Systems/"
@@ -700,17 +706,15 @@ class TestComputerSystem(BaseFlaskTest):
         power_state.assert_not_called()
         sp_delete.assert_not_called()
 
-
     def test_remove_computer_system_sp_not_found(self):
         """Tests remove ComputerSystem with ServerProfile not found"""
 
         self.oneview_client.server_profiles.get_by_id.side_effect = \
-             self.not_found_server_profile
+            self.not_found_server_profile
 
         response = self.client.delete(
             "/redfish/v1/Systems/"
             "e7f93fa2-0cb4-11e8-9060-e839359bc36b")
-
 
         self.assertEqual(status.HTTP_404_NOT_FOUND, response.status_code)
         self.assertEqual("application/json", response.mimetype)
@@ -785,7 +789,8 @@ class TestComputerSystem(BaseFlaskTest):
         server_profile = copy.deepcopy(self.server_profile)
         server_profile["localStorage"]["sasLogicalJBODs"].pop(0)
         server_hardware_type_obj = \
-            ServerHardwareTypes(self.oneview_client, self.server_hardware_types)
+            ServerHardwareTypes(self.oneview_client,
+                                self.server_hardware_types)
 
         for oneview_status, redfish_status in \
                 status_mapping.HEALTH_STATE.items():
@@ -843,8 +848,10 @@ class TestComputerSystem(BaseFlaskTest):
             })
             get_map_appliances.return_value = self.map_appliance
             profile_obj = ServerProfiles(self.oneview_client, server_profile)
-            serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
-            server_hardware_type_obj = ServerHardwareTypes(self.oneview_client, self.server_hardware_types)
+            serverhw_obj = ServerHardware(
+                self.oneview_client, self.server_hardware)
+            server_hardware_type_obj = ServerHardwareTypes(
+                self.oneview_client, self.server_hardware_types)
             self.oneview_client.server_profiles.get_by_id.return_value = \
                 profile_obj
             self.oneview_client.server_hardware.get_by_uri.return_value = \
@@ -896,9 +903,12 @@ class TestComputerSystem(BaseFlaskTest):
         })
         get_map_appliances.return_value = self.map_appliance
         profile_obj = ServerProfiles(self.oneview_client, server_profile)
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
-        template_obj = ServerProfileTemplate(self.oneview_client, server_profile_template)
-        server_hardware_type_obj = ServerHardwareTypes(self.oneview_client, self.server_hardware_types)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
+        template_obj = ServerProfileTemplate(
+            self.oneview_client, server_profile_template)
+        server_hardware_type_obj = ServerHardwareTypes(
+            self.oneview_client, self.server_hardware_types)
         self.oneview_client.server_profiles.get_by_id.return_value = profile_obj
         self.oneview_client.server_hardware.get_by_uri.return_value = \
             serverhw_obj

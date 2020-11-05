@@ -60,7 +60,8 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             network_device_function_collection_mockup = json.load(f)
 
         # Create mock response
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.server_hardware.get_by_id.return_value = \
             serverhw_obj
 
@@ -131,7 +132,8 @@ class TestNetworkDeviceFunctionCollection(BaseFlaskTest):
             network_device_function_collection_mockup = json.load(f)
 
         # Create mock response
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.server_hardware.get_by_id.return_value = \
             serverhw_obj
 

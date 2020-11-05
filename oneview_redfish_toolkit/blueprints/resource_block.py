@@ -164,8 +164,6 @@ def get_resource_block_ethernet_interface(uuid, id):
     server_profile_template = \
         g.oneview_client.server_profile_templates.get_by_id(uuid).data
 
-
-
     conn_settings = server_profile_template["connectionSettings"]
     connection = None
 
@@ -200,12 +198,10 @@ def _get_oneview_resource(uuid):
         resource = getattr(g.oneview_client, cached_categ.resource)
         function = getattr(resource, cached_categ.function)
         result = function(resource_uuid)
-        if isinstance(result, dict) :
+        if isinstance(result, dict):
             return result
         else:
             return result.data
-
-
 
     categories = [
         {"func": g.oneview_client.server_hardware.get_by_id, "param": uuid},

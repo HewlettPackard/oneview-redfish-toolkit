@@ -83,11 +83,13 @@ class TestVLanNetworkInterface(BaseFlaskTest):
         })
 
     def test_get_spt_vlan_network_interface(self):
-        spt_obj = ServerProfileTemplate(self.oneview_client,self.server_profile_template)
+        spt_obj = ServerProfileTemplate(
+            self.oneview_client, self.server_profile_template)
         self.oneview_client.server_profile_templates.get_by_id.return_value = \
             spt_obj
 
-        ethernet_obj = EthernetNetworks(self.oneview_client, self.ethernet_network_mockup)
+        ethernet_obj = EthernetNetworks(
+            self.oneview_client, self.ethernet_network_mockup)
         self.oneview_client.ethernet_networks.get_by_id.return_value = \
             ethernet_obj
 
@@ -108,7 +110,8 @@ class TestVLanNetworkInterface(BaseFlaskTest):
             self.expected_vlan_network_interface_spt["Id"])
 
     def test_get_spt_vlan_network_interface_not_found(self):
-        spt_obj = ServerProfileTemplate(self.oneview_client,self.server_profile_template)
+        spt_obj = ServerProfileTemplate(
+            self.oneview_client, self.server_profile_template)
         self.oneview_client.server_profile_templates.get_by_id.return_value = \
             spt_obj
 
@@ -143,7 +146,8 @@ class TestVLanNetworkInterface(BaseFlaskTest):
         self.oneview_client.ethernet_networks.get_by_id.assert_not_called()
 
     def test_get_spt_vlan_network_interface_connection_not_found(self):
-        spt_obj = ServerProfileTemplate(self.oneview_client,self.server_profile_template)
+        spt_obj = ServerProfileTemplate(
+            self.oneview_client, self.server_profile_template)
         self.oneview_client.server_profile_templates.get_by_id.return_value = \
             spt_obj
 
@@ -168,11 +172,13 @@ class TestVLanNetworkInterface(BaseFlaskTest):
         ) as f:
             expected_vlan_network_interface_collection = json.load(f)
 
-        spt_obj = ServerProfileTemplate(self.oneview_client,self.server_profile_template)
+        spt_obj = ServerProfileTemplate(
+            self.oneview_client, self.server_profile_template)
         self.oneview_client.server_profile_templates.get_by_id.return_value = \
             spt_obj
 
-        network_set_obj = NetworkSets(self.oneview_client, self.network_set_mockup)
+        network_set_obj = NetworkSets(
+            self.oneview_client, self.network_set_mockup)
         self.oneview_client.network_sets.get_by_uri.return_value = \
             network_set_obj
 
@@ -193,9 +199,10 @@ class TestVLanNetworkInterface(BaseFlaskTest):
             self.network_set_mockup["uri"])
 
     def test_get_spt_vlan_collection_not_found(self):
-        spt_obj = ServerProfileTemplate(self.oneview_client,self.server_profile_template)
+        spt_obj = ServerProfileTemplate(
+            self.oneview_client, self.server_profile_template)
         self.oneview_client.server_profile_templates.get_by_id.return_value = \
-             spt_obj            
+            spt_obj            
 
         self.oneview_client.network_sets.get_by_uri.side_effect = \
             self.resource_not_found
@@ -232,7 +239,8 @@ class TestVLanNetworkInterface(BaseFlaskTest):
         self.oneview_client.server_profiles.get_by_id.return_value = \
             profile_obj
 
-        ethernet_obj = EthernetNetworks(self.oneview_client, self.ethernet_network_mockup)
+        ethernet_obj = EthernetNetworks(
+            self.oneview_client, self.ethernet_network_mockup)
         self.oneview_client.ethernet_networks.get_by_id.return_value = \
             ethernet_obj
 
@@ -311,12 +319,13 @@ class TestVLanNetworkInterface(BaseFlaskTest):
             'redfish/VLanNetworkInterfaceCollectionSP.json'
         ) as f:
             expected_vlan_network_interface_collection = json.load(f)
-        
+
         profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
         self.oneview_client.server_profiles.get_by_id.return_value = \
             profile_obj
 
-        network_set_obj = NetworkSets(self.oneview_client, self.network_set_mockup)
+        network_set_obj = NetworkSets(
+            self.oneview_client, self.network_set_mockup)
         self.oneview_client.network_sets.get_by_uri.return_value = \
             network_set_obj
 

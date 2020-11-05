@@ -55,7 +55,8 @@ class TestNetworkAdapterCollection(BaseFlaskTest):
             network_adapter_collection_mockup = json.load(f)
 
         # Create mock response
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         self.oneview_client.server_hardware.get_by_id.return_value = \
             serverhw_obj
 
@@ -124,7 +125,6 @@ class TestNetworkAdapterCollection(BaseFlaskTest):
 
         server_hardware = copy.deepcopy(self.server_hardware)
         server_hardware["portMap"]["deviceSlots"] = []
-
 
         # Create mock response
         serverhw_obj = ServerHardware(self.oneview_client, server_hardware)

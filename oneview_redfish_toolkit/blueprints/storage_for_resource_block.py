@@ -54,7 +54,8 @@ def get_storage_details(resource_block_uuid, storage_id):
 
     storage_block = []
     try:
-        storage_block = g.oneview_client.volumes.get_by_id(resource_block_uuid).data
+        storage_block = g.oneview_client.volumes.get_by_id(
+            resource_block_uuid).data
     except HPOneViewException as e:
         if e.oneview_response["errorCode"] == 'RESOURCE_NOT_FOUND':
             storage_block = g.oneview_client.index_resources.get(

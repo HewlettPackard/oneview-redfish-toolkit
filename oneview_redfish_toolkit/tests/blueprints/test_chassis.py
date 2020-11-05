@@ -117,7 +117,7 @@ class TestChassis(BaseFlaskTest):
     @mock.patch.object(multiple_oneview, 'get_map_resources')
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
     def test_get_enclosure_chassis(self, get_map_appliances,
-                                   get_map_resources,get_env):
+                                   get_map_resources, get_env):
         """"Tests EnclosureChassis with a known Enclosure"""
         get_env.return_value = self.enclosure_environment_configuration_mockup
         enclosure_obj = Enclosures(self.oneview_client, self.enclosure)
@@ -234,9 +234,7 @@ class TestChassis(BaseFlaskTest):
 
         enclosure_obj = Enclosures(self.oneview_client, self.enclosure)
 
-
         config_mock.get_oneview_multiple_ips.return_value = ['10.0.0.1']
-
 
         get_map_resources.return_value = OrderedDict({
             "0000000000A66101": "10.0.0.1",
@@ -403,14 +401,14 @@ class TestChassis(BaseFlaskTest):
 
         self.assertEqualMockup(expected_blade_result, result)
 
-
     @mock.patch.object(multiple_oneview, 'get_map_resources')
     @mock.patch.object(multiple_oneview, 'get_map_appliances')
     def test_get_blade_chassis_with_computer_system(self,
                                                     get_map_appliances,
                                                     get_map_resources):
         """"Tests BladeChassis with a known Server Hardware"""
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         get_map_resources.return_value = OrderedDict({
             "30303437-3034-4D32-3230-313133364752": "10.0.0.1",
         })
@@ -493,7 +491,8 @@ class TestChassis(BaseFlaskTest):
                                                            get_map_resources):
         """"Tests BladeChassis with a known Server Hardware"""
 
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
         get_map_resources.return_value = OrderedDict({
             "30303437-3034-4D32-3230-313133364752": "10.0.0.1",
         })
@@ -753,7 +752,6 @@ class TestChassis(BaseFlaskTest):
             response.status_code)
         self.assertEqual("application/json", response.mimetype)
 
-
     def test_change_power_state_oneview_exception(self):
         """Tests changes a SH chassi type with OneView unexpected error"""
 
@@ -779,7 +777,8 @@ class TestChassis(BaseFlaskTest):
 
     def test_change_power_state_unable_reset(self):
         """Tests changes a SH chassi type with SH unable to reset"""
-        serverhw_obj = ServerHardware(self.oneview_client, self.server_hardware)
+        serverhw_obj = ServerHardware(
+            self.oneview_client, self.server_hardware)
 
         e = HPOneViewException({
             'errorCode': 'INVALID_POWER_CONTROL_REQUEST_POWER_COLDBOOT_OFF',

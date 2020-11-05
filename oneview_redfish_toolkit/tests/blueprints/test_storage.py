@@ -114,7 +114,8 @@ class TestStorage(BaseFlaskTest):
 
     def test_get_storage(self):
         """Tests Storage"""
-        server_hardware_type_obj = ServerHardwareTypes(self.oneview_client, self.server_hardware_type)
+        server_hardware_type_obj = ServerHardwareTypes(
+            self.oneview_client, self.server_hardware_type)
         profile_obj = ServerProfiles(self.oneview_client, self.server_profile)
 
         self.oneview_client.\
@@ -346,7 +347,8 @@ class TestStorage(BaseFlaskTest):
         del storage_mockup_without_drives["Volumes"]
         profile_obj = ServerProfiles(self.oneview_client, server_profile)
         self.oneview_client.server_profiles.get_by_id.return_value = profile_obj
-        server_hardware_type_obj = ServerHardwareTypes(self.oneview_client, self.server_hardware_type)
+        server_hardware_type_obj = ServerHardwareTypes(
+            self.oneview_client, self.server_hardware_type)
         self.oneview_client.server_hardware_types.get_by_uri.return_value \
             = server_hardware_type_obj
 
@@ -555,7 +557,7 @@ class TestStorage(BaseFlaskTest):
 
         profile_obj = ServerProfiles(self.oneview_client, server_profile)
         self.oneview_client.server_profiles.get_by_id.return_value = profile_obj
-        volume_obj = Volumes(self.oneview_client, volume[0] )
+        volume_obj = Volumes(self.oneview_client, volume[0])
         self.oneview_client.volumes.get_by_id.return_value = volume_obj
 
         response = self.client.get(
