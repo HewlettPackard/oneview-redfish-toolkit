@@ -276,7 +276,7 @@ When handling multiple OneView instances, make sure all instances have this user
 
 ## Event Service notes
 
-Current implementation follows Redfish specification [DSP0266 version 1.5.0](https://www.dmtf.org/sites/default/files/standards/documents/DSP0266_1.5.0.pdf). Event Service works only when authentication_mode is set to `conf` and does not support multiple OneView instances, hence it's not production ready. As it connects directly to HPE OneView SCMB, the toolkit will request OneView to generate SCMB certs and download the certs to the correct location. The certs file are: **oneview\_ca**: OneView's CA cert file located at: `certs/oneview_ca.pem`. **scmb\_cert**: OneView's SCMB Client cert file located at: `certs/oneview_scmb.pem`. **scmb\_key**: OneView's SCMB Client key file located at: `certs/oneview_scmb.key`
+Event Service connects directly to HPE OneView SCMB, the toolkit will request OneView to generate SCMB certs and download the certs to the correct location. The certs file are: **oneview\_ca**: OneView's CA cert file located at: `certs/oneview_ca.pem`. **scmb\_cert**: OneView's SCMB Client cert file located at: `certs/oneview_scmb.pem`. **scmb\_key**: OneView's SCMB Client key file located at: `certs/oneview_scmb.key`
 
 > In order to integrate properly with OneView, the OneView API 300 is required to be supported by OneView instance.
 
